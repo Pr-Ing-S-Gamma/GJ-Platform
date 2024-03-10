@@ -1,11 +1,55 @@
-<div class="Login" style="width: 1920px; height: 1080px; position: relative; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%)">
-    <div class="Loginwindow" style="width: 538px; height: 574px; left: 691px; top: 253px; position: absolute; background: white; border-radius: 10px"></div>
-    <div class="Emailfield" style="width: 429px; height: 63px; left: 745px; top: 450px; position: absolute; background: white; border-radius: 20px; border: 1px black solid"></div>
-    <div class="Logindiscord" style="width: 236px; height: 51px; left: 842px; top: 640px; position: absolute; background: #3EB9FF; border-radius: 15px"></div>
-    <div class="LoginWithDiscord" style="left: 854px; top: 651px; position: absolute; text-align: center; color: white; font-size: 24px; font-family: Inter; font-weight: 400; word-wrap: break-word">Login with Discord</div>
-    <div class="Sendemail" style="width: 145px; height: 51px; left: 887px; top: 551px; position: absolute; background: #3EB9FF; border-radius: 15px"></div>
-    <div class="SendLink" style="left: 908px; top: 562px; position: absolute; color: white; font-size: 24px; font-family: Inter; font-weight: 400; word-wrap: break-word">Send link</div>
-    <div class="Email" style="left: 757px; top: 467px; position: absolute; text-align: center; color: #8C8787; font-size: 24px; font-family: Inter; font-weight: 400; word-wrap: break-word">Email</div>
-    <div class="Rectangle1" style="width: 538px; height: 133px; left: 691px; top: 252px; position: absolute; background: #3EB9FF"></div>
-    <img class="Image14" style="width: 187px; height: 86px; left: 866px; top: 273px; position: absolute" src="https://via.placeholder.com/187x86" />
-  </div>
+<body>
+  <!-- Section para poner el fondo -->
+  <section class="vh-100" style="position: relative; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%); display: flex; justify-content: center; align-items: center;">
+    <!-- El container contiene todos los elementos de la interfaz -->
+    <div class="container">
+      <!-- Se divide en rows, todo debería ir en un row -->
+      <div class="row" style="justify-content: center; align-items: center;">
+        <!-- Cada row tiene cols, esto sirve dejelo así -->
+        <div class="col" style="justify-content: center; align-items: center; max-width:500px;">
+          <!-- Una card es un panel -->
+          <div class="Card" style="background: white; border-radius: 10px;">
+
+            <div class="Card-heading" style="display: flex; justify-content: center; align-items: center; background: #3EB9FF; border-top-left-radius: 10px; border-top-right-radius: 10px; width:100%;">
+              <img src="/assets/Images/GJ-logo.png" alt="Lights" style="margin-top: 20px; margin-bottom: 20px;">
+            </div>
+
+            <div class="Card-body">
+              <!-- En el form están los espacios o datos que van para el ts -->
+              <form>
+                <!-- Input -->
+                <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                  <div class="form-group" style="margin-top: 40px; margin-bottom: 40px; max-width: 425px;">
+                    <input type="email" class="form-control" id="email" placeholder="Email">
+                  </div>
+                </div>
+    
+                <!-- boton -->
+                <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                  <div style="background: #3EB9FF; border-radius: 15px; margin-bottom: 35px; display: flex; justify-content: center; align-items: center; max-width: 140px;">
+                    <button type="submit" class="btn btn-default">
+                      <div style="color: white; font-size: 24px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                        Send link
+                      </div>
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- boton -->
+                <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                  <div style="background: #3EB9FF; border-radius: 15px; margin-bottom: 90px; display: flex; justify-content: center; align-items: center; max-width: 230px;">
+                    <button type="submit" class="btn btn-default">
+                      <div style="color: white; font-size: 24px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                        Login with Discord
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>

@@ -8,5 +8,8 @@ import { Component } from '@angular/core';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+  errorMessage: string = "";
 
+  evaluarUsuario(correoUsuario: string, contrasenaInput: string): void {}
+  verContrasena(): void {}
 }
