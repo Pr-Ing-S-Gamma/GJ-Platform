@@ -2,7 +2,7 @@ const LocalOrganizer = require('../models/localOrganizerModel');
 const { sendEmail } = require('../services/mailer');
 
 const registerLocalOrganizer = async (req, res) => {
-    const { email, siteId, teamId } = req.body;
+    const { email, siteId } = req.body;
 
     try {
         const existingEmail = await LocalOrganizer.findOne({ email });
@@ -20,7 +20,7 @@ const registerLocalOrganizer = async (req, res) => {
                 type: req.file.mimetype,
                 data: req.file.buffer
             },
-            siteId: siteId,
+            site: siteId,
             creationDate: new Date()
         });
 

@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const User = require('./userModel');
 const { Schema } = mongoose;
 const jammerSchema = mongoose.Schema({
-    siteId: { 
+    site: { 
         type: Schema.Types.ObjectId, 
         ref: 'Site',
         required: true
     },
-    teamId: { 
+    team: { 
         type: Schema.Types.ObjectId, 
         ref: 'Team' 
     }

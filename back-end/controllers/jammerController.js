@@ -19,8 +19,8 @@ const registerJammer = async (req, res) => {
                 type: req.file.mimetype,
                 data: req.file.buffer
             },
-            siteId: siteId,
-            teamId: teamId,
+            site: siteId,
+            team: teamId,
             creationDate: new Date()
         });
 

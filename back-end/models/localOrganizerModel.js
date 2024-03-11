@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = require('./userModel');
 const { Schema } = mongoose;
 const localOrganizerSchema = mongoose.Schema({
-    siteId: { 
+    site: { 
         type: Schema.Types.ObjectId, 
         ref: 'Site',
         required: true
