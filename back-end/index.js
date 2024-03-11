@@ -73,6 +73,9 @@ app.use('/api/team', team_route);
 // Rutas de entregables
 const submission_route = require('./routes/submissionRoute');
 app.use('/api/submission', submission_route);
+// Rutas de temas
+const theme_route = require('./routes/themeRoute');
+app.use('/api/themes', theme_route);
 
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, () => {
