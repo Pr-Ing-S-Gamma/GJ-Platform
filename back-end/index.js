@@ -66,6 +66,14 @@ app.use('/api/game-jam', game_jam_route);
 const stage_route = require('./routes/stageRoute');
 app.use('/api/stage', stage_route);
 
+// Rutas de equipos
+const team_route = require('./routes/teamRoute');
+app.use('/api/team', team_route);
+
+// Rutas de entregables
+const submission_route = require('./routes/submissionRoute');
+app.use('/api/submission', submission_route);
+
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);

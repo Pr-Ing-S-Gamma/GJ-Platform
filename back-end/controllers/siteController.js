@@ -61,14 +61,6 @@ const updateSite = async (req, res) => {
         const regionId = req.body.regionId;
         const countryName = req.body.countryName;
         
-        if (!mongoose.Types.ObjectId.isValid(regionId)) {
-            return res.status(400).json({ success: false, error: 'El ID de región proporcionado no es válido.' });
-        } else {
-            const existingRegion = await Region.findById(regionId);
-            if (!existingRegion) {
-                return res.status(400).json({ success: false, error: "Esa región no existe" });
-            }
-        }
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'El ID de site proporcionado no es válido.' });
         } else {
@@ -77,14 +69,10 @@ const updateSite = async (req, res) => {
                 return res.status(400).json({ success: false, error: "Ese site no existe" });
             }
         }
+        let changed = 0;
         if (req.body.name) {
             updateFields.name = req.body.name;
-            updateFields.lastUpdateUser = {
-                userId: lastUpdateUser._id,
-                name: lastUpdateUser.name,
-                email: lastUpdateUser.email
-            }
-            updateFields.lastUpdateDate = new Date()
+            changed++;
         }
         if (req.body.countryName) {
             const countriesPath = path.join(__dirname, '..', 'staticData', 'countries.json');
@@ -99,10 +87,10 @@ const updateSite = async (req, res) => {
                 name: countryName,
                 code: country.code 
             }
+            changed++;
         }
 
-        if (req.body.regionId) {
-            const regionId = req.body.regionId;
+        if (regionId) {
             if (!mongoose.Types.ObjectId.isValid(regionId)) {
                 return res.status(400).json({ success: false, error: 'El ID de región proporcionado no es válido.' });
             } else {
@@ -112,6 +100,16 @@ const updateSite = async (req, res) => {
                 }
             }
             updateFields.region = regionId;
+            changed++;
+        }
+
+        if (changed > 0) {
+            updateFields.lastUpdateUser = {
+                userId: lastUpdateUser._id,
+                name: lastUpdateUser.name,
+                email: lastUpdateUser.email
+            };
+            updateFields.lastUpdateDate = new Date();
         }
 
         await Site.findByIdAndUpdate({ _id: id }, updateFields);

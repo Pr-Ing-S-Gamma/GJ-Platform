@@ -47,18 +47,24 @@ const updatePrize = async (req, res) => {
                 return res.status(400).json({ success: false, error: "Ese premio no existe" });
             }
         }
+        let changed = 0;
         if (req.body.name) {
             updateFields.name = req.body.name;
-            updateFields.lastUpdateUser = {
-                userId: lastUpdateUser._id,
-                name: lastUpdateUser.name,
-                email: lastUpdateUser.email
-            }
-            updateFields.lastUpdateDate = new Date()
+            changed++;
         }
 
         if (req.body.price) {
             updateFields.price = req.body.price;
+            changed++;
+        }
+
+        if (changed > 0) {
+            updateFields.lastUpdateUser = {
+                userId: lastUpdateUser._id,
+                name: lastUpdateUser.name,
+                email: lastUpdateUser.email
+            };
+            updateFields.lastUpdateDate = new Date();
         }
 
         await Prize.findByIdAndUpdate({ _id: id }, updateFields);

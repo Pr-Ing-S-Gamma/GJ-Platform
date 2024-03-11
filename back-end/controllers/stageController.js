@@ -17,7 +17,6 @@ const createStage = async (req, res) => {
                 return res.status(400).json({ success: false, error: "Esa GameJam no existe" });
             }
 
-            // Crear la nueva fase
             const stage = new Stage({
                 name: name,
                 startDate: startDate,
@@ -31,10 +30,8 @@ const createStage = async (req, res) => {
                 creationDate: new Date()
             });
 
-            // Guardar la nueva fase en la base de datos
             await stage.save();
 
-            // Agregar la nueva fase al array 'stages' de 'existingGameJam'
             existingGameJam.stages.push(stage._id);
             await existingGameJam.save();
 
@@ -61,25 +58,31 @@ const updateStage = async (req, res) => {
             }
         }
         const existingStage = await Stage.findById(id);
+        let changed = 0;
         if (req.body.name) {
             updateFields.name = req.body.name;
-            updateFields.lastUpdateUser = {
-                userId: lastUpdateUser._id,
-                name: lastUpdateUser.name,
-                email: lastUpdateUser.email
-            };
-            updateFields.lastUpdateDate = new Date();
+            changed++;
         }
 
         if (req.body.startDate) {
             updateFields.startDate = req.body.startDate;
+            changed++;
         }
 
         if (req.body.endDate) {
             updateFields.endDate = req.body.endDate;
+            changed++;
         }
 
         if (req.body.gameJamId) {
+            if (!mongoose.Types.ObjectId.isValid(gameJamId)) {
+                return res.status(400).json({ success: false, error: 'El ID de GameJam proporcionado no es válido.' });
+            } else {
+                const existingGameJam = await GameJam.findById(gameJamId);
+                if (!existingGameJam) {
+                    return res.status(400).json({ success: false, error: "Esa GameJam no existe" });
+                }
+            }
             await GameJam.updateOne(
                 { _id: existingStage.gameJam },
                 { $pull: { stages: existingStage._id } }
@@ -90,6 +93,16 @@ const updateStage = async (req, res) => {
             );
 
             updateFields.gameJam = req.body.gameJamId;
+            changed++;
+        }
+
+        if (changed > 0) {
+            updateFields.lastUpdateUser = {
+                userId: lastUpdateUser._id,
+                name: lastUpdateUser.name,
+                email: lastUpdateUser.email
+            };
+            updateFields.lastUpdateDate = new Date();
         }
 
         await Stage.findByIdAndUpdate(id, updateFields);

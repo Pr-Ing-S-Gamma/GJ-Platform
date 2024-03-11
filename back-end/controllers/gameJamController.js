@@ -62,18 +62,15 @@ const updateGameJam = async (req, res) => {
                 return res.status(400).json({ success: false, error: "Esa GameJam no existe" });
             }
         }
+        let changed = 0;
         if (req.body.edition) {
             updateFields.edition = req.body.edition;
-            updateFields.lastUpdateUser = {
-                userId: lastUpdateUser._id,
-                name: lastUpdateUser.name,
-                email: lastUpdateUser.email
-            }
-            updateFields.lastUpdateDate = new Date()
+            changed++;
         }
 
         if (req.body.stages) {
             updateFields.stages = req.body.stages;
+            changed++;
         }
 
         if (req.body.siteId) {
@@ -87,9 +84,19 @@ const updateGameJam = async (req, res) => {
                 }
             }
             updateFields.site = siteId;
+            changed++;
         }
         await GameJam.findByIdAndUpdate({ _id: id }, updateFields);
 
+        if (changed > 0) {
+            updateFields.lastUpdateUser = {
+                userId: lastUpdateUser._id,
+                name: lastUpdateUser.name,
+                email: lastUpdateUser.email
+            };
+            updateFields.lastUpdateDate = new Date();
+        }
+        
         res.status(200).send({ success: true, msg: 'Se ha actualizado la GameJam correctamente'});
     } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
