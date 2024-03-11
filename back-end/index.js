@@ -54,6 +54,10 @@ app.use('/api/prize', prize_route);
 const site_route = require('./routes/siteRoute');
 app.use('/api/site', site_route);
 
+// Rutas de categorías
+const category_route = require('./routes/categoryRoute');
+app.use('/api/category', category_route);
+
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);
