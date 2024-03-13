@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Theme = require("../models/teamModel");
+const Submission = require("../models/submissionModel")
 
 const createTheme = async (req, res) => {
   try {
@@ -92,11 +93,26 @@ const deleteTheme = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+const getGamesPerTheme = async (req, res) => {
+  const themeId = req.params.themeId;
+    try {
+        const submissions = await Submission.find({ theme: themeId })
+            .populate('team')
+            .populate('category')
+            .populate('stage')
+            .populate('game')
+            .populate('theme')
+        return res.status(200).json({ success: true, submissions: submissions });
+    } catch (error) {
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
 
 module.exports = {
   createTheme,
   deleteTheme,
   updateTheme,
   getTheme,
-  getThemes
+  getThemes,
+  getGamesPerTheme
 };

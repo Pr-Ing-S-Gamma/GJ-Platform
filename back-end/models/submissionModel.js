@@ -29,6 +29,11 @@ const submissionSchema = mongoose.Schema({
         ref: 'Stage',
         required: true
     },
+    theme: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Theme',
+        required: true
+    },
     creatorUser:  {
         userId: {
             type: Schema.Types.ObjectId, 
