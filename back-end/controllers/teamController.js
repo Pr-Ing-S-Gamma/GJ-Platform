@@ -6,7 +6,8 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 const createTeam = async (req, res) => {
-    const { studioName, description, gameJamId, linkTree, jammers, submissions } = req.body;
+    //const { studioName, description, gameJamId, linkTree, jammers, submissions } = req.body;
+    const { studioName, description, gameJamId, linkTree, jammers } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
@@ -27,13 +28,14 @@ const createTeam = async (req, res) => {
             }
         }
 
+        /*
         const submissionsId = [];
         for (const submissionId of submissions) {
             const submission = await Submission.findById(submissionId);
             if (submission) {
                 submissionsId.push(submission._id);
             }
-        }
+        }*/
 
         const team = new Team({
             studioName: studioName,
@@ -46,7 +48,7 @@ const createTeam = async (req, res) => {
                 data: req.file.buffer
             },
             jammers: jammersId,
-            submissions: submissionsId,
+            //submissions: submissionsId,
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,

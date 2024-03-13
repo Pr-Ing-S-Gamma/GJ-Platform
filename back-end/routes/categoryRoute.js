@@ -17,5 +17,6 @@ category_route.put('/update-category/:id', upload.none(), categoryController.upd
 category_route.get('/get-category/:id', categoryController.getCategory);
 category_route.get('/get-categories', categoryController.getCategories);
 category_route.delete('/delete-category/:id', categoryController.deleteCategory);
+category_route.get('/get-games-per-category/:id', categoryController.getGamesbyCategory);
 
 module.exports = category_route;

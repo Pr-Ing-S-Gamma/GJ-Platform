@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Theme = require("../models/teamModel");
 const Submission = require("../models/submissionModel")
+const GlobalOrganizer = require("../models/globalOrganizerModel")
+
 
 const createTheme = async (req, res) => {
   try {
@@ -63,7 +65,7 @@ const getTheme = async (req, res) => {
 
 const getThemes = async (req, res) => {
   try {
-    const temas = await Theme.find();
+    const temas = await Theme.find({});
     return res.status(200).json({ success: true, themes: temas });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });

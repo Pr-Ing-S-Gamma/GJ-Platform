@@ -32,7 +32,7 @@ const submissionSchema = mongoose.Schema({
     theme: {
         type: Schema.Types.ObjectId, 
         ref: 'Theme',
-        required: true
+        required: false
     },
     creatorUser:  {
         userId: {

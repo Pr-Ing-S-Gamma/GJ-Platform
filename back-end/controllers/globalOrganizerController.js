@@ -3,7 +3,7 @@ const { sendEmail } = require('../services/mailer');
 const jwt = require('jsonwebtoken');
 
 const registerGlobalOrganizer = async (req, res) => {
-    const { email } = req.body;
+    const { email } = req.body.email;
     
     try {
         const existingEmail = await GlobalOrganizer.findOne({ email });

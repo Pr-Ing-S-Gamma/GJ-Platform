@@ -2,6 +2,7 @@ const Category = require('../models/categoryModel');
 const GlobalOrganizer = require('../models/globalOrganizerModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const Submission = require('../models/submissionModel')
 
 const createCategory = async (req, res) => {
     const { name } = req.body;
@@ -102,10 +103,34 @@ const deleteCategory = async(req,res)=>{
     }
 };
 
+const getGamesbyCategoryy = async(req, res) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+};
+
+const getGamesbyCategory = async (req, res) => {
+    const catgoryID = req.params.id;
+      try {
+          const submissions = await Submission.find({ category: catgoryID })
+              .populate('team')
+              .populate('category')
+              .populate('stage')
+              .populate('game')
+              .populate('theme')
+          return res.status(200).json({ success: true, submissions: submissions });
+      } catch (error) {
+          res.status(500).json({ error: 'Error interno del servidor' });
+      }
+  }
+
 module.exports = {
     createCategory,
     updateCategory,
     getCategory,
     getCategories,
-    deleteCategory
+    deleteCategory,
+    getGamesbyCategory
 };

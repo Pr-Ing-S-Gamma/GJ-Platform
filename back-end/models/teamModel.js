@@ -26,7 +26,8 @@ const teamSchema = mongoose.Schema({
     }],
     submissions:   [{
         type: Schema.Types.ObjectId, 
-        ref: 'Submission'
+        ref: 'Submission',
+        required: false
     }],
     logo: {
         name: { 
