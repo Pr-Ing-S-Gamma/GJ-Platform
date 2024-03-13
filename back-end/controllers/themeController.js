@@ -3,10 +3,6 @@ const mongoose = require('mongoose');
 const Theme = require("../models/themeModel");
 const Submission = require("../models/submissionModel")
 const GlobalOrganizer = require("../models/globalOrganizerModel")
-<<<<<<< HEAD
-
-=======
->>>>>>> d64025d8e1cc3ae3a4f30fee9caded17b5c771f1
 
 const createTheme = async (req, res) => {
   try {
