@@ -45,12 +45,16 @@ const createTheme = async (req, res) => {
 
 const getTheme = async (req, res) => {
   try {
-    const tema = await Theme.findById(req.params.id);
+    const temaId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(temaId)) {
+      return res.status(404).json({ success: false, message: 'Tema no encontrado' });
+    }
+    const tema = await Theme.findById(temaId);
 
     if (!tema) {
       return res.status(404).json({ success: false, message: 'Tema no encontrado' });
     }
-
     return res.status(200).json({ success: true, message: 'Tema encontrado correctamente', theme: tema });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -68,12 +72,12 @@ const getThemes = async (req, res) => {
 
 const updateTheme = async (req, res) => {
   try {
-    const tema = await Theme.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const temaId = req.params.id;
 
-    if (!tema) {
+    if (!mongoose.Types.ObjectId.isValid(temaId)) {
       return res.status(404).json({ success: false, message: 'Tema no encontrado' });
     }
-
+    const tema = await Theme.findByIdAndUpdate(req.params.id, req.body, { new: true });
     return res.status(200).json({ success: true, message: 'Actualizado con éxito', theme: tema });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
