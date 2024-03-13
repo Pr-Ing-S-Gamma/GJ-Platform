@@ -2,46 +2,46 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const themeSchema = mongoose.Schema({
-    ManualPT: {
-        Type: String
+    manualPT: {
+        type: String
     },
-    ManualSP: {
-        Type: String
+    manualSP: {
+        type: String
     },
     manualEN: {
-        Type: String
+        type: String
     },
     descriptionSP: {
-        Type: String
+        type: String
     },
     descriptionPT: {
-        Type: String
+        type: String
     },
     descriptionEN: {
-        Type: String
+        type: String
     },
-    TitleSP: {
-        Type: String
+    titleSP: {
+        type: String
     },
-    TitleEN: {
-        Type: String
+    titleEN: {
+        type: String
     },
-    TitlePT: {
-        Type: String
+    titlePT: {
+        type: String
     },
     creatorUser:  {
         userId: {
             type: Schema.Types.ObjectId, 
             ref: 'GlobalOrganizer',
-            required: true
+            required: false
         },
         name: { 
             type: String, 
-            required: true 
+            required: false 
         },
         email: { 
             type: String, 
-            required: true 
+            required: false 
         }
     },
     creationDate: {
@@ -69,4 +69,4 @@ const themeSchema = mongoose.Schema({
     }]
 });
 
-module.exports = mongoose.model("theme", themeSchema);
+module.exports = mongoose.model("Theme", themeSchema);

@@ -1,9 +1,12 @@
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
-const Theme = require("../models/teamModel");
+const Theme = require("../models/themeModel");
 const Submission = require("../models/submissionModel")
 const GlobalOrganizer = require("../models/globalOrganizerModel")
+<<<<<<< HEAD
 
+=======
+>>>>>>> d64025d8e1cc3ae3a4f30fee9caded17b5c771f1
 
 const createTheme = async (req, res) => {
   try {
@@ -13,22 +16,27 @@ const createTheme = async (req, res) => {
       return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
     }
 
-    const creatorUser = await GlobalOrganizer.findById(userId);
+    let creatorUser = await GlobalOrganizer.findById(userId);
 
     if (!creatorUser) {
-      return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
+      return res.status(404).json({ success: false, error: 'Usuario no encontrado' });
     }
 
-    const existingTheme = await Theme.findOne({ manualEN: req.body.manualEN });
-
-    if (existingTheme) {
+    const temaId = req.params.id;
+    if (mongoose.Types.ObjectId.isValid(temaId)) {
       return res.status(400).json({ success: false, error: 'El tema ya está registrado' });
     }
 
     const tema = new Theme({
+      manualPT: req.body.manualPT,
+      manualSP: req.body.manualSP,
       manualEN: req.body.manualEN,
+      descriptionSP: req.body.descriptionSP,
+      descriptionPT: req.body.descriptionPT,
       descriptionEN: req.body.descriptionEN,
-      TitleEN: req.body.TitleEN,
+      titleSP: req.body.titleSP,
+      titleEN: req.body.titleEN,
+      titlePT: req.body.titlePT,
       creatorUser: {
         userId: creatorUser._id,
         name: creatorUser.name,
@@ -41,9 +49,13 @@ const createTheme = async (req, res) => {
 
     res.status(201).json({ success: true, message: 'Se ha creado correctamente el tema', theme: tema });
   } catch (error) {
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return res.status(401).json({ success: false, error: 'Token inválido' });
+    }
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 const getTheme = async (req, res) => {
   try {
