@@ -62,11 +62,7 @@ const themeSchema = mongoose.Schema({
     },
     lastUpdateDate: {
         type: Date
-    },
-    gamejam: [{
-        type: Schema.Types.ObjectId, 
-        ref : 'GameJam'
-    }]
+    }
 });
 
 module.exports = mongoose.model("Theme", themeSchema);
