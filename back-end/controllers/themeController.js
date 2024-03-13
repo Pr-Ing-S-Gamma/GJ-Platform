@@ -72,6 +72,11 @@ const getThemes = async (req, res) => {
 
 const updateTheme = async (req, res) => {
   try {
+    const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
+    }
     const temaId = req.params.id;
 
     if (!mongoose.Types.ObjectId.isValid(temaId)) {
