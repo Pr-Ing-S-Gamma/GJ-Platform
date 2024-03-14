@@ -5,9 +5,10 @@ const Team = require('../models/teamModel');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const Theme = require('../models/themeModel')
 
 const createSubmission = async (req, res) => {
-    const { description, pitch, game, teamId, categoryId, stageId } = req.body;
+    const { description, pitch, game, teamId, categoryId, stageId, themeId } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
@@ -28,6 +29,14 @@ const createSubmission = async (req, res) => {
                 return res.status(400).json({ success: false, error: "Esa categoría no existe" });
             }
         }
+        if (!mongoose.Types.ObjectId.isValid(themeId)) {
+            return res.status(400).json({ success: false, error: 'El ID de tema proporcionado no es válido.' });
+        } else {
+            const existingCategory = await Theme.findById(themeId);
+            if (!existingCategory) {
+                return res.status(400).json({ success: false, error: "Ese tema no existe" });
+            }
+        }
         if (!mongoose.Types.ObjectId.isValid(stageId)) {
             return res.status(400).json({ success: false, error: 'El ID de fase proporcionado no es válido.' });
         } else {
@@ -43,6 +52,7 @@ const createSubmission = async (req, res) => {
             team: teamId,
             category: categoryId,
             stage: stageId,
+            theme: themeId,
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,

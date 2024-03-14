@@ -22,7 +22,7 @@ const submissionSchema = mongoose.Schema({
     category: {
         type: Schema.Types.ObjectId, 
         ref: 'Category',
-        required: true
+        required: false
     },
     stage: {
         type: Schema.Types.ObjectId, 

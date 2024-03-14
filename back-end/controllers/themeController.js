@@ -121,6 +121,7 @@
               .populate('stage')
               .populate('game')
               .populate('theme')
+          console.log(submissions)
           return res.status(200).json({ success: true, data: submissions });
       } catch (error) {
           res.status(500).json({ error: 'Error interno del servidor' });
