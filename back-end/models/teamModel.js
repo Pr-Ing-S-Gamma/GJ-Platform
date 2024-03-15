@@ -10,6 +10,10 @@ const teamSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    site: {
+        type: String,
+        required: true
+    },
     linkTree: [{
         type:String,
         required:true

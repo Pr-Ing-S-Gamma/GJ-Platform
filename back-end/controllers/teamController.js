@@ -4,10 +4,11 @@ const GameJam = require('../models/gameJamEventModel');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const Site = require('../models/siteModel');
 
 const createTeam = async (req, res) => {
     //const { studioName, description, gameJamId, linkTree, jammers, submissions } = req.body;
-    const { studioName, description, gameJamId, linkTree, jammers } = req.body;
+    const { studioName, description, gameJamId, linkTree, jammers, siteName } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
@@ -19,6 +20,12 @@ const createTeam = async (req, res) => {
                 return res.status(400).json({ success: false, error: "Esa GameJam no existe" });
             }
         }
+
+        const existingSite = await Site.find({name: siteName});
+        if (!existingSite) {
+            return res.status(400).json({ success: false, error: "Esa site no existe" });
+        }
+        
 
         const jammersId = [];
         for (const jammerId of jammers) {
@@ -40,6 +47,7 @@ const createTeam = async (req, res) => {
         const team = new Team({
             studioName: studioName,
             description: description,
+            site: siteName,
             gameJam: gameJamId,
             linkTree: linkTree,
             logo: {
@@ -189,10 +197,21 @@ const deleteTeam = async (req, res) => {
     }
 };
 
+const getTeamSite = async (req, res)=>{
+    try {
+        const site = req.params.site;
+        const team = await Team.find({site: site});
+        return res.status(200).send({success: true, msg: "Equipos econtrados para site", data: team});
+    } catch (error) {
+        return res.status(400).send({success: false, msg: error.message});
+    }
+};
+
 module.exports = {
     createTeam,
     updateTeam,
     getTeam,
     getTeams,
-    deleteTeam
+    deleteTeam,
+    getTeamSite
 };

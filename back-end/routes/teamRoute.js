@@ -18,5 +18,6 @@ team_route.put('/update-team/:id', upload.single('image'), teamController.update
 team_route.get('/get-team/:id', teamController.getTeam);
 team_route.get('/get-teams', teamController.getTeams);
 team_route.delete('/delete-team/:id', teamController.deleteTeam);
+team_route.get('/get-teams/:site', teamController.getTeamSite);
 
 module.exports = team_route;
