@@ -5,6 +5,7 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Site = require('../models/siteModel');
+const { all } = require('../routes/teamRoute');
 
 const createTeam = async (req, res) => {
     //const { studioName, description, gameJamId, linkTree, jammers, submissions } = req.body;
@@ -199,9 +200,10 @@ const deleteTeam = async (req, res) => {
 
 const getTeamSite = async (req, res)=>{
     try {
-        const site = req.params.site;
-        const team = await Team.find({site: site});
-        return res.status(200).send({success: true, msg: "Equipos econtrados para site", data: team});
+        const siteName = req.params.site;
+        console.log(siteName)
+        var teams = await Team.find({site: siteName});
+        return res.status(200).send({success: true, msg: "Equipos econtrados para site "  + siteName, data: teams});
     } catch (error) {
         return res.status(400).send({success: false, msg: error.message});
     }

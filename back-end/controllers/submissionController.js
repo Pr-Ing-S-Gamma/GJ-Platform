@@ -66,6 +66,9 @@ const createSubmission = async (req, res) => {
         existingTeam.submissions.push(submission._id);
         await existingTeam.save();
 
+        existingTeam.lastSub = submission._id;
+        await existingTeam.save();
+
         res.status(200).json({ success: true, msg: 'Se ha creado correctamente la entrega' });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });

@@ -28,6 +28,11 @@ const teamSchema = mongoose.Schema({
         ref: 'Jammer',
         required: true
     }],
+    lastSub: {
+        type: Schema.Types.ObjectId,
+        ref: 'Submission',
+        require: true
+    },
     submissions:   [{
         type: Schema.Types.ObjectId, 
         ref: 'Submission',
