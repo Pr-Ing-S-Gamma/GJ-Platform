@@ -5,7 +5,7 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Site = require('../models/siteModel');
-const { all } = require('../routes/teamRoute');
+//const { all } = require('../routes/teamRoute');
 
 const createTeam = async (req, res) => {
     //const { studioName, description, gameJamId, linkTree, jammers, submissions } = req.body;
