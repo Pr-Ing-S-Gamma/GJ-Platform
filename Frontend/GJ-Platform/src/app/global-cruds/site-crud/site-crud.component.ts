@@ -91,7 +91,7 @@ export class SiteCrudComponent implements OnInit {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 
   // @ts-ignore
-  @ViewChild('succesModal') succesModal:ElementRef;
+  @ViewChild('successModal') succesModal:ElementRef;
   openModal(){
     $(this.succesModal.nativeElement).modal('show'); 
   }
