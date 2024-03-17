@@ -8,7 +8,7 @@ const themeController = require('../controllers/themeController');
 
 theme_route.get('/get-theme/:id', themeController.getTheme);
 theme_route.get('/get-themes', themeController.getThemes);
-theme_route.get('/get-games-per-theme', themeController.getGamesPerTheme);
+theme_route.get('/get-games-per-theme/:id', themeController.getGamesPerTheme);
 
 theme_route.post('/create-theme',themeController.createTheme )
 

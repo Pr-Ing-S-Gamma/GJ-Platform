@@ -103,13 +103,6 @@ const deleteCategory = async(req,res)=>{
     }
 };
 
-const getGamesbyCategoryy = async(req, res) => {
-    try {
-        
-    } catch (error) {
-        
-    }
-};
 
 const getGamesbyCategory = async (req, res) => {
     const catgoryID = req.params.id;

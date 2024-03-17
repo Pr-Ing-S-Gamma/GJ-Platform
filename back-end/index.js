@@ -77,6 +77,10 @@ app.use('/api/submission', submission_route);
 const theme_route = require('./routes/themeRoute');
 app.use('/api/themes', theme_route);
 
+// Rutas de jueces
+const judge_route = require('./routes/judgeRoute');
+app.use('/api/judge', judge_route);
+
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);

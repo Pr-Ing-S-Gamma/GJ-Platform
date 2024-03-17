@@ -10,6 +10,10 @@ const teamSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    site: {
+        type: String,
+        required: true
+    },
     linkTree: [{
         type:String,
         required:true
@@ -24,6 +28,11 @@ const teamSchema = mongoose.Schema({
         ref: 'Jammer',
         required: true
     }],
+    lastSub: {
+        type: Schema.Types.ObjectId,
+        ref: 'Submission',
+        require: true
+    },
     submissions:   [{
         type: Schema.Types.ObjectId, 
         ref: 'Submission',
