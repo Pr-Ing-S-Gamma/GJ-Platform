@@ -48,7 +48,7 @@ export class RegionCRUDComponent implements OnInit{
       // Lógica para enviar el formulario aquí
       this.dataSource[this.indexRegion] = {
         id: this.regionToEdit['id'],
-        region: this.myForm.value['region']
+        region: this.myForm.value['region'] 
       }
       this.openModal()
     } else {
@@ -111,41 +111,26 @@ export class RegionCRUDComponent implements OnInit{
     const totalPaginas = this.totalPaginas;
     const currentPage = this.currentPage;
     const paginasMostradas: (number | '...')[] = [];
-
+  
     const rango = 2; // Cambia esto para ajustar el número de páginas mostradas
-
+  
     let inicio = Math.max(1, currentPage - rango);
     let fin = Math.min(totalPaginas, currentPage + rango);
-
+  
     for (let i = inicio; i <= fin; i++) {
       paginasMostradas.push(i);
     }
-
-    if (inicio == 1){
-      switch(fin - inicio){
-        case 2:
-          paginasMostradas.push(4);
-          paginasMostradas.push(5);
-          break;
-        case 3:
-          paginasMostradas.push(5);
-          break;
-        default: break;
-      }
+  
+    if (currentPage - inicio > rango) {
+      paginasMostradas.unshift('...');
     }
-    if (fin == totalPaginas){
-      switch(fin - inicio){
-        case 2:
-          paginasMostradas.unshift(totalPaginas-4, totalPaginas-3);
-          break;
-        case 3:
-          paginasMostradas.unshift(totalPaginas-4);
-          break;
-        default: break;
-      }
+    
+    if (fin < totalPaginas - 1) {
+      paginasMostradas.push('...');
     }
+  
     return paginasMostradas;
-}
+  }
 
   ventanaAgregar: boolean = false;
 }

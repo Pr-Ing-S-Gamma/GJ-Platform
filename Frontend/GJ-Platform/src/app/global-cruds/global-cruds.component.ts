@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { RegionCRUDComponent } from './region-crud/region-crud.component';
+import { SiteCrudComponent } from './site-crud/site-crud.component';
 
 @Component({
   selector: 'app-global-cruds',
@@ -10,7 +11,8 @@ import { RegionCRUDComponent } from './region-crud/region-crud.component';
     NgClass,
     NgIf,
     CommonModule,
-    RegionCRUDComponent
+    RegionCRUDComponent,
+    SiteCrudComponent
   ],
   templateUrl: './global-cruds.component.html',
   styleUrl: './global-cruds.component.css'
