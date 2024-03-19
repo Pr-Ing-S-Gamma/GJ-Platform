@@ -1,1 +1,154 @@
-<p>category-crud works!</p>
+<div class="card-body" style="background: white;
+border-radius: 35px; border: 1px black solid;
+border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
+    <!-- Aquí puedes colocar tus formularios o contenido CRUD -->
+    <!-- TODO: -->
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Update</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of obtenerDatosPagina()">
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.Category }}</td>
+                    <td>
+                        <!-- Aquí puedes agregar los botones de acciones -->
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" (click)="eliminar(row)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <ul class="pagination">
+            <!-- Botón para ir a la primera página -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="cambiarPagina(1)" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <!-- Botón para ir a la página anterior -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="cambiarPagina(currentPage - 1)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <!-- Limitar el número de páginas mostradas -->
+            <ng-container *ngFor="let page of paginasMostradas">
+                <li class="page-item" *ngIf="page !== '...'">
+                    <a class="page-link" (click)="cambiarPagina(page)" [class.active]="currentPage === page">{{ page
+                        }}</a>
+                </li>
+            </ng-container>
+            <!-- Botón para ir a la página siguiente -->
+            <li class="page-item" [class.disabled]="currentPage === totalPaginas">
+                <a class="page-link" (click)="cambiarPagina(currentPage + 1)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <!-- Botón para ir a la última página -->
+            <li class="page-item" [class.disabled]="currentPage === totalPaginas">
+                <a class="page-link" (click)="cambiarPagina(totalPaginas)" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        </ul>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#createModal">Add</button>
+    </div>
+</div>
+
+<!-- Edit Window -->
+<div #editModal class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form (submit)="editar()" [formGroup]="myForm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Update Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            Category</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group"
+                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <input #categoryEditInput class="form-control" id="categoryEditInput" required
+                                    placeholder="Ex. LATAM" formControlName="category">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                    {{ successMessage }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- Create Window -->
+<div #createModal class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form (submit)="agregar()" [formGroup]="myForm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">Add Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            Category</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group"
+                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <input #categoryInput class="form-control" id="categoryInput" required
+                                    placeholder="Ex. RPG, SHOOTER, ..." formControlName="category">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                    {{ successMessage }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
