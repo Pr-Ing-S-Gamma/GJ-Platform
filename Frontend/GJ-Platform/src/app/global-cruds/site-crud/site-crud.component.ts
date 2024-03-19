@@ -19,9 +19,10 @@ export class SiteCrudComponent implements OnInit {
   myForm!: FormGroup;
   dataSource = [
     { id: 1, name: 'Zapote' , country: 'Brazil', region: 'Asia' },
-    { id: 2, name: 'Ennies lobby' , country: 'GrandLine', region: 'Gobierno mundial' },
+    { id: 2, name: 'Ennies lobby' , country: 'Gobierno mundial', region: 'GrandLine' },
     { id: 3, name: 'Guadalupe' , country: 'Costa Rica', region: 'LATAM' },
   ];
+  regiones = ['Asia', 'GrandLine', 'LATAM', 'Brazil', 'Partido de la amistad']
   
   siteToEdit: any;
   indexSite = 0;
@@ -59,7 +60,7 @@ export class SiteCrudComponent implements OnInit {
         country: this.myForm.value['country'],
         region: this.myForm.value['region'],
       }
-      this.openModal()
+      this.showSuccessMessage("Success!")
     } else {
       console.log('Formulario inválido');
     }
@@ -79,7 +80,7 @@ export class SiteCrudComponent implements OnInit {
         country: this.myForm.value['country'],
         region: this.myForm.value['region']
       })
-      this.openModal()
+      this.showSuccessMessage("Success!")
     } else {
       console.log('Formulario inválido');
     }
@@ -90,13 +91,13 @@ export class SiteCrudComponent implements OnInit {
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 
-  // @ts-ignore
-  @ViewChild('successModal') succesModal:ElementRef;
-  openModal(){
-    $(this.succesModal.nativeElement).modal('show'); 
-  }
-  closeModal(){
-    $(this.succesModal.nativeElement).modal('hide'); 
+  successMessage: string = '';
+
+  showSuccessMessage(message: string) {
+    this.successMessage = message;
+    setTimeout(() => {
+      this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+    }, 5000); // Limpia el mensaje después de 5 segundos
   }
   
   get totalPaginas(): number {

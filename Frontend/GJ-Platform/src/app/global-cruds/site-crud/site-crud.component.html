@@ -84,38 +84,54 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                 </div>
                 <div class="modal-body">
                     <div class="row" style="display: flex; justify-content: center; align-items: center;">
+
                         <div style="margin-left: 50px; text-align: left; color: black;
                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            Region</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <select class="form-control" id="regionInput"  
+                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="region">
+                            <option value="" disabled selected hidden>Region of the site</option>
+                            <option *ngFor="let region of regiones" [value]="region">{{ region }}</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            Country</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group"
+                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <input #SiteInput class="form-control" id="SiteInput" required
+                                    placeholder="Country" formControlName="country">
+                            </div>
+                        </div>
+
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
                             Site</div>
 
-                            <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                                <div class="form-group"
-                                    style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                    <input #SiteInput class="form-control" id="SiteInput" required
-                                        placeholder="Region" formControlName="region">
-                                </div>
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group"
+                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <input #SiteInput class="form-control" id="SiteInput" required
+                                    placeholder="Name" formControlName="name">
                             </div>
-                            <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                                <div class="form-group"
-                                    style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                    <input #SiteInput class="form-control" id="SiteInput" required
-                                        placeholder="Country" formControlName="country">
-                                </div>
-                            </div>
-                            <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                                <div class="form-group"
-                                    style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                    <input #SiteInput class="form-control" id="SiteInput" required
-                                        placeholder="Name" formControlName="name">
-                                </div>
-                            </div>
+                        </div>
                         
-
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                    {{ successMessage }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
             </div>
         </form>
@@ -136,9 +152,22 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                 </div>
                 <div class="modal-body">
                     <div class="row" style="display: flex; justify-content: center; align-items: center;">
+
                         <div style="margin-left: 50px; text-align: left; color: black;
                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Site</div>
+                            Region</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                          <select class="form-control" id="regionInput"  
+                          style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="region">
+                            <option value="" disabled selected hidden>Region of the site</option>
+                            <option *ngFor="let region of regiones" [value]="region">{{ region }}</option>
+                          </select>
+                        </div>
+
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            Country</div>
 
                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
                             <div class="form-group"
@@ -147,6 +176,11 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                                     placeholder="Country" formControlName="country">
                             </div>
                         </div>
+
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            Site</div>
+
                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
                             <div class="form-group"
                                 style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
@@ -154,14 +188,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                                     placeholder="NAME" formControlName="name">
                             </div>
                         </div>
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                <input #SiteInput class="form-control" id="SiteInput" required
-                                    placeholder="Region" formControlName="region">
-                            </div>
-                        </div>
-                        
+                    
 
                     </div>
                 </div>
@@ -169,26 +196,13 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                    {{ successMessage }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
             </div>
         </form>
     </div>
 </div>
-
-<!-- Success Window -->
-    <div #successModal class="modal fade" id="successModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div style="text-align: center; color: black;
-                             font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                                Item has been successfully added!
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: center; align-items: center;">
-                            <button type="button" class="btn btn-primary" (click)="closeModal()">Confirm</button>
-                        </div>
-                    </div>
-                </div>
-        </div>
-    </div>

@@ -45,12 +45,14 @@ export class RegionCRUDComponent implements OnInit{
     if (this.myForm.valid) {
       console.log('Formulario válido');
       console.log('Valores del formulario:', this.myForm.value);
+      
       // Lógica para enviar el formulario aquí
+
       this.dataSource[this.indexRegion] = {
         id: this.regionToEdit['id'],
         region: this.myForm.value['region'] 
       }
-      this.openModal()
+      this.showSuccessMessage("Success!")
     } else {
       console.log('Formulario inválido');
     }
@@ -69,7 +71,7 @@ export class RegionCRUDComponent implements OnInit{
       // Lógica para enviar el formulario aquí
 
       this.dataSource.push({id: 0, region: this.myForm.value["region"]})
-      this.openModal()
+      this.showSuccessMessage("Success!")
     } else {
       console.log('Formulario inválido');
     }
@@ -79,14 +81,13 @@ export class RegionCRUDComponent implements OnInit{
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 
-  // @ts-ignore
-  @ViewChild('succesModal') succesModal:ElementRef;
+  successMessage: string = '';
 
-  openModal(){
-    $(this.succesModal.nativeElement).modal('show'); 
-  }
-  closeModal(){
-    $(this.succesModal.nativeElement).modal('hide'); 
+  showSuccessMessage(message: string) {
+    this.successMessage = message;
+    setTimeout(() => {
+      this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+    }, 5000); // Limpia el mensaje después de 5 segundos
   }
   
   get totalPaginas(): number {
