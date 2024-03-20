@@ -19,9 +19,9 @@ export class ThemeCrudComponent implements OnInit{
 
   myForm!: FormGroup;
   dataSource = [
-    { id: 1, theme: 'Horror idk' },
-    { id: 2, theme: 'Peleas idk' },
-    { id: 3, theme: 'Blanco i negro idk' }
+    { id: 1, title: 'Horror idk' , description : "Descripcion inserte plx", manual  : "un manual bien chidori "},
+    { id: 2, title: 'Peleas idk', description : "Descripcion inserte plx",manual  : "un manual bien chidori " },
+    { id: 3, title: 'Blanco i negro idk' ,description : "Descripcion inserte plx",manual  : "un manual bien chidori "}
   ];
 
   ThemeToEdit: any;
@@ -31,15 +31,20 @@ export class ThemeCrudComponent implements OnInit{
 
   ngOnInit(): void {
     this.myForm = this.fb.group({
-      theme: ['', Validators.required]
+      title: ['', Validators.required],
+      description : ['', Validators.required],
+      manual : ['', Validators.required]
     });
   }
 
   seleccionarElemento(elemento:any){
-    let themeEditInput = document.getElementById('themeEditInput') as HTMLInputElement;
     this.ThemeToEdit = elemento;
     this.indexTheme = this.dataSource.indexOf(elemento);
-    themeEditInput.value = this.ThemeToEdit["theme"]; 
+    this.myForm.patchValue({
+      title: elemento.title,
+      description: elemento.description,
+      manual: elemento.manual
+    });
   }
 
   // Aquí puedes agregar la lógica para editar y eliminar elementos
@@ -50,7 +55,12 @@ editar() {
     
     // Lógica para enviar el formulario aquí
 
-    this.dataSource[this.indexTheme].theme = this.myForm.value.theme; // Corregir la asignación aquí
+    this.dataSource[this.indexTheme] = {
+      id: this.ThemeToEdit['id'],
+      title: this.myForm.value['title'],
+      description: this.myForm.value['description'],
+      manual: this.myForm.value['manual'],
+    }
     this.showSuccessMessage("Success!");
   } else {
     console.log('Formulario inválido');
@@ -69,7 +79,12 @@ editar() {
 
       // Lógica para enviar el formulario aquí
 
-      this.dataSource.push({id: 0, theme: this.myForm.value["theme"]})
+      this.dataSource[this.indexTheme] = {
+        id: this.ThemeToEdit['id'],
+        title: this.myForm.value['title'],
+        description: this.myForm.value['description'],
+        manual: this.myForm.value['manual'],
+      }
       this.showSuccessMessage("Success!")
     } else {
       console.log('Formulario inválido');

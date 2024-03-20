@@ -8,7 +8,9 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             <thead>
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Theme</th>
+                    <th scope="col">title</th>
+                    <th scope="col">description</th>
+                    <th scope="col">manual</th>
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
                 </tr>
@@ -16,7 +18,9 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             <tbody>
                 <tr *ngFor="let row of obtenerDatosPagina()">
                     <td>{{ row.id }}</td>
-                    <td>{{ row.theme }}</td>
+                    <td>{{ row.title }}</td>
+                    <td>{{ row.description }}</td>
+                    <td>{{ row.manual }}</td>
                     <td>
                         <!-- Aquí puedes agregar los botones de acciones -->
                         <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
@@ -82,13 +86,43 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <div class="row" style="display: flex; justify-content: center; align-items: center;">
                         <div style="margin-left: 50px; text-align: left; color: black;
                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Theme</div>
+                            title</div>
 
                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
                             <div class="form-group"
                                 style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                <input #themeEditInput class="form-control" id="themeEditInput" required
-                                    placeholder="Ex. colores" formControlName="theme">
+                                <input #titleEditInput class="form-control" id="titleEditInput" required
+                                    placeholder="Ex. colores" formControlName="title">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            description</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group"
+                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <input #descriptionEditInput class="form-control" id="descriptionEditInput" required
+                                    placeholder="Ex. colores" formControlName="description">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            manual</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group"
+                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <input #manualEditInput class="form-control" id="manualEditInput" required
+                                    placeholder="Ex. colores" formControlName="manual">
                             </div>
                         </div>
 
@@ -126,13 +160,43 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <div class="row" style="display: flex; justify-content: center; align-items: center;">
                         <div style="margin-left: 50px; text-align: left; color: black;
                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Theme</div>
+                            title</div>
 
                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
                             <div class="form-group"
                                 style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                <input #themeEditInput class="form-control" id="themeEditInput" required
-                                    placeholder="Ex. velocidad soy veloz" formControlName="theme">
+                                <input #titleEditInput class="form-control" id="titleEditInput" required
+                                    placeholder="Ex. colores" formControlName="title">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            description</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group"
+                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <input #descriptionEditInput class="form-control" id="descriptionEditInput" required
+                                    placeholder="Ex. colores" formControlName="description">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            manual</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group"
+                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <input #manualEditInput class="form-control" id="manualEditInput" required
+                                    placeholder="Ex. colores" formControlName="manual">
                             </div>
                         </div>
 
