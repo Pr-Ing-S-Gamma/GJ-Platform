@@ -30,89 +30,78 @@
                     <div class="Card-body">
 
 
-                            <button class="btn btn-default w-100" (click)="toggleRegions()" 
-                            style="background: white; border-radius: 35px; border: 3px black solid; 
-                            color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                            text-align: left; padding-left: 25px;">
-                                Regions
-                            </button>
-                            <div *ngIf="showRegions" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                                <app-region-crud></app-region-crud>
-                            </div>
+                        <button class="btn btn-default w-100" (click)="toggleCategories()" 
+                        style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+                            Categories
+                </button>
+                <div *ngIf="showCategories" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+                    <app-category-crud></app-category-crud>
+                </div>
+            
+                
+                <button class="btn btn-default w-100" (click)="toggleRegions()" 
+                style="background: white; border-radius: 35px; border: 3px black solid; 
+                color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                text-align: left; padding-left: 25px; margin-top: 30px;">
+                Regions
+                </button>
+                <div *ngIf="showRegions" class="card" style="margin-left: 35px; margin-right: 35px; margin-top: 20px; border: 0px">
+                    <app-region-crud></app-region-crud>
+                </div>
 
-
-                            <button class="btn btn-default w-100" (click)="toggleSites()" 
-                            style="background: white; border-radius: 35px; border: 3px black solid; 
-                            color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                            text-align: left; padding-left: 25px; margin-top: 30px;">
-                                Sites
-                            </button>
-                            <div *ngIf="showSites" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                                <app-site-crud></app-site-crud>
-                            </div>
-
-
-                            <button class="btn btn-default w-100" (click)="toggleCategories()" 
-                            style="background: white; border-radius: 35px; border: 3px black solid; 
-                            color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                            text-align: left; padding-left: 25px; margin-top: 30px;">
-                                Categories
-                            </button>
-                            <div *ngIf="showCategories" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                                <app-category-crud></app-category-crud>
-                            </div>
-                            
-
-                            <button class="btn btn-default w-100" (click)="toggleThemes()" 
-                            style="background: white; border-radius: 35px; border: 3px black solid; 
-                            color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                            text-align: left; padding-left: 25px; margin-top: 30px;">
-                                Themes
-                            </button>
-                            <div *ngIf="showThemes" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                                <app-theme-crud></app-theme-crud>
-                            </div>
-
-
-                            <button class="btn btn-default w-100" (click)="toggleUser()" 
-                            style="background: white; border-radius: 35px; border: 3px black solid; 
-                            color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                            text-align: left; padding-left: 25px; margin-top: 30px;">
-                                Users
-                            </button>
-                            <div *ngIf="showUser" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                                <app-user-crud></app-user-crud>
-                            </div>
-
-                            <button class="btn btn-default w-100" (click)="toggleJam()" 
-                            style="background: white; border-radius: 35px; border: 3px black solid; 
-                            color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                            text-align: left; padding-left: 25px; margin-top: 30px;">
-                                Jam
-                            </button>
-                            <div *ngIf="showJam" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                                <app-jam-crud></app-jam-crud>
-                            </div>
-
-                            <button class="btn btn-default w-100" (click)="toggleTeams()" 
-                            style="background: white; border-radius: 35px; border: 3px black solid; 
-                            color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                            text-align: left; padding-left: 25px; margin-top: 30px;">
-                                Team
-                            </button>
-                            <div *ngIf="showTeams" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                                <app-team-crud></app-team-crud>
-                            </div>
-
-                            <button class="btn btn-default w-100" (click)="toggleStage()" 
-                            style="background: white; border-radius: 35px; border: 3px black solid; 
-                            color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                            text-align: left; padding-left: 25px; margin-top: 30px;">
-                                Stages
-                            </button>
-                            <div *ngIf="showStage" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                                <app-stage-crud></app-stage-crud>
-                            </div>
+                
+                <button class="btn btn-default w-100" (click)="toggleSites()" 
+                        style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+                            Sites
+                </button>
+                <div *ngIf="showSites" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+                    <app-site-crud></app-site-crud>
+                </div>
+                
+                <button class="btn btn-default w-100" (click)="toggleStage()" 
+                        style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+                            Stages
+                </button>
+                <div *ngIf="showStage" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+                    <app-stage-crud></app-stage-crud>
+                </div>
+                
+                <button class="btn btn-default w-100" (click)="toggleTeams()" 
+                        style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+                            Team
+                </button>
+                <div *ngIf="showTeams" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+                    <app-team-crud></app-team-crud>
+                </div>
+                
+                <button class="btn btn-default w-100" (click)="toggleThemes()" 
+                        style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+                            Themes
+                </button>
+                <div *ngIf="showThemes" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+                    <app-theme-crud></app-theme-crud>
+                </div>
+                
+                <button class="btn btn-default w-100" (click)="toggleUser()" 
+                        style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+                            Users
+                </button>
+                <div *ngIf="showUser" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+                    <app-user-crud></app-user-crud>
+                </div>
+                
 
                             
                     </div>
