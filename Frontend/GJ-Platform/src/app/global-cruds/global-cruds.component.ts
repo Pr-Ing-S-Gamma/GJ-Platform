@@ -9,7 +9,7 @@ import { StageCrudComponent } from './stage-crud/stage-crud.component';
 import { JamCrudComponent } from './jam-crud/jam-crud.component';
 import { UserCrudComponent } from './user-crud/user-crud.component';
 import { ThemeCrudComponent } from './theme-crud/theme-crud.component';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-global-cruds',
@@ -39,6 +39,11 @@ export class GlobalCRUDsComponent{
   showStage  : boolean = false;
   showUser  : boolean = false;
   showJam  : boolean = false;
+
+  constructor(private router: Router) { }
+  moveToSites() {
+    this.router.navigate(['/Sites']);
+  }
 
   private hideAll() {
     this.showRegions = false;

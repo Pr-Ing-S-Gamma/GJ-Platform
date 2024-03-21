@@ -1,1 +1,75 @@
-<p>global-sites works!</p>
+<section class="vh-100" style="position: relative; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%); display: flex; justify-content: flex-start; align-items: flex-start;">
+    <div class="container-fluid h-100">
+        <div class="row  w-100">
+            <div style="color: white; font-size: 35px; font-family: K2D; font-weight: 400; word-wrap: break-word">GJ+ Global Organizer</div>
+        </div>
+        <div class="row" style="justify-content: flex-start; align-items: center;  background: white;">
+
+            <!-- Tab -->
+            <div class="col" style="background: #3D3D3D; border-top-left-radius: 20px; border-top-right-radius: 20px; max-width: 117px; margin-left: 50px;  margin-top: 20px;">
+                <button class="btn btn-default" style="color: black; font-size: 40px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                    <div style="color: white; font-size: 26px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                        Sites
+                    </div>
+                </button>
+            </div>
+
+            <!-- Tab -->
+            <div class="col" style=" background: #D9D9D9; border-top-left-radius: 20px; border-top-right-radius: 20px; max-width: 279px; margin-left: 15px; margin-top: 20px;">
+                <button class="btn btn-default" (click)="moveToCruds()">
+                    <div style="color: black; font-size: 26px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                        Data Management
+                    </div>
+                </button>
+            </div>
+            
+        </div>
+        <div class="row h-100" style="justify-content: center; align-items: flex-start;  background: white;">
+            <div class="col" style="justify-content: center; align-items: center;">
+                <div class="Card" style="background: white; border-radius: 35px; border: 1px #3D3D3D solid; padding: 40px;">
+
+                    <div class="Card-heading" style="display: flex; justify-content: flex-start; align-items: flex-start;">
+                        <div style="color: black; font-size: 50px; font-family: Inter; font-style: italic; font-weight: 700; word-wrap: break-word; margin-top: -20px; margin-bottom: 20px;">
+                            <img class="btn btn-default" (click)="moveToRegionsRoot()" *ngIf="regionParameter != 'Regions'" src="/assets/Images/back_arrow.png" alt="Lights" style="max-width: 65px;">
+                            {{ regionParameter }}
+                        </div>
+                    </div>
+
+                    <div class="Card-body">
+
+                        <div *ngIf="regionParameter === 'Regions'" style="display: flex; flex-wrap: wrap;">
+                            <div *ngFor="let region of regions" class="btn btn-default" (click)="moveToRegionSites(region.name)"
+                            style="display: flex; background: white; border-radius: 35px; border: 2px black solid;
+                            padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;">
+                                <div style="display: flex; text-align: center; color: black; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                                    {{ region.name }}
+                                </div>
+                            </div> 
+                        </div>  
+
+                        <div *ngIf="regionParameter != 'Regions'">
+                            <div *ngFor="let region of regions">
+                                <div *ngIf="region.name === regionParameter" style="display: flex; flex-wrap: wrap;">
+                                    <div *ngFor="let site of region.sites" class="btn btn-default" (click)="moveToSiteInformation(site.name)"
+                                    style="background: white; border-radius: 35px; border: 2px black solid;
+                                    padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;">
+                                        <div style="text-align: center; color: black; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                                            {{ site.name }}
+                                        </div>
+                                        <div style="text-align: center; color: black; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                                            -
+                                        </div>
+                                        <div style="text-align: center; color: black; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                                            {{ site.country }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>  
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

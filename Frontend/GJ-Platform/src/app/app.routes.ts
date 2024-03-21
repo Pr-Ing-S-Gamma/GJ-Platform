@@ -8,13 +8,14 @@ import { GlobalSitesComponent } from './global-sites/global-sites.component';
 import { LocalSiteInformationComponent } from './local-site-information/local-site-information.component';
 
 export const routes: Routes = [
-    {path: '',redirectTo: "DataManagement", pathMatch: "full"},
+    {path: '',redirectTo: "Sites", pathMatch: "full"},
 
     {path: 'login',component: LoginComponent},
     {path: 'register', component: RegisterComponent},
     {path: 'DataManagement', component: GlobalCRUDsComponent},
     {path: 'Sites', component: GlobalSitesComponent},
-    {path: 'Sites/Information', component: GlobalSiteInformationComponent},
+    {path: 'Sites/:region', component: GlobalSitesComponent},
+    {path: 'Sites/:region/Information/:site', component: GlobalSiteInformationComponent},
     {path: 'Games', component: LocalSiteInformationComponent},
-    {path: 'Game/Information', component: GameInformationComponent}
+    {path: 'Games/:game/Information', component: GameInformationComponent}
 ];
