@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef  } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, ViewChild, ElementRef  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, FormArray } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 declare var $: any;
@@ -25,7 +25,8 @@ export class TeamCrudComponent implements OnInit {
   sites = ['Asia', 'GrandLine', 'LATAM', 'Brazil', 'Partido de la amistad']
   
  gamejams = ['1-zapote', '2-tangamandapop', '3-libertycity', '4-teyvat', '5-colonipenal']
- newJammer: string = ''; // Variable para almacenar el nuevo jammer
+
+
   teamToEdit: any;
   indexTeam = 0;
   constructor(private fb: FormBuilder){
@@ -37,50 +38,76 @@ export class TeamCrudComponent implements OnInit {
       description: ['', Validators.required],
       gameJamId: ['', Validators.required],
       siteName: ['', Validators.required],
-      Links: this.fb.array([]), // Asegúrate de que se inicializa como un FormArray vacío
-      jammers: this.fb.array([]) // Asegúrate de que se inicializa como un FormArray vacío
+      Links: this.fb.array([]),
+      jammers: this.fb.array([])
     });
   }
-  
 
 
   seleccionarElemento(elemento: any) {
     this.teamToEdit = elemento;
     this.indexTeam = this.dataSource.indexOf(elemento);
-    
-    // Autollenar los campos del formulario con los datos existentes del elemento seleccionado
+
     this.myForm.patchValue({
       studioName: elemento.studioName,
       description: elemento.description,
       gameJamId: elemento.gameJamId,
       siteName: elemento.siteName,
-      Links: elemento.Links, // Asignar el valor de Links al formulario
+      Links: elemento.Links,
       jammers: elemento.jammers // Asignar el valor de jammers al formulario
     });
-  }
 
+    
+  }
   editar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
       console.log('Valores del formulario:', this.myForm.value);
+      
+      const updatedLinks: string[] = this.myForm.value['Links']; // Especificar el tipo de datos de los enlaces como string
+      
+      // Eliminar los enlaces del dataSource que ya no están presentes en el formulario
+      this.dataSource[this.indexTeam].Links = this.dataSource[this.indexTeam].Links.filter((link: string) => updatedLinks.includes(link));
+      
+      // Agregar los nuevos enlaces del formulario al dataSource
+      updatedLinks.forEach((link: string) => {
+        if (!this.dataSource[this.indexTeam].Links.includes(link)) {
+          this.dataSource[this.indexTeam].Links.push(link);
+        }
+      });
+  
+      // Actualizar los demás campos del elemento en el dataSource
       this.dataSource[this.indexTeam] = {
-        id: this.teamToEdit['id'],
+        ...this.dataSource[this.indexTeam],
         studioName: this.myForm.value['studioName'],
         description: this.myForm.value['description'],
         gameJamId: this.myForm.value['gameJamId'],
         siteName: this.myForm.value['siteName'],
-        Links: this.myForm.value['Links'], // Asignar el valor de Links al objeto editado
-        jammers: this.myForm.value['jammers'] // Asignar el valor de jammers al objeto editado
-      }
-      this.showSuccessMessage("Success!")
+        jammers: this.myForm.value['jammers']
+      };
+      
+      this.showSuccessMessage("¡Éxito!");
     } else {
       console.log('Formulario inválido');
     }
   }
+  
 
   eliminar(elemento: any) {
     this.dataSource = this.dataSource.filter(i => i !== elemento);
   }
+
+  agregarLink() {
+  const linksArray = this.myForm.get('Links') as FormArray;
+  linksArray.push(this.fb.control('')); // Agrega un nuevo control al FormArray de Links
+}
+
+eliminarLink(index: number) {
+  const linksArray = this.myForm.get('Links') as FormArray;
+  linksArray.removeAt(index); // Elimina el control en el índice especificado del FormArray de Links
+}
+  
+  
   agregar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
