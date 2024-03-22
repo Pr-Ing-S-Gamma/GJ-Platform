@@ -36,6 +36,7 @@
                     </div>
 
                     <div class="Card-body">
+
                         <div class="row">
                             <div class="col" style="display: flex; justify-content: center; align-items: flex-start;">
                                 <div style="background: #D9D9D9; border-radius: 37px; padding-top: 10px; padding-bottom: 10px; padding-left: 20px; padding-right: 20px;">
@@ -52,8 +53,9 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="row" style="align-items: flex-start;">
-                            <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; border-right: 1px black solid;">
+                            <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center;">
                                 <div *ngFor="let member of staff" style="background: #515151; border-radius: 35px; border: 1px black solid;
                                 padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;">
                                     <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
@@ -67,9 +69,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; border-left: 1px black solid;">
+                            
+                            <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center;">
                                 <div *ngFor="let game of games" style="background: #515151; border-radius: 35px; border: 1px black solid;
-                                padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;">
+                                padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"
+                                class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id">
                                     <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
                                         {{ game.name }}
                                     </div>
@@ -79,6 +83,15 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div *ngFor="let game of games">
+                            <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
+                                <div class="modal-dialog" role="document" style="max-width: 85%;">
+                                    <app-game-information [game]="game.name"></app-game-information>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

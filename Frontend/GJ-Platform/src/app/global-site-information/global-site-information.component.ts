@@ -2,15 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { GameInformationComponent } from '../game-information/game-information.component';
+
 @Component({
   selector: 'app-global-site-information',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    GameInformationComponent
   ],
   templateUrl: './global-site-information.component.html',
   styleUrl: './global-site-information.component.css'
 })
+
 export class GlobalSiteInformationComponent {
   regionParameter!: String;
   siteParameter!: String;
@@ -41,8 +45,8 @@ export class GlobalSiteInformationComponent {
   ]
 
   games = [
-    {name: 'Bloom Tales', team: 'Outlander studio'},
-    {name: 'Space Pinbam', team: 'Flipper Studio'}
+    {id:1, name: 'Bloom Tales', team: 'Outlander studio'},
+    {id:2, name: 'Space Pinbam', team: 'Flipper Studio'}
   ]
 
 }
