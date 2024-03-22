@@ -63,18 +63,6 @@ export class TeamCrudComponent implements OnInit {
     if (this.myForm.valid) {
       console.log('Formulario válido');
       console.log('Valores del formulario:', this.myForm.value);
-      
-      const updatedLinks: string[] = this.myForm.value['Links']; // Especificar el tipo de datos de los enlaces como string
-      
-      // Eliminar los enlaces del dataSource que ya no están presentes en el formulario
-      this.dataSource[this.indexTeam].Links = this.dataSource[this.indexTeam].Links.filter((link: string) => updatedLinks.includes(link));
-      
-      // Agregar los nuevos enlaces del formulario al dataSource
-      updatedLinks.forEach((link: string) => {
-        if (!this.dataSource[this.indexTeam].Links.includes(link)) {
-          this.dataSource[this.indexTeam].Links.push(link);
-        }
-      });
   
       // Actualizar los demás campos del elemento en el dataSource
       this.dataSource[this.indexTeam] = {
@@ -83,31 +71,22 @@ export class TeamCrudComponent implements OnInit {
         description: this.myForm.value['description'],
         gameJamId: this.myForm.value['gameJamId'],
         siteName: this.myForm.value['siteName'],
-        jammers: this.myForm.value['jammers']
+        // Mantener los valores de jammers y links sin cambios
+        jammers: this.dataSource[this.indexTeam].jammers,
+        Links: this.dataSource[this.indexTeam].Links
       };
-      
+  
       this.showSuccessMessage("¡Éxito!");
     } else {
       console.log('Formulario inválido');
     }
   }
   
+  
 
   eliminar(elemento: any) {
     this.dataSource = this.dataSource.filter(i => i !== elemento);
-  }
-
-  agregarLink() {
-  const linksArray = this.myForm.get('Links') as FormArray;
-  linksArray.push(this.fb.control('')); // Agrega un nuevo control al FormArray de Links
-}
-
-eliminarLink(index: number) {
-  const linksArray = this.myForm.get('Links') as FormArray;
-  linksArray.removeAt(index); // Elimina el control en el índice especificado del FormArray de Links
-}
-  
-  
+  } 
   agregar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
