@@ -16,5 +16,6 @@ const userController = require('../controllers/userController');
 user_route.post('/login', upload.none(), userController.loginUser);
 user_route.get('/magic-link/:token', userController.magicLink);
 user_route.post('/verify-code', upload.none(), userController.verifyMagicLink);
+user_route.put('/rol', upload.none(), userController.assignRol)
 
 module.exports = user_route;

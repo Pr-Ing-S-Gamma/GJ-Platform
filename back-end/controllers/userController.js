@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const { sendEmail } = require('../services/mailer');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 const loginUser = async (req, res) => {
     const email = req.body.email;
@@ -65,8 +66,45 @@ const verifyMagicLink = async (req, res) => {
     }
 };
 
+const assignRolt = async (req, res) => {
+    const {rol, userId} = req.body
+    try {
+        const existingUser = await User.findById(userId)
+        if(!existingUser){
+            return res.status(400).json({success: false, error: "El usuario no existe"})
+        }
+        existingUser.__t = rol;
+        await existingUser.save();
+        return res.status(200).json({success: true, error: "Rol asignado"})
+        
+    } catch (error) {
+        return res.status(400).json({success: false, error: error})
+    }
+};
+
+const assignRol = async (req, res) => {
+    const {rol, userId} = req.body
+ 
+    User.findById(userId)
+    .then(existingUser => {
+      if (existingUser) {
+        existingUser.rol = rol;
+        return existingUser.save();
+      } else {
+        return res.status(400).json({success: false, error: "El usuario no existe"})
+      }
+    })
+    .then(updatedUser => {
+        return res.status(200).json({success: true, error: "Rol " + updatedUser.rol +" asignado"})
+    })
+    .catch(error => {
+        return res.status(400).json({success: false, error: error})
+    });
+    };
+
 module.exports = {
     loginUser,
     magicLink,
-    verifyMagicLink
+    verifyMagicLink,
+    assignRol
 };

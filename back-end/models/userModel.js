@@ -9,6 +9,10 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    rol: {
+        type: String,
+        required: false
+    },
     image: {
         name: { 
             type: String, 
