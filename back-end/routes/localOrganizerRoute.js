@@ -15,4 +15,6 @@ const localOrganizerController = require('../controllers/localOrganizerControlle
 
 local_organizer_route.post('/register-local-organizer', upload.single('image'), localOrganizerController.registerLocalOrganizer);
 
+local_organizer_route.get('/get/:site', localOrganizerController.getLocalOrganizersSite);
+
 module.exports = local_organizer_route;
