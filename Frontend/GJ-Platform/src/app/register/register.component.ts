@@ -66,18 +66,12 @@ export class RegisterComponent implements OnInit {
   submitForm() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
-      console.log('Valores del formulario:', this.myForm.value);
       
       var formulario = this.myForm.value;
       var email = formulario.email;
       var name = formulario.name;
       var region = formulario.region;
       var site = formulario.site;
-  
-      console.log('Email:', email);
-      console.log('Nombre:', name);
-      console.log('Región:', region);
-      console.log('Sitio:', site._id);
 
       this.userService.registerUser(`http://localhost:3000/api/user/register-user`, {
         name: name,

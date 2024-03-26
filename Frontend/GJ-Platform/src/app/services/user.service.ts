@@ -12,5 +12,8 @@ export class UserService {
   registerUser(url: string, user: User): Observable<any> {
     return this.http.post(url, user);
   }
-  
+
+  loginUser(url: string, email: string): Observable<any> {
+    return this.http.post(url, { email });
+  }
 }

@@ -22,7 +22,6 @@
                   <input #emailInput type="email" class="form-control" id="emailInput" required placeholder="Email">
                 </div>
               </div>
-  
               <!-- boton -->
               <div class="row" style="display: flex; justify-content: center; align-items: center;">
                 <div style="background: #3EB9FF; border-radius: 15px; margin-bottom: 35px; display: flex; justify-content: center; align-items: center; max-width: 140px;">
@@ -33,18 +32,32 @@
                   </button>
                 </div>
               </div>
-              
-              <!-- boton -->
-              <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                <div style="background: #3EB9FF; border-radius: 15px; margin-bottom: 90px; display: flex; justify-content: center; align-items: center; max-width: 230px;">
-                  <button (click)="discordLogin()" type="button" class="btn btn-default">
-                    <div style="color: white; font-size: 24px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                      Login with Discord
-                    </div>
-                  </button>
-                </div>
-              </div>
             </form>
+            <!-- PopUp para mostrar mensaje de verificación -->
+            <div *ngIf="showSuccessMessage" style="
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            width: 300px; /* Ancho del popup */
+          ">
+            <span style="
+              position: absolute;
+              top: 5px;
+              right: 5px;
+              cursor: pointer;
+              font-size: 20px;
+              color: #888;
+            " (click)="closePopup()">&times;</span>
+            <div style="color: #333;">
+              {{ successMessage }}
+            </div>
+          </div>          
           </div>
         </div>
       </div>

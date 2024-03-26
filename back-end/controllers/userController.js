@@ -40,27 +40,44 @@ const loginUser = async (req, res) => {
         res.status(400).send(`El correo ${email} no existe en la base de datos.`);
     }
     
-    rol = existingUser.__t;
+    rol = existingUser.rol;
     userId = existingUser._id;
 
     const token = jwt.sign({ userId, rol }, 'MY_JWT_SECRET', { expiresIn: 600000 });
     const magicLink = `http://localhost:3000/api/user/magic-link/${token}`;
-    // const subject = 'Magic Link';
-    // const text = `Hi, click on this link to continue to the app: ${magicLink}`;
-    // await sendEmail(email, subject, text);
-    res.status(200).json({ success: true, msg: 'Se envió el magic link al usuario.', magicLink });
+    const subject = 'Login in GameJam Platform';
+    const text = `Hi, click on this link to continue to the app: ${magicLink}`;
+    await sendEmail(email, subject, text);
+    res.status(200).json({ success: true, msg: 'Se envió el magic link al usuario.', email, magicLink });
 };
 
 const magicLink = async (req, res) => {
-    const token = req.params.token;
-    const decodedToken = jwt.verify(token, 'MY_JWT_SECRET');
-    const userId = decodedToken.userId;
-    const rol = decodedToken.rol;
+    try {
+        const token = req.params.token;
+        const decodedToken = jwt.verify(token, 'MY_JWT_SECRET');
+        const userId = decodedToken.userId;
+        const rol = decodedToken.rol;
 
-    const newToken = jwt.sign({ userId, rol }, 'MY_JWT_SECRET');
+        const newToken = jwt.sign({ userId, rol }, 'MY_JWT_SECRET');
 
-    res.cookie('token', newToken);
-    res.status(200).json({ success: true, msg: 'Se ha logeado correctamente', userId, rol});
+        res.cookie('token', newToken);
+
+        let redirectUrl;
+        // Lógica de redireccionamiento basada en el rol del usuario
+        if (rol === 'GlobalOrganizer') {
+            redirectUrl = 'http://localhost:4200/DataManagement'; // Redirigir a un panel de administrador
+        } 
+        // else if (rol === 'user') {
+        //     redirectUrl = '/user-dashboard'; // Redirigir a un panel de usuario normal
+        // } else {
+        //     // Redirigir a una página predeterminada para roles desconocidos
+        //     redirectUrl = '/default-dashboard';
+        // }
+        res.redirect(redirectUrl);
+    } catch (error) {
+        console.error('Error al procesar el token:', error);
+        res.status(500).json({ success: false, error: 'Error al procesar el token' });
+    }
 };
 
 const getLocalOrganizersPerSite = async (req, res)=>{
