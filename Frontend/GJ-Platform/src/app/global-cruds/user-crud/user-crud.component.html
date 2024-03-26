@@ -12,6 +12,9 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Role</th>
+                    <th scope="col">Region</th>
+                    <th scope="col">Site</th>
+                    <th scope="col">Team</th>
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
                 </tr>
@@ -22,8 +25,10 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <td>{{ row.name }}</td>
                     <td>{{ row.email }}</td>
                     <td>{{ row.rol }}</td>
+                    <td>{{ row.region.name }}</td>
+                    <td>{{ row.site.name }}</td>
+                    <td>{{ row.team ? row.team.name : 'Not assigned' }}</td>
                     <td>
-                        <!-- Aquí puedes agregar los botones de acciones -->
                         <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
                     </td>
                     <td>
@@ -91,12 +96,32 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                             Role</div>
 
                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <select class="form-control" id="editRolInput"  
+                            <select class="form-control" id="editRegionInput"  
                             style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="rol">
                             <option value="" disabled selected hidden>Role</option>
                             <option *ngFor="let rol of rols" [value]="rol">{{ rol }}</option>
                             </select>
                         </div>
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            Region</div>
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <select class="form-control" id="regions" 
+                            style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="region" (change)="onRegionSelection()">
+                              <option value="" disabled selected hidden>Region</option>
+                              <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
+                            </select>
+                          </div>
+                          <div style="margin-left: 50px; text-align: left; color: black;
+                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                             Site</div>
+                          <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <select class="form-control" id="sites"  
+                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="site">
+                              <option value="" disabled selected hidden>Site</option>
+                              <option *ngFor="let site of sites" [ngValue]="site">{{ site.name }}</option>
+                            </select>
+                          </div>
 
                         <div style="margin-left: 50px; text-align: left; color: black;
                             font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">

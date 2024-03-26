@@ -67,17 +67,19 @@ export class RegisterComponent implements OnInit {
     if (this.myForm.valid) {
       console.log('Formulario válido');
       
-      var formulario = this.myForm.value;
-      var email = formulario.email;
-      var name = formulario.name;
-      var region = formulario.region;
-      var site = formulario.site;
-
+      const { email, name, region, site} = this.myForm.value;
+  
       this.userService.registerUser(`http://localhost:3000/api/user/register-user`, {
         name: name,
         email: email,
-        regionId: region._id,
-        siteId: site._id,
+        region: {
+          _id: region._id,
+          name: region.name
+        },
+        site: {
+          _id: site._id,
+          name: site.name
+        },
         rol: 'Jammer',
         coins: 0
       }).subscribe({
@@ -92,5 +94,6 @@ export class RegisterComponent implements OnInit {
       console.log('Formulario inválido');
     }
   }
+  
 }
  

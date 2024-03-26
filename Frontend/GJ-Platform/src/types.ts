@@ -31,9 +31,18 @@ export interface User {
   _id?: string;
   name: string;
   email: string;
-  regionId: string;
-  siteId: string;
-  team?: string;
+  region: {
+    _id: string;
+    name: string;
+  };
+  site: {
+    _id: string;
+    name: string;
+  };
+  team?: {
+    _id: string;
+    name: string;
+  };
   rol: string;
   coins: number;
 }

@@ -19,7 +19,8 @@ user_route.get('/magic-link/:token', userController.magicLink);
 user_route.get('/get-users', userController.getUsers);
 user_route.get('/get-judges-per-site/:siteId', userController.getJudgesPerSite);
 user_route.get('/get-local-per-site/:siteId', userController.getLocalOrganizersPerSite);
-user_route.put('/assign-rol-user', upload.none(), userController.assignRol)
+user_route.put('/update-user/:id', upload.none(), userController.updateUser);
 user_route.put('/update-user-site/:id', userController.updateSite);
+user_route.delete('/delete-user/:id', userController.deleteUser);
 
 module.exports = user_route;

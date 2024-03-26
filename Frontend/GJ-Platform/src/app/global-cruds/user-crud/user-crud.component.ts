@@ -41,7 +41,7 @@ export class UserCrudComponent implements OnInit{
     const url = 'http://localhost:3000/api/user/get-users';
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
-        this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, regionId: user.region, siteId: user.site, rol: user.rol, coins: user.coins }));
+        this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins }));
       },
       error => {
         console.error('Error al obtener regiones:', error);
@@ -81,31 +81,140 @@ export class UserCrudComponent implements OnInit{
   seleccionarElemento(elemento: any) {
     this.userToEdit = elemento;
     this.indexUser = this.dataSource.indexOf(elemento);
+    const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
+    const selectedSite = this.sites.find(site => site._id === elemento.site._id);
+    this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${elemento.region._id}`)
+    .subscribe(
+      sites => {
+        this.sites = sites;
+
+        if (this.sites.length > 0) {
+          this.myForm.get('site')?.setValue(this.sites[0]);
+        }
+      },
+      error => {
+        console.error('Error al obtener sitios:', error);
+      }
+    );
     this.myForm.patchValue({
       name: elemento.name,
-      email: elemento.email,
-      rol: elemento.rol
+      region: selectedRegion, 
+      site: selectedSite, 
+      rol: elemento.rol,
+      email: elemento.email
     });
   }
 
-    editar() {
+  editar() {
+    if (this.myForm.valid) {
+      console.log('Formulario válido');
+      const userId = this.userToEdit['_id'];
+      const { email, name, region, site, rol } = this.myForm.value;
+  
+      this.userService.updateUser(`http://localhost:3000/api/user/update-user/${userId}`, {
+        name: name,
+        email: email,
+        region: {
+          _id: region._id,
+          name: region.name
+        },
+        site: {
+          _id: site._id,
+          name: site.name
+        },
+        rol: rol,
+        coins: 0,
+      }).subscribe({
+        next: (data) => {
+          if (data.success) {
+            this.dataSource[this.indexUser]={ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0};
+            this.showSuccessMessage(data.msg);
+          } else {
+            this.showErrorMessage(data.error);
+          }
+        },
+        error: (error) => {
+          this.showErrorMessage(error.error.error);
+        },
+      });
+    } else {
+      console.log('Formulario inválido');
+    }
+  }
+  
 
-    }
+
+
     eliminar(elemento: any) {
-      this.dataSource = this.dataSource.filter(i => i !== elemento);
+      const id = elemento._id;
+  
+      const url = `http://localhost:3000/api/user/delete-user/${id}`;
+  
+      this.userService.deleteUser(url).subscribe({
+          next: (data) => {
+              console.log('Usuario eliminado correctamente:', data);
+              this.dataSource = this.dataSource.filter(item => item !== elemento);
+              this.showSuccessMessage(data.msg);
+          },
+          error: (error) => {
+              console.error('Error al eliminar el usuario:', error);
+              this.showErrorMessage(error.error.msg);
+          }
+      });
     }
+
     agregar() {
       if (this.myForm.valid) {
+        console.log('Formulario válido');
+        
+        const { email, name, region, site, rol} = this.myForm.value;
+  
+        this.userService.registerUser(`http://localhost:3000/api/user/register-user`, {
+          name: name,
+          email: email,
+          region: {
+            _id: region._id,
+            name: region.name
+          },
+          site: {
+            _id: site._id,
+            name: site.name
+          },
+          rol: rol,
+          coins: 0,
+        }).subscribe({
+          next: (data) => {
+            if (data.success) {
+              const userId = data.userId;
+              this.dataSource.push({ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0});
+              this.showSuccessMessage(data.msg);
+            } else {
+              this.showErrorMessage(data.error);
+            }
+          },
+          error: (error) => {
+            this.showErrorMessage(error.error.error);
+          },
+        });
       } else {
         console.log('Formulario inválido');
       }
     }
-    successMessage: string = '';
 
+    successMessage: string = '';
+    errorMessage: string = '';
+    
     showSuccessMessage(message: string) {
       this.successMessage = message;
       setTimeout(() => {
         this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+      }, 5000); // Limpia el mensaje después de 5 segundos
+    }
+    
+    showErrorMessage(message: string) {
+      this.errorMessage = message;
+      setTimeout(() => {
+        this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
       }, 5000); // Limpia el mensaje después de 5 segundos
     }
     

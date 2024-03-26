@@ -10,19 +10,36 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    region: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'Region',
-        required: true
+    region:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Region',
+            required: true
+        },
+        name: { 
+            type: String, 
+            required: true 
+        }
     },
-    site: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'Site',
-        required: true
+    site:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Site',
+            required: true
+        },
+        name: { 
+            type: String, 
+            required: true 
+        }
     },
-    team: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'Team' 
+    team:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Team'
+        },
+        name: { 
+            type: String
+        }
     },
     rol: {
         type: String,

@@ -1,31 +1,68 @@
 const User = require('../models/userModel');
 const { sendEmail } = require('../services/mailer');
 const jwt = require('jsonwebtoken');
-
+const mongoose = require('mongoose');
 const registerUser = async (req, res) => {
-    const { name, email, regionId, siteId, rol, coins } = req.body;
+    const { name, email, region, site, team, rol, coins } = req.body;
     try {
         const existingEmail = await User.findOne({ email });
 
         if (existingEmail) {
-            return res.status(400).json({ success: false, error: "El correo electrónico ya está en uso." });
+            return res.status(400).json({ success: false, error: "The email is already in use." });
         }
 
-        const jammer = new User({
+        const user = new User({
             name: name,
             email: email,
-            region: regionId,
-            site: siteId,
+            region: { _id: region._id, name: region.name },
+            site: { _id: site._id, name: site.name },
+            team: team ? { _id: team._id, name: team.name } : null,
             rol: rol,
             coins: coins,
             creationDate: new Date()
         });
 
-        await jammer.save();
-        // const subject = 'Registro exitoso';
-        // const text = 'Gracias por registrarte en GameJam+. Cuando quieras ingresar a la plataforma, solo ingresa con tu correo electrónico: ' + email;
-        // await sendEmail(email, subject, text);
-        res.status(200).json({ success: true, msg: 'Se ha registrado correctamente' });
+        await user.save();
+        
+        res.status(200).json({ success: true, msg: 'Registered successfully', userId: user._id });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+};
+
+const updateUser = async (req, res) => {
+    const { id } = req.params;
+    const { name, email, region, site, team, rol, coins } = req.body;
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, error: 'Invalid user ID.' });
+        }
+
+        const existingUser = await User.findById(id);
+        if (!existingUser) {
+            return res.status(400).json({ success: false, error: 'User not found.' });
+        }
+
+        if (email && email !== existingUser.email) {
+            const emailExists = await User.findOne({ email });
+            if (emailExists) {
+                return res.status(400).json({ success: false, error: 'The email is already in use.' });
+            }
+            existingUser.email = email;
+        }
+
+        if (name) existingUser.name = name;
+        if (region) existingUser.region = { _id: region._id, name: region.name };
+        if (site) existingUser.site = { _id: site._id, name: site.name };
+        if (team) existingUser.team = { _id: team._id, name: team.name };
+        if (rol) existingUser.rol = rol;
+        if (coins) existingUser.coins = coins;
+        
+        existingUser.lastUpdateDate = new Date();
+
+        await existingUser.save();
+
+        res.status(200).json({ success: true, msg: 'User updated successfully.' });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
@@ -91,26 +128,6 @@ const getLocalOrganizersPerSite = async (req, res)=>{
     }
 };
 
-const assignRol = async (req, res) => {
-    const {rol, userId} = req.body
- 
-    User.findById(userId)
-    .then(existingUser => {
-      if (existingUser) {
-        existingUser.rol = rol;
-        return existingUser.save();
-      } else {
-        return res.status(400).json({success: false, error: "El usuario no existe"})
-      }
-    })
-    .then(updatedUser => {
-        return res.status(200).json({success: true, error: "Rol " + updatedUser.rol +" asignado"})
-    })
-    .catch(error => {
-        return res.status(400).json({success: false, error: error})
-    });
-};
-
 const updateSite = async (req, res) => {
     const { id } = req.params; 
     const { siteId } = req.body; 
@@ -126,6 +143,7 @@ const updateSite = async (req, res) => {
         return res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
+
 const getJudgesPerSite = async (req, res) => {
     const { siteId } = req.params;
     try {
@@ -150,11 +168,22 @@ const getUsers = async(req,res)=>{
     }
 };
 
+const deleteUser = async(req,res)=>{
+    try{
+        const id = req.params.id;
+        const deletedUser = await User.findOneAndDelete({ _id: id });
+        res.status(200).send({ success:true, msg:'Usuario eliminado correctamente', data: deletedUser });
+    } catch(error) {
+        res.status(400).send({ success:false, msg:error.message });
+    }
+};
+
 module.exports = {
     registerUser,
+    updateUser,
+    deleteUser,
     loginUser,
     magicLink,
-    assignRol,
     updateSite,
     getJudgesPerSite,
     getLocalOrganizersPerSite,

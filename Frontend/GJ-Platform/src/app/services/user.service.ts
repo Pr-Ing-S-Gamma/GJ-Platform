@@ -14,6 +14,10 @@ export class UserService {
     return this.http.post(url, user);
   }
 
+  updateUser(url: string, user: User): Observable<any> {
+    return this.http.put(url, user);
+  }
+
   loginUser(url: string, email: string): Observable<any> {
     return this.http.post(url, { email });
   }
@@ -22,5 +26,9 @@ export class UserService {
     return this.http.get<any>(url).pipe( 
       map(response => response.data)
     );
+  }
+
+  deleteUser(url: string): Observable<any> {
+    return this.http.delete(url);
   }
 }
