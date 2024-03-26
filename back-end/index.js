@@ -34,7 +34,7 @@ const corsOptions = {
     origin: function(origin, callback) {
         if (!origin) return callback(null, true);
 
-        const allowedOrigins = ['http://localhost:4200'];
+        const allowedOrigins = ['http://localhost:4200', 'http://localhost:3000'];
         if (allowedOrigins.indexOf(origin) !== -1) {
             // El origen está en la lista de orígenes permitidos
             callback(null, true);
@@ -45,6 +45,7 @@ const corsOptions = {
     },
     optionsSuccessStatus: 204, // Devolver un código de éxito 204
     methods: "GET, POST, PUT, DELETE", // Permitir estos métodos HTTP
+    credentials: true, // Permite enviar cookies de forma segura
 };
 app.use(cors(corsOptions)); // Usar el middleware CORS
 

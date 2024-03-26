@@ -64,9 +64,8 @@ editar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
       console.log('Valores del formulario:', this.myForm.value);
-
-      // Lógica para enviar el formulario aquí
-
+      
+      console.log('Formulario válido');
       this.dataSource.push({id: 0, Category: this.myForm.value["category"]})
       this.showSuccessMessage("Success!")
     } else {

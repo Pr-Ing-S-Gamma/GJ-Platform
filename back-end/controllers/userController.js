@@ -60,12 +60,12 @@ const magicLink = async (req, res) => {
 
         const newToken = jwt.sign({ userId, rol }, 'MY_JWT_SECRET');
 
-        res.cookie('token', newToken);
-
+        res.cookie('token', newToken, {
+            httpOnly: false
+        });
         let redirectUrl;
-        // Lógica de redireccionamiento basada en el rol del usuario
         if (rol === 'GlobalOrganizer') {
-            redirectUrl = 'http://localhost:4200/DataManagement'; // Redirigir a un panel de administrador
+            redirectUrl = 'http://localhost:4200/DataManagement';
         } 
         // else if (rol === 'user') {
         //     redirectUrl = '/user-dashboard'; // Redirigir a un panel de usuario normal
@@ -130,8 +130,8 @@ const getJudgesPerSite = async (req, res) => {
     const { siteId } = req.params;
     try {
         const judges = await User.find({ site: siteId, rol: 'Judge'})
-            .populate('site', 'name') // Populate para obtener el nombre del sitio
-            .select('name email'); // Seleccionar solo el nombre y el correo electrónico
+            .populate('site', 'name')
+            .select('name email'); 
         if (judges.length === 0) {
             return res.status(404).json({ success: false, error: "No se encontraron jueces para este sitio" });
         }
