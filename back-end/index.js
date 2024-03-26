@@ -30,18 +30,6 @@ app.use(cookieParser());
 const user_route = require('./routes/userRoute');
 app.use('/api/user', user_route);
 
-// Rutas de jammers
-const jammer_route = require('./routes/jammerRoute');
-app.use('/api/jammer', jammer_route);
-
-// Rutas de global organizers
-const global_organizer_route = require('./routes/globalOrganizerRoute');
-app.use('/api/global-organizer', global_organizer_route);
-
-// Rutas de local organizers
-const local_organizer_route = require('./routes/localOrganizerRoute');
-app.use('/api/local-organizer', local_organizer_route);
-
 // Rutas de regiones
 const region_route = require('./routes/regionRoute');
 app.use('/api/region', region_route);
@@ -73,13 +61,10 @@ app.use('/api/team', team_route);
 // Rutas de entregables
 const submission_route = require('./routes/submissionRoute');
 app.use('/api/submission', submission_route);
+
 // Rutas de temas
 const theme_route = require('./routes/themeRoute');
 app.use('/api/themes', theme_route);
-
-// Rutas de jueces
-const judge_route = require('./routes/judgeRoute');
-app.use('/api/judge', judge_route);
 
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, () => {

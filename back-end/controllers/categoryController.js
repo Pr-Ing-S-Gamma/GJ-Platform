@@ -1,5 +1,5 @@
 const Category = require('../models/categoryModel');
-const GlobalOrganizer = require('../models/globalOrganizerModel');
+const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Submission = require('../models/submissionModel')
@@ -9,7 +9,7 @@ const createCategory = async (req, res) => {
     try {
         const existingCategory = await Category.findOne({ name: name });
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const creatorUser = await GlobalOrganizer.findById(userId);
+        const creatorUser = await User.findById(userId);
         
         if (existingCategory) {
             return res.status(400).json({ success: false, error: "Esa categoría ya existe" });
@@ -38,7 +38,7 @@ const updateCategory = async (req, res) => {
         const id = req.params.id;
         const updateFields = {};
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const lastUpdateUser = await GlobalOrganizer.findById(userId);
+        const lastUpdateUser = await User.findById(userId);
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'El ID de categoría proporcionado no es válido.' });
         } else {

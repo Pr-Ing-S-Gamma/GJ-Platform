@@ -1,7 +1,35 @@
 const User = require('../models/userModel');
 const { sendEmail } = require('../services/mailer');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
+
+const registerUser = async (req, res) => {
+    const { name, email, regionId, siteId, rol, coins } = req.body;
+    try {
+        const existingEmail = await User.findOne({ email });
+
+        if (existingEmail) {
+            return res.status(400).json({ success: false, error: "El correo electrónico ya está en uso." });
+        }
+
+        const jammer = new User({
+            name: name,
+            email: email,
+            region: regionId,
+            site: siteId,
+            rol: rol,
+            coins: coins,
+            creationDate: new Date()
+        });
+
+        await jammer.save();
+        // const subject = 'Registro exitoso';
+        // const text = 'Gracias por registrarte en GameJam+. Cuando quieras ingresar a la plataforma, solo ingresa con tu correo electrónico: ' + email;
+        // await sendEmail(email, subject, text);
+        res.status(200).json({ success: true, msg: 'Se ha registrado correctamente' });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+};
 
 const loginUser = async (req, res) => {
     const email = req.body.email;
@@ -29,56 +57,20 @@ const magicLink = async (req, res) => {
     const userId = decodedToken.userId;
     const rol = decodedToken.rol;
 
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let verificationCode = '';
-    for (let i = 0; i < 6; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        verificationCode += characters[randomIndex];
-    }
-
-    const newToken = jwt.sign({ userId, rol, verificationCode }, 'MY_JWT_SECRET');
+    const newToken = jwt.sign({ userId, rol }, 'MY_JWT_SECRET');
 
     res.cookie('token', newToken);
-    res.status(200).json({ success: true, verificationCode });
+    res.status(200).json({ success: true, msg: 'Se ha logeado correctamente', userId, rol});
 };
 
-const verifyMagicLink = async (req, res) => {
-    const verificationCode = req.body.verificationCode;
-    const token = req.cookies.token;
-
+const getLocalOrganizersPerSite = async (req, res)=>{
     try {
-        const decodedToken = jwt.verify(token, 'MY_JWT_SECRET');
-        const userId = decodedToken.userId;
-        const rol = decodedToken.rol;
-        const tokenVerificationCode = decodedToken.verificationCode;
-
-        if (verificationCode === tokenVerificationCode) {
-
-            const newToken = jwt.sign({ userId, rol }, 'MY_JWT_SECRET');
-            res.cookie('token', newToken);
-
-            res.status(200).json({ success: true, msg: 'Se ha logeado correctamente', userId, rol});
-        } else {
-            res.status(400).json({ success: false, msg: 'Código de verificación inválido' });
-        }
+        const siteID = req.params.site;
+        console.log(siteID)
+        var organizers = await LocalOrganizer.find({site : siteID});
+        return res.status(200).send({success: true, msg: "Organizadores econtrados para site ", data: organizers});
     } catch (error) {
-        res.status(400).json({ success: false, msg: 'Token JWT inválido' });
-    }
-};
-
-const assignRolt = async (req, res) => {
-    const {rol, userId} = req.body
-    try {
-        const existingUser = await User.findById(userId)
-        if(!existingUser){
-            return res.status(400).json({success: false, error: "El usuario no existe"})
-        }
-        existingUser.__t = rol;
-        await existingUser.save();
-        return res.status(200).json({success: true, error: "Rol asignado"})
-        
-    } catch (error) {
-        return res.status(400).json({success: false, error: error})
+        return res.status(400).send({success: false, msg: error.message});
     }
 };
 
@@ -100,11 +92,44 @@ const assignRol = async (req, res) => {
     .catch(error => {
         return res.status(400).json({success: false, error: error})
     });
-    };
+};
+
+const updateSite = async (req, res) => {
+    const { id } = req.params; 
+    const { siteId } = req.body; 
+    try {
+        const user = await User.findByIdAndUpdate(id, { site: siteId }, { new: true });
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno del servidor' });
+    }
+};
+const getJudgesPerSite = async (req, res) => {
+    const { siteId } = req.params;
+    try {
+        const judges = await User.find({ site: siteId, rol: 'Judge'})
+            .populate('site', 'name') // Populate para obtener el nombre del sitio
+            .select('name email'); // Seleccionar solo el nombre y el correo electrónico
+        if (judges.length === 0) {
+            return res.status(404).json({ success: false, error: "No se encontraron jueces para este sitio" });
+        }
+        return res.status(200).json({ success: true, judges });
+    } catch (error) {
+        return res.status(500).json({ error: "Error al obtener los jueces por sitio" });
+    }
+};
 
 module.exports = {
+    registerUser,
     loginUser,
     magicLink,
-    verifyMagicLink,
-    assignRol
+    assignRol,
+    updateSite,
+    getJudgesPerSite,
+    getLocalOrganizersPerSite
 };

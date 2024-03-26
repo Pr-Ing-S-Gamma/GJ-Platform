@@ -1,5 +1,5 @@
 const Region = require('../models/regionModel');
-const GlobalOrganizer = require('../models/globalOrganizerModel');
+const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
@@ -8,7 +8,7 @@ const createRegion = async (req, res) => {
     try {
         const existingRegion = await Region.findOne({ name: name });
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const creatorUser = await GlobalOrganizer.findById(userId);
+        const creatorUser = await User.findById(userId);
         
         if (existingRegion) {
             return res.status(400).json({ success: false, error: "Esa región ya existe" });
@@ -37,7 +37,7 @@ const updateRegion = async (req, res) => {
         const id = req.params.id;
         const updateFields = {};
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const lastUpdateUser = await GlobalOrganizer.findById(userId);
+        const lastUpdateUser = await User.findById(userId);
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'El ID de región proporcionado no es válido.' });
         } else {

@@ -148,6 +148,26 @@ const getSites = async(req,res)=>{
     }
 };
 
+const getSitesPerRegion = async (req, res) => {
+    try {
+        const regionId = req.params.regionId;
+        if (!mongoose.Types.ObjectId.isValid(regionId)) {
+            return res.status(400).json({ success: false, error: 'El ID de región proporcionado no es válido.' });
+        } else {
+            const existingRegion = await Region.findById(regionId);
+            if (!existingRegion) {
+                return res.status(400).json({ success: false, error: "Esa región no existe" });
+            } else {
+                const selectedSites = await Site.find({ region: regionId });
+                return res.status(200).json({ success: true, msg: 'Sitios encontrados correctamente', data: selectedSites });
+            }
+        }
+    } catch (error) {
+        return res.status(400).json({ success: false, msg: error.message });
+    }
+};
+
+
 const deleteSite = async(req,res)=>{
     try{
         const id = req.params.id;
@@ -171,5 +191,6 @@ module.exports = {
     updateSite,
     getSite,
     getSites,
+    getSitesPerRegion,
     deleteSite
 };

@@ -1,14 +1,11 @@
 const Team = require('../models/teamModel');
-const Jammer = require('../models/jammerModel');
 const GameJam = require('../models/gameJamEventModel');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Site = require('../models/siteModel');
-//const { all } = require('../routes/teamRoute');
 
 const createTeam = async (req, res) => {
-    //const { studioName, description, gameJamId, linkTree, jammers, submissions } = req.body;
     const { studioName, description, gameJamId, linkTree, jammers, siteName } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
@@ -30,7 +27,7 @@ const createTeam = async (req, res) => {
 
         const jammersId = [];
         for (const jammerId of jammers) {
-            const jammer = await Jammer.findById(jammerId);
+            const jammer = await User.findById(jammerId);
             if (jammer) {
                 jammersId.push(jammer._id);
             }
@@ -119,7 +116,7 @@ const updateTeam = async (req, res) => {
         if (jammers && jammers.length > 0) {
             const jammersId = [];
             for (const jammerId of jammers) {
-                const jammer = await Jammer.findById(jammerId);
+                const jammer = await User.findById(jammerId);
                 if (jammer) {
                     jammersId.push(jammer._id);
                 }

@@ -13,9 +13,11 @@ const upload = multer({ storage: storage });
 
 const userController = require('../controllers/userController');
 
-user_route.post('/login', upload.none(), userController.loginUser);
+user_route.post('/register-user', upload.none(), userController.registerUser);
+user_route.post('/login-user', upload.none(), userController.loginUser);
 user_route.get('/magic-link/:token', userController.magicLink);
-user_route.post('/verify-code', upload.none(), userController.verifyMagicLink);
-user_route.put('/rol', upload.none(), userController.assignRol)
-
+user_route.put('/assign-rol-user', upload.none(), userController.assignRol)
+user_route.put('/update-user-site/:id', userController.updateSite);
+user_route.get('/get-judges-per-site/:siteId', userController.getJudgesPerSite);
+user_route.get('/get-local-per-site/:siteId', userController.getLocalOrganizersPerSite);
 module.exports = user_route;

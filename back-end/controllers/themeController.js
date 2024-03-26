@@ -2,7 +2,7 @@
   const mongoose = require('mongoose');
   const Theme = require("../models/themeModel");
   const Submission = require("../models/submissionModel")
-  const GlobalOrganizer = require("../models/globalOrganizerModel")
+  const User = require("../models/userModel")
 
   const createTheme = async (req, res) => {
     try {
@@ -12,7 +12,7 @@
         return res.status(401).json({ success: false, error: 'Usuario no autenticado' });
       }
 
-      let creatorUser = await GlobalOrganizer.findById(userId);
+      let creatorUser = await User.findById(userId);
 
       if (!creatorUser) {
         return res.status(404).json({ success: false, error: 'Usuario no encontrado' });
