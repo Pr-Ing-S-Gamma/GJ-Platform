@@ -47,7 +47,6 @@ export class CategoryCrudComponent implements OnInit{
     categoryEditInput.value = this.CategoryToEdit["name"]; 
   }
 
-  // Aquí puedes agregar la lógica para editar y eliminar elementos
   editar() {
     if (this.myForm.valid) {
       

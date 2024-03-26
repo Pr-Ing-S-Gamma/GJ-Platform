@@ -41,7 +41,10 @@ export interface User {
 export interface Site {
     _id?: string;
     name: string;
-    region: string;
+    region: {
+      _id: string;
+      name: string;
+    };
     country: {
       name: string;
       code: string;
@@ -56,4 +59,9 @@ export interface Region {
 export interface Category {
   _id?: string;
   name: string;
+}
+
+export interface Country {
+  name: string;
+  code: string;
 }
