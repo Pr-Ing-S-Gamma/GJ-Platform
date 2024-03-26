@@ -24,7 +24,7 @@ export class RegionService {
       map(response => response.data)
     );
   }
-
+  
   deleteRegion(url: string): Observable<any> {
     return this.http.delete(url);
   }

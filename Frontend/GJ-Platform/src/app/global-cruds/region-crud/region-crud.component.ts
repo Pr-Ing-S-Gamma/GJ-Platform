@@ -49,9 +49,6 @@ export class RegionCRUDComponent implements OnInit{
 
   editar() {
     if (this.myForm.valid) {
-      console.log('Formulario válido');
-      console.log('Valores del formulario:', this.myForm.value);
-      
       const regionId = this.regionToEdit['_id'];
   
       const url = `http://localhost:3000/api/region/update-region/${regionId}`;
@@ -93,7 +90,7 @@ export class RegionCRUDComponent implements OnInit{
             this.showErrorMessage(error.error.msg);
         }
     });
-}
+  }
 
   agregar() {
     if (this.myForm.valid) {
@@ -127,18 +124,21 @@ export class RegionCRUDComponent implements OnInit{
 
   successMessage: string = '';
   errorMessage: string = '';
+
   showSuccessMessage(message: string) {
     this.successMessage = message;
     setTimeout(() => {
       this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
     }, 5000); // Limpia el mensaje después de 5 segundos
   }
+
   showErrorMessage(message: string) {
     this.errorMessage = message;
     setTimeout(() => {
       this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
     }, 5000); // Limpia el mensaje después de 5 segundos
   }
+
   get totalPaginas(): number {
     return Math.ceil(this.dataSource.length / this.pageSize);
   }

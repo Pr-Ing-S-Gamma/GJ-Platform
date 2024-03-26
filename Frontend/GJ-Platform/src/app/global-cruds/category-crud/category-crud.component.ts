@@ -2,6 +2,8 @@ import { Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CategoryService } from '../../services/category.service';
+import { Category } from '../../../types';
 declare var $: any;
 
 @Component({
@@ -17,57 +19,102 @@ declare var $: any;
 })
 export class CategoryCrudComponent implements OnInit{
   myForm!: FormGroup;
-  dataSource = [
-    { id: 1, Category: 'RPG' },
-    { id: 2, Category: 'Gacha' },
-    { id: 3, Category: 'Battle Royale' }
-  ];
+  dataSource: Category[] = [];
 
   CategoryToEdit: any;
   indexCategory = 0;
 
-  constructor(private fb: FormBuilder){}
+  constructor(private fb: FormBuilder, private categoryService: CategoryService){}
 
   ngOnInit(): void {
     this.myForm = this.fb.group({
       category: ['', Validators.required]
     });
+    const url = 'http://localhost:3000/api/category/get-categories';
+    this.categoryService.getCategories(url).subscribe(
+      (categories: any[]) => {
+        this.dataSource = categories.map(category => ({ _id: category._id, name: category.name }));
+      },
+      error => {
+        console.error('Error al obtener categorías:', error);
+      }
+    );
   }
   seleccionarElemento(elemento:any){
     let categoryEditInput = document.getElementById('categoryEditInput') as HTMLInputElement;
     this.CategoryToEdit = elemento;
     this.indexCategory = this.dataSource.indexOf(elemento);
-    categoryEditInput.value = this.CategoryToEdit["Category"]; 
+    categoryEditInput.value = this.CategoryToEdit["name"]; 
   }
 
   // Aquí puedes agregar la lógica para editar y eliminar elementos
-editar() {
-  if (this.myForm.valid) {
-    console.log('Formulario válido');
-    console.log('Valores del formulario:', this.myForm.value);
-    
-    // Lógica para enviar el formulario aquí
-
-    this.dataSource[this.indexCategory].Category = this.myForm.value.category; // Corregir la asignación aquí
-    this.showSuccessMessage("Success!");
-  } else {
-    console.log('Formulario inválido');
+  editar() {
+    if (this.myForm.valid) {
+      
+      const categoryId = this.CategoryToEdit['_id'];
+      
+      const url = `http://localhost:3000/api/category/update-category/${categoryId}`;
+  
+      this.categoryService.updateCategory(url, {
+        name: this.myForm.value['category']
+      }).subscribe({
+        next: (data) => {
+          console.log('Respuesta del servidor:', data);
+          this.dataSource[this.indexCategory] = {
+            _id: categoryId,
+            name: this.myForm.value['category'] 
+          };
+          this.showSuccessMessage('Category updated successfully!');
+        },
+        error: (error) => {
+          console.error('Error al actualizar la región:', error);
+          this.showErrorMessage(error.error.error);
+        }
+      });
+    } else {
+      console.log('Formulario inválido');
+    }
   }
-}
 
   eliminar(elemento: any) {
-    // Lógica para enviar el formulario aquí
-    this.dataSource = this.dataSource.filter(i => i !== elemento)
+    const id = elemento._id;
+
+    const url = `http://localhost:3000/api/category/delete-category/${id}`;
+
+    this.categoryService.deleteCategory(url).subscribe({
+        next: (data) => {
+            console.log('Categoría eliminada correctamente:', data);
+            this.dataSource = this.dataSource.filter(item => item !== elemento);
+            this.showSuccessMessage(data.msg);
+        },
+        error: (error) => {
+            console.error('Error al eliminar la categoría:', error);
+            this.showErrorMessage(error.error.msg);
+        }
+    });
   }
 
   agregar() {
     if (this.myForm.valid) {
-      console.log('Formulario válido');
-      console.log('Valores del formulario:', this.myForm.value);
-      
-      console.log('Formulario válido');
-      this.dataSource.push({id: 0, Category: this.myForm.value["category"]})
-      this.showSuccessMessage("Success!")
+      var categoryName = this.myForm.value["category"];
+      this.categoryService.createCategory(`http://localhost:3000/api/category/create-category`, {
+        name: categoryName,
+      }).subscribe({
+        next: (data) => {
+          console.log(data);
+          if (data.success) {
+            const categoryId = data.categoryId;
+            this.dataSource.push({ _id: categoryId, name: this.myForm.value["category"] });
+            this.showSuccessMessage(data.msg);
+          } else {
+            this.showErrorMessage(data.error);
+          }
+        },
+        error: (error) => {
+          console.log(error);
+          this.showErrorMessage(error.error.error);
+        },
+      });
     } else {
       console.log('Formulario inválido');
     }
@@ -77,14 +124,22 @@ editar() {
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 
-  successMessage: string = '';
+successMessage: string = '';
+errorMessage: string = '';
 
-  showSuccessMessage(message: string) {
-    this.successMessage = message;
-    setTimeout(() => {
-      this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-    }, 5000); // Limpia el mensaje después de 5 segundos
-  }
+showSuccessMessage(message: string) {
+  this.successMessage = message;
+  setTimeout(() => {
+    this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+  }, 5000); // Limpia el mensaje después de 5 segundos
+}
+
+showErrorMessage(message: string) {
+  this.errorMessage = message;
+  setTimeout(() => {
+    this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+  }, 5000); // Limpia el mensaje después de 5 segundos
+}
   
   get totalPaginas(): number {
     return Math.ceil(this.dataSource.length / this.pageSize);
