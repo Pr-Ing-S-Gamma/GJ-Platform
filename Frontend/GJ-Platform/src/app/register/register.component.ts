@@ -55,7 +55,7 @@ export class RegisterComponent implements OnInit {
             }
           },
           error => {
-            console.error('Error al obtener sitios:', error);
+            console.error('Error al obtener sites:', error);
           }
         );
     } else {

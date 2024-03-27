@@ -9,10 +9,12 @@ const createStage = async (req, res) => {
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
+        
         if (!gameJam || !gameJam._id || !mongoose.Types.ObjectId.isValid(gameJam._id)) {
             return res.status(400).json({ success: false, error: 'The provided GameJam is invalid.' });
         } else {
             const existingGameJam = await GameJam.findById(gameJam._id);
+            
             if (!existingGameJam) {
                 return res.status(400).json({ success: false, error: "That GameJam does not exist" });
             }
@@ -22,8 +24,8 @@ const createStage = async (req, res) => {
                 startDate: startDate,
                 endDate: endDate,
                 gameJam: {
-                    _id: gameJam._id,
-                    edition: gameJam.edition
+                    _id: existingGameJam._id,
+                    edition: existingGameJam.edition
                 },
                 creatorUser: {
                     userId: creatorUser._id,
@@ -32,10 +34,14 @@ const createStage = async (req, res) => {
                 },
                 creationDate: new Date()
             });
-
             await stage.save();
+            existingGameJam.stages.push({
+                _id: stage._id,
+                name: stage.name,
+                startDate: stage.startDate,
+                endDate: stage.endDate
+            });
 
-            existingGameJam.stages.push(stage._id);
             await existingGameJam.save();
 
             res.status(200).json({ success: true, msg: 'Stage created successfully', stageId: stage._id });
@@ -46,44 +52,65 @@ const createStage = async (req, res) => {
 };
 
 const updateStage = async (req, res) => {
-    const { id } = req.params;
+    const stageId = req.params.id;
     const { name, startDate, endDate, gameJam } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const lastUpdateUser = await User.findById(userId);
-        const existingStage = await Stage.findById(id);
-        if (!existingStage) {
-            return res.status(404).json({ success: false, error: 'Stage not found' });
-        }
-
-        if (gameJam && gameJam._id && mongoose.Types.ObjectId.isValid(gameJam._id)) {
-            const existingGameJam = await GameJam.findById(gameJam._id);
-            if (!existingGameJam) {
-                return res.status(400).json({ success: false, error: "The provided GameJam does not exist" });
+        const creatorUser = await User.findById(userId);
+        if (!gameJam || !gameJam._id || !mongoose.Types.ObjectId.isValid(gameJam._id)) {
+            return res.status(400).json({ success: false, error: 'The provided GameJam is invalid.' });
+        } else {
+            const stage = await Stage.findById(stageId);
+            if (!stage) {
+                return res.status(400).json({ success: false, error: "Stage not found." });
             }
-            existingStage.gameJam = {
-                _id: gameJam._id,
-                edition: gameJam.edition
+            if (stage.gameJam._id.toString() !== gameJam._id.toString()) {
+                const oldGameJam = await GameJam.findById(stage.gameJam._id);
+                oldGameJam.stages = oldGameJam.stages.filter(s => s._id.toString() !== stageId);
+                await oldGameJam.save();
+                
+                const newGameJam = await GameJam.findById(gameJam._id);
+                newGameJam.stages.push({
+                    _id: stage._id,
+                    name: name,
+                    startDate: startDate,
+                    endDate: endDate
+                });
+
+                await newGameJam.save();
+
+                stage.gameJam = {
+                    _id: newGameJam._id,
+                    edition: newGameJam.edition
+                };
+            } else {
+                const currentGameJam = await GameJam.findById(gameJam._id);
+                const stageIndex = currentGameJam.stages.findIndex(s => s._id.toString() === stageId);
+                if (stageIndex !== -1) {
+                    currentGameJam.stages[stageIndex].name = name;
+                    currentGameJam.stages[stageIndex].startDate = startDate;
+                    currentGameJam.stages[stageIndex].endDate = endDate;
+                    await currentGameJam.save();
+                }
+            }
+
+            stage.name = name;
+            stage.startDate = startDate;
+            stage.endDate = endDate;
+            stage.creationDate = new Date();
+            stage.creatorUser = {
+                userId: creatorUser._id,
+                name: creatorUser.name,
+                email: creatorUser.email
             };
+            await stage.save();
+
+            res.status(200).json({ success: true, msg: 'Stage updated successfully', stageId: stage._id });
         }
-
-        if (name) existingStage.name = name;
-        if (startDate) existingStage.startDate = startDate;
-        if (endDate) existingStage.endDate = endDate;
-        existingStage.lastUpdateUser = {
-            userId: lastUpdateUser._id,
-            name: lastUpdateUser.name,
-            email: lastUpdateUser.email
-        };
-        await existingStage.save();
-
-        res.status(200).json({ success: true, msg: 'Stage updated successfully' });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
-
-
 
 const getStage = async(req,res)=>{
     try{

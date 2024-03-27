@@ -168,6 +168,16 @@ const getUsers = async(req,res)=>{
     }
 };
 
+const getJammersPerSite = async (req, res) => {
+    const { siteId } = req.params;
+    try {
+        const jammers = await User.find({ "site._id": siteId, rol: 'Jammer'})
+        res.status(200).send({ success: true, msg: 'Users with the role "Jammer" have been found in the system.', data: jammers });
+    } catch(error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
 const deleteUser = async(req,res)=>{
     try{
         const id = req.params.id;
@@ -187,5 +197,6 @@ module.exports = {
     updateSite,
     getJudgesPerSite,
     getLocalOrganizersPerSite,
-    getUsers
+    getUsers,
+    getJammersPerSite
 };

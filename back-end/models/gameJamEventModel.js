@@ -7,8 +7,16 @@ const gameJamSchema = mongoose.Schema({
         required:true
     },
     stages: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Stage'
+        _id: { type: Schema.Types.ObjectId, ref: 'Stage'},
+        name: { 
+            type: String
+        },
+        startDate: { 
+            type: Date
+        },
+        endDate: { 
+            type: Date
+        },
     }],
     region:  {
         _id: { 

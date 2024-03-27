@@ -99,3 +99,27 @@ export interface Stage {
   };
 }
 
+export interface Team {
+  _id?: string;
+  studioName: string;
+  description: Date;
+  linkTree: string[];
+  region: {
+    _id: string;
+    name: string;
+  };
+  site: {
+    _id: string;
+    name: string;
+  };
+  gameJam: {
+    _id: string;
+    edition: string;
+  };
+  jammers: {
+    _id: string;
+    name: string;
+    email: string;
+  }[];
+}
+
