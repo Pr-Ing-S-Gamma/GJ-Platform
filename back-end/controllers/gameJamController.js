@@ -49,7 +49,7 @@ const createGameJam = async (req, res) => {
 
         await gameJam.save();
 
-        res.status(200).json({ success: true, msg: 'GameJam created successfully.' });
+        res.status(200).json({ success: true, msg: 'GameJam created successfully.', gameJamId: gameJam._id});
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }

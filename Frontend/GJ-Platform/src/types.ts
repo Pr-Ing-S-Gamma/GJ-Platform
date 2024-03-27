@@ -87,3 +87,15 @@ export interface GameJam {
     name: string;
   };
 }
+
+export interface Stage {
+  _id?: string;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  gameJam: {
+    _id: string;
+    edition: string;
+  };
+}
+

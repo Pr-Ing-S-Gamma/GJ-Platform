@@ -106,7 +106,7 @@ const updateSite = async (req, res) => {
             updateFields.region = region;
             changed++;
         }
-
+ 
         if (changed > 0) {
             updateFields.lastUpdateUser = {
                 userId: lastUpdateUser._id,

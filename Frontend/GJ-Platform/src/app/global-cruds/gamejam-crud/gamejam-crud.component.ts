@@ -42,7 +42,7 @@ export class GamejamCrudComponent implements OnInit{
         this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site}));
       },
       error => {
-        console.error('Error al obtener regiones:', error);
+        console.error('Error al obtener las GameJams:', error);
       }
     );
     this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
@@ -100,6 +100,7 @@ export class GamejamCrudComponent implements OnInit{
       site: selectedSite
     });
   }
+  
   editar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
