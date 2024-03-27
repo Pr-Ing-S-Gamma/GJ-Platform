@@ -104,12 +104,6 @@ const magicLink = async (req, res) => {
         if (rol === 'GlobalOrganizer') {
             redirectUrl = 'http://localhost:4200/DataManagement';
         } 
-        // else if (rol === 'user') {
-        //     redirectUrl = '/user-dashboard'; // Redirigir a un panel de usuario normal
-        // } else {
-        //     // Redirigir a una página predeterminada para roles desconocidos
-        //     redirectUrl = '/default-dashboard';
-        // }
         res.redirect(redirectUrl);
     } catch (error) {
         console.error('Error al procesar el token:', error);

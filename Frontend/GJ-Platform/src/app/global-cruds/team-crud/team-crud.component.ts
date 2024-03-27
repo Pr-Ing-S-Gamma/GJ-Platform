@@ -229,7 +229,7 @@ removeJammer(jammer: User) {
       }).subscribe({
         next: (data) => {
           if (data.success) {
-              this.dataSource[this.dataSource.findIndex(team => team._id === data.team._id)] = data.team;
+            this.dataSource[this.dataSource.findIndex(team => team._id === data.team._id)] = data.team;
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);

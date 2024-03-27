@@ -93,7 +93,7 @@ app.use('/api/submission', submission_route);
 
 // Rutas de temas
 const theme_route = require('./routes/themeRoute');
-app.use('/api/themes', theme_route);
+app.use('/api/theme', theme_route);
 
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, () => {

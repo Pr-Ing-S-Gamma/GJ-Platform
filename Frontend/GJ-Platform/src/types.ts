@@ -123,3 +123,15 @@ export interface Team {
   }[];
 }
 
+export interface Theme {
+  _id?: string;
+  manualPT?: string;
+  manualSP?: string;
+  manualEN?: string;
+  descriptionSP?: string;
+  descriptionPT?: string;
+  descriptionEN?: string;
+  titleSP?: string;
+  titleEN?: string;
+  titlePT?: string;
+}

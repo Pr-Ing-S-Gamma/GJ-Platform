@@ -2,6 +2,8 @@ import { Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ThemeService } from '../../services/theme.service';
+import { Theme } from '../../../types';
 declare var $: any;
 
 @Component({
@@ -18,16 +20,12 @@ declare var $: any;
 export class ThemeCrudComponent implements OnInit{
 
   myForm!: FormGroup;
-  dataSource = [
-    { id: 1, title: 'Horror idk' , description : "Descripcion inserte plx", manual  : "un manual bien chidori "},
-    { id: 2, title: 'Peleas idk', description : "Descripcion inserte plx",manual  : "un manual bien chidori " },
-    { id: 3, title: 'Blanco i negro idk' ,description : "Descripcion inserte plx",manual  : "un manual bien chidori "}
-  ];
+  dataSource: Theme[] = [];
 
   ThemeToEdit: any;
   indexTheme = 0;
 
-  constructor(private fb: FormBuilder){}
+  constructor(private fb: FormBuilder, private themeService: ThemeService){}
 
   ngOnInit(): void {
     this.myForm = this.fb.group({
@@ -35,57 +33,101 @@ export class ThemeCrudComponent implements OnInit{
       description : ['', Validators.required],
       manual : ['', Validators.required]
     });
+    this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
+    .subscribe(
+      themes => {
+        this.dataSource = themes;
+      },
+      error => {
+        console.error('Error al obtener temas:', error);
+      }
+    );
   }
 
   seleccionarElemento(elemento:any){
     this.ThemeToEdit = elemento;
     this.indexTheme = this.dataSource.indexOf(elemento);
     this.myForm.patchValue({
-      title: elemento.title,
-      description: elemento.description,
-      manual: elemento.manual
+      title: elemento.titleEN,
+      description: elemento.descriptionEN,
+      manual: elemento.manualEN
     });
   }
 
-  // Aquí puedes agregar la lógica para editar y eliminar elementos
-editar() {
-  if (this.myForm.valid) {
-    console.log('Formulario válido');
-    console.log('Valores del formulario:', this.myForm.value);
-    
-    // Lógica para enviar el formulario aquí
-
-    this.dataSource[this.indexTheme] = {
-      id: this.ThemeToEdit['id'],
-      title: this.myForm.value['title'],
-      description: this.myForm.value['description'],
-      manual: this.myForm.value['manual'],
+  editar() {
+    const themeId = this.ThemeToEdit['_id'];
+    if (this.myForm.valid) {
+      this.themeService.updateTheme(`http://localhost:3000/api/theme/update-theme/${themeId}`, {
+        manualPT: this.myForm.value['manual'],
+        manualSP: this.myForm.value['manual'],
+        manualEN: this.myForm.value['manual'],
+        descriptionSP: this.myForm.value['description'],
+        descriptionPT: this.myForm.value['description'],
+        descriptionEN: this.myForm.value['description'],
+        titleSP: this.myForm.value['title'],
+        titleEN: this.myForm.value['title'],
+        titlePT: this.myForm.value['title']
+      }).subscribe({
+        next: (data) => {
+          if (data.success) {
+          this.dataSource[this.dataSource.findIndex(theme => theme._id === data.theme._id)] = data.theme;
+          this.showSuccessMessage(data.msg);
+          } else {
+            this.showErrorMessage(data.error);
+          }
+        },
+        error: (error) => {
+          this.showErrorMessage(error.error.error);
+        },
+      });
+    } else {
+      console.log('Formulario inválido');
     }
-    this.showSuccessMessage("Success!");
-  } else {
-    console.log('Formulario inválido');
   }
-}
 
-  eliminar(elemento: any) {
-    // Lógica para enviar el formulario aquí
-    this.dataSource = this.dataSource.filter(i => i !== elemento)
-  }
+eliminar(elemento: any) {
+  const id = elemento._id;
+
+  const url = `http://localhost:3000/api/theme/delete-theme/${id}`;
+
+  this.themeService.deleteTheme(url).subscribe({
+      next: (data) => {
+          console.log('Tema eliminado correctamente:', data);
+          this.dataSource = this.dataSource.filter(item => item !== elemento);
+          this.showSuccessMessage(data.msg);
+      },
+      error: (error) => {
+          console.error('Error al eliminar el tema:', error);
+          this.showErrorMessage(error.error.msg);
+      }
+  });
+}
 
   agregar() {
     if (this.myForm.valid) {
-      console.log('Formulario válido');
-      console.log('Valores del formulario:', this.myForm.value);
-
-      // Lógica para enviar el formulario aquí
-
-      this.dataSource[this.indexTheme] = {
-        id: this.ThemeToEdit['id'],
-        title: this.myForm.value['title'],
-        description: this.myForm.value['description'],
-        manual: this.myForm.value['manual'],
-      }
-      this.showSuccessMessage("Success!")
+      this.themeService.createTheme(`http://localhost:3000/api/theme/create-theme`, {
+        manualPT: this.myForm.value['manual'],
+        manualSP: this.myForm.value['manual'],
+        manualEN: this.myForm.value['manual'],
+        descriptionSP: this.myForm.value['description'],
+        descriptionPT: this.myForm.value['description'],
+        descriptionEN: this.myForm.value['description'],
+        titleSP: this.myForm.value['title'],
+        titleEN: this.myForm.value['title'],
+        titlePT: this.myForm.value['title']
+      }).subscribe({
+        next: (data) => {
+          if (data.success) {
+            this.dataSource.push(data.theme); 
+            this.showSuccessMessage(data.msg);
+          } else {
+            this.showErrorMessage(data.error);
+          }
+        },
+        error: (error) => {
+          this.showErrorMessage(error.error.error);
+        },
+      });
     } else {
       console.log('Formulario inválido');
     }
@@ -95,14 +137,22 @@ editar() {
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 
-  successMessage: string = '';
+successMessage: string = '';
+errorMessage: string = '';
 
-  showSuccessMessage(message: string) {
-    this.successMessage = message;
-    setTimeout(() => {
-      this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-    }, 5000); // Limpia el mensaje después de 5 segundos
-  }
+showSuccessMessage(message: string) {
+  this.successMessage = message;
+  setTimeout(() => {
+    this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+  }, 5000); // Limpia el mensaje después de 5 segundos
+}
+
+showErrorMessage(message: string) {
+  this.errorMessage = message;
+  setTimeout(() => {
+    this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+  }, 5000); // Limpia el mensaje después de 5 segundos
+}
   
   get totalPaginas(): number {
     return Math.ceil(this.dataSource.length / this.pageSize);

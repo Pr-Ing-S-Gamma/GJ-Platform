@@ -28,6 +28,14 @@ const createTeam = async (req, res) => {
         if (!existingRegion) {
             return res.status(400).json({ success: false, error: "That region does not exist" });
         }
+
+        for (const jammer of jammers) {
+            const user = await User.findById(jammer._id);
+            if (user.team && user.team._id) {
+                return res.status(400).json({ success: false, error: `User ${user.name} (${user.email}) is already assigned to a team.` });
+            }
+        }        
+
         const createdTeam = new Team({
             studioName: studioName,
             description: description,
@@ -56,14 +64,16 @@ const createTeam = async (req, res) => {
             },
             creationDate: new Date()
         });
+
         const savedTeam = await createdTeam.save();
+
         await Promise.all(jammers.map(async jammer => {
             const user = await User.findById(jammer._id);
             if (!user) {
                 console.log(`No se encontró el usuario con ID: ${jammer._id}`);
                 return;
             }
-            
+
             user.team = {
                 _id: savedTeam._id,
                 name: savedTeam.studioName
@@ -90,6 +100,13 @@ const updateTeam = async (req, res) => {
         const existingTeam = await Team.findById(teamId);
         if (!existingTeam) {
             return res.status(400).json({ success: false, error: "That team does not exist" });
+        }
+
+        for (const jammer of jammers) {
+            const user = await User.findById(jammer._id);
+            if (user.team && user.team._id && user.team._id.toString() !== existingTeam._id.toString()) {
+                return res.status(400).json({ success: false, error: `User ${user.name} (${user.email}) is already assigned to a different team.` });
+            }
         }
 
         existingTeam.studioName = studioName;
@@ -183,7 +200,20 @@ const getTeams = async (req, res) => {
 const deleteTeam = async (req, res) => {
     try {
         const id = req.params.id;
-        
+
+        const existingTeam = await Team.findById(id);
+        if (!existingTeam) {
+            return res.status(404).json({ success: false, error: 'No team found with the provided ID' });
+        }
+
+        for (const jammer of existingTeam.jammers) {
+            const user = await User.findById(jammer._id);
+            if (user) {
+                user.team = null;
+                await user.save();
+            }
+        }
+
         const deletedTeam = await Team.findOneAndDelete({ _id: id });
 
         if (deletedTeam) {
@@ -195,6 +225,7 @@ const deleteTeam = async (req, res) => {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
+
 
 const getTeamSite = async (req, res) => {
     try {
