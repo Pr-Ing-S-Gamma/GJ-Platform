@@ -44,7 +44,7 @@ export class UserCrudComponent implements OnInit{
         this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins }));
       },
       error => {
-        console.error('Error al obtener regiones:', error);
+        console.error('Error al obtener usuarios:', error);
       }
     );
     this.regionService.getRegions('http://localhost:3000/api/region/get-regions')

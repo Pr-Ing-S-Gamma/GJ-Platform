@@ -138,18 +138,13 @@ const updateSite = async (req, res) => {
     }
 };
 
-const getJudgesPerSite = async (req, res) => {
-    const { siteId } = req.params;
+const getStaffPerSite = async (req, res) => {
+    const { region, site } = req.params;
     try {
-        const judges = await User.find({ site: siteId, rol: 'Judge'})
-            .populate('site', 'name')
-            .select('name email'); 
-        if (judges.length === 0) {
-            return res.status(404).json({ success: false, error: "No se encontraron jueces para este sitio" });
-        }
-        return res.status(200).json({ success: true, judges });
-    } catch (error) {
-        return res.status(500).json({ error: "Error al obtener los jueces por sitio" });
+        const staff = await User.find({"region.name":region, "site.name": site})
+        res.status(200).send({ success: true, msg: 'Staff have been found in the system.', data: staff });
+    } catch(error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
@@ -189,8 +184,8 @@ module.exports = {
     loginUser,
     magicLink,
     updateSite,
-    getJudgesPerSite,
     getLocalOrganizersPerSite,
     getUsers,
-    getJammersPerSite
+    getJammersPerSite,
+    getStaffPerSite
 };
