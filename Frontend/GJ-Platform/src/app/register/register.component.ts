@@ -22,7 +22,8 @@ export class RegisterComponent implements OnInit {
   myForm!: FormGroup;
   regions: Region[] = [];
   sites: Site[] = [];
-
+  showModal: boolean = false;
+  showError: boolean = false;
   constructor(private router: Router, private fb: FormBuilder, private userService: UserService, private siteService: SiteService, private regionService: RegionService) { }
 
   ngOnInit(): void {
@@ -85,6 +86,7 @@ export class RegisterComponent implements OnInit {
       }).subscribe({
         next: (data) => {
           console.log(data);
+          this.showModal = true;
         },
         error: (error) => {
           console.log(error);
@@ -92,8 +94,17 @@ export class RegisterComponent implements OnInit {
       });
     } else {
       console.log('Formulario inválido');
+      this.showError = true;
     }
   }
-  
+
+  redirectToLogin() {
+    this.showModal = false;
+    this.router.navigate(['/login']);
+  }
+
+  closeError() {
+    this.showError = false;
+  }
 }
  

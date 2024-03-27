@@ -2,6 +2,7 @@ const User = require('../models/userModel');
 const { sendEmail } = require('../services/mailer');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+
 const registerUser = async (req, res) => {
     const { name, email, region, site, team, rol, coins } = req.body;
     try {
@@ -23,7 +24,6 @@ const registerUser = async (req, res) => {
         });
 
         await user.save();
-        
         res.status(200).json({ success: true, msg: 'Registered successfully', userId: user._id });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
@@ -74,7 +74,11 @@ const loginUser = async (req, res) => {
     let rol;
     let userId;
     if (!existingUser) {
-        res.status(400).send(`El correo ${email} no existe en la base de datos.`);
+        const registerLink = `http://localhost:4200/register`;
+        const subject = 'Login in GameJam Platform';
+        const text = `Hi, click on this link to create an account: ${registerLink}`;
+        await sendEmail(email, subject, text);
+        res.status(200).json({ success: true, msg: 'Se envió el registro al usuario.', email, registerLink });
     }
     
     rol = existingUser.rol;

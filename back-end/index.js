@@ -8,21 +8,21 @@ const path = require('path');
 
 // Crear una instancia de la aplicación Express
 const app = express();
-const appFrontend = express();
-const portFrontend = 4200; // Puerto para el frontend
+// const appFrontend = express();
+// const portFrontend = 4200; // Puerto para el frontend
 
-// Servir los archivos estáticos del frontend
-appFrontend.use(express.static(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser')));
+// // Servir los archivos estáticos del frontend
+// appFrontend.use(express.static(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser')));
 
-// Manejar todas las rutas del frontend devolviendo el archivo index.html
-appFrontend.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser/index.html'));
-});
+// // Manejar todas las rutas del frontend devolviendo el archivo index.html
+// appFrontend.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser/index.html'));
+// });
 
-// Iniciar el servidor del frontend
-appFrontend.listen(portFrontend, () => {
-    console.log(`Servidor del frontend escuchando en http://localhost:${portFrontend}`);
-});
+// // Iniciar el servidor del frontend
+// appFrontend.listen(portFrontend, () => {
+//     console.log(`Servidor del frontend escuchando en http://localhost:${portFrontend}`);
+// });
 
 const port = 3000; // Establecer el puerto en el que el servidor escuchará las solicitudes
 
