@@ -102,6 +102,15 @@
                     <app-user-crud></app-user-crud>
                 </div>
                 
+                <button class="btn btn-default w-100" (click)="toggleJam()" 
+                style="background: white; border-radius: 35px; border: 3px black solid; 
+                color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                text-align: left; padding-left: 25px; margin-top: 30px;">
+                    GameJams
+                </button>
+                <div *ngIf="showJam" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+                    <app-gamejam-crud></app-gamejam-crud>
+                </div>
 
                             
                     </div>

@@ -10,7 +10,6 @@ const createCategory = async (req, res) => {
         const existingCategory = await Category.findOne({ name: name });
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
-        
         if (existingCategory) {
             return res.status(400).json({ success: false, error: "Category already exists" });
         }

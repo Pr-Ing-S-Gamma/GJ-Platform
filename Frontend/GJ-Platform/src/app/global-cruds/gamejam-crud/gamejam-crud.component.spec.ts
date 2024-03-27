@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { JamCrudComponent } from './jam-crud.component';
+import { GamejamCrudComponent } from './gamejam-crud.component';
 
-describe('JamCrudComponent', () => {
-  let component: JamCrudComponent;
-  let fixture: ComponentFixture<JamCrudComponent>;
+describe('GamejamCrudComponent', () => {
+  let component: GamejamCrudComponent;
+  let fixture: ComponentFixture<GamejamCrudComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [JamCrudComponent]
+      imports: [GamejamCrudComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(JamCrudComponent);
+    fixture = TestBed.createComponent(GamejamCrudComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

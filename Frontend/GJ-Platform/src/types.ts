@@ -74,3 +74,16 @@ export interface Country {
   name: string;
   code: string;
 }
+
+export interface GameJam {
+  _id?: string;
+  edition: string;
+  region: {
+    _id: string;
+    name: string;
+  };
+  site: {
+    _id: string;
+    name: string;
+  };
+}
