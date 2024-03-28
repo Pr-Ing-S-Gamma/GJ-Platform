@@ -19,6 +19,19 @@ const createStage = async (req, res) => {
                 return res.status(400).json({ success: false, error: "That GameJam does not exist" });
             }
 
+            if (startDate && endDate) {
+                const startDateObj = new Date(startDate);
+                const endDateObj = new Date(endDate);
+            
+                if (startDateObj > endDateObj) {
+                    res.status(400).json({ error: "Start date cannot be after end date." });
+                    return;
+                }
+            } else {
+                res.status(400).json({ error: "Start and end dates are required." });
+                return;
+            }
+
             const stage = new Stage({
                 name: name,
                 startDate: startDate,
@@ -93,7 +106,18 @@ const updateStage = async (req, res) => {
                     await currentGameJam.save();
                 }
             }
-
+            if (startDate && endDate) {
+                const startDateObj = new Date(startDate);
+                const endDateObj = new Date(endDate);
+            
+                if (startDateObj > endDateObj) {
+                    res.status(400).json({ error: "Start date cannot be after end date." });
+                    return;
+                }
+            } else {
+                res.status(400).json({ error: "Start and end dates are required." });
+                return;
+            }
             stage.name = name;
             stage.startDate = startDate;
             stage.endDate = endDate;
