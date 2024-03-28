@@ -39,7 +39,7 @@ export class StageCrudComponent implements OnInit{
     const url = 'http://localhost:3000/api/game-jam/get-game-jams';
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
-        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site}));
+        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, theme: gamejam.theme}));
       },
       error => {
         console.error('Error al obtener GameJams:', error);
@@ -125,7 +125,7 @@ export class StageCrudComponent implements OnInit{
         },
       });
     } else {
-      console.log('Formulario inválido');
+      this.showErrorMessage('Please fill in all fields of the form');
     }
   }
   
@@ -161,7 +161,7 @@ export class StageCrudComponent implements OnInit{
         },
       });
     } else {
-      console.log('Formulario inválido');
+      this.showErrorMessage('Please fill in all fields of the form');
     }
   }
 

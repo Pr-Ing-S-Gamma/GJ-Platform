@@ -2,10 +2,11 @@ import { Component, OnInit, ViewChild, ElementRef  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { GameJam, Region, Site } from '../../../types';
+import { GameJam, Region, Site, Theme } from '../../../types';
 import { SiteService } from '../../services/site.service';
 import { RegionService } from '../../services/region.service';
 import { GamejamService } from '../../services/gamejam.service';
+import { ThemeService } from '../../services/theme.service';
 declare var $: any;
 
 
@@ -25,21 +26,23 @@ export class GamejamCrudComponent implements OnInit{
   dataSource: GameJam[] = [];
   regions: Region[] = [];
   sites: Site[] = [];
+  themes: Theme[] = [];
   rols = ['GlobalOrganizer', 'LocalOrganizer', 'Judge', 'Jammer']
   
   userToEdit : any;
   indexUser = 0
-  constructor(private fb: FormBuilder, private gamejamService: GamejamService, private siteService: SiteService, private regionService: RegionService){}
+  constructor(private fb: FormBuilder, private gamejamService: GamejamService, private siteService: SiteService, private regionService: RegionService, private themeService: ThemeService){}
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
       region: ['', Validators.required],
-      site: ['', Validators.required]
+      site: ['', Validators.required],
+      theme: ['', Validators.required]
     });
     const url = 'http://localhost:3000/api/game-jam/get-game-jams';
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
-        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site}));
+        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, theme: gamejam.theme}));
       },
       error => {
         console.error('Error al obtener las GameJams:', error);
@@ -52,6 +55,15 @@ export class GamejamCrudComponent implements OnInit{
       },
       error => {
         console.error('Error al obtener regiones:', error);
+      }
+    );
+    this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
+    .subscribe(
+      themes => {
+        this.themes = themes;
+      },
+      error => {
+        console.error('Error al obtener temas:', error);
       }
     );
   }
@@ -81,6 +93,7 @@ export class GamejamCrudComponent implements OnInit{
     this.indexUser = this.dataSource.indexOf(elemento);
     const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
     const selectedSite = this.sites.find(site => site._id === elemento.site._id);
+    const selectedTheme = this.themes.find(theme => theme._id === elemento.theme._id);
     this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${elemento.region._id}`)
     .subscribe(
       sites => {
@@ -97,7 +110,8 @@ export class GamejamCrudComponent implements OnInit{
     this.myForm.patchValue({
       edition: elemento.edition,
       region: selectedRegion, 
-      site: selectedSite
+      site: selectedSite,
+      theme: selectedTheme
     });
   }
   
@@ -105,7 +119,7 @@ export class GamejamCrudComponent implements OnInit{
     if (this.myForm.valid) {
       console.log('Formulario válido');
       const gamejamId = this.userToEdit['_id'];
-      const { edition, region, site} = this.myForm.value;
+      const { edition, region, site, theme} = this.myForm.value;
   
       this.gamejamService.updateGameJam(`http://localhost:3000/api/game-jam/update-game-jam/${gamejamId}`, {
         edition: edition,
@@ -117,10 +131,16 @@ export class GamejamCrudComponent implements OnInit{
           _id: site._id,
           name: site.name
         },
+        theme: {
+          _id: theme._id,
+          titleEN: theme.titleEN,
+          descriptionEN: theme.descriptionEN,
+          manualEN: theme.manualEN
+        }
       }).subscribe({
         next: (data) => {
           if (data.success) {
-            this.dataSource[this.indexUser]={ _id: gamejamId, edition: edition, region: region, site: site};
+            this.dataSource[this.indexUser]={ _id: gamejamId, edition: edition, region: region, site: site, theme: theme};
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -131,7 +151,7 @@ export class GamejamCrudComponent implements OnInit{
         },
       });
     } else {
-      console.log('Formulario inválido');
+      this.showErrorMessage('Please fill in all fields of the form');
     }
   }
 
@@ -157,7 +177,7 @@ export class GamejamCrudComponent implements OnInit{
       if (this.myForm.valid) {
         console.log('Formulario válido');
         
-        const { edition, region, site} = this.myForm.value;
+        const { edition, region, site, theme} = this.myForm.value;
         this.gamejamService.createGameJam(`http://localhost:3000/api/game-jam/create-game-jam`, {
           edition: edition,
           region: {
@@ -168,11 +188,17 @@ export class GamejamCrudComponent implements OnInit{
             _id: site._id,
             name: site.name
           },
+          theme: {
+            _id: theme._id,
+            titleEN: theme.titleEN,
+            descriptionEN: theme.descriptionEN,
+            manualEN: theme.manualEN
+          }
         }).subscribe({
           next: (data) => {
             if (data.success) {
               const gameJamId = data.gameJamId;
-              this.dataSource.push({ _id: gameJamId, edition: edition, region: region, site: site});
+              this.dataSource.push({ _id: gameJamId, edition: edition, region: region, site: site, theme: theme});
               this.showSuccessMessage(data.msg);
             } else {
               this.showErrorMessage(data.error);
@@ -183,7 +209,7 @@ export class GamejamCrudComponent implements OnInit{
           },
         });
       } else {
-        console.log('Formulario inválido');
+        this.showErrorMessage('Please fill in all fields of the form');
       }
     }
 

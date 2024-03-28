@@ -86,6 +86,12 @@ export interface GameJam {
     _id: string;
     name: string;
   };
+  theme: {
+    _id: string;
+    titleEN: string;
+    descriptionEN: string;
+    manualEN: string;
+  };
 }
 
 export interface Stage {

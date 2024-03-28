@@ -102,13 +102,48 @@ const updateTeam = async (req, res) => {
             return res.status(400).json({ success: false, error: "That team does not exist" });
         }
 
+        const regionChanged = existingTeam.region._id.toString() !== region._id;
+        const siteChanged = existingTeam.site._id.toString() !== site._id;
+
+        if (regionChanged || siteChanged) {
+            for (const jammer of existingTeam.jammers) {
+                    const user = await User.findById(jammer._id);
+                    if (user) {
+                        user.team = null;
+                        await user.save();
+                    }
+            }
+            existingTeam.jammers = [];
+        }
+
         for (const jammer of jammers) {
             const user = await User.findById(jammer._id);
             if (user.team && user.team._id && user.team._id.toString() !== existingTeam._id.toString()) {
                 return res.status(400).json({ success: false, error: `User ${user.name} (${user.email}) is already assigned to a different team.` });
             }
         }
+        if(req.body.studioName) {
+            const query = { 'team._id': teamId };
 
+            const updateFieldsQuery = { $set: { 'team.name': studioName } };
+
+            const updatePromises = [];
+
+            updatePromises.push(
+              User.updateMany(query, updateFieldsQuery)
+            );
+            
+            Promise.all(updatePromises)
+            .then(results => {
+              results.forEach((result, index) => {
+                const modelNames = ['User'];
+                console.log(`${modelNames[index]} documents updated successfully:`, result);
+              });
+            })
+            .catch(error => {
+              console.error('Error updating documents:', error);
+            });
+        }
         existingTeam.studioName = studioName;
         existingTeam.description = description;
         existingTeam.gameJam = {

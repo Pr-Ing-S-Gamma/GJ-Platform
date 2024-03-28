@@ -105,7 +105,7 @@ export class SiteCrudComponent implements OnInit {
         }
       });
     } else {
-      console.log('Formulario inválido');
+      this.showErrorMessage('Please fill in all fields of the form');
     }
   }
 
@@ -148,7 +148,7 @@ export class SiteCrudComponent implements OnInit {
         },
       });
     } else {
-      console.log('Formulario inválido');
+      this.showErrorMessage('Please fill in all fields of the form');
     }
   }
 

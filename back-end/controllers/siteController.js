@@ -1,6 +1,8 @@
-const User = require('../models/userModel');
 const Site = require('../models/siteModel');
 const Region = require('../models/regionModel');
+const Team = require('../models/teamModel');
+const GameJam = require('../models/gameJamEventModel');
+const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
@@ -78,6 +80,28 @@ const updateSite = async (req, res) => {
         if (req.body.name) {
             updateFields.name = req.body.name;
             changed++;
+            const query = { 'site._id': id };
+
+            const updateFieldsQuery = { $set: { 'site.name': req.body.name } };
+
+            const updatePromises = [];
+
+            updatePromises.push(
+              User.updateMany(query, updateFieldsQuery),
+              GameJam.updateMany(query, updateFieldsQuery),
+              Team.updateMany(query, updateFieldsQuery)
+            );
+            
+            Promise.all(updatePromises)
+            .then(results => {
+              results.forEach((result, index) => {
+                const modelNames = ['User', 'GameJam', 'Team'];
+                console.log(`${modelNames[index]} documents updated successfully:`, result);
+              });
+            })
+            .catch(error => {
+              console.error('Error updating documents:', error);
+            });
         }
         if (req.body.country) {
             const countriesPath = path.join(__dirname, '..', 'staticData', 'countries.json');
@@ -202,6 +226,26 @@ const deleteSite = async(req,res)=>{
             }
         }
         const deletedSite = await Site.findOneAndDelete({ _id: id });
+        const query = { 'site._id': id };
+
+        const deletePromises = [];
+        
+        deletePromises.push(
+            User.deleteMany(query),
+            GameJam.deleteMany(query),
+            Team.deleteMany(query)
+        );
+        
+        Promise.all(deletePromises)
+            .then(results => {
+                results.forEach((result, index) => {
+                    const modelNames = ['User', 'GameJam', 'Team'];
+                    console.log(`${modelNames[index]} documents deleted successfully:`, result);
+                });
+            })
+            .catch(error => {
+                console.error('Error deleting documents:', error);
+            });        
         res.status(200).send({ success:true, msg:'Site eliminado correctamente', data: deletedSite });
     } catch(error) {
         res.status(400).send({ success:false, msg:error.message });

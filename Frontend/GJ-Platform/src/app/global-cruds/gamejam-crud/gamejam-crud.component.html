@@ -1,8 +1,6 @@
 <div class="card-body" style="background: white;
 border-radius: 35px; border: 1px black solid;
 border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
-    <!-- Aquí puedes colocar tus formularios o contenido CRUD -->
-    <!-- TODO: -->
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -11,6 +9,10 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <th scope="col">Edition</th>
                     <th scope="col">Region</th>
                     <th scope="col">Site</th>
+                    <th scope="col">ID Theme</th>
+                    <th scope="col">Theme Name</th>
+                    <th scope="col">Theme Description</th>
+                    <th scope="col">Theme Manual</th>
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
                 </tr>
@@ -21,6 +23,10 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <td>{{ row.edition }}</td>
                     <td>{{ row.region.name }}</td>
                     <td>{{ row.site.name }}</td>
+                    <td>{{ row.theme._id }}</td>
+                    <td>{{ row.theme.titleEN }}</td>
+                    <td>{{ row.theme.descriptionEN }}</td>
+                    <td>{{ row.theme.manualEN }}</td>
                     <td>
                         <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
                     </td>
@@ -104,7 +110,16 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                               <option *ngFor="let site of sites" [ngValue]="site">{{ site.name }}</option>
                             </select>
                           </div>
-
+                          <div style="margin-left: 50px; text-align: left; color: black;
+                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                             Theme</div>
+                          <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <select class="form-control" id="themes"  
+                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="theme">
+                              <option value="" disabled selected hidden>Theme</option>
+                              <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN + ' - ' + theme.descriptionEN }}</option>
+                            </select>
+                          </div>
                         <div style="margin-left: 50px; text-align: left; color: black;
                             font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
                             Edition</div>
@@ -165,6 +180,16 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                             style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="site">
                               <option value="" disabled selected hidden>Site</option>
                               <option *ngFor="let site of sites" [ngValue]="site">{{ site.name }}</option>
+                            </select>
+                          </div>
+                          <div style="margin-left: 50px; text-align: left; color: black;
+                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                             Theme</div>
+                          <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <select class="form-control" id="themes"  
+                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="theme">
+                              <option value="" disabled selected hidden>Theme</option>
+                              <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN + ' - ' + theme.descriptionEN }}</option>
                             </select>
                           </div>
                         <div style="margin-left: 50px; text-align: left; color: black;

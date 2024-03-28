@@ -85,16 +85,19 @@ export class RegisterComponent implements OnInit {
         coins: 0
       }).subscribe({
         next: (data) => {
-          console.log(data);
-          this.showModal = true;
+          if (data.success) {
+            this.showModal = true;
+          } else {
+            this.showErrorMessage('JKLASDJLKASDLKJ');
+          }
         },
         error: (error) => {
           console.log(error);
+          this.showErrorMessage(error.error.error);
         },
       });
     } else {
-      console.log('Formulario inválido');
-      this.showError = true;
+      this.showErrorMessage('Please fill all the fields.');
     }
   }
 
@@ -102,9 +105,14 @@ export class RegisterComponent implements OnInit {
     this.showModal = false;
     this.router.navigate(['/login']);
   }
-
-  closeError() {
-    this.showError = false;
+  errorMessage: string = '';
+  
+  showErrorMessage(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => {
+      this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+    }, 5000); // Limpia el mensaje después de 5 segundos
   }
+
 }
  

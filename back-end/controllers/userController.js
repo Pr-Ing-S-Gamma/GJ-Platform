@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Team = require('../models/teamModel');
 const { sendEmail } = require('../services/mailer');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
@@ -6,6 +7,9 @@ const mongoose = require('mongoose');
 const registerUser = async (req, res) => {
     const { name, email, region, site, team, rol, coins } = req.body;
     try {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            return res.status(400).json({ success: false, error: 'Invalid email address.' });
+        }
         const existingEmail = await User.findOne({ email });
 
         if (existingEmail) {
@@ -44,6 +48,9 @@ const updateUser = async (req, res) => {
         }
 
         if (email && email !== existingUser.email) {
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                return res.status(400).json({ success: false, error: 'Invalid email address.' });
+            }
             const emailExists = await User.findOne({ email });
             if (emailExists) {
                 return res.status(400).json({ success: false, error: 'The email is already in use.' });
@@ -175,6 +182,22 @@ const deleteUser = async(req,res)=>{
     try{
         const id = req.params.id;
         const deletedUser = await User.findOneAndDelete({ _id: id });
+        const query = { 'jammers._id': id };
+
+        const updateFieldsQuery = { 
+            $pull: { 
+                'jammers': { '_id': id }
+            }
+        };
+        
+        Team.updateMany(query, updateFieldsQuery)
+            .then(result => {
+                console.log("Jammer removed successfully:", result);
+            })
+            .catch(error => {
+                console.error('Error removing Jammer:', error);
+            });
+        
         res.status(200).send({ success:true, msg:'Usuario eliminado correctamente', data: deletedUser });
     } catch(error) {
         res.status(400).send({ success:false, msg:error.message });

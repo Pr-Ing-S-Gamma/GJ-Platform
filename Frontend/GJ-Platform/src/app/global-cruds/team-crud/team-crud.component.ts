@@ -48,7 +48,7 @@ export class TeamCrudComponent implements OnInit {
 
     this.gamejamService.getGameJams('http://localhost:3000/api/game-jam/get-game-jams').subscribe(
       (gamejams: any[]) => {
-        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site}));
+        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, theme: gamejam.theme}));
       },
       error => {
         console.error('Error al obtener GameJams:', error);
@@ -240,7 +240,7 @@ removeJammer(jammer: User) {
        }
        });
       } else {
-      console.log('Formulario inválido');
+      this.showErrorMessage('Please fill in all fields of the form');
       }
 }
   
@@ -301,7 +301,7 @@ removeJammer(jammer: User) {
              }
              });
             } else {
-            console.log('Formulario inválido');
+            this.showErrorMessage('Please fill in all fields of the form');
             }
   }
     

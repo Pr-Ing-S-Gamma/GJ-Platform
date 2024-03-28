@@ -2,11 +2,14 @@ const GameJam = require('../models/gameJamEventModel');
 const User = require('../models/userModel');
 const Site = require('../models/siteModel');
 const Region = require('../models/regionModel');
+const Stage = require('../models/stageModel');
+const Team = require('../models/teamModel');
+const Theme = require("../models/themeModel");
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 const createGameJam = async (req, res) => {
-    const { edition, region, site } = req.body;
+    const { edition, region, site, theme } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
@@ -29,6 +32,15 @@ const createGameJam = async (req, res) => {
             }
         }
 
+        if (!mongoose.Types.ObjectId.isValid(theme._id)) {
+            return res.status(400).json({ success: false, error: 'The provided theme ID is not valid.' });
+        } else {
+            const existingTheme = await Theme.findById(theme._id);
+            if (!existingTheme) {
+                return res.status(400).json({ success: false, error: "That theme does not exist." });
+            }
+        }
+
         const gameJam = new GameJam({
             edition: edition,
             region: {
@@ -38,6 +50,12 @@ const createGameJam = async (req, res) => {
             site: {
                 _id: site._id,
                 name: site.name
+            },
+            theme: {
+                _id: theme._id,
+                titleEN: theme.titleEN,
+                descriptionEN: theme.descriptionEN,
+                manualEN: theme.manualEN
             },
             creatorUser: {
                 userId: creatorUser._id,
@@ -57,7 +75,7 @@ const createGameJam = async (req, res) => {
 
 const updateGameJam = async (req, res) => {
     const { id } = req.params;
-    const { edition, region, site } = req.body;
+    const { edition, region, site, theme } = req.body;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'The provided ID is not valid.' });
@@ -71,6 +89,27 @@ const updateGameJam = async (req, res) => {
 
         if (edition) {
             gameJam.edition = edition;
+            const query = { 'gameJam._id': id };
+
+            const updateFieldsQuery = { $set: { 'gameJam.edition': edition } };
+
+            const updatePromises = [];
+
+            updatePromises.push(
+              Stage.updateMany(query, updateFieldsQuery),
+              Team.updateMany(query, updateFieldsQuery)
+            );
+            
+            Promise.all(updatePromises)
+            .then(results => {
+              results.forEach((result, index) => {
+                const modelNames = ['Stage', 'Team'];
+                console.log(`${modelNames[index]} documents updated successfully:`, result);
+              });
+            })
+            .catch(error => {
+              console.error('Error updating documents:', error);
+            });
         }
         if (region) {
             if (region._id && mongoose.Types.ObjectId.isValid(region._id)) {
@@ -101,13 +140,29 @@ const updateGameJam = async (req, res) => {
             }
         }
 
+        if (theme) {
+            if (theme._id && mongoose.Types.ObjectId.isValid(theme._id)) {
+                const existingTheme = await Theme.findById(theme._id);
+                if (!existingTheme) {
+                    return res.status(400).json({ success: false, error: "That theme does not exist." });
+                }
+                gameJam.theme = {
+                    _id: theme._id,
+                    titleEN: theme.titleEN,
+                    descriptionEN: theme.descriptionEN,
+                    manualEN: theme.manualEN
+                };
+            } else {
+                return res.status(400).json({ success: false, error: 'Invalid theme ID provided.' });
+            }
+        }
+
         await gameJam.save();
         res.status(200).json({ success: true, msg: 'GameJam updated successfully.' });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
-
 
 const getGameJam = async(req,res)=>{
     try{
@@ -140,6 +195,25 @@ const deleteGameJam = async(req,res)=>{
     try{
         const id = req.params.id;
         const deletedGameJam = await GameJam.findOneAndDelete({ _id: id });
+        const query = { 'gameJam._id': id };
+
+        const deletePromises = [];
+        
+        deletePromises.push(
+            Stage.deleteMany(query),
+            Team.deleteMany(query)
+        );
+        
+        Promise.all(deletePromises)
+            .then(results => {
+                results.forEach((result, index) => {
+                    const modelNames = ['Stage', 'Team'];
+                    console.log(`${modelNames[index]} documents deleted successfully:`, result);
+                });
+            })
+            .catch(error => {
+                console.error('Error deleting documents:', error);
+            });        
         res.status(200).send({ success:true, msg:'GameJam deleted successfully', data: deletedGameJam });
     } catch(error) {
         res.status(400).send({ success:false, msg:error.message });

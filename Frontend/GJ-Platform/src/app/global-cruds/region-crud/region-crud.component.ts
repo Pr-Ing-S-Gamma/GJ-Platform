@@ -70,7 +70,7 @@ export class RegionCRUDComponent implements OnInit{
         }
       });
     } else {
-      console.log('Formulario inválido');
+      this.showErrorMessage('Please fill in all fields of the form');
     }
   }
 
@@ -114,7 +114,7 @@ export class RegionCRUDComponent implements OnInit{
         },
       });
     } else {
-      console.log('Formulario inválido');
+      this.showErrorMessage('Please fill in all fields of the form');
     }
   }  
 

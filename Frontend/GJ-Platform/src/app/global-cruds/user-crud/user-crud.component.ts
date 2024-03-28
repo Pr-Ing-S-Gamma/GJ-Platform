@@ -139,11 +139,9 @@ export class UserCrudComponent implements OnInit{
       });
     } else {
       console.log('Formulario inválido');
+      this.showErrorMessage('Please fill in all fields of the form');
     }
   }
-  
-
-
 
     eliminar(elemento: any) {
       const id = elemento._id;
@@ -197,7 +195,7 @@ export class UserCrudComponent implements OnInit{
           },
         });
       } else {
-        console.log('Formulario inválido');
+        this.showErrorMessage('Please fill in all fields of the form');
       }
     }
 

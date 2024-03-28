@@ -40,6 +40,25 @@ const gameJamSchema = mongoose.Schema({
             required: true 
         }
     },
+    theme:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Theme',
+            required: true
+        },
+        titleEN: { 
+            type: String, 
+            required: true 
+        },
+        descriptionEN: { 
+            type: String, 
+            required: true 
+        },
+        manualEN: { 
+            type: String, 
+            required: true 
+        } 
+    },
     creatorUser:  {
         userId: {
             type: Schema.Types.ObjectId, 

@@ -1,8 +1,9 @@
   const jwt = require('jsonwebtoken');
   const mongoose = require('mongoose');
   const Theme = require("../models/themeModel");
-  const Submission = require("../models/submissionModel")
-  const User = require("../models/userModel")
+  const Submission = require("../models/submissionModel");
+  const User = require("../models/userModel");
+  const GameJam = require('../models/gameJamEventModel');
 
   const createTheme = async (req, res) => {
     try {
@@ -91,6 +92,7 @@
       if (!mongoose.Types.ObjectId.isValid(themeId)) {
         return res.status(404).json({ success: false, error: 'Theme not found' });
       }
+
       const theme = await Theme.findByIdAndUpdate(req.params.id, req.body, { new: true });
       
       const lastUpdateUser = await User.findById(userId);
@@ -105,6 +107,35 @@
       };
   
       await theme.save();
+
+      if (req.body.manualEN && req.body.descriptionEN && req.body.titleEN) {
+        const query = { 'theme._id': req.params.id };
+    
+        GameJam.find(query)
+            .then(foundGameJams => {
+                console.log("GameJams encontrados:", foundGameJams);
+                if (foundGameJams.length > 0) {
+                    const updateFieldsQuery = {
+                        $set: {
+                            'theme.manualEN': req.body.manualEN,
+                            'theme.descriptionEN': req.body.descriptionEN,
+                            'theme.titleEN': req.body.titleEN
+                        }
+                    };
+                    return GameJam.updateMany(query, updateFieldsQuery);
+                } else {
+                    console.log("No se encontraron GameJams para actualizar.");
+                    return Promise.resolve();
+                }
+            })
+            .then(result => {
+                console.log("Documentos actualizados exitosamente:", result);
+            })
+            .catch(error => {
+                console.error('Error actualizando documentos:', error);
+            });
+    }
+    
   
       return res.status(200).json({ success: true, msg: 'Successfully updated', theme: theme });
     } catch (error) {
