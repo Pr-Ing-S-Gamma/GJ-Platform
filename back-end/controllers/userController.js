@@ -64,7 +64,24 @@ const updateUser = async (req, res) => {
         if (team) existingUser.team = { _id: team._id, name: team.name };
         if (rol) existingUser.rol = rol;
         if (coins) existingUser.coins = coins;
-        
+        if(rol === 'Jammer') {
+            const query = { 'jammers._id': id };
+
+            const updateFieldsQuery = { 
+                $set: { 
+                    'jammers.$.name': name,
+                    'jammers.$.email': email
+                }
+            };
+
+            Team.updateMany(query, updateFieldsQuery)
+            .then(result => {
+                console.log("Jammer fields updated successfully:", result);
+            })
+            .catch(error => {
+                console.error('Error updating Jammer fields:', error);
+            });
+        }
         existingUser.lastUpdateDate = new Date();
 
         await existingUser.save();
