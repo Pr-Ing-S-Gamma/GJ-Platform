@@ -8,7 +8,7 @@ import { GlobalSitesComponent } from './global-sites/global-sites.component';
 import { LocalSiteInformationComponent } from './local-site-information/local-site-information.component';
 
 export const routes: Routes = [
-    {path: '',redirectTo: "Sites", pathMatch: "full"},
+    {path: '',redirectTo: "login", pathMatch: "full"},
 
     {path: 'login',component: LoginComponent},
     {path: 'register', component: RegisterComponent},
