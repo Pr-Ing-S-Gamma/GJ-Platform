@@ -10,23 +10,54 @@ const teamSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    site: {
-        type: String,
-        required: true
+    region:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Region',
+            required: true
+        },
+        name: { 
+            type: String, 
+            required: true 
+        }
+    },
+    site:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Site',
+            required: true
+        },
+        name: { 
+            type: String, 
+            required: true 
+        }
     },
     linkTree: [{
         type:String,
         required:true
     }],
-    gameJam: {
-        type: Schema.Types.ObjectId, 
-        ref: 'GameJam',
-        required: true
+    gameJam:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'GameJam',
+            required: true
+        },
+        edition: { 
+            type: String, 
+            required: true 
+        }
     },
     jammers:  [{
-        type: Schema.Types.ObjectId, 
-        ref: 'Jammer',
-        required: true
+        _id: {
+            type: Schema.Types.ObjectId, 
+            ref: 'User'
+        },
+        name: { 
+            type: String
+        },
+        email: { 
+            type: String
+        }
     }],
     lastSub: {
         type: Schema.Types.ObjectId,
@@ -38,20 +69,6 @@ const teamSchema = mongoose.Schema({
         ref: 'Submission',
         required: false
     }],
-    logo: {
-        name: { 
-            type: String, 
-            required: true 
-        },
-        type: { 
-            type: String, 
-            required: true 
-        },
-        data: { 
-            type: Buffer, 
-            required: true 
-        }
-    },
     creatorUser:  {
         userId: {
             type: Schema.Types.ObjectId, 

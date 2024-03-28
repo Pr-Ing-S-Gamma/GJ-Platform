@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild, ElementRef  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Country, Region, Site } from '../../../types';
+import { RegionService } from '../../services/region.service';
+import { SiteService } from '../../services/site.service';
 declare var $: any;
 
 @Component({
@@ -17,70 +20,133 @@ declare var $: any;
 })
 export class SiteCrudComponent implements OnInit {
   myForm!: FormGroup;
-  dataSource = [
-    { id: 1, name: 'Zapote' , country: 'Brazil', region: 'Asia' },
-    { id: 2, name: 'Ennies lobby' , country: 'Gobierno mundial', region: 'GrandLine' },
-    { id: 3, name: 'Guadalupe' , country: 'Costa Rica', region: 'LATAM' },
-  ];
-  regiones = ['Asia', 'GrandLine', 'LATAM', 'Brazil', 'Partido de la amistad']
-  
+  dataSource: Site[] = [];
+  regions: Region[] = [];
+  countries: Country[] = [];
+
   siteToEdit: any;
   indexSite = 0;
-  constructor(private fb: FormBuilder){
-  }
+  constructor(private fb: FormBuilder, private siteService: SiteService, private regionService: RegionService){}
   ngOnInit(): void {
     this.myForm = this.fb.group({
       name: ['', Validators.required],
       country: ['', Validators.required],
       region: ['', Validators.required]
     });
+    this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
+    .subscribe(
+      regions => {
+        this.regions = regions;
+      },
+      error => {
+        console.error('Error al obtener regiones:', error);
+      }
+    );
+    this.siteService.getCountries('http://localhost:3000/api/site/get-countries')
+    .subscribe(
+      countries => {
+        this.countries = countries;
+      },
+      error => {
+        console.error('Error al obtener países:', error);
+      }
+    );
+    this.siteService.getSites('http://localhost:3000/api/site/get-sites')
+    .subscribe(
+      sites => {
+        this.dataSource = sites;
+      },
+      error => {
+        console.error('Error al obtener países:', error);
+      }
+    );
   }
 
   seleccionarElemento(elemento: any) {
     this.siteToEdit = elemento;
     this.indexSite = this.dataSource.indexOf(elemento);
-    
-    // Autollenar los campos del formulario con los datos existentes del elemento seleccionado
+
+    const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
+    const selectedCountry = this.countries.find(country => country.name === elemento.country.name);
+
     this.myForm.patchValue({
       name: elemento.name,
-      country: elemento.country,
-      region: elemento.region
+      region: selectedRegion, 
+      country: selectedCountry 
     });
   }
-  
 
-  // Aquí puedes agregar la lógica para editar y eliminar elementos
   editar() {
     if (this.myForm.valid) {
-      console.log('Formulario válido');
-      console.log('Valores del formulario:', this.myForm.value);
-      this.dataSource[this.indexSite] = {
-        id: this.siteToEdit['id'],
-        name: this.myForm.value['name'],
-        country: this.myForm.value['country'],
-        region: this.myForm.value['region'],
-      }
-      this.showSuccessMessage("Success!")
+      
+      const siteId = this.siteToEdit['_id'];
+      
+      const url = `http://localhost:3000/api/site/update-site/${siteId}`;
+      
+      console.log(this.myForm.value["country"].name);
+      this.siteService.updateSite(url, {
+        name: this.myForm.value["name"],
+        region: this.myForm.value["region"],
+        country: this.myForm.value["country"].name
+      }).subscribe({
+        next: (data) => {
+          console.log('Respuesta del servidor:', data);
+          this.dataSource[this.indexSite] = {
+            _id: siteId,
+            name: this.myForm.value["name"],
+            region: this.myForm.value["region"],
+            country: this.myForm.value["country"]
+          };
+          this.showSuccessMessage('Site updated successfully!');
+        },
+        error: (error) => {
+          console.error('Error al actualizar el site:', error);
+          this.showErrorMessage(error.error.error);
+        }
+      });
     } else {
       console.log('Formulario inválido');
     }
   }
 
   eliminar(elemento: any) {
-    this.dataSource = this.dataSource.filter(i => i !== elemento);
+    const id = elemento._id;
+
+    const url = `http://localhost:3000/api/site/delete-site/${id}`;
+
+    this.siteService.deleteSite(url).subscribe({
+        next: (data) => {
+            console.log('Site eliminado correctamente:', data);
+            this.dataSource = this.dataSource.filter(item => item !== elemento);
+            this.showSuccessMessage(data.msg);
+        },
+        error: (error) => {
+            console.error('Error al eliminar la categoría:', error);
+            this.showErrorMessage(error.error.msg);
+        }
+    });
   }
 
   agregar() {
     if (this.myForm.valid) {
-      console.log('Formulario válido');
-      console.log('Valores del formulario:', this.myForm.value)
-      this.dataSource.push({
-        id: this.dataSource.length + 1,
-        name: this.myForm.value['name'],
-        country: this.myForm.value['country'],
-        region: this.myForm.value['region']
-      })
-      this.showSuccessMessage("Success!")
+      this.siteService.createSite(`http://localhost:3000/api/site/create-site`, {
+        name: this.myForm.value["name"],
+        region: this.myForm.value["region"],
+        country: this.myForm.value["country"].name
+      }).subscribe({
+        next: (data) => {
+          if (data.success) {
+            const siteId = data.siteId;
+            this.dataSource.push({ _id: siteId, name: this.myForm.value["name"], region: this.myForm.value["region"], country: this.myForm.value["country"]});
+            this.showSuccessMessage(data.msg);
+          } else {
+            this.showErrorMessage(data.error);
+          }
+        },
+        error: (error) => {
+          this.showErrorMessage(error.error.error);
+        },
+      });
     } else {
       console.log('Formulario inválido');
     }
@@ -91,14 +157,22 @@ export class SiteCrudComponent implements OnInit {
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 
-  successMessage: string = '';
+successMessage: string = '';
+errorMessage: string = '';
 
-  showSuccessMessage(message: string) {
-    this.successMessage = message;
-    setTimeout(() => {
-      this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-    }, 5000); // Limpia el mensaje después de 5 segundos
-  }
+showSuccessMessage(message: string) {
+  this.successMessage = message;
+  setTimeout(() => {
+    this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+  }, 5000); // Limpia el mensaje después de 5 segundos
+}
+
+showErrorMessage(message: string) {
+  this.errorMessage = message;
+  setTimeout(() => {
+    this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+  }, 5000); // Limpia el mensaje después de 5 segundos
+}
   
   get totalPaginas(): number {
     return Math.ceil(this.dataSource.length / this.pageSize);

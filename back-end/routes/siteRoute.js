@@ -16,6 +16,8 @@ site_route.post('/create-site', upload.none(), siteController.createSite);
 site_route.put('/update-site/:id', upload.none(), siteController.updateSite);
 site_route.get('/get-site/:id', siteController.getSite);
 site_route.get('/get-sites', siteController.getSites);
+site_route.get('/get-countries', siteController.getCountries);
+site_route.get('/get-sites-per-region/:regionId', siteController.getSitesPerRegion);
 site_route.delete('/delete-site/:id', siteController.deleteSite);
 
 module.exports = site_route;

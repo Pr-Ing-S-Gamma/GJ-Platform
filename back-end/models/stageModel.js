@@ -14,10 +14,16 @@ const stageSchema = mongoose.Schema({
         type: Date,
         required: true
     },
-    gameJam: {
-        type: Schema.Types.ObjectId,
-        ref: 'GameJam',
-        required: true
+    gameJam:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'GameJam',
+            required: true
+        },
+        edition: { 
+            type: String, 
+            required: true 
+        }
     },
     creatorUser:  {
         userId: {

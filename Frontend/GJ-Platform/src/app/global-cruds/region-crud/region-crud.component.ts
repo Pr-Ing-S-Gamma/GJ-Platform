@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RegionService } from '../../services/region.service';
+import { Region } from '../../../types';
 declare var $: any;
 
 @Component({
@@ -17,71 +19,111 @@ declare var $: any;
 })
 export class RegionCRUDComponent implements OnInit{
   myForm!: FormGroup;
-  dataSource = [
-    { id: 1, region: 'LATAM' },
-    { id: 2, region: 'Brazil' },
-    { id: 3, region: 'Asia' }
-  ];
+  dataSource: Region[] = [];
   
   regionToEdit: any;
   indexRegion = 0;
-  constructor(private fb: FormBuilder){
+  constructor(private fb: FormBuilder, private regionService: RegionService){
   }
   ngOnInit(): void {
     this.myForm = this.fb.group({
       region: ['', Validators.required]
     });
+    const url = 'http://localhost:3000/api/region/get-regions';
+    this.regionService.getRegions(url).subscribe(
+      (regions: any[]) => {
+        this.dataSource = regions.map(region => ({ _id: region._id, name: region.name }));
+      },
+      error => {
+        console.error('Error al obtener regiones:', error);
+      }
+    );
   }
 
   seleccionarElemento(elemento:any){
     let regionEditInput = document.getElementById('regionEditInput') as HTMLInputElement;
     this.regionToEdit = elemento
     this.indexRegion =this.dataSource.indexOf(elemento)
-    regionEditInput.value = this.regionToEdit["region"];
+    regionEditInput.value = this.regionToEdit["name"];
   }
 
-  // Aquí puedes agregar la lógica para editar y eliminar elementos
   editar() {
     if (this.myForm.valid) {
-      console.log('Formulario válido');
-      console.log('Valores del formulario:', this.myForm.value);
-      
-      // Lógica para enviar el formulario aquí
-
-      this.dataSource[this.indexRegion] = {
-        id: this.regionToEdit['id'],
-        region: this.myForm.value['region'] 
-      }
-      this.showSuccessMessage("Success!")
+      const regionId = this.regionToEdit['_id'];
+  
+      const url = `http://localhost:3000/api/region/update-region/${regionId}`;
+  
+      this.regionService.updateRegion(url, {
+        name: this.myForm.value['region']
+      }).subscribe({
+        next: (data) => {
+          console.log('Respuesta del servidor:', data);
+          this.dataSource[this.indexRegion] = {
+            _id: regionId,
+            name: this.myForm.value['region'] 
+          };
+          this.showSuccessMessage('Region updated successfully!');
+        },
+        error: (error) => {
+          console.error('Error al actualizar la región:', error);
+          this.showErrorMessage(error.error.error);
+        }
+      });
     } else {
       console.log('Formulario inválido');
     }
   }
 
   eliminar(elemento: any) {
-    // Lógica para enviar el formulario aquí
-    this.dataSource = this.dataSource.filter(i => i !== elemento)
+    const id = elemento._id;
+
+    const url = `http://localhost:3000/api/region/delete-region/${id}`;
+
+    this.regionService.deleteRegion(url).subscribe({
+        next: (data) => {
+            console.log('Region eliminada correctamente:', data);
+            this.dataSource = this.dataSource.filter(item => item !== elemento);
+            this.showSuccessMessage(data.msg);
+        },
+        error: (error) => {
+            console.error('Error al eliminar el elemento:', error);
+            this.showErrorMessage(error.error.msg);
+        }
+    });
   }
 
   agregar() {
     if (this.myForm.valid) {
-      console.log('Formulario válido');
-      console.log('Valores del formulario:', this.myForm.value);
-
-      // Lógica para enviar el formulario aquí
-
-      this.dataSource.push({id: 0, region: this.myForm.value["region"]})
-      this.showSuccessMessage("Success!")
+      var regionName = this.myForm.value["region"];
+      this.regionService.createRegion(`http://localhost:3000/api/region/create-region`, {
+        name: regionName,
+      }).subscribe({
+        next: (data) => {
+          console.log(data);
+          if (data.success) {
+            const regionId = data.regionId; // Obtén el ID de la región creada desde la respuesta
+            this.dataSource.push({ _id: regionId, name: this.myForm.value["region"] });
+            this.showSuccessMessage(data.msg);
+          } else {
+            this.showErrorMessage(data.error);
+          }
+        },
+        error: (error) => {
+          console.log(error);
+          this.showErrorMessage(error.error.error); // Mostrar el mensaje de error del backend
+        },
+      });
     } else {
       console.log('Formulario inválido');
     }
-  }
+  }  
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 
   successMessage: string = '';
+  errorMessage: string = '';
 
   showSuccessMessage(message: string) {
     this.successMessage = message;
@@ -89,7 +131,14 @@ export class RegionCRUDComponent implements OnInit{
       this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
     }, 5000); // Limpia el mensaje después de 5 segundos
   }
-  
+
+  showErrorMessage(message: string) {
+    this.errorMessage = message;
+    setTimeout(() => {
+      this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+    }, 5000); // Limpia el mensaje después de 5 segundos
+  }
+
   get totalPaginas(): number {
     return Math.ceil(this.dataSource.length / this.pageSize);
   }

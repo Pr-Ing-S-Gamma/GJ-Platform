@@ -1,8 +1,6 @@
 <div class="card-body" style="background: white;
 border-radius: 35px; border: 1px black solid;
 border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
-    <!-- Aquí puedes colocar tus formularios o contenido CRUD -->
-    <!-- TODO: -->
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -17,12 +15,11 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </thead>
             <tbody>
                 <tr *ngFor="let row of obtenerDatosPagina()">
-                    <td>{{ row.id }}</td>
-                    <td>{{ row.country }}</td>
+                    <td>{{ row._id }}</td>
+                    <td>{{ row.country.name }}</td>
                     <td>{{ row.name }}</td>
-                    <td>{{ row.region }}</td>
+                    <td>{{ row.region.name }}</td>
                     <td>
-                        <!-- Aquí puedes agregar los botones de acciones -->
                         <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
                     </td>
                     <td>
@@ -88,26 +85,24 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                         <div style="margin-left: 50px; text-align: left; color: black;
                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
                             Region</div>
-
                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <select class="form-control" id="editRegionInput"  
-                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="region">
-                            <option value="" disabled selected hidden>Region of the site</option>
-                            <option *ngFor="let region of regiones" [value]="region">{{ region }}</option>
+                            <select class="form-control" id="regions" 
+                            style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="region">
+                              <option value="" disabled selected hidden>Region of the site</option>
+                              <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
                             </select>
-                        </div>
+                          </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Country</div>
-
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                <input #editSiteInput class="form-control" id="editCountryInput" required
-                                    placeholder="Country" formControlName="country">
-                            </div>
-                        </div>
+                          <div style="margin-left: 50px; text-align: left; color: black;
+                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                             Country</div>
+                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                             <select class="form-control" id="countries" 
+                             style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="country">
+                               <option value="" disabled selected hidden>Country of the site</option>
+                               <option *ngFor="let country of countries" [ngValue]="country">{{ country.name }}</option>
+                             </select>
+                           </div>
 
                         <div style="margin-left: 50px; text-align: left; color: black;
                             font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
@@ -133,6 +128,12 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                    {{ errorMessage }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>  
             </div>
         </form>
     </div>
@@ -156,26 +157,24 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                         <div style="margin-left: 50px; text-align: left; color: black;
                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
                             Region</div>
-
                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                          <select class="form-control" id="createRegionInput"  
-                          style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="region">
-                            <option value="" disabled selected hidden>Region of the site</option>
-                            <option *ngFor="let region of regiones" [value]="region">{{ region }}</option>
-                          </select>
-                        </div>
+                            <select class="form-control" id="regions" 
+                            style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="region">
+                              <option value="" disabled selected hidden>Region of the site</option>
+                              <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
+                            </select>
+                          </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Country</div>
-
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                <input #createSiteInput class="form-control" id="createCountryInput" required
-                                    placeholder="Country" formControlName="country">
-                            </div>
-                        </div>
+                          <div style="margin-left: 50px; text-align: left; color: black;
+                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                             Country</div>
+                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                             <select class="form-control" id="countries" 
+                             style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="country">
+                               <option value="" disabled selected hidden>Country of the site</option>
+                               <option *ngFor="let country of countries" [ngValue]="country">{{ country.name }}</option>
+                             </select>
+                           </div>
 
                         <div style="margin-left: 50px; text-align: left; color: black;
                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
@@ -202,6 +201,12 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                    {{ errorMessage }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>  
             </div>
         </form>
     </div>

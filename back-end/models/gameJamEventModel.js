@@ -7,12 +7,38 @@ const gameJamSchema = mongoose.Schema({
         required:true
     },
     stages: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Stage'
+        _id: { type: Schema.Types.ObjectId, ref: 'Stage'},
+        name: { 
+            type: String
+        },
+        startDate: { 
+            type: Date
+        },
+        endDate: { 
+            type: Date
+        },
     }],
-    site: {
-        type: Schema.Types.ObjectId,
-        ref: 'Site'
+    region:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Region',
+            required: true
+        },
+        name: { 
+            type: String, 
+            required: true 
+        }
+    },
+    site:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Site',
+            required: true
+        },
+        name: { 
+            type: String, 
+            required: true 
+        }
     },
     creatorUser:  {
         userId: {

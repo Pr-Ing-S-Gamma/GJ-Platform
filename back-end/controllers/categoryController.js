@@ -1,5 +1,5 @@
 const Category = require('../models/categoryModel');
-const GlobalOrganizer = require('../models/globalOrganizerModel');
+const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Submission = require('../models/submissionModel')
@@ -9,10 +9,9 @@ const createCategory = async (req, res) => {
     try {
         const existingCategory = await Category.findOne({ name: name });
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const creatorUser = await GlobalOrganizer.findById(userId);
-        
+        const creatorUser = await User.findById(userId);
         if (existingCategory) {
-            return res.status(400).json({ success: false, error: "Esa categoría ya existe" });
+            return res.status(400).json({ success: false, error: "Category already exists" });
         }
 
         const category = new Category({
@@ -27,7 +26,7 @@ const createCategory = async (req, res) => {
 
         await category.save();
 
-        res.status(200).json({ success: true, msg: 'Se ha creado correctamente la categoría' });
+        res.status(200).json({ success: true, msg: 'Category created successfully', categoryId: category._id });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
@@ -38,16 +37,21 @@ const updateCategory = async (req, res) => {
         const id = req.params.id;
         const updateFields = {};
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const lastUpdateUser = await GlobalOrganizer.findById(userId);
+        const lastUpdateUser = await User.findById(userId);
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ success: false, error: 'El ID de categoría proporcionado no es válido.' });
+            return res.status(400).json({ success: false, error: 'Provided category ID is not valid.' });
         } else {
             const existingCategory = await Category.findById(id);
             if (!existingCategory) {
-                return res.status(400).json({ success: false, error: "Esa categoría no existe" });
+                return res.status(400).json({ success: false, error: "Category does not exist" });
             }
         }
         if (req.body.name) {
+            const existingCategory = await Category.findOne({ name: req.body.name });
+            if (existingCategory) {
+                return res.status(400).json({ success: false, error: "Category with this name already exists" });
+            }
+            
             updateFields.name = req.body.name;
             updateFields.lastUpdateUser = {
                 userId: lastUpdateUser._id,
@@ -59,12 +63,11 @@ const updateCategory = async (req, res) => {
 
         await Category.findByIdAndUpdate({ _id: id }, updateFields);
 
-        res.status(200).send({ success: true, msg: 'Se ha actualizado la categoría correctamente'});
+        res.status(200).send({ success: true, msg: 'Category updated successfully'});
     } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
-
 
 const getCategory = async(req,res)=>{
     try{

@@ -1,63 +1,62 @@
 const Team = require('../models/teamModel');
-const Jammer = require('../models/jammerModel');
 const GameJam = require('../models/gameJamEventModel');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Site = require('../models/siteModel');
-//const { all } = require('../routes/teamRoute');
+const Region = require('../models/regionModel');
 
 const createTeam = async (req, res) => {
-    //const { studioName, description, gameJamId, linkTree, jammers, submissions } = req.body;
-    const { studioName, description, gameJamId, linkTree, jammers, siteName } = req.body;
+    const { studioName, description, gameJam, linkTree, jammers, site, region } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
-        if (!mongoose.Types.ObjectId.isValid(gameJamId)) {
-            return res.status(400).json({ success: false, error: 'El ID de GameJam proporcionado no es válido.' });
-        } else {
-            const existingGameJam = await GameJam.findById(gameJamId);
-            if (!existingGameJam) {
-                return res.status(400).json({ success: false, error: "Esa GameJam no existe" });
-            }
+        if (!gameJam || !gameJam._id || !mongoose.Types.ObjectId.isValid(gameJam._id)) {
+            return res.status(400).json({ success: false, error: 'The provided GameJam is invalid.' });
         }
 
-        const existingSite = await Site.find({name: siteName});
+        const existingGameJam = await GameJam.findById(gameJam._id);
+        if (!existingGameJam) {
+            return res.status(400).json({ success: false, error: "That GameJam does not exist" });
+        }
+
+        const existingSite = await Site.findById(site._id);
         if (!existingSite) {
-            return res.status(400).json({ success: false, error: "Esa site no existe" });
+            return res.status(400).json({ success: false, error: "That site does not exist" });
         }
-        
-
-        const jammersId = [];
-        for (const jammerId of jammers) {
-            const jammer = await Jammer.findById(jammerId);
-            if (jammer) {
-                jammersId.push(jammer._id);
-            }
+        const existingRegion = await Region.findById(region._id);
+        if (!existingRegion) {
+            return res.status(400).json({ success: false, error: "That region does not exist" });
         }
 
-        /*
-        const submissionsId = [];
-        for (const submissionId of submissions) {
-            const submission = await Submission.findById(submissionId);
-            if (submission) {
-                submissionsId.push(submission._id);
+        for (const jammer of jammers) {
+            const user = await User.findById(jammer._id);
+            if (user.team && user.team._id) {
+                return res.status(400).json({ success: false, error: `User ${user.name} (${user.email}) is already assigned to a team.` });
             }
-        }*/
+        }        
 
-        const team = new Team({
+        const createdTeam = new Team({
             studioName: studioName,
             description: description,
-            site: siteName,
-            gameJam: gameJamId,
-            linkTree: linkTree,
-            logo: {
-                name: req.file.originalname,
-                type: req.file.mimetype,
-                data: req.file.buffer
+            site: {
+                _id: existingSite._id,
+                name: existingSite.name
             },
-            jammers: jammersId,
-            //submissions: submissionsId,
+            region: {
+                _id: existingRegion._id,
+                name: existingRegion.name
+            },
+            gameJam: {
+                _id: existingGameJam._id,
+                edition: existingGameJam.edition
+            },
+            linkTree: linkTree,
+            jammers: jammers.map(jammer => ({
+                _id: jammer._id,
+                name: jammer.name,
+                email: jammer.email
+            })),
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,
@@ -66,91 +65,108 @@ const createTeam = async (req, res) => {
             creationDate: new Date()
         });
 
-        await team.save();
-        res.status(200).json({ success: true, msg: 'Se ha creado correctamente el equipo' });
+        const savedTeam = await createdTeam.save();
+
+        await Promise.all(jammers.map(async jammer => {
+            const user = await User.findById(jammer._id);
+            if (!user) {
+                console.log(`No se encontró el usuario con ID: ${jammer._id}`);
+                return;
+            }
+
+            user.team = {
+                _id: savedTeam._id,
+                name: savedTeam.studioName
+            };
+            await user.save();
+        }));
+
+        res.status(200).json({ success: true, msg: 'Team created successfully', team: savedTeam });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
 
 const updateTeam = async (req, res) => {
+    const teamId = req.params.id;
+    const {studioName, description, gameJam, linkTree, jammers, site, region } = req.body;
     try {
-        const { studioName, description, gameJamId, linkTree, jammers } = req.body;
-        const id = req.params.id; 
-        const updateFields = {};
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const lastUpdateUser = await User.findById(userId);
-        
-        const existingTeam = await Team.findById(id);
+        const creatorUser = await User.findById(userId);
+        if (!gameJam || !gameJam._id || !mongoose.Types.ObjectId.isValid(gameJam._id)) {
+            return res.status(400).json({ success: false, error: 'The provided GameJam is invalid.' });
+        }
+
+        const existingTeam = await Team.findById(teamId);
         if (!existingTeam) {
-            return res.status(400).json({ success: false, error: "Ese equipo no existe" });
+            return res.status(400).json({ success: false, error: "That team does not exist" });
         }
 
-        let changed = 0;
-
-        if (studioName) {
-            updateFields.studioName = studioName;
-            changed++;
+        for (const jammer of jammers) {
+            const user = await User.findById(jammer._id);
+            if (user.team && user.team._id && user.team._id.toString() !== existingTeam._id.toString()) {
+                return res.status(400).json({ success: false, error: `User ${user.name} (${user.email}) is already assigned to a different team.` });
+            }
         }
 
-        if (description) {
-            updateFields.description = description;
-            changed++;
-        }
+        existingTeam.studioName = studioName;
+        existingTeam.description = description;
+        existingTeam.gameJam = {
+            _id: gameJam._id,
+            edition: gameJam.edition
+        };
+        existingTeam.site = {
+            _id: site._id,
+            name: site.name
+        };
+        existingTeam.region = {
+            _id: region._id,
+            name: region.name
+        };
+        existingTeam.linkTree = linkTree;
+        existingTeam.lastUpdateDate = new Date();
+        existingTeam.lastUpdateUser = {
+            userId: creatorUser._id,
+            name: creatorUser.name,
+            email: creatorUser.email
+        };
 
-        if (gameJamId) {
-            if (!mongoose.Types.ObjectId.isValid(gameJamId)) {
-                return res.status(400).json({ success: false, error: 'El ID de GameJam proporcionado no es válido.' });
-            } else {
-                const existingGameJam = await GameJam.findById(gameJamId);
-                if (!existingGameJam) {
-                    return res.status(400).json({ success: false, error: "Esa GameJam no existe" });
+        for (const jammer of existingTeam.jammers) {
+            const foundJammer = jammers.find(j => j._id === jammer._id);
+            if (!foundJammer) {
+                const user = await User.findById(jammer._id);
+                if (user) {
+                    user.team = null;
+                    await user.save();
                 }
             }
-            updateFields.gameJam = gameJamId;
-            changed++;
         }
 
-        if (linkTree) {
-            updateFields.linkTree = linkTree;
-            changed++;
-        }
+        existingTeam.jammers = jammers.map(jammer => ({
+            _id: jammer._id,
+            name: jammer.name,
+            email: jammer.email
+        }));
 
-        if (jammers && jammers.length > 0) {
-            const jammersId = [];
-            for (const jammerId of jammers) {
-                const jammer = await Jammer.findById(jammerId);
-                if (jammer) {
-                    jammersId.push(jammer._id);
-                }
+        const updatedTeam = await existingTeam.save();
+
+        await Promise.all(jammers.map(async jammer => {
+            const user = await User.findById(jammer._id);
+            if (!user) {
+                console.log(`No se encontró el usuario con ID: ${jammer._id}`);
+                return;
             }
-            updateFields.jammers = jammersId;
-            changed++;
-        }
-
-        if (req.file) {
-            updateFields.logo = {
-                name: req.file.originalname,
-                type: req.file.mimetype,
-                data: req.file.buffer
+            
+            user.team = {
+                _id: updatedTeam._id,
+                name: studioName
             };
-            changed++;
-        }
+            await user.save();
+        }));
 
-        if (changed > 0) {
-            updateFields.lastUpdateUser = {
-                userId: lastUpdateUser._id,
-                name: lastUpdateUser.name,
-                email: lastUpdateUser.email
-            };
-            updateFields.lastUpdateDate = new Date();
-        }
-
-        await Team.findByIdAndUpdate(id, updateFields);
-
-        res.status(200).send({ success: true, msg: 'Se ha actualizado el equipo correctamente'});
+        res.status(200).json({ success: true, msg: 'Team updated successfully', team: updatedTeam });
     } catch (error) {
-        res.status(400).send({ success: false, msg: error.message });
+        res.status(400).json({ success: false, error: error.message });
     }
 };
 
@@ -172,40 +188,53 @@ const getTeam = async(req,res)=>{
     }
 };
 
-const getTeams = async(req,res)=>{
-    try{
+const getTeams = async (req, res) => {
+    try {
         const allTeams = await Team.find({});
-        res.status(200).send({ success:true, msg:'Se han encontrado equipos en el sistema', data: allTeams });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+        res.status(200).send({ success: true, msg: 'Teams have been found in the system', data: allTeams });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
 const deleteTeam = async (req, res) => {
     try {
         const id = req.params.id;
-        
+
+        const existingTeam = await Team.findById(id);
+        if (!existingTeam) {
+            return res.status(404).json({ success: false, error: 'No team found with the provided ID' });
+        }
+
+        for (const jammer of existingTeam.jammers) {
+            const user = await User.findById(jammer._id);
+            if (user) {
+                user.team = null;
+                await user.save();
+            }
+        }
+
         const deletedTeam = await Team.findOneAndDelete({ _id: id });
 
         if (deletedTeam) {
-
-            res.status(200).send({ success: true, msg: 'Equipo eliminado correctamente', data: deletedTeam });
+            res.status(200).send({ success: true, msg: 'Team deleted successfully', data: deletedTeam });
         } else {
-            res.status(404).json({ success: false, error: 'No se encontró el equipo con el ID proporcionado' });
+            res.status(404).json({ success: false, error: 'No team found with the provided ID' });
         }
     } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
 
-const getTeamSite = async (req, res)=>{
+
+const getTeamSite = async (req, res) => {
     try {
         const siteName = req.params.site;
-        console.log(siteName)
-        var teams = await Team.find({site: siteName});
-        return res.status(200).send({success: true, msg: "Equipos econtrados para site "  + siteName, data: teams});
+        console.log(siteName);
+        const teams = await Team.find({ site: siteName });
+        return res.status(200).send({ success: true, msg: "Teams found for site " + siteName, data: teams });
     } catch (error) {
-        return res.status(400).send({success: false, msg: error.message});
+        return res.status(400).send({ success: false, msg: error.message });
     }
 };
 

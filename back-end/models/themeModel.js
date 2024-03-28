@@ -32,7 +32,7 @@ const themeSchema = mongoose.Schema({
     creatorUser:  {
         userId: {
             type: Schema.Types.ObjectId, 
-            ref: 'GlobalOrganizer',
+            ref: 'User',
             required: false
         },
         name: { 
@@ -51,7 +51,7 @@ const themeSchema = mongoose.Schema({
     lastUpdateUser:  {
         userId: {
             type: Schema.Types.ObjectId, 
-            ref: 'GlobalOrganizer'
+            ref: 'User'
         },
         name: { 
             type: String

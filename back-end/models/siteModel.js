@@ -6,9 +6,16 @@ const siteSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    region: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Region' 
+    region:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Region',
+            required: true
+        },
+        name: { 
+            type: String, 
+            required: true 
+        }
     },
     country:  {
         name: { 

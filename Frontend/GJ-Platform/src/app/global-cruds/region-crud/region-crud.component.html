@@ -15,8 +15,8 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </thead>
             <tbody>
                 <tr *ngFor="let row of obtenerDatosPagina()">
-                    <td>{{ row.id }}</td>
-                    <td>{{ row.region }}</td>
+                    <td>{{ row._id }}</td>
+                    <td>{{ row.name }}</td>
                     <td>
                         <!-- Aquí puedes agregar los botones de acciones -->
                         <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
@@ -104,6 +104,12 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                    {{ errorMessage }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>            
             </div>
         </form>
     </div>
@@ -147,6 +153,12 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                    {{ errorMessage }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>  
             </div>
         </form>
     </div>

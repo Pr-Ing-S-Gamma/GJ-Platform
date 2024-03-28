@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { GameInformationComponent } from '../game-information/game-information.component';
+import { User } from '../../types';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-global-site-information',
@@ -18,7 +20,8 @@ import { GameInformationComponent } from '../game-information/game-information.c
 export class GlobalSiteInformationComponent {
   regionParameter!: String;
   siteParameter!: String;
-  constructor(private router: Router, private route: ActivatedRoute) { }
+  constructor(private router: Router, private route: ActivatedRoute, private userService: UserService) { }
+  staff: User[] = [];
 
   moveToCruds() {
     this.router.navigate(['/DataManagement']);
@@ -31,18 +34,18 @@ export class GlobalSiteInformationComponent {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.regionParameter = params['region'];
-        // Aquí podrías realizar lógica adicional para cargar datos basados en el nombre
       this.siteParameter = params['site'];
-        // Aquí podrías realizar lógica adicional para cargar datos basados en el nombre
     });
+    const url = `http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
+    this.userService.getUsers(url).subscribe(
+      (users: any[]) => {
+        this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins }));
+      },
+      error => {
+        console.error('Error al obtener usuarios:', error);
+      }
+    );
   }
-
-  staff = [
-    {name: 'David', role: 'Jammer', email: 'xdavidpastor@gmail.com'},
-    {name: 'Rodolfo', role: 'Local Organizer', email: 'fenrirson@gmail.com'},
-    {name: 'Luis', role: 'Assistant', email: 'producer@gmail.com'},
-    {name: 'Atlas', role: 'Jammer', email: 'xXxAtlas09xXx@gmail.com'}
-  ]
 
   games = [
     {id:1, name: 'Bloom Tales', team: 'Outlander studio'},

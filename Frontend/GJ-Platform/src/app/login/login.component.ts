@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserService } from '../services/user.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  constructor(private router: Router) { }
-
+  constructor(private router: Router, private userService: UserService) { }
+  showSuccessMessage: boolean = false;
+  successMessage: string = '';
   //Esta función es para evitar que se recargue la página al hacer el submit
   handleSubmit(event: Event): void {
     event.preventDefault(); // Evita la acción predeterminada del formulario (recargar la página)
@@ -19,12 +22,21 @@ export class LoginComponent {
     this.sendEmail(email);
   }
 
-  sendEmail(email: String){
-    //Do something!
-    console.log("Enviando link de inicio de sesión a: ", email);
+  sendEmail(email: string): void {
+    const url = 'http://localhost:3000/api/user/login-user';
+    this.userService.loginUser(url, email).subscribe(
+      response => {
+        this.successMessage = `Link de inicio de sesión enviado a: ${response.email}`;
+        this.showSuccessMessage = true;
+      },
+      error => {
+        console.error('Error al iniciar sesión:', error);
+      }
+    );
   }
-  discordLogin(){
-    //Do something!
-    console.log("Aquí  Paublo hace magia o algo");
+
+  closePopup(): void {
+    this.showSuccessMessage = false;
   }
+  
 }

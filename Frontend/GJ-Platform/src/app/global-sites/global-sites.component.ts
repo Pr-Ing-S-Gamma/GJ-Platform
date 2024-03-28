@@ -3,6 +3,8 @@ import { NgClass, NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { SiteService } from '../services/site.service';
+import { Site } from '../../types';
 
 @Component({
   selector: 'app-global-sites',
@@ -16,7 +18,9 @@ import { ActivatedRoute } from '@angular/router';
 
 export class GlobalSitesComponent implements OnInit{
   regionParameter: String | undefined;
-  constructor(private router: Router, private route: ActivatedRoute) { }
+  dataSource: Site[] = [];
+  regions: any[] = []; 
+  constructor(private router: Router, private route: ActivatedRoute, private siteService: SiteService) { }
 
   moveToCruds() {
     this.router.navigate(['/DataManagement']);
@@ -35,32 +39,43 @@ export class GlobalSitesComponent implements OnInit{
   }
   
   ngOnInit(): void {
+    this.siteService.getSites('http://localhost:3000/api/site/get-sites')
+      .subscribe(
+        sites => {
+          this.dataSource = sites;
+          this.transformSitesData();
+        },
+        error => {
+          console.error('Error al obtener países:', error);
+        }
+      );
     this.route.params.subscribe(params => {
       if (params['region']) {
         this.regionParameter = params['region'];
-        // Aquí podrías realizar lógica adicional para cargar datos basados en el nombre
       } else {
-        // Manejo del parámetro vacío
         this.regionParameter = 'Regions';
       }
     });
   }
 
-  regions = [
-    { name: 'LATAM', sites: [
-      {country: 'Costa Rica', name:'Zapote'},
-      {country: 'Argentina', name:'El BICHO'},
-      {country: 'México', name: 'Nahui Mictlan'}
-    ]},
-    { name: 'Brazil', sites: [
-      {country: 'Brazil', name:'Sopa du Macaco'}
-    ]},
-    { name: 'Fate', sites: [
-      {country: 'Japón', name: 'Fuyuki'},
-      {country: '?', name: 'Chaldea'},
-      {country: 'Inglaterra', name:'Clock Tower'},
-      {country: 'Babylonia', name: 'Ur'}
-    ]}
-  ]
+  transformSitesData(): void {
+    const groupedSites: { [key: string]: any[] } = {};
+
+    this.dataSource.forEach(site => {
+      const { name, region, country } = site;
+      const regionName = region.name;
+
+      if (!groupedSites[regionName]) {
+        groupedSites[regionName] = [];
+      }
+
+      groupedSites[regionName].push({ country: country.name, name });
+    });
+
+    this.regions = Object.keys(groupedSites).map(regionName => ({
+      name: regionName,
+      sites: groupedSites[regionName]
+    }));
+  }
 
 }

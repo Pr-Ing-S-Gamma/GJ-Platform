@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild, ElementRef  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { StageService } from '../../services/stage.service';
+import { GameJam, Stage } from '../../../types';
+import { GamejamService } from '../../services/gamejam.service';
 declare var $: any;
 
 @Component({
@@ -18,52 +21,109 @@ declare var $: any;
 export class StageCrudComponent implements OnInit{
 
   myForm!: FormGroup;
-  dataSource = [
-    { id: 1, name: 'I fase' , startDate: '2024-03-10', endDate: '2024-04-31' , gamejamId : 1},
-    { id: 2, name: 'I fase' , startDate: '2024-04-05', endDate: '2024-05-05' , gamejamId : 2},
-    { id: 3, name: 'II fase' , startDate: '2024-05-01', endDate: '2024-06-15' , gamejamId : 1}
-  ];
-  gamejams = ['1-zapote', '2-tangamandapop', '3-libertycity', '4-teyvat', '5-colonipenal']
+  dataSource: Stage[] = [];
+  gameJams: GameJam[] = [];
 
   stageToEdit: any;
   indexStage = 0;
-  constructor(private fb: FormBuilder){
+  constructor(private fb: FormBuilder, private stageService: StageService, private gamejamService: GamejamService){
   }
   ngOnInit(): void {
     this.myForm = this.fb.group({
       name: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      gamejamId : ['', Validators.required]
+      gameJam : ['', Validators.required]
     });
+
+    const url = 'http://localhost:3000/api/game-jam/get-game-jams';
+    this.gamejamService.getGameJams(url).subscribe(
+      (gamejams: any[]) => {
+        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site}));
+      },
+      error => {
+        console.error('Error al obtener GameJams:', error);
+      }
+    );
+    this.stageService.getStages('http://localhost:3000/api/stage/get-stages')
+    .subscribe(
+      stages => {
+        this.dataSource = stages;
+      },
+      error => {
+        console.error('Error al obtener fases:', error);
+      }
+    );
   }
+
   seleccionarElemento(elemento: any) {
     this.stageToEdit = elemento;
     this.indexStage = this.dataSource.indexOf(elemento);
+    const selectedGameJam = this.gameJams.find(gameJam => gameJam._id === elemento.gameJam._id);
     
-    // Autollenar los campos del formulario con los datos existentes del elemento seleccionado
+    const startDate = new Date(elemento.startDate);
+    const endDate = new Date(elemento.endDate);
+  
+    const formattedStartDate = startDate.toISOString().split('T')[0];
+    const formattedEndDate = endDate.toISOString().split('T')[0];
+  
     this.myForm.patchValue({
       name: elemento.name,
-      startDate: elemento.startDate,
-      endDate: elemento.endDate,
-      gamejamId: elemento.gamejamId
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
+      gameJam: selectedGameJam
     });
   }
+
   eliminar(elemento: any) {
-    this.dataSource = this.dataSource.filter(i => i !== elemento);
+    const id = elemento._id;
+
+    const url = `http://localhost:3000/api/stage/delete-stage/${id}`;
+
+    this.stageService.deleteStage(url).subscribe({
+        next: (data) => {
+            console.log('Fase eliminada correctamente:', data);
+            this.dataSource = this.dataSource.filter(item => item !== elemento);
+            this.showSuccessMessage(data.msg);
+        },
+        error: (error) => {
+            console.error('Error al eliminar la fase:', error);
+            this.showErrorMessage(error.error.msg);
+        }
+    });
   }
+
   editar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
-      console.log('Valores del formulario:', this.myForm.value);
-      this.dataSource[this.indexStage] = {
-        id: this.stageToEdit['id'],
-        name: this.myForm.value['name'],
-        startDate: this.myForm.value['startDate'],
-        endDate: this.myForm.value['endDate'],
-        gamejamId :this.myForm.value['gamejamId']
-      }
-      this.showSuccessMessage("Success!")
+      const stageId = this.stageToEdit['_id'];
+      const { name, startDate, endDate, gameJam} = this.myForm.value;
+      this.stageService.updateStage(`http://localhost:3000/api/stage/update-stage/${stageId}`, {
+        name: name,
+        startDate: startDate,
+        endDate: endDate,
+        gameJam: {
+          _id: gameJam._id,
+          edition: gameJam.edition
+        },
+      }).subscribe({
+        next: (data) => {
+          if (data.success) {
+            this.dataSource[this.indexStage]={ _id: stageId, name: name, startDate: startDate, endDate: endDate,
+              gameJam: {
+                _id: gameJam._id,
+                edition: gameJam.edition
+              }
+            }
+            this.showSuccessMessage(data.msg);
+          } else {
+            this.showErrorMessage(data.error);
+          }
+        },
+        error: (error) => {
+          this.showErrorMessage(error.error.error);
+        },
+      });
     } else {
       console.log('Formulario inválido');
     }
@@ -72,33 +132,59 @@ export class StageCrudComponent implements OnInit{
   agregar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
-      console.log('Valores del formulario:', this.myForm.value)
-      this.dataSource.push({
-        id: this.stageToEdit['id'],
-        name: this.myForm.value['name'],
-        startDate: this.myForm.value['startDate'],
-        endDate: this.myForm.value['endDate'],
-        gamejamId :this.myForm.value['gamejamId']
-      })
-      this.showSuccessMessage("Success!")
+      
+      const { name, startDate, endDate, gameJam} = this.myForm.value;
+      this.stageService.createStage(`http://localhost:3000/api/stage/create-stage`, {
+        name: name,
+        startDate: startDate,
+        endDate: endDate,
+        gameJam: {
+          _id: gameJam._id,
+          edition: gameJam.edition
+        },
+      }).subscribe({
+        next: (data) => {
+          if (data.success) {
+            const stageId = data.stageId;
+            this.dataSource.push({ _id: stageId, name: name, startDate: startDate, endDate: endDate,
+            gameJam: {
+              _id: gameJam._id,
+              edition: gameJam.edition
+            }});
+            this.showSuccessMessage(data.msg);
+          } else {
+            this.showErrorMessage(data.error);
+          }
+        },
+        error: (error) => {
+          this.showErrorMessage(error.error.error);
+        },
+      });
     } else {
       console.log('Formulario inválido');
     }
   }
 
-
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 
-  successMessage: string = '';
+successMessage: string = '';
+errorMessage: string = '';
 
-  showSuccessMessage(message: string) {
-    this.successMessage = message;
-    setTimeout(() => {
-      this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-    }, 5000); // Limpia el mensaje después de 5 segundos
-  }
+showSuccessMessage(message: string) {
+  this.successMessage = message;
+  setTimeout(() => {
+    this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+  }, 5000); // Limpia el mensaje después de 5 segundos
+}
+
+showErrorMessage(message: string) {
+  this.errorMessage = message;
+  setTimeout(() => {
+    this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
+  }, 5000); // Limpia el mensaje después de 5 segundos
+}
   
   get totalPaginas(): number {
     return Math.ceil(this.dataSource.length / this.pageSize);

@@ -1,5 +1,5 @@
 const Prize = require('../models/prizeModel');
-const GlobalOrganizer = require('../models/globalOrganizerModel');
+const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
@@ -8,7 +8,7 @@ const createPrize = async (req, res) => {
     try {
         const existingPrize = await Prize.findOne({ name: name, price: price });
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const creatorUser = await GlobalOrganizer.findById(userId);
+        const creatorUser = await User.findById(userId);
         
         if (existingPrize) {
             return res.status(400).json({ success: false, error: "Ese premio ya existe" });
@@ -38,7 +38,7 @@ const updatePrize = async (req, res) => {
         const id = req.params.id;
         const updateFields = {};
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const lastUpdateUser = await GlobalOrganizer.findById(userId);
+        const lastUpdateUser = await User.findById(userId);
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'El ID de premio proporcionado no es válido.' });
         } else {

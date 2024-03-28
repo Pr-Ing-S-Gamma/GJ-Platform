@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
 const userSchema = mongoose.Schema({
     email: {
@@ -9,23 +10,44 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    rol: {
-        type: String,
-        required: false
-    },
-    image: {
+    region:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Region',
+            required: true
+        },
         name: { 
             type: String, 
             required: true 
+        }
+    },
+    site:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Site',
+            required: true
         },
-        type: { 
+        name: { 
             type: String, 
             required: true 
-        },
-        data: { 
-            type: Buffer, 
-            required: true 
         }
+    },
+    team:  {
+        _id: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Team'
+        },
+        name: { 
+            type: String
+        }
+    },
+    rol: {
+        type: String,
+        required: true
+    },
+    coins: { 
+        type: Number, 
+        required: true
     },
     creationDate: {
         type: Date,

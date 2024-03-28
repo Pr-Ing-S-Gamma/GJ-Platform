@@ -6,7 +6,7 @@ import { SiteCrudComponent } from './site-crud/site-crud.component';
 import { CategoryCrudComponent } from './category-crud/category-crud.component';
 import { TeamCrudComponent } from './team-crud/team-crud.component';
 import { StageCrudComponent } from './stage-crud/stage-crud.component';
-import { JamCrudComponent } from './jam-crud/jam-crud.component';
+import { GamejamCrudComponent } from './gamejam-crud/gamejam-crud.component';
 import { UserCrudComponent } from './user-crud/user-crud.component';
 import { ThemeCrudComponent } from './theme-crud/theme-crud.component';
 import { Router } from '@angular/router';
@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
     TeamCrudComponent,
     ThemeCrudComponent,
     UserCrudComponent,
-    JamCrudComponent
+    GamejamCrudComponent
   ],
   templateUrl: './global-cruds.component.html',
   styleUrl: './global-cruds.component.css'

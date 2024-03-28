@@ -4,9 +4,26 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require('dotenv').config();
+const path = require('path');
 
 // Crear una instancia de la aplicación Express
 const app = express();
+// const appFrontend = express();
+// const portFrontend = 4200; // Puerto para el frontend
+
+// // Servir los archivos estáticos del frontend
+// appFrontend.use(express.static(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser')));
+
+// // Manejar todas las rutas del frontend devolviendo el archivo index.html
+// appFrontend.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser/index.html'));
+// });
+
+// // Iniciar el servidor del frontend
+// appFrontend.listen(portFrontend, () => {
+//     console.log(`Servidor del frontend escuchando en http://localhost:${portFrontend}`);
+// });
+
 const port = 3000; // Establecer el puerto en el que el servidor escuchará las solicitudes
 
 // Conexión a MongoDB
@@ -14,9 +31,21 @@ mongoose.connect("mongodb://localhost:27017/GameJamDB");
 
 // Configuración de CORS - Permite solicitudes desde un origen específico
 const corsOptions = {
-    origin: "http://localhost:4200",
+    origin: function(origin, callback) {
+        if (!origin) return callback(null, true);
+
+        const allowedOrigins = ['http://localhost:4200'];
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            // El origen está en la lista de orígenes permitidos
+            callback(null, true);
+        } else {
+            // El origen no está en la lista de orígenes permitidos
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     optionsSuccessStatus: 204, // Devolver un código de éxito 204
     methods: "GET, POST, PUT, DELETE", // Permitir estos métodos HTTP
+    credentials: true, // Permite enviar cookies de forma segura
 };
 app.use(cors(corsOptions)); // Usar el middleware CORS
 
@@ -29,18 +58,6 @@ app.use(cookieParser());
 // Rutas de usuarios
 const user_route = require('./routes/userRoute');
 app.use('/api/user', user_route);
-
-// Rutas de jammers
-const jammer_route = require('./routes/jammerRoute');
-app.use('/api/jammer', jammer_route);
-
-// Rutas de global organizers
-const global_organizer_route = require('./routes/globalOrganizerRoute');
-app.use('/api/global-organizer', global_organizer_route);
-
-// Rutas de local organizers
-const local_organizer_route = require('./routes/localOrganizerRoute');
-app.use('/api/local-organizer', local_organizer_route);
 
 // Rutas de regiones
 const region_route = require('./routes/regionRoute');
@@ -73,13 +90,10 @@ app.use('/api/team', team_route);
 // Rutas de entregables
 const submission_route = require('./routes/submissionRoute');
 app.use('/api/submission', submission_route);
+
 // Rutas de temas
 const theme_route = require('./routes/themeRoute');
-app.use('/api/themes', theme_route);
-
-// Rutas de jueces
-const judge_route = require('./routes/judgeRoute');
-app.use('/api/judge', judge_route);
+app.use('/api/theme', theme_route);
 
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, () => {

@@ -1,5 +1,5 @@
 const Region = require('../models/regionModel');
-const GlobalOrganizer = require('../models/globalOrganizerModel');
+const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
@@ -8,10 +8,10 @@ const createRegion = async (req, res) => {
     try {
         const existingRegion = await Region.findOne({ name: name });
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const creatorUser = await GlobalOrganizer.findById(userId);
+        const creatorUser = await User.findById(userId);
         
         if (existingRegion) {
-            return res.status(400).json({ success: false, error: "Esa región ya existe" });
+            return res.status(400).json({ success: false, error: "Region already exists!" });
         }
 
         const region = new Region({
@@ -26,7 +26,7 @@ const createRegion = async (req, res) => {
 
         await region.save();
 
-        res.status(200).json({ success: true, msg: 'Se ha creado correctamente la región' });
+        res.status(200).json({ success: true, msg: 'Region created successfully!', regionId: region._id });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
@@ -37,15 +37,17 @@ const updateRegion = async (req, res) => {
         const id = req.params.id;
         const updateFields = {};
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const lastUpdateUser = await GlobalOrganizer.findById(userId);
+        const lastUpdateUser = await User.findById(userId);
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ success: false, error: 'El ID de región proporcionado no es válido.' });
+            return res.status(400).json({ success: false, error: 'The provided region ID is not valid!' });
         } else {
-            const existingRegion = await Region.findById(id);
-            if (!existingRegion) {
-                return res.status(400).json({ success: false, error: "Esa región no existe" });
+            const existingRegion = await Region.findOne({ name: req.body.name });
+            if (existingRegion && existingRegion._id.toString() !== id) {
+                return res.status(400).json({ success: false, error: 'A region with that name already exists!' });
             }
         }
+
         if (req.body.name) {
             updateFields.name = req.body.name;
             updateFields.lastUpdateUser = {
@@ -53,14 +55,14 @@ const updateRegion = async (req, res) => {
                 name: lastUpdateUser.name,
                 email: lastUpdateUser.email
             }
-            updateFields.lastUpdateDate = new Date()
+            updateFields.lastUpdateDate = new Date();
         }
 
-        await Region.findByIdAndUpdate({ _id: id }, updateFields);
+        await Region.findByIdAndUpdate(id, updateFields);
 
-        res.status(200).send({ success: true, msg: 'Se ha actualizado la región correctamente'});
+        res.status(200).json({ success: true, msg: 'Region updated successfully!' });
     } catch (error) {
-        res.status(400).send({ success: false, msg: error.message });
+        res.status(400).json({ success: false, msg: error.message });
     }
 };
 
@@ -92,13 +94,13 @@ const getRegions = async(req,res)=>{
     }
 };
 
-const deleteRegion = async(req,res)=>{
-    try{
+const deleteRegion = async(req, res) => {
+    try {
         const id = req.params.id;
         const deletedRegion = await Region.findOneAndDelete({ _id: id });
-        res.status(200).send({ success:true, msg:'Región eliminada correctamente', data: deletedRegion });
+        res.status(200).send({ success: true, msg: 'Region deleted successfully', data: deletedRegion });
     } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 

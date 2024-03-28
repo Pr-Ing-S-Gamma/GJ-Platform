@@ -3,108 +3,193 @@ const { sendEmail } = require('../services/mailer');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
+const registerUser = async (req, res) => {
+    const { name, email, region, site, team, rol, coins } = req.body;
+    try {
+        const existingEmail = await User.findOne({ email });
+
+        if (existingEmail) {
+            return res.status(400).json({ success: false, error: "The email is already in use." });
+        }
+
+        const user = new User({
+            name: name,
+            email: email,
+            region: { _id: region._id, name: region.name },
+            site: { _id: site._id, name: site.name },
+            team: team ? { _id: team._id, name: team.name } : null,
+            rol: rol,
+            coins: coins,
+            creationDate: new Date()
+        });
+
+        await user.save();
+        res.status(200).json({ success: true, msg: 'Registered successfully', userId: user._id });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+};
+
+const updateUser = async (req, res) => {
+    const { id } = req.params;
+    const { name, email, region, site, team, rol, coins } = req.body;
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, error: 'Invalid user ID.' });
+        }
+
+        const existingUser = await User.findById(id);
+        if (!existingUser) {
+            return res.status(400).json({ success: false, error: 'User not found.' });
+        }
+
+        if (email && email !== existingUser.email) {
+            const emailExists = await User.findOne({ email });
+            if (emailExists) {
+                return res.status(400).json({ success: false, error: 'The email is already in use.' });
+            }
+            existingUser.email = email;
+        }
+
+        if (name) existingUser.name = name;
+        if (region) existingUser.region = { _id: region._id, name: region.name };
+        if (site) existingUser.site = { _id: site._id, name: site.name };
+        if (team) existingUser.team = { _id: team._id, name: team.name };
+        if (rol) existingUser.rol = rol;
+        if (coins) existingUser.coins = coins;
+        
+        existingUser.lastUpdateDate = new Date();
+
+        await existingUser.save();
+
+        res.status(200).json({ success: true, msg: 'User updated successfully.' });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+};
+
 const loginUser = async (req, res) => {
     const email = req.body.email;
     const existingUser = await User.findOne({ email });
     let rol;
     let userId;
     if (!existingUser) {
-        res.status(400).send(`El correo ${email} no existe en la base de datos.`);
+        const registerLink = `http://localhost:4200/register`;
+        const subject = 'Login in GameJam Platform';
+        const text = `Hi, click on this link to create an account: ${registerLink}`;
+        await sendEmail(email, subject, text);
+        res.status(200).json({ success: true, msg: 'Se envió el registro al usuario.', email, registerLink });
     }
     
-    rol = existingUser.__t;
+    rol = existingUser.rol;
     userId = existingUser._id;
 
     const token = jwt.sign({ userId, rol }, 'MY_JWT_SECRET', { expiresIn: 600000 });
     const magicLink = `http://localhost:3000/api/user/magic-link/${token}`;
-    // const subject = 'Magic Link';
-    // const text = `Hi, click on this link to continue to the app: ${magicLink}`;
-    // await sendEmail(email, subject, text);
-    res.status(200).json({ success: true, msg: 'Se envió el magic link al usuario.', magicLink });
+    const subject = 'Login in GameJam Platform';
+    const text = `Hi, click on this link to continue to the app: ${magicLink}`;
+    await sendEmail(email, subject, text);
+    res.status(200).json({ success: true, msg: 'Se envió el magic link al usuario.', email, magicLink });
 };
 
 const magicLink = async (req, res) => {
-    const token = req.params.token;
-    const decodedToken = jwt.verify(token, 'MY_JWT_SECRET');
-    const userId = decodedToken.userId;
-    const rol = decodedToken.rol;
-
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let verificationCode = '';
-    for (let i = 0; i < 6; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        verificationCode += characters[randomIndex];
-    }
-
-    const newToken = jwt.sign({ userId, rol, verificationCode }, 'MY_JWT_SECRET');
-
-    res.cookie('token', newToken);
-    res.status(200).json({ success: true, verificationCode });
-};
-
-const verifyMagicLink = async (req, res) => {
-    const verificationCode = req.body.verificationCode;
-    const token = req.cookies.token;
-
     try {
+        const token = req.params.token;
         const decodedToken = jwt.verify(token, 'MY_JWT_SECRET');
         const userId = decodedToken.userId;
         const rol = decodedToken.rol;
-        const tokenVerificationCode = decodedToken.verificationCode;
 
-        if (verificationCode === tokenVerificationCode) {
+        const newToken = jwt.sign({ userId, rol }, 'MY_JWT_SECRET');
 
-            const newToken = jwt.sign({ userId, rol }, 'MY_JWT_SECRET');
-            res.cookie('token', newToken);
-
-            res.status(200).json({ success: true, msg: 'Se ha logeado correctamente', userId, rol});
-        } else {
-            res.status(400).json({ success: false, msg: 'Código de verificación inválido' });
-        }
+        res.cookie('token', newToken, {
+            httpOnly: false
+        });
+        let redirectUrl;
+        if (rol === 'GlobalOrganizer') {
+            redirectUrl = 'http://localhost:4200/DataManagement';
+        } 
+        res.redirect(redirectUrl);
     } catch (error) {
-        res.status(400).json({ success: false, msg: 'Token JWT inválido' });
+        console.error('Error al procesar el token:', error);
+        res.status(500).json({ success: false, error: 'Error al procesar el token' });
     }
 };
 
-const assignRolt = async (req, res) => {
-    const {rol, userId} = req.body
+const getLocalOrganizersPerSite = async (req, res)=>{
     try {
-        const existingUser = await User.findById(userId)
-        if(!existingUser){
-            return res.status(400).json({success: false, error: "El usuario no existe"})
-        }
-        existingUser.__t = rol;
-        await existingUser.save();
-        return res.status(200).json({success: true, error: "Rol asignado"})
-        
+        const siteID = req.params.site;
+        console.log(siteID)
+        var organizers = await LocalOrganizer.find({site : siteID});
+        return res.status(200).send({success: true, msg: "Organizadores econtrados para site ", data: organizers});
     } catch (error) {
-        return res.status(400).json({success: false, error: error})
+        return res.status(400).send({success: false, msg: error.message});
     }
 };
 
-const assignRol = async (req, res) => {
-    const {rol, userId} = req.body
- 
-    User.findById(userId)
-    .then(existingUser => {
-      if (existingUser) {
-        existingUser.rol = rol;
-        return existingUser.save();
-      } else {
-        return res.status(400).json({success: false, error: "El usuario no existe"})
-      }
-    })
-    .then(updatedUser => {
-        return res.status(200).json({success: true, error: "Rol " + updatedUser.rol +" asignado"})
-    })
-    .catch(error => {
-        return res.status(400).json({success: false, error: error})
-    });
-    };
+const updateSite = async (req, res) => {
+    const { id } = req.params; 
+    const { siteId } = req.body; 
+    try {
+        const user = await User.findByIdAndUpdate(id, { site: siteId }, { new: true });
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        return res.status(200).json(user);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error interno del servidor' });
+    }
+};
+
+const getStaffPerSite = async (req, res) => {
+    const { region, site } = req.params;
+    try {
+        const staff = await User.find({"region.name":region, "site.name": site})
+        res.status(200).send({ success: true, msg: 'Staff have been found in the system.', data: staff });
+    } catch(error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
+const getUsers = async(req,res)=>{
+    try{
+        const allUsers = await User.find({});
+        res.status(200).send({ success:true, msg:'Se han encontrado usuarios en el sistema', data: allUsers });
+    } catch(error) {
+        res.status(400).send({ success:false, msg:error.message });
+    }
+};
+
+const getJammersPerSite = async (req, res) => {
+    const { siteId } = req.params;
+    try {
+        const jammers = await User.find({ "site._id": siteId, rol: 'Jammer'})
+        res.status(200).send({ success: true, msg: 'Users with the role "Jammer" have been found in the system.', data: jammers });
+    } catch(error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
+const deleteUser = async(req,res)=>{
+    try{
+        const id = req.params.id;
+        const deletedUser = await User.findOneAndDelete({ _id: id });
+        res.status(200).send({ success:true, msg:'Usuario eliminado correctamente', data: deletedUser });
+    } catch(error) {
+        res.status(400).send({ success:false, msg:error.message });
+    }
+};
 
 module.exports = {
+    registerUser,
+    updateUser,
+    deleteUser,
     loginUser,
     magicLink,
-    verifyMagicLink,
-    assignRol
+    updateSite,
+    getLocalOrganizersPerSite,
+    getUsers,
+    getJammersPerSite,
+    getStaffPerSite
 };
