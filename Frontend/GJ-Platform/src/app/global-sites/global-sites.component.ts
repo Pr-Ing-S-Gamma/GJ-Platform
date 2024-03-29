@@ -78,4 +78,7 @@ export class GlobalSitesComponent implements OnInit{
     }));
   }
 
+  logOut(){
+    console.log("OH MY GOD")
+  }
 }

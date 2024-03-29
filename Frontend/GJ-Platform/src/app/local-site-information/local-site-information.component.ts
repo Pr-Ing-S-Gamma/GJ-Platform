@@ -21,4 +21,8 @@ export class LocalSiteInformationComponent {
     {id:1, name: 'Bloom Tales', team: 'Outlander studio'},
     {id:2, name: 'Space Pinbam', team: 'Flipper Studio'}
   ]
+
+  logOut(){
+    console.log("OH MY GOD")
+  }
 }

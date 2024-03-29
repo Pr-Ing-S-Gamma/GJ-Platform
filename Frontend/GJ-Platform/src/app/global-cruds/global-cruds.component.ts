@@ -94,4 +94,8 @@ toggleJam() {
   this.hideAll();
   this.showJam = true;
 }
+
+logOut(){
+  console.log("OH MY GOD")
+}
 }
