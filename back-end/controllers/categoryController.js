@@ -110,6 +110,10 @@ const deleteCategory = async(req,res)=>{
 const getGamesbyCategory = async (req, res) => {
     const catgoryID = req.params.id;
       try {
+        const category = await Category.findById(categoryId);
+        if (!category) {
+            return res.status(404).json({ success: false, error: "Category not found" });
+        }
           const submissions = await Submission.find({ category: catgoryID })
               .populate('team')
               .populate('category')
