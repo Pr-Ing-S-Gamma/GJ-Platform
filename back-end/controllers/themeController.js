@@ -8,20 +8,10 @@
   const createTheme = async (req, res) => {
     try {
       const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-  
-      if (!userId) {
-        return res.status(401).json({ success: false, error: 'User not authenticated' });
-      }
-  
       let creatorUser = await User.findById(userId);
-  
-      if (!creatorUser) {
-        return res.status(404).json({ success: false, error: 'User not found' });
-      }
-  
       const { name } = req.body;
       if (!Theme.findOne({ name: name })) {
-        return res.status(400).json({ success: false, error: 'The theme is already registered' });
+        return res.status(409).json({ success: false, error: 'Theme already exists' });
       }
   
       const theme = new Theme({
@@ -44,12 +34,9 @@
   
       await theme.save();
   
-      res.status(201).json({ success: true, msg: 'Theme created successfully', theme: theme });
+      res.status(200).json({ success: true, msg: 'Theme created successfully', theme: theme });
     } catch (error) {
-      if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
-        return res.status(401).json({ success: false, error: 'Invalid token' });
-      }
-      return res.status(500).json({ success: false, msg:error.message});
+      return res.status(400).json({ success: false, msg:error.message});
     }
   };  
 
@@ -67,7 +54,7 @@
       }
       return res.status(200).json({ success: true, msg: 'Tema encontrado correctamente', theme: tema });
     } catch (error) {
-      return res.status(500).json({ success: false, msg:error.message });
+      return res.status(400).json({ success: false, msg:error.message });
     }
   };
 
@@ -76,17 +63,13 @@
       const temas = await Theme.find({});
       return res.status(200).json({ success: true, data: temas });
     } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
+      return res.status(400).json({ success: false, message: error.message });
     }
   };
 
   const updateTheme = async (req, res) => {
     try {
       const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-  
-      if (!userId) {
-        return res.status(401).json({ success: false, error: 'User not authenticated' });
-      }
       const themeId = req.params.id;
   
       if (!mongoose.Types.ObjectId.isValid(themeId)) {
@@ -96,10 +79,6 @@
       const theme = await Theme.findByIdAndUpdate(req.params.id, req.body, { new: true });
       
       const lastUpdateUser = await User.findById(userId);
-      if (!lastUpdateUser) {
-        return res.status(404).json({ success: false, error: 'User not found' });
-      }
-  
       theme.lastUpdateUser = {
         userId: lastUpdateUser._id,
         name: lastUpdateUser.name,
@@ -139,7 +118,7 @@
   
       return res.status(200).json({ success: true, msg: 'Successfully updated', theme: theme });
     } catch (error) {
-      return res.status(500).json({ success: false, msg:error.message });
+      return res.status(400).json({ success: false, msg:error.message });
     }
   };  
 
@@ -172,7 +151,7 @@
           console.log(submissions)
           return res.status(200).json({ success: true, data: submissions });
       } catch (error) {
-          res.status(500).json({ error: 'Error interno del servidor' });
+          res.status(400).json({ error: 'Error interno del servidor' });
       }
   }
 
