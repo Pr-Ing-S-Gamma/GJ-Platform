@@ -8,12 +8,12 @@ const registerUser = async (req, res) => {
     const { name, email, region, site, team, rol, coins } = req.body;
     try {
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            return res.status(400).json({ success: false, error: 'Invalid email address.' });
+            return res.status(403).json({ success: false, error: 'Invalid email address.' });
         }
         const existingEmail = await User.findOne({ email });
 
         if (existingEmail) {
-            return res.status(400).json({ success: false, error: "The email is already in use." });
+            return res.status(409).json({ success: false, error: "The email is already in use." });
         }
 
         const user = new User({
@@ -44,16 +44,16 @@ const updateUser = async (req, res) => {
 
         const existingUser = await User.findById(id);
         if (!existingUser) {
-            return res.status(400).json({ success: false, error: 'User not found.' });
+            return res.status(404).json({ success: false, error: 'User not found.' });
         }
 
         if (email && email !== existingUser.email) {
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                return res.status(400).json({ success: false, error: 'Invalid email address.' });
+                return res.status(403).json({ success: false, error: 'Invalid email address.' });
             }
             const emailExists = await User.findOne({ email });
             if (emailExists) {
-                return res.status(400).json({ success: false, error: 'The email is already in use.' });
+                return res.status(409).json({ success: false, error: 'The email is already in use.' });
             }
             existingUser.email = email;
         }
@@ -135,7 +135,7 @@ const magicLink = async (req, res) => {
         res.redirect(redirectUrl);
     } catch (error) {
         console.error('Error al procesar el token:', error);
-        res.status(500).json({ success: false, error: 'Error al procesar el token' });
+        res.status(400).json({ success: false, error: 'Error al procesar el token' });
     }
 };
 

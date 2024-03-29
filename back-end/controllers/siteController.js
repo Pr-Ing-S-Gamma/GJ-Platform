@@ -19,7 +19,7 @@ const createSite = async (req, res) => {
         } else {
             const existingRegion = await Region.findById(region._id);
             if (!existingRegion) {
-                return res.status(400).json({ success: false, error: "That region doesn't exist" });
+                return res.status(404).json({ success: false, error: "That region doesn't exist" });
             }
         }
 
@@ -73,7 +73,7 @@ const updateSite = async (req, res) => {
         } else {
             const existingRegion = await Site.findById(id);
             if (!existingRegion) {
-                return res.status(400).json({ success: false, error: "Ese site no existe" });
+                return res.status(404).json({ success: false, error: "Ese site no existe" });
             }
         }
         let changed = 0;
@@ -124,7 +124,7 @@ const updateSite = async (req, res) => {
             } else {
                 const existingRegion = await Region.findById(region._id);
                 if (!existingRegion) {
-                    return res.status(400).json({ success: false, error: "Esa región no existe" });
+                    return res.status(404).json({ success: false, error: "Esa región no existe" });
                 }
             }
             updateFields.region = region;
@@ -156,7 +156,7 @@ const getSite = async(req,res)=>{
         } else {
             const existingRegion = await Site.findById(id);
             if (!existingRegion) {
-                return res.status(400).json({ success: false, error: "Ese site no existe" });
+                return res.status(404).json({ success: false, error: "Ese site no existe" });
             }
         }
         const selectedSite = await Site.findById(id);
@@ -202,7 +202,7 @@ const getSitesPerRegion = async (req, res) => {
         } else {
             const existingRegion = await Region.findById(region);
             if (!existingRegion) {
-                return res.status(400).json({ success: false, error: "Esa región no existe" });
+                return res.status(404).json({ success: false, error: "Esa región no existe" });
             } else {
                 const selectedSites = await Site.find({ 'region._id': region });
                 return res.status(200).json({ success: true, msg: 'Sitios encontrados correctamente', data: selectedSites });
@@ -222,7 +222,7 @@ const deleteSite = async(req,res)=>{
         } else {
             const existingRegion = await Site.findById(id);
             if (!existingRegion) {
-                return res.status(400).json({ success: false, error: "Ese site no existe" });
+                return res.status(404).json({ success: false, error: "Ese site no existe" });
             }
         }
         const deletedSite = await Site.findOneAndDelete({ _id: id });

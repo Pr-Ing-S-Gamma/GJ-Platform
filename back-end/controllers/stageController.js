@@ -16,7 +16,7 @@ const createStage = async (req, res) => {
             const existingGameJam = await GameJam.findById(gameJam._id);
             
             if (!existingGameJam) {
-                return res.status(400).json({ success: false, error: "That GameJam does not exist" });
+                return res.status(404).json({ success: false, error: "That GameJam does not exist" });
             }
 
             if (startDate && endDate) {
@@ -24,7 +24,7 @@ const createStage = async (req, res) => {
                 const endDateObj = new Date(endDate);
             
                 if (startDateObj > endDateObj) {
-                    res.status(400).json({ error: "Start date cannot be after end date." });
+                    res.status(403).json({ error: "Start date cannot be after end date." });
                     return;
                 }
             } else {
@@ -75,7 +75,7 @@ const updateStage = async (req, res) => {
         } else {
             const stage = await Stage.findById(stageId);
             if (!stage) {
-                return res.status(400).json({ success: false, error: "Stage not found." });
+                return res.status(404).json({ success: false, error: "Stage not found." });
             }
             if (stage.gameJam._id.toString() !== gameJam._id.toString()) {
                 const oldGameJam = await GameJam.findById(stage.gameJam._id);
@@ -111,7 +111,7 @@ const updateStage = async (req, res) => {
                 const endDateObj = new Date(endDate);
             
                 if (startDateObj > endDateObj) {
-                    res.status(400).json({ error: "Start date cannot be after end date." });
+                    res.status(403).json({ error: "Start date cannot be after end date." });
                     return;
                 }
             } else {
@@ -144,7 +144,7 @@ const getStage = async(req,res)=>{
         } else {
             const existingStage = await Stage.findById(id);
             if (!existingStage) {
-                return res.status(400).json({ success: false, error: "Esa fase no existe" });
+                return res.status(404).json({ success: false, error: "Esa fase no existe" });
             }
         }
         const selectedStage = await Stage.findById(id);

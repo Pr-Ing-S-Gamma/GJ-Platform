@@ -11,7 +11,7 @@ const createCategory = async (req, res) => {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
         if (existingCategory) {
-            return res.status(400).json({ success: false, error: "Category already exists" });
+            return res.status(409).json({ success: false, error: "Category already exists" });
         }
 
         const category = new Category({
@@ -43,13 +43,13 @@ const updateCategory = async (req, res) => {
         } else {
             const existingCategory = await Category.findById(id);
             if (!existingCategory) {
-                return res.status(400).json({ success: false, error: "Category does not exist" });
+                return res.status(404).json({ success: false, error: "Category does not exist" });
             }
         }
         if (req.body.name) {
             const existingCategory = await Category.findOne({ name: req.body.name });
             if (existingCategory) {
-                return res.status(400).json({ success: false, error: "Category with this name already exists" });
+                return res.status(409).json({ success: false, error: "Category with this name already exists" });
             }
             
             updateFields.name = req.body.name;
@@ -77,7 +77,7 @@ const getCategory = async(req,res)=>{
         } else {
             const existingCategory = await Category.findById(id);
             if (!existingCategory) {
-                return res.status(400).json({ success: false, error: "Esa categoría no existe" });
+                return res.status(404).json({ success: false, error: "Esa categoría no existe" });
             }
         }
         const selectedCategory = await Category.findById(id);
@@ -118,7 +118,7 @@ const getGamesbyCategory = async (req, res) => {
               .populate('theme')
           return res.status(200).json({ success: true, submissions: submissions });
       } catch (error) {
-          res.status(500).json({ error: 'Error interno del servidor' });
+          res.status(400).json({ error: 'Error interno del servidor' });
       }
   }
 

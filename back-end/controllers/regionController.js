@@ -14,7 +14,7 @@ const createRegion = async (req, res) => {
         const creatorUser = await User.findById(userId);
         
         if (existingRegion) {
-            return res.status(400).json({ success: false, error: "Region already exists!" });
+            return res.status(409).json({ success: false, error: "Region already exists!" });
         }
 
         const region = new Region({
@@ -47,7 +47,7 @@ const updateRegion = async (req, res) => {
         } else {
             const existingRegion = await Region.findOne({ name: req.body.name });
             if (existingRegion && existingRegion._id.toString() !== id) {
-                return res.status(400).json({ success: false, error: 'A region with that name already exists!' });
+                return res.status(409).json({ success: false, error: 'A region with that name already exists!' });
             }
         }
 
@@ -101,7 +101,7 @@ const getRegion = async(req,res)=>{
         } else {
             const existingRegion = await Region.findById(id);
             if (!existingRegion) {
-                return res.status(400).json({ success: false, error: "Esa región no existe" });
+                return res.status(404).json({ success: false, error: "Esa región no existe" });
             }
         }
         const selectedRegion = await Region.findById(id);

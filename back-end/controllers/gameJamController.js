@@ -19,7 +19,7 @@ const createGameJam = async (req, res) => {
         } else {
             const existingRegion = await Region.findById(region._id);
             if (!existingRegion) {
-                return res.status(400).json({ success: false, error: "That region does not exist." });
+                return res.status(404).json({ success: false, error: "That region does not exist." });
             }
         }
 
@@ -28,7 +28,7 @@ const createGameJam = async (req, res) => {
         } else {
             const existingSite = await Site.findById(site._id);
             if (!existingSite) {
-                return res.status(400).json({ success: false, error: "That site does not exist." });
+                return res.status(404).json({ success: false, error: "That site does not exist." });
             }
         }
 
@@ -37,7 +37,7 @@ const createGameJam = async (req, res) => {
         } else {
             const existingTheme = await Theme.findById(theme._id);
             if (!existingTheme) {
-                return res.status(400).json({ success: false, error: "That theme does not exist." });
+                return res.status(404).json({ success: false, error: "That theme does not exist." });
             }
         }
 
@@ -115,7 +115,7 @@ const updateGameJam = async (req, res) => {
             if (region._id && mongoose.Types.ObjectId.isValid(region._id)) {
                 const existingRegion = await Region.findById(region._id);
                 if (!existingRegion) {
-                    return res.status(400).json({ success: false, error: "That region does not exist." });
+                    return res.status(404).json({ success: false, error: "That region does not exist." });
                 }
                 gameJam.region = {
                     _id: region._id,
@@ -129,7 +129,7 @@ const updateGameJam = async (req, res) => {
             if (site._id && mongoose.Types.ObjectId.isValid(site._id)) {
                 const existingSite = await Site.findById(site._id);
                 if (!existingSite) {
-                    return res.status(400).json({ success: false, error: "That site does not exist." });
+                    return res.status(404).json({ success: false, error: "That site does not exist." });
                 }
                 gameJam.site = {
                     _id: site._id,
@@ -144,7 +144,7 @@ const updateGameJam = async (req, res) => {
             if (theme._id && mongoose.Types.ObjectId.isValid(theme._id)) {
                 const existingTheme = await Theme.findById(theme._id);
                 if (!existingTheme) {
-                    return res.status(400).json({ success: false, error: "That theme does not exist." });
+                    return res.status(404).json({ success: false, error: "That theme does not exist." });
                 }
                 gameJam.theme = {
                     _id: theme._id,
@@ -172,7 +172,7 @@ const getGameJam = async(req,res)=>{
         } else {
             const existingGameJam = await GameJam.findById(id);
             if (!existingGameJam) {
-                return res.status(400).json({ success: false, error: "Esa GameJam no existe" });
+                return res.status(404).json({ success: false, error: "Esa GameJam no existe" });
             }
         }
         const selectedGameJam = await GameJam.findById(id);

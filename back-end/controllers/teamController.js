@@ -17,22 +17,22 @@ const createTeam = async (req, res) => {
 
         const existingGameJam = await GameJam.findById(gameJam._id);
         if (!existingGameJam) {
-            return res.status(400).json({ success: false, error: "That GameJam does not exist" });
+            return res.status(404).json({ success: false, error: "That GameJam does not exist" });
         }
 
         const existingSite = await Site.findById(site._id);
         if (!existingSite) {
-            return res.status(400).json({ success: false, error: "That site does not exist" });
+            return res.status(404).json({ success: false, error: "That site does not exist" });
         }
         const existingRegion = await Region.findById(region._id);
         if (!existingRegion) {
-            return res.status(400).json({ success: false, error: "That region does not exist" });
+            return res.status(404).json({ success: false, error: "That region does not exist" });
         }
 
         for (const jammer of jammers) {
             const user = await User.findById(jammer._id);
             if (user.team && user.team._id) {
-                return res.status(400).json({ success: false, error: `User ${user.name} (${user.email}) is already assigned to a team.` });
+                return res.status(403).json({ success: false, error: `User ${user.name} (${user.email}) is already assigned to a team.` });
             }
         }        
 
@@ -99,7 +99,7 @@ const updateTeam = async (req, res) => {
 
         const existingTeam = await Team.findById(teamId);
         if (!existingTeam) {
-            return res.status(400).json({ success: false, error: "That team does not exist" });
+            return res.status(404).json({ success: false, error: "That team does not exist" });
         }
 
         const regionChanged = existingTeam.region._id.toString() !== region._id;
@@ -119,7 +119,7 @@ const updateTeam = async (req, res) => {
         for (const jammer of jammers) {
             const user = await User.findById(jammer._id);
             if (user.team && user.team._id && user.team._id.toString() !== existingTeam._id.toString()) {
-                return res.status(400).json({ success: false, error: `User ${user.name} (${user.email}) is already assigned to a different team.` });
+                return res.status(403).json({ success: false, error: `User ${user.name} (${user.email}) is already assigned to a different team.` });
             }
         }
         if(req.body.studioName) {
@@ -213,7 +213,7 @@ const getTeam = async(req,res)=>{
         } else {
             const existingTeam = await Team.findById(id);
             if (!existingTeam) {
-                return res.status(400).json({ success: false, error: "Ese equipo no existe" });
+                return res.status(404).json({ success: false, error: "Ese equipo no existe" });
             }
         }
         const selectedTeam = await Team.findById(id);

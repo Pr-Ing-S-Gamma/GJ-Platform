@@ -18,7 +18,7 @@ const createSubmission = async (req, res) => {
         } else {
             existingTeam = await Team.findById(teamId);
             if (!existingTeam) {
-                return res.status(400).json({ success: false, error: "Ese equipo no existe" });
+                return res.status(404).json({ success: false, error: "Ese equipo no existe" });
             }
         }
         if (!mongoose.Types.ObjectId.isValid(categoryId)) {
@@ -26,7 +26,7 @@ const createSubmission = async (req, res) => {
         } else {
             const existingCategory = await Category.findById(categoryId);
             if (!existingCategory) {
-                return res.status(400).json({ success: false, error: "Esa categoría no existe" });
+                return res.status(404).json({ success: false, error: "Esa categoría no existe" });
             }
         }
         if (!mongoose.Types.ObjectId.isValid(themeId)) {
@@ -34,7 +34,7 @@ const createSubmission = async (req, res) => {
         } else {
             const existingCategory = await Theme.findById(themeId);
             if (!existingCategory) {
-                return res.status(400).json({ success: false, error: "Ese tema no existe" });
+                return res.status(404).json({ success: false, error: "Ese tema no existe" });
             }
         }
         if (!mongoose.Types.ObjectId.isValid(stageId)) {
@@ -42,7 +42,7 @@ const createSubmission = async (req, res) => {
         } else {
             const existingStage = await Stage.findById(stageId);
             if (!existingStage) {
-                return res.status(400).json({ success: false, error: "Esa fase no existe" });
+                return res.status(404).json({ success: false, error: "Esa fase no existe" });
             }
         }
         const submission = new Submission({
@@ -105,7 +105,7 @@ const updateSubmission = async (req, res) => {
             } else {
                 const existingTeam = await Team.findById(teamId);
                 if (!existingTeam) {
-                    return res.status(400).json({ success: false, error: "Ese equipo no existe" });
+                    return res.status(404).json({ success: false, error: "Ese equipo no existe" });
                 }
             }
             await Team.updateOne(
@@ -127,7 +127,7 @@ const updateSubmission = async (req, res) => {
             } else {
                 const existingCategory = await Category.findById(categoryId);
                 if (!existingCategory) {
-                    return res.status(400).json({ success: false, error: "Esa categoría no existe" });
+                    return res.status(404).json({ success: false, error: "Esa categoría no existe" });
                 }
             }
             updateFields.category = categoryId;
@@ -140,7 +140,7 @@ const updateSubmission = async (req, res) => {
             } else {
                 const existingStage = await Stage.findById(stageId);
                 if (!existingStage) {
-                    return res.status(400).json({ success: false, error: "Esa fase no existe" });
+                    return res.status(404).json({ success: false, error: "Esa fase no existe" });
                 }
             }
             updateFields.stage = stageId;
@@ -173,7 +173,7 @@ const getSubmission = async(req,res)=>{
         } else {
             const existingSubmission = await Submission.findById(id);
             if (!existingSubmission) {
-                return res.status(400).json({ success: false, error: "Esa entrega no existe" });
+                return res.status(404).json({ success: false, error: "Esa entrega no existe" });
             }
         }
         const selectedSubmission = await Submission.findById(id);

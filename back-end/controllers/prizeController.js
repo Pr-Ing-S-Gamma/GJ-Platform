@@ -11,7 +11,7 @@ const createPrize = async (req, res) => {
         const creatorUser = await User.findById(userId);
         
         if (existingPrize) {
-            return res.status(400).json({ success: false, error: "Ese premio ya existe" });
+            return res.status(409).json({ success: false, error: "Ese premio ya existe" });
         }
 
         const prize = new Prize({
@@ -44,7 +44,7 @@ const updatePrize = async (req, res) => {
         } else {
             const existingPrize = await Prize.findById(id);
             if (!existingPrize) {
-                return res.status(400).json({ success: false, error: "Ese premio no existe" });
+                return res.status(404).json({ success: false, error: "Ese premio no existe" });
             }
         }
         let changed = 0;
@@ -84,7 +84,7 @@ const getPrize = async(req,res)=>{
         } else {
             const existingPrize = await Prize.findById(id);
             if (!existingPrize) {
-                return res.status(400).json({ success: false, error: "Ese premio no existe" });
+                return res.status(404).json({ success: false, error: "Ese premio no existe" });
             }
         }
         const selectedPrize = await Prize.findById(id);
