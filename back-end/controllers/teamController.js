@@ -217,7 +217,7 @@ const getTeam = async(req,res)=>{
             }
         }
         const selectedTeam = await Team.findById(id);
-        res.status(200).send({ success:true, msg:'Fase encontrada correctamente', data: selectedTeam });
+        res.status(200).send({ success:true, msg:'Equipo encontrado correctamente', data: selectedTeam });
     } catch(error) {
         res.status(400).send({ success:false, msg:error.message });
     }
