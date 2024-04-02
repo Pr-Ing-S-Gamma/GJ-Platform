@@ -25,6 +25,12 @@ export class SiteService {
     );
   }
 
+  getSite(url: string): Observable<Site> { 
+    return this.http.get<any>(url, { withCredentials: true }).pipe( 
+      map(response => response.data)
+    );
+  }
+
   getCountries(url: string): Observable<Country[]> { 
     return this.http.get<any>(url).pipe( 
       map(response => response.data)

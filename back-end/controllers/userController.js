@@ -131,7 +131,10 @@ const magicLink = async (req, res) => {
         let redirectUrl;
         if (rol === 'GlobalOrganizer') {
             redirectUrl = 'http://localhost:4200/DataManagement';
-        } 
+        }
+        if(rol === 'LocalOrganizer') {
+            redirectUrl = 'http://localhost:4200/Games';
+        }
         res.redirect(redirectUrl);
     } catch (error) {
         console.error('Error al procesar el token:', error);
@@ -139,10 +142,31 @@ const magicLink = async (req, res) => {
     }
 };
 
+const logOutUser = async (req, res) => {
+    try {
+        res.clearCookie('token').status(200).json({ success: true, message: 'Cookie deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Error deleting cookie' });
+    }
+};
+
+const getCurrentUser = async (req, res) => {
+    try {
+        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        const user = await User.findById(userId); 
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'User Not Found' });
+        }
+
+        return res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        return res.status(400).json({ success: false, error: 'Error al procesar el token' });
+    }
+};
+
 const getLocalOrganizersPerSite = async (req, res)=>{
     try {
         const siteID = req.params.site;
-        console.log(siteID)
         var organizers = await LocalOrganizer.find({site : siteID});
         return res.status(200).send({success: true, msg: "Organizadores econtrados para site ", data: organizers});
     } catch (error) {
@@ -226,7 +250,9 @@ module.exports = {
     updateUser,
     deleteUser,
     loginUser,
+    getCurrentUser,
     magicLink,
+    logOutUser,
     updateSite,
     getLocalOrganizersPerSite,
     getUsers,

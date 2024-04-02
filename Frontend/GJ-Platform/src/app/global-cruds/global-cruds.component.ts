@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { RegionCRUDComponent } from './region-crud/region-crud.component';
@@ -10,6 +10,7 @@ import { GamejamCrudComponent } from './gamejam-crud/gamejam-crud.component';
 import { UserCrudComponent } from './user-crud/user-crud.component';
 import { ThemeCrudComponent } from './theme-crud/theme-crud.component';
 import { Router } from '@angular/router';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-global-cruds',
@@ -30,7 +31,7 @@ import { Router } from '@angular/router';
   templateUrl: './global-cruds.component.html',
   styleUrl: './global-cruds.component.css'
 })
-export class GlobalCRUDsComponent{
+export class GlobalCRUDsComponent implements OnInit{
   showRegions: boolean = false;
   showSites: boolean = false;
   showCategories : boolean = false;
@@ -39,8 +40,17 @@ export class GlobalCRUDsComponent{
   showStage  : boolean = false;
   showUser  : boolean = false;
   showJam  : boolean = false;
-
-  constructor(private router: Router) { }
+  ngOnInit(): void {
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    .subscribe(
+      () => {
+      },
+      error => {
+        this.router.navigate(['/login']);
+      }
+    );
+  }
+  constructor(private router: Router, private userService: UserService) { }
   moveToSites() {
     this.router.navigate(['/Sites']);
   }
@@ -95,7 +105,15 @@ toggleJam() {
   this.showJam = true;
 }
 
-logOut(){
-  console.log("OH MY GOD")
+logOut(): void {
+  this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+    .subscribe(
+      () => {
+        this.router.navigate(['/login']);
+      },
+      error => {
+        console.error('Error al cerrar sesión:', error);
+      }
+    );
 }
 }

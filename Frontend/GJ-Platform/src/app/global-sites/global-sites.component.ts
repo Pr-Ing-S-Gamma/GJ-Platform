@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { SiteService } from '../services/site.service';
 import { Site } from '../../types';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-global-sites',
@@ -20,7 +21,7 @@ export class GlobalSitesComponent implements OnInit{
   regionParameter: String | undefined;
   dataSource: Site[] = [];
   regions: any[] = []; 
-  constructor(private router: Router, private route: ActivatedRoute, private siteService: SiteService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private siteService: SiteService, private userService: UserService) { }
 
   moveToCruds() {
     this.router.navigate(['/DataManagement']);
@@ -39,6 +40,14 @@ export class GlobalSitesComponent implements OnInit{
   }
   
   ngOnInit(): void {
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    .subscribe(
+      () => {
+      },
+      error => {
+        this.router.navigate(['/login']);
+      }
+    );
     this.siteService.getSites('http://localhost:3000/api/site/get-sites')
       .subscribe(
         sites => {
@@ -78,7 +87,15 @@ export class GlobalSitesComponent implements OnInit{
     }));
   }
 
-  logOut(){
-    console.log("OH MY GOD")
+  logOut(): void {
+    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+      .subscribe(
+        () => {
+          this.router.navigate(['/login']);
+        },
+        error => {
+          console.error('Error al cerrar sesión:', error);
+        }
+      );
   }
 }
