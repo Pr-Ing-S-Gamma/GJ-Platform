@@ -14,22 +14,22 @@ const userSchema = mongoose.Schema({
         _id: { 
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Region',
-            required: true
+            required: false
         },
         name: { 
             type: String, 
-            required: true 
+            required: false 
         }
     },
     site:  {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Site',
-            required: true
+            required: false
         },
         name: { 
             type: String, 
-            required: true 
+            required: false 
         }
     },
     team:  {
