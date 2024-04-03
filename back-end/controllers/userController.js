@@ -19,9 +19,9 @@ const registerUser = async (req, res) => {
         const user = new User({
             name: name,
             email: email,
-            //region: { _id: region._id, name: region.name },
-            //site: { _id: site._id, name: site.name },
-            //team: team ? { _id: team._id, name: team.name } : null,
+            region: { _id: region._id, name: region.name },
+            site: { _id: site._id, name: site.name },
+            team: team ? { _id: team._id, name: team.name } : null,
             rol: rol,
             coins: coins,
             creationDate: new Date()
