@@ -12,15 +12,15 @@ const app = express();
 const appFrontend = express();
 const portFrontend = 4200; // Puerto para el frontend
 
-// // Servir los archivos estáticos del frontend
+// Servir los archivos estáticos del frontend
 appFrontend.use(express.static(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser')));
 
-// // Manejar todas las rutas del frontend devolviendo el archivo index.html
+// Manejar todas las rutas del frontend devolviendo el archivo index.html
 appFrontend.get('*', (req, res) => {
      res.sendFile(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser/index.html'));
  });
 
-// // Iniciar el servidor del frontend
+// Iniciar el servidor del frontend
 appFrontend.listen(portFrontend, () => {
     console.log(`Servidor del frontend escuchando en http://localhost:${portFrontend}`);
 });
@@ -31,24 +31,11 @@ const port = 3000; // Establecer el puerto en el que el servidor escuchará las 
 mongoose.connect("mongodb://localhost:27017/GameJamDB");
 
 // Configuración de CORS - Permite solicitudes desde un origen específico
-const corsOptions = {
-    origin: function(origin, callback) {
-        if (!origin) return callback(null, true);
-
-        const allowedOrigins = ['http://localhost:4200'];
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            // El origen está en la lista de orígenes permitidos
-            callback(null, true);
-        } else {
-            // El origen no está en la lista de orígenes permitidos
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    optionsSuccessStatus: 204, // Devolver un código de éxito 204
-    methods: "GET, POST, PUT, DELETE", // Permitir estos métodos HTTP
-    credentials: true, // Permite enviar cookies de forma segura
-};
-app.use(cors(corsOptions)); // Usar el middleware CORS
+app.use(cors({
+    origin: 'http://frontend-domain.com', // Cambia 'frontend-domain.com' por el dominio o la IP de tu frontend
+    methods: ["GET", "PATCH", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Content-Length", "X-Requested-With"]
+}));
 
 // Middleware para analizar solicitudes JSON y cookies
 app.use(express.json());
