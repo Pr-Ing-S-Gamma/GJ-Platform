@@ -136,9 +136,9 @@ const magicLink = async (req, res) => {
             redirectUrl = 'http://localhost:4200/Games';
         }
         if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer') {
-            res.clearCookie('token').status(200).json({ success: true, message: 'Cookie deleted successfully' });
+            return res.clearCookie('token').redirect('http://localhost:4200/login');
         }
-        res.redirect(redirectUrl);
+        return res.redirect(redirectUrl);
     } catch (error) {
         console.error('Error al procesar el token:', error);
         res.status(400).json({ success: false, error: 'Error al procesar el token' });

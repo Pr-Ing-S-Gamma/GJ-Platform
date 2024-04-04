@@ -85,8 +85,8 @@ const updateSite = async (req, res) => {
             const updateFieldsQuery = {
                 $set: {
                   'site.name': req.body.name,
-                  'region._id': req.body.regionId,
-                  'region.name': req.body.regionName
+                  'region._id': req.body.region._id,
+                  'region.name': req.body.region.name
                 }
             };              
 
