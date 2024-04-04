@@ -5,6 +5,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require('dotenv').config();
 const path = require('path');
+const hostname = '0.0.0.0'; // Cambio necesario: Escucha en todas las interfaces de red
 
 // Crear una instancia de la aplicación Express
 const app = express();
@@ -34,7 +35,7 @@ const corsOptions = {
     origin: function(origin, callback) {
         if (!origin) return callback(null, true);
 
-        const allowedOrigins = ['http://localhost:4200']; // Aquí se corrigió el protocolo
+        const allowedOrigins = ['http://localhost:4200'];
         if (allowedOrigins.indexOf(origin) !== -1) {
             // El origen está en la lista de orígenes permitidos
             callback(null, true);
@@ -47,7 +48,6 @@ const corsOptions = {
     methods: "GET, POST, PUT, DELETE", // Permitir estos métodos HTTP
     credentials: true, // Permite enviar cookies de forma segura
 };
-
 app.use(cors(corsOptions)); // Usar el middleware CORS
 
 // Middleware para analizar solicitudes JSON y cookies
@@ -97,6 +97,6 @@ const theme_route = require('./routes/themeRoute');
 app.use('/api/theme', theme_route);
 
 // Iniciar el servidor y escuchar en el puerto especificado
-app.listen(port, () => {
-    console.log(`Servidor escuchando en http://localhost:${port}`);
+app.listen(port, hostname, () => {
+    console.log(`Servidor escuchando en http://${hostname}:${port}`);
 });
