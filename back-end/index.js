@@ -9,7 +9,7 @@ const path = require('path');
 // Crear una instancia de la aplicación Express
 const app = express();
 const appFrontend = express();
-const portFrontend = 4200; // Puerto para el frontend
+const portFrontend = 80; // Puerto para el frontend
 
 // // Servir los archivos estáticos del frontend
 appFrontend.use(express.static(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser')));
@@ -34,7 +34,7 @@ const corsOptions = {
     origin: function(origin, callback) {
         if (!origin) return callback(null, true);
 
-        const allowedOrigins = ['http://localhost:4200']; // Aquí se corrigió el protocolo
+        const allowedOrigins = ['http://localhost:80']; // Aquí se corrigió el protocolo
         if (allowedOrigins.indexOf(origin) !== -1) {
             // El origen está en la lista de orígenes permitidos
             callback(null, true);
