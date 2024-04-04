@@ -99,7 +99,7 @@ app.get('*', function(req, res) {
 });
 
 // Iniciar el servidor y escuchar en el puerto especificado
-const ipAddress = '149.130.176.112';
+const ipAddress = '0.0.0.0';
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, ipAddress, () => {
     console.log(`Servidor escuchando en http://${ipAddress}:${port}`);
