@@ -40,17 +40,19 @@ export class GlobalCRUDsComponent implements OnInit{
   showStage  : boolean = false;
   showUser  : boolean = false;
   showJam  : boolean = false;
+  constructor(private router: Router, private userService: UserService) { }
   ngOnInit(): void {
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
     .subscribe(
-      () => {
+      user => {
+        if (user.rol === 'LocalOrganizer') {
+          this.router.navigate(['/Games']);
+        }
       },
-      error => {
-        this.router.navigate(['/login']);
+      () => {
       }
     );
   }
-  constructor(private router: Router, private userService: UserService) { }
   moveToSites() {
     this.router.navigate(['/Sites']);
   }
