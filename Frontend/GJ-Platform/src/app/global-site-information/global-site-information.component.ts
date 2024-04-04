@@ -36,6 +36,18 @@ export class GlobalSiteInformationComponent {
       this.regionParameter = params['region'];
       this.siteParameter = params['site'];
     });
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    .subscribe(
+      user => {
+        if (user.rol === 'LocalOrganizer') {
+          this.router.navigate(['/Games']);
+          return; 
+        }
+      },
+      error => {
+        this.router.navigate(['/login']);
+      }
+    );
     const url = `http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {

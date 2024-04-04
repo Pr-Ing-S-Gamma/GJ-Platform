@@ -33,6 +33,19 @@ export class RegisterComponent implements OnInit {
       region: ['', Validators.required],
       site: ['', Validators.required]
     });
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    .subscribe(
+      user => {
+        if (user.rol === 'LocalOrganizer') {
+          this.router.navigate(['/Games']);
+        }
+        if (user.rol === 'GlobalOrganizer') {
+          this.router.navigate(['/DataManagement']);
+        }
+      },
+      () => {
+      }
+    );
     this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
     .subscribe(
       regions => {

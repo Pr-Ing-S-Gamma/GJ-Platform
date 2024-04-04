@@ -42,7 +42,11 @@ export class GlobalSitesComponent implements OnInit{
   ngOnInit(): void {
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
     .subscribe(
-      () => {
+      user => {
+        if (user.rol === 'LocalOrganizer') {
+          this.router.navigate(['/Games']);
+          return; 
+        }
       },
       error => {
         this.router.navigate(['/login']);

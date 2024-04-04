@@ -23,7 +23,11 @@ export class LocalSiteInformationComponent implements OnInit{
   ngOnInit(): void {
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
     .subscribe(
-      () => {
+      user => {
+        if (user.rol === 'GlobalOrganizer') {
+          this.router.navigate(['/DataManagement']);
+          return; 
+        }
       },
       error => {
         this.router.navigate(['/login']);
