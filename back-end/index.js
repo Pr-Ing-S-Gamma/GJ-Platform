@@ -5,10 +5,25 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require('dotenv').config();
 const path = require('path');
-const fs = require('fs');
 
 // Crear una instancia de la aplicación Express
 const app = express();
+const appFrontend = express();
+const portFrontend = 4200; // Puerto para el frontend
+
+// // Servir los archivos estáticos del frontend
+appFrontend.use(express.static(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser')));
+
+// // Manejar todas las rutas del frontend devolviendo el archivo index.html
+appFrontend.get('*', (req, res) => {
+     res.sendFile(path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser/index.html'));
+ });
+
+// // Iniciar el servidor del frontend
+appFrontend.listen(portFrontend, () => {
+    console.log(`Servidor del frontend escuchando en http://localhost:${portFrontend}`);
+});
+
 const port = 3000; // Establecer el puerto en el que el servidor escuchará las solicitudes
 
 // Conexión a MongoDB
@@ -19,7 +34,7 @@ const corsOptions = {
     origin: function(origin, callback) {
         if (!origin) return callback(null, true);
 
-        const allowedOrigins = ['http://localhost:3000']; // Aquí se corrigió el protocolo
+        const allowedOrigins = ['http://localhost:4200']; // Aquí se corrigió el protocolo
         if (allowedOrigins.indexOf(origin) !== -1) {
             // El origen está en la lista de orígenes permitidos
             callback(null, true);
@@ -81,26 +96,7 @@ app.use('/api/submission', submission_route);
 const theme_route = require('./routes/themeRoute');
 app.use('/api/theme', theme_route);
 
-// Definir el archivo raíz para servir los archivos
-const root = path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/browser');
-
-// Servir los archivos estáticos
-app.use(express.static(root));
-
-// Manejar todas las rutas
-app.get('*', function(req, res) {
-    fs.stat(path.join(root, req.path), function(err) {
-        if (err) {
-            res.sendFile('index.html', { root });
-        } else {
-            res.sendFile(req.path, { root });
-        }
-    });
-});
-
 // Iniciar el servidor y escuchar en el puerto especificado
-const ipAddress = '0.0.0.0';
-// Iniciar el servidor y escuchar en el puerto especificado
-app.listen(port, ipAddress, () => {
-    console.log(`Servidor escuchando en http://${ipAddress}:${port}`);
+app.listen(port, () => {
+    console.log(`Servidor escuchando en http://localhost:${port}`);
 });
