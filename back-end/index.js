@@ -34,7 +34,7 @@ const corsOptions = {
     origin: function(origin, callback) {
         if (!origin) return callback(null, true);
 
-        const allowedOrigins = ['http://localhost:4200', 'http://localhost:3000']; // Corregido 'htttp' a 'http'
+        const allowedOrigins = ['http://localhost:4200', 'http://localhost:3000']; // Aquí se corrigió el protocolo
         if (allowedOrigins.indexOf(origin) !== -1) {
             // El origen está en la lista de orígenes permitidos
             callback(null, true);
@@ -47,6 +47,7 @@ const corsOptions = {
     methods: "GET, POST, PUT, DELETE", // Permitir estos métodos HTTP
     credentials: true, // Permite enviar cookies de forma segura
 };
+
 app.use(cors(corsOptions)); // Usar el middleware CORS
 
 // Middleware para analizar solicitudes JSON y cookies
