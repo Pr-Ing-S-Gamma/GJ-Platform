@@ -3,8 +3,6 @@ const Team = require('../models/teamModel');
 const { sendEmail } = require('../services/mailer');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
-const os = require('os');
-const hostname = os.hostname();
 
 const registerUser = async (req, res) => {
     const { name, email, region, site, team, rol, coins } = req.body;
@@ -100,7 +98,7 @@ const loginUser = async (req, res) => {
     let rol;
     let userId;
     if (!existingUser) {
-        const registerLink = `http://${os.hostname()}:4200/register`; // Utilizar el hostname aquí
+        const registerLink = `http://localhost:4200/register`;
         const subject = 'Login in GameJam Platform';
         const text = `Hi, click on this link to create an account: ${registerLink}`;
         await sendEmail(email, subject, text);
@@ -111,13 +109,12 @@ const loginUser = async (req, res) => {
     userId = existingUser._id;
 
     const token = jwt.sign({ userId, rol }, 'MY_JWT_SECRET', { expiresIn: 600000 });
-    const magicLink = `http://${os.hostname()}:3000/api/user/magic-link/${token}`; // Utilizar el hostname aquí
+    const magicLink = `http://localhost:3000/api/user/magic-link/${token}`;
     const subject = 'Login in GameJam Platform';
     const text = `Hi, click on this link to continue to the app: ${magicLink}`;
     await sendEmail(email, subject, text);
     res.status(200).json({ success: true, msg: 'Se envió el magic link al usuario.', email, magicLink });
 };
-
 
 const magicLink = async (req, res) => {
     try {
