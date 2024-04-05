@@ -32,7 +32,7 @@ mongoose.connect("mongodb://localhost:27017/GameJamDB");
 
 // Configuración de CORS - Permite solicitudes desde un origen específico
 app.use(cors({
-    origin: ['http://localhost:4200', 'http://127.0.0.1:4200', 'http://192.168.1.10:4200', 'http://149.130.176.112'], 
+    origin: ['http://localhost:4200', 'http://127.0.0.1:4200', 'http://192.168.1.10:4200', 'http://149.130.176.112:4200'], 
     methods: ["GET", "PATCH", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Content-Length", "X-Requested-With"]
 }));
