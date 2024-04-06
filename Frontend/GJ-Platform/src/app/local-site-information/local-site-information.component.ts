@@ -6,7 +6,6 @@ import { GameInformationComponent } from '../game-information/game-information.c
 import { UserService } from '../services/user.service';
 import { Site, User } from '../../types';
 import { SiteService } from '../services/site.service';
-import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-local-site-information',
@@ -22,7 +21,7 @@ export class LocalSiteInformationComponent implements OnInit{
   constructor(private router: Router, private userService: UserService, private siteService: SiteService){}
   site: Site | undefined;
   ngOnInit(): void {
-    this.userService.getCurrentUser('${environment.apiUrl}/user/get-user')
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
     .subscribe(
       user => {
         if (user.rol === 'GlobalOrganizer') {
@@ -34,10 +33,10 @@ export class LocalSiteInformationComponent implements OnInit{
         this.router.navigate(['/login']);
       }
     );
-    this.userService.getCurrentUser('${environment.apiUrl}/user/get-user')
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
       .subscribe(
         user => {
-          this.siteService.getSite(`${environment.apiUrl}/site/get-site/${user.site._id}`)
+          this.siteService.getSite(`http://localhost:3000/api/site/get-site/${user.site._id}`)
             .subscribe(
               site => {
                 this.site = site;
@@ -59,7 +58,7 @@ export class LocalSiteInformationComponent implements OnInit{
   ]
 
   logOut(): void {
-    this.userService.logOutUser('${environment.apiUrl}/user/log-out-user')
+    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
       .subscribe(
         () => {
           this.router.navigate(['/login']);
