@@ -35,9 +35,9 @@ export class GamejamCrudComponent implements OnInit{
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
+      theme: ['', Validators.required],
       region: ['', Validators.required],
-      site: ['', Validators.required],
-      theme: ['', Validators.required]
+      site: ['', Validators.required]
     });
     const url = 'http://localhost:3000/api/game-jam/get-game-jams';
     this.gamejamService.getGameJams(url).subscribe(
@@ -52,6 +52,10 @@ export class GamejamCrudComponent implements OnInit{
     .subscribe(
       regions => {
         this.regions = regions;
+        if (this.regions.length > 0) {
+          this.myForm.get('region')?.setValue(this.regions[0]);
+          this.onRegionSelection();
+        }
       },
       error => {
         console.error('Error al obtener regiones:', error);

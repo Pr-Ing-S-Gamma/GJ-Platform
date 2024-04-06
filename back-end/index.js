@@ -19,7 +19,7 @@ const corsOptions = {
     origin: function(origin, callback) {
         if (!origin) return callback(null, true);
 
-        const allowedOrigins = ['http://localhost:3000']; // Aquí se corrigió el protocolo
+        const allowedOrigins = ['http://localhost:3000', 'http://localhost:4200'];
         if (allowedOrigins.indexOf(origin) !== -1) {
             // El origen está en la lista de orígenes permitidos
             callback(null, true);
