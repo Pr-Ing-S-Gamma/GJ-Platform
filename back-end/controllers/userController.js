@@ -98,7 +98,7 @@ const loginUser = async (req, res) => {
     let rol;
     let userId;
     if (!existingUser) {
-        const registerLink = `http://localhost:4200/register`;
+        const registerLink = `http://localhost:3000/register`;
         const subject = 'Login in GameJam Platform';
         const text = `Hi, click on this link to create an account: ${registerLink}`;
         await sendEmail(email, subject, text);
@@ -130,13 +130,13 @@ const magicLink = async (req, res) => {
         });
         let redirectUrl;
         if (rol === 'GlobalOrganizer') {
-            redirectUrl = 'http://localhost:4200/DataManagement';
+            redirectUrl = 'http://localhost:3000/DataManagement';
         }
         if(rol === 'LocalOrganizer') {
-            redirectUrl = 'http://localhost:4200/Games';
+            redirectUrl = 'http://localhost:3000/Games';
         }
         if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer') {
-            return res.clearCookie('token').redirect('http://localhost:4200/login');
+            return res.clearCookie('token').redirect('http://localhost:3000/login');
         }
         return res.redirect(redirectUrl);
     } catch (error) {
