@@ -7,6 +7,7 @@ import { SiteService } from '../../services/site.service';
 import { RegionService } from '../../services/region.service';
 import { GamejamService } from '../../services/gamejam.service';
 import { ThemeService } from '../../services/theme.service';
+import { environment } from '../../../environments/environment.prod';
 declare var $: any;
 
 
@@ -39,7 +40,7 @@ export class GamejamCrudComponent implements OnInit{
       site: ['', Validators.required],
       theme: ['', Validators.required]
     });
-    const url = 'http://localhost:3000/api/game-jam/get-game-jams';
+    const url = '${environment.apiUrl}/game-jam/get-game-jams';
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
         this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, theme: gamejam.theme}));
@@ -48,7 +49,7 @@ export class GamejamCrudComponent implements OnInit{
         console.error('Error al obtener las GameJams:', error);
       }
     );
-    this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
+    this.regionService.getRegions('${environment.apiUrl}/region/get-regions')
     .subscribe(
       regions => {
         this.regions = regions;
@@ -57,7 +58,7 @@ export class GamejamCrudComponent implements OnInit{
         console.error('Error al obtener regiones:', error);
       }
     );
-    this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
+    this.themeService.getThemes('${environment.apiUrl}/theme/get-themes')
     .subscribe(
       themes => {
         this.themes = themes;
@@ -71,7 +72,7 @@ export class GamejamCrudComponent implements OnInit{
   onRegionSelection() {
     const selectedValue = this.myForm.get('region')?.value;
     if (selectedValue && selectedValue._id) {
-      this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${selectedValue._id}`)
+      this.siteService.getSitesPerRegion(`${environment.apiUrl}/site/get-sites-per-region/${selectedValue._id}`)
         .subscribe(
           sites => {
             this.sites = sites;
@@ -94,7 +95,7 @@ export class GamejamCrudComponent implements OnInit{
     const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
     const selectedSite = this.sites.find(site => site._id === elemento.site._id);
     const selectedTheme = this.themes.find(theme => theme._id === elemento.theme._id);
-    this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${elemento.region._id}`)
+    this.siteService.getSitesPerRegion(`${environment.apiUrl}/site/get-sites-per-region/${elemento.region._id}`)
     .subscribe(
       sites => {
         this.sites = sites;
@@ -121,7 +122,7 @@ export class GamejamCrudComponent implements OnInit{
       const gamejamId = this.userToEdit['_id'];
       const { edition, region, site, theme} = this.myForm.value;
   
-      this.gamejamService.updateGameJam(`http://localhost:3000/api/game-jam/update-game-jam/${gamejamId}`, {
+      this.gamejamService.updateGameJam(`${environment.apiUrl}/game-jam/update-game-jam/${gamejamId}`, {
         edition: edition,
         region: {
           _id: region._id,
@@ -158,7 +159,7 @@ export class GamejamCrudComponent implements OnInit{
     eliminar(elemento: any) {
       const id = elemento._id;
   
-      const url = `http://localhost:3000/api/game-jam/delete-game-jam/${id}`;
+      const url = `${environment.apiUrl}/game-jam/delete-game-jam/${id}`;
   
       this.gamejamService.deleteGameJam(url).subscribe({
           next: (data) => {
@@ -178,7 +179,7 @@ export class GamejamCrudComponent implements OnInit{
         console.log('Formulario válido');
         
         const { edition, region, site, theme} = this.myForm.value;
-        this.gamejamService.createGameJam(`http://localhost:3000/api/game-jam/create-game-jam`, {
+        this.gamejamService.createGameJam(`${environment.apiUrl}/game-jam/create-game-jam`, {
           edition: edition,
           region: {
             _id: region._id,

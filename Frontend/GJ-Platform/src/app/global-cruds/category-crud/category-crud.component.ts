@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms';
 import { CategoryService } from '../../services/category.service';
 import { Category } from '../../../types';
+import { environment } from '../../../environments/environment.prod';
 declare var $: any;
 
 @Component({
@@ -30,7 +31,7 @@ export class CategoryCrudComponent implements OnInit{
     this.myForm = this.fb.group({
       category: ['', Validators.required]
     });
-    const url = 'http://localhost:3000/api/category/get-categories';
+    const url = '${environment.apiUrl}/category/get-categories';
     this.categoryService.getCategories(url).subscribe(
       (categories: any[]) => {
         this.dataSource = categories.map(category => ({ _id: category._id, name: category.name }));
@@ -52,7 +53,7 @@ export class CategoryCrudComponent implements OnInit{
       
       const categoryId = this.CategoryToEdit['_id'];
       
-      const url = `http://localhost:3000/api/category/update-category/${categoryId}`;
+      const url = `${environment.apiUrl}/category/update-category/${categoryId}`;
   
       this.categoryService.updateCategory(url, {
         name: this.myForm.value['category']
@@ -78,7 +79,7 @@ export class CategoryCrudComponent implements OnInit{
   eliminar(elemento: any) {
     const id = elemento._id;
 
-    const url = `http://localhost:3000/api/category/delete-category/${id}`;
+    const url = `${environment.apiUrl}/category/delete-category/${id}`;
 
     this.categoryService.deleteCategory(url).subscribe({
         next: (data) => {
@@ -96,7 +97,7 @@ export class CategoryCrudComponent implements OnInit{
   agregar() {
     if (this.myForm.valid) {
       var categoryName = this.myForm.value["category"];
-      this.categoryService.createCategory(`http://localhost:3000/api/category/create-category`, {
+      this.categoryService.createCategory(`${environment.apiUrl}/category/create-category`, {
         name: categoryName,
       }).subscribe({
         next: (data) => {

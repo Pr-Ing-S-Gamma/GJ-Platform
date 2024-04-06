@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms';
 import { RegionService } from '../../services/region.service';
 import { Region } from '../../../types';
+import { environment } from '../../../environments/environment.prod';
 declare var $: any;
 
 @Component({
@@ -29,7 +30,7 @@ export class RegionCRUDComponent implements OnInit{
     this.myForm = this.fb.group({
       region: ['', Validators.required]
     });
-    const url = 'http://localhost:3000/api/region/get-regions';
+    const url = '${environment.apiUrl}/region/get-regions';
     this.regionService.getRegions(url).subscribe(
       (regions: any[]) => {
         this.dataSource = regions.map(region => ({ _id: region._id, name: region.name }));
@@ -51,7 +52,7 @@ export class RegionCRUDComponent implements OnInit{
     if (this.myForm.valid) {
       const regionId = this.regionToEdit['_id'];
   
-      const url = `http://localhost:3000/api/region/update-region/${regionId}`;
+      const url = `${environment.apiUrl}/region/update-region/${regionId}`;
   
       this.regionService.updateRegion(url, {
         name: this.myForm.value['region']
@@ -77,7 +78,7 @@ export class RegionCRUDComponent implements OnInit{
   eliminar(elemento: any) {
     const id = elemento._id;
 
-    const url = `http://localhost:3000/api/region/delete-region/${id}`;
+    const url = `${environment.apiUrl}/region/delete-region/${id}`;
 
     this.regionService.deleteRegion(url).subscribe({
         next: (data) => {
@@ -95,7 +96,7 @@ export class RegionCRUDComponent implements OnInit{
   agregar() {
     if (this.myForm.valid) {
       var regionName = this.myForm.value["region"];
-      this.regionService.createRegion(`http://localhost:3000/api/region/create-region`, {
+      this.regionService.createRegion(`${environment.apiUrl}/region/create-region`, {
         name: regionName,
       }).subscribe({
         next: (data) => {

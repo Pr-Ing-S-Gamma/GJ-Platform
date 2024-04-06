@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Country, Region, Site } from '../../../types';
 import { RegionService } from '../../services/region.service';
 import { SiteService } from '../../services/site.service';
+import { environment } from '../../../environments/environment.prod';
 declare var $: any;
 
 @Component({
@@ -33,7 +34,7 @@ export class SiteCrudComponent implements OnInit {
       country: ['', Validators.required],
       region: ['', Validators.required]
     });
-    this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
+    this.regionService.getRegions('${environment.apiUrl}/region/get-regions')
     .subscribe(
       regions => {
         this.regions = regions;
@@ -42,7 +43,7 @@ export class SiteCrudComponent implements OnInit {
         console.error('Error al obtener regiones:', error);
       }
     );
-    this.siteService.getCountries('http://localhost:3000/api/site/get-countries')
+    this.siteService.getCountries('${environment.apiUrl}/site/get-countries')
     .subscribe(
       countries => {
         this.countries = countries;
@@ -51,7 +52,7 @@ export class SiteCrudComponent implements OnInit {
         console.error('Error al obtener países:', error);
       }
     );
-    this.siteService.getSites('http://localhost:3000/api/site/get-sites')
+    this.siteService.getSites('${environment.apiUrl}/site/get-sites')
     .subscribe(
       sites => {
         this.dataSource = sites;
@@ -81,7 +82,7 @@ export class SiteCrudComponent implements OnInit {
       
       const siteId = this.siteToEdit['_id'];
       
-      const url = `http://localhost:3000/api/site/update-site/${siteId}`;
+      const url = `${environment.apiUrl}/site/update-site/${siteId}`;
       
       console.log(this.myForm.value["country"].name);
       this.siteService.updateSite(url, {
@@ -112,7 +113,7 @@ export class SiteCrudComponent implements OnInit {
   eliminar(elemento: any) {
     const id = elemento._id;
 
-    const url = `http://localhost:3000/api/site/delete-site/${id}`;
+    const url = `${environment.apiUrl}/site/delete-site/${id}`;
 
     this.siteService.deleteSite(url).subscribe({
         next: (data) => {
@@ -129,7 +130,7 @@ export class SiteCrudComponent implements OnInit {
 
   agregar() {
     if (this.myForm.valid) {
-      this.siteService.createSite(`http://localhost:3000/api/site/create-site`, {
+      this.siteService.createSite(`${environment.apiUrl}/site/create-site`, {
         name: this.myForm.value["name"],
         region: this.myForm.value["region"],
         country: this.myForm.value["country"].name

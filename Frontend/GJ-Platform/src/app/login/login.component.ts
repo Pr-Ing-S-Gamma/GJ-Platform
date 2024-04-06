@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit{
   constructor(private router: Router, private userService: UserService) { }
 
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser('${environment.apiUrl}/user/get-user')
     .subscribe(
       user => {
         if (user.rol === 'LocalOrganizer') {
@@ -39,7 +40,7 @@ export class LoginComponent implements OnInit{
   }
 
   sendEmail(email: string): void {
-    const url = 'http://localhost:3000/api/user/login-user';
+    const url = '${environment.apiUrl}/user/login-user';
     this.userService.loginUser(url, email).subscribe(
       response => {
         this.successMessage = `Link de inicio de sesión enviado a: ${response.email}`;
