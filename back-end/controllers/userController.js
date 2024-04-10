@@ -222,6 +222,16 @@ const getJammersPerSite = async (req, res) => {
     }
 };
 
+const getJammersNotInTeamPerSite = async (req, res) => {
+    const siteId = req.params.siteId;
+    try {
+        const jammersNotInTeam = await User.find({ "site._id": siteId, team: null, rol: 'Jammer' });
+        res.status(200).send({ success: true, msg: 'Users with the role "Jammer" who are not in any team have been found in the system.', data: jammersNotInTeam });
+    } catch(error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
 const deleteUser = async(req,res)=>{
     try{
         const id = req.params.id;
@@ -260,5 +270,6 @@ module.exports = {
     getLocalOrganizersPerSite,
     getUsers,
     getJammersPerSite,
+    getJammersNotInTeamPerSite,
     getStaffPerSite
 };

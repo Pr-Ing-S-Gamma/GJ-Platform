@@ -273,11 +273,83 @@ const getTeamSite = async (req, res) => {
     }
 };
 
+const addJammerToTeam = async (req, res) => {
+    const teamId = req.params.teamId;
+    const jammerId= req.params.jammerId;
+
+    try {
+        const team = await Team.findById(teamId);
+        if (!team) {
+            return res.status(404).json({ success: false, error: "Team not found" });
+        }
+
+        const jammer = await User.findById(jammerId);
+        if (!jammer) {
+            return res.status(404).json({ success: false, error: "User not found" });
+        }
+
+        if (jammer.team._id) {
+            return res.status(409).json({ success: false, error: "Jammer already belongs to a team" });
+        }
+
+        team.jammers.push({
+            _id: jammer._id,
+            name: jammer.name,
+            email: jammer.email
+        });
+        await team.save();
+
+        jammer.team = {
+            _id: team._id,
+            name: team.studioName
+        };
+        await jammer.save();
+
+        res.status(200).json({ success: true, msg: 'Jammer added to team successfully', team });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+};
+
+const removeJammerFromTeam = async (req, res) => {
+    const teamId = req.params.teamId;
+    const jammerId = req.params.jammerId;
+
+    try {
+        const team = await Team.findById(teamId);
+        if (!team) {
+            return res.status(404).json({ success: false, error: "Team not found" });
+        }
+
+        const jammerIndex = team.jammers.findIndex(jammer => jammer._id.toString() === jammerId);
+        if (jammerIndex === -1) {
+            return res.status(404).json({ success: false, error: "Jammer not found in team" });
+        }
+
+        const jammer = await User.findById(jammerId);
+        if (!jammer) {
+            return res.status(404).json({ success: false, error: "User not found" });
+        }
+
+        team.jammers.splice(jammerIndex, 1);
+        await team.save();
+
+        jammer.team = null;
+        await jammer.save();
+
+        res.status(200).json({ success: true, msg: 'Jammer removed from team successfully', team });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+};
+
 module.exports = {
     createTeam,
     updateTeam,
     getTeam,
     getTeams,
     deleteTeam,
-    getTeamSite
+    getTeamSite,
+    addJammerToTeam,
+    removeJammerFromTeam
 };
