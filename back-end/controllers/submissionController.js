@@ -10,41 +10,52 @@ const Theme = require('../models/themeModel')
 const createSubmission = async (req, res) => {
     const { description, pitch, game, teamId, categoryId, stageId, themeId } = req.body;
     try {
+        const currentDate = new Date();
+
+        if (!mongoose.Types.ObjectId.isValid(stageId)) {
+            return res.status(400).json({ success: false, error: 'The provided stage ID is not valid.' });
+        }
+
+        const existingStage = await Stage.findById(stageId);
+        if (!existingStage) {
+            return res.status(404).json({ success: false, error: "That stage doesn't exist" });
+        }
+
+        if (currentDate < existingStage.startDate || currentDate > existingStage.endDate) {
+            return res.status(400).json({ success: false, error: 'The current date is outside the allowed range for this stage.' });
+        }
+
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
+
         let existingTeam;
         if (!mongoose.Types.ObjectId.isValid(teamId)) {
-            return res.status(400).json({ success: false, error: 'El ID de equipo proporcionado no es válido.' });
+            return res.status(400).json({ success: false, error: 'The provided team ID is not valid.' });
         } else {
             existingTeam = await Team.findById(teamId);
             if (!existingTeam) {
-                return res.status(404).json({ success: false, error: "Ese equipo no existe" });
+                return res.status(404).json({ success: false, error: "That team doesn't exist" });
             }
         }
+
         if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-            return res.status(400).json({ success: false, error: 'El ID de categoría proporcionado no es válido.' });
+            return res.status(400).json({ success: false, error: 'The provided category ID is not valid.' });
         } else {
             const existingCategory = await Category.findById(categoryId);
             if (!existingCategory) {
-                return res.status(404).json({ success: false, error: "Esa categoría no existe" });
+                return res.status(404).json({ success: false, error: "That category doesn't exist" });
             }
         }
+
         if (!mongoose.Types.ObjectId.isValid(themeId)) {
-            return res.status(400).json({ success: false, error: 'El ID de tema proporcionado no es válido.' });
+            return res.status(400).json({ success: false, error: 'The provided theme ID is not valid.' });
         } else {
             const existingCategory = await Theme.findById(themeId);
             if (!existingCategory) {
-                return res.status(404).json({ success: false, error: "Ese tema no existe" });
+                return res.status(404).json({ success: false, error: "That theme doesn't exist" });
             }
         }
-        if (!mongoose.Types.ObjectId.isValid(stageId)) {
-            return res.status(400).json({ success: false, error: 'El ID de fase proporcionado no es válido.' });
-        } else {
-            const existingStage = await Stage.findById(stageId);
-            if (!existingStage) {
-                return res.status(404).json({ success: false, error: "Esa fase no existe" });
-            }
-        }
+
         const submission = new Submission({
             description: description,
             pitch: pitch,
@@ -69,7 +80,7 @@ const createSubmission = async (req, res) => {
         existingTeam.lastSub = submission._id;
         await existingTeam.save();
 
-        res.status(200).json({ success: true, msg: 'Se ha creado correctamente la entrega' });
+        res.status(200).json({ success: true, msg: 'Submission created successfully' });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
@@ -84,6 +95,22 @@ const updateSubmission = async (req, res) => {
         const lastUpdateUser = await User.findById(userId);
         const existingSubmission = await Submission.findById(id);
         let changed = 0;
+
+        const currentDate = new Date();
+
+        if (!mongoose.Types.ObjectId.isValid(stageId)) {
+            return res.status(400).json({ success: false, error: 'The provided stage ID is not valid.' });
+        }
+
+        const existingStage = await Stage.findById(stageId);
+        if (!existingStage) {
+            return res.status(404).json({ success: false, error: "That stage doesn't exist" });
+        }
+
+        if (currentDate < existingStage.startDate || currentDate > existingStage.endDate) {
+            return res.status(400).json({ success: false, error: 'The current date is outside the allowed range for this stage.' });
+        }
+
         if (description) {
             updateFields.description = description;
             changed++;
@@ -101,11 +128,11 @@ const updateSubmission = async (req, res) => {
 
         if (teamId) {
             if (!mongoose.Types.ObjectId.isValid(teamId)) {
-                return res.status(400).json({ success: false, error: 'El ID de equipo proporcionado no es válido.' });
+                return res.status(400).json({ success: false, error: 'The provided team ID is not valid.' });
             } else {
                 const existingTeam = await Team.findById(teamId);
                 if (!existingTeam) {
-                    return res.status(404).json({ success: false, error: "Ese equipo no existe" });
+                    return res.status(404).json({ success: false, error: "That team doesn't exist" });
                 }
             }
             await Team.updateOne(
@@ -123,11 +150,11 @@ const updateSubmission = async (req, res) => {
 
         if (categoryId) {
             if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-                return res.status(400).json({ success: false, error: 'El ID de categoría proporcionado no es válido.' });
+                return res.status(400).json({ success: false, error: 'The provided category ID is not valid.' });
             } else {
                 const existingCategory = await Category.findById(categoryId);
                 if (!existingCategory) {
-                    return res.status(404).json({ success: false, error: "Esa categoría no existe" });
+                    return res.status(404).json({ success: false, error: "That category doesn't exist" });
                 }
             }
             updateFields.category = categoryId;
@@ -136,11 +163,11 @@ const updateSubmission = async (req, res) => {
 
         if (stageId) {
             if (!mongoose.Types.ObjectId.isValid(stageId)) {
-                return res.status(400).json({ success: false, error: 'El ID de fase proporcionado no es válido.' });
+                return res.status(400).json({ success: false, error: 'The provided stage ID is not valid.' });
             } else {
                 const existingStage = await Stage.findById(stageId);
                 if (!existingStage) {
-                    return res.status(404).json({ success: false, error: "Esa fase no existe" });
+                    return res.status(404).json({ success: false, error: "That stage doesn't exist" });
                 }
             }
             updateFields.stage = stageId;
@@ -158,12 +185,11 @@ const updateSubmission = async (req, res) => {
 
         await Submission.findByIdAndUpdate(id, updateFields);
 
-        res.status(200).send({ success: true, msg: 'Se ha actualizado la fase correctamente'});
+        res.status(200).send({ success: true, msg: 'Submission updated successfully'});
     } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
-
 
 const getSubmission = async(req,res)=>{
     try{
