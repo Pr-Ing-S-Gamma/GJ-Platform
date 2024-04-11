@@ -220,10 +220,72 @@ const deleteGameJam = async(req,res)=>{
     }
 };
 
+const getTimeRemaining = async (req, res) => {
+    try {
+        const gameJamId = req.params.gameJamId;
+        if (!mongoose.Types.ObjectId.isValid(gameJamId)) {
+            return res.status(400).json({ success: false, error: 'The provided gameJam ID is not valid.' });
+        } else {
+            const gameJam = await GameJam.findById(gameJamId).populate('stages._id');
+            if (!gameJam) {
+                return res.status(404).json({ success: false, error: "That gameJam does not exist" });
+            }
+
+            const currentDate = new Date();
+            let closestStage;
+            let closestTimeDifference = Infinity;
+
+            for (const stage of gameJam.stages) {
+                const startDate = new Date(stage.startDate);
+                const endDate = new Date(stage.endDate);
+
+                if (currentDate < startDate) {
+                    const timeDifference = startDate - currentDate;
+                    if (timeDifference < closestTimeDifference) {
+                        closestTimeDifference = timeDifference;
+                        closestStage = stage;
+                    }
+                } else if (currentDate >= startDate && currentDate <= endDate) {
+                    closestStage = stage;
+                    break;
+                }
+            }
+
+            if (closestStage) {
+                const startDate = new Date(closestStage.startDate);
+                const endDate = new Date(closestStage.endDate);
+
+                if (currentDate < startDate) {
+                    const timeInMilliseconds = startDate - currentDate;
+                    const days = Math.floor(timeInMilliseconds / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeInMilliseconds % (1000 * 60)) / 1000);
+                    const timeRemaining = `${days}:${hours}:${minutes}:${seconds}`;
+                    return res.status(200).json({ success: true, msg: 'The stage has not started yet', timeRemaining });
+                } else if (currentDate >= startDate && currentDate <= endDate) {
+                    const timeInMilliseconds = endDate - currentDate;
+                    const days = Math.floor(timeInMilliseconds / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeInMilliseconds % (1000 * 60)) / 1000);
+                    const timeRemaining = `${days}:${hours}:${minutes}:${seconds}`;
+                    return res.status(200).json({ success: true, msg: 'The stage is in progress', timeRemaining });
+                }
+            }
+
+            return res.status(200).json({ success: true, msg: 'No active stages found in this gameJam', timeRemaining: '0:0:0:0' });
+        }
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
 module.exports = {
     createGameJam,
     updateGameJam,
     getGameJam,
     getGameJams,
-    deleteGameJam
+    deleteGameJam,
+    getTimeRemaining
 };
