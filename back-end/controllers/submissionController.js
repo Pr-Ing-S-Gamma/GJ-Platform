@@ -64,6 +64,7 @@ const createSubmission = async (req, res) => {
             category: categoryId,
             stage: stageId,
             theme: themeId,
+            score: 0,
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,
@@ -236,10 +237,59 @@ const deleteSubmission = async (req, res) => {
     }
 };
 
+const setSubmissionScore = async (req, res) => {
+    try {
+        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        
+        if (!userId) {
+            return res.status(401).json({ success: false, msg: 'Unauthorized' });
+        }
+        
+        const { id, score } = req.body;
+        
+        if (!id || !score) {
+            return res.status(400).json({ success: false, msg: 'Missing submission ID or score' });
+        }
+
+        const existingSubmission = await Submission.findById(id);
+        
+        if (!existingSubmission) {
+            return res.status(404).json({ success: false, msg: 'Submission not found' });
+        }
+
+        const team = await Team.findById(existingSubmission.team);
+
+        if (!team) {
+            return res.status(404).json({ success: false, msg: 'Team not found' });
+        }
+
+        const promises = [];
+
+        for (const jammer of team.jammers) {
+            const updatedSubmission = await Submission.findByIdAndUpdate(id, { score }, { new: true });
+
+            const subject = 'Score Update on GameJam Platform';
+            const text = `Hi ${jammer.name}, your team's submission has been updated. New score: ${score}.`;
+
+            const emailPromise = sendEmail(jammer.email, subject, text);
+            promises.push(emailPromise);
+        }
+
+        await Promise.all(promises);
+
+        res.status(200).json({ success: true, msg: 'Score set and emails sent' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, msg: 'Internal Server Error' });
+    }
+};
+
+
 module.exports = {
     createSubmission,
     updateSubmission,
     getSubmission,
     getSubmissions,
-    deleteSubmission
+    deleteSubmission,
+    setSubmissionScore
 };

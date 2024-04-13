@@ -13,6 +13,7 @@ const upload = multer({ storage: storage });
 const submissionController = require('../controllers/submissionController');
 
 submission_route.post('/create-submission', upload.none(), submissionController.createSubmission);
+submission_route.post('/set-submission-score', upload.none(), submissionController.setSubmissionScore);
 submission_route.put('/update-submission/:id', upload.none(), submissionController.updateSubmission);
 submission_route.get('/get-submission/:id', submissionController.getSubmission);
 submission_route.get('/get-submissions', submissionController.getSubmissions);

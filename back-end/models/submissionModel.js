@@ -34,6 +34,10 @@ const submissionSchema = mongoose.Schema({
         ref: 'Theme',
         required: false
     },
+    score: {
+        type: Number,
+        required: true
+    },
     creatorUser:  {
         userId: {
             type: Schema.Types.ObjectId, 
