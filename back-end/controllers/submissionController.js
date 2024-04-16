@@ -283,6 +283,40 @@ const setSubmissionScore = async (req, res) => {
         res.status(500).json({ success: false, msg: 'Internal Server Error' });
     }
 };
+const setEvaluatorToSubmission = async (req, res) => {
+    try {
+
+        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        
+        // Verificar si el usuario existe
+        const creatorUser = await User.findById(userId);
+        if (!creatorUser) {
+            return res.status(404).json({ message: 'El usuario no fue encontrado.' });
+        }
+
+        // Extraer datos del evaluador del cuerpo de la solicitud
+        const { submissionId, evaluatorId, evaluatorName, evaluatorEmail } = req.body;
+
+        // Verificar si la presentación existe
+        const submission = await Submission.findById(submissionId);
+        if (!submission) {
+            return res.status(404).json({ message: 'El submission no fue encontrado.' });
+        }
+
+        const existingEvaluator = submission.evaluators.find(evaluator => evaluator.userId === evaluatorId);
+        if (existingEvaluator) {
+            return res.status(400).json({ message: 'El juez ya está asociado.' });
+        }
+
+        // Agregar el juez
+        submission.evaluators.push({ userId: evaluatorId, name: evaluatorName, email: evaluatorEmail });
+        await submission.save();
+        // Enviar respuesta de éxito
+        res.status(200).json({ message: 'Evaluador agregado exitosamente a la presentación.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Ocurrió un error' });
+    }
+};
 
 
 module.exports = {
@@ -291,5 +325,6 @@ module.exports = {
     getSubmission,
     getSubmissions,
     deleteSubmission,
-    setSubmissionScore
+    setSubmissionScore,
+    setEvaluatorToSubmission
 };

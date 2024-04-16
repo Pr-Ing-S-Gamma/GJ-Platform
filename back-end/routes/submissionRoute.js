@@ -18,5 +18,6 @@ submission_route.put('/update-submission/:id', upload.none(), submissionControll
 submission_route.get('/get-submission/:id', submissionController.getSubmission);
 submission_route.get('/get-submissions', submissionController.getSubmissions);
 submission_route.delete('/delete-submission/:id', submissionController.deleteSubmission);
+submission_route.put('/setEvaluatorToSubmission', submissionController.setEvaluatorToSubmission);
 
 module.exports = submission_route;

@@ -69,6 +69,18 @@ const submissionSchema = mongoose.Schema({
             type: String
         }
     },
+    evaluators: [{
+        userId: {
+            type: Schema.Types.ObjectId, 
+            ref: 'User'
+        },
+        name: { 
+            type: String
+        },
+        email: { 
+            type: String
+        }
+    }],
     lastUpdateDate: {
         type: Date
     }
