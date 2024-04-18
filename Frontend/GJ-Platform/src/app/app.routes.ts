@@ -7,6 +7,7 @@ import { GlobalSiteInformationComponent } from './global-site-information/global
 import { GlobalSitesComponent } from './global-sites/global-sites.component';
 import { LocalSiteInformationComponent } from './local-site-information/local-site-information.component';
 import { JammerHomeComponent } from './jammer-home/jammer-home.component';
+import { JammerTeamComponent } from './jammer-home/jammer-team/jammer-team.component';
 
 export const routes: Routes = [
     {path: '',redirectTo: "login", pathMatch: "full"},
@@ -19,5 +20,6 @@ export const routes: Routes = [
     {path: 'Sites/:region/Information/:site', component: GlobalSiteInformationComponent},
     {path: 'Games', component: LocalSiteInformationComponent},
     {path: 'Games/:game/Information', component: GameInformationComponent},
-    {path: 'Jammer', component: JammerHomeComponent}
+    {path: 'Jammer', component: JammerHomeComponent},
+    {path: 'Jammer/team', component: JammerTeamComponent}
 ];
