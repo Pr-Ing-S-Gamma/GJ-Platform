@@ -8,9 +8,10 @@ import { GlobalSitesComponent } from './global-sites/global-sites.component';
 import { LocalSiteInformationComponent } from './local-site-information/local-site-information.component';
 import { JammerHomeComponent } from './jammer-home/jammer-home.component';
 import { JammerTeamComponent } from './jammer-home/jammer-team/jammer-team.component';
+import { JuezMainComponent } from './juez-main/juez-main.component';
 
 export const routes: Routes = [
-    {path: '',redirectTo: "login", pathMatch: "full"},
+    {path: '',redirectTo: "Juez", pathMatch: "full"},
 
     {path: 'login',component: LoginComponent},
     {path: 'register', component: RegisterComponent},
@@ -21,5 +22,6 @@ export const routes: Routes = [
     {path: 'Games', component: LocalSiteInformationComponent},
     {path: 'Games/:game/Information', component: GameInformationComponent},
     {path: 'Jammer', component: JammerHomeComponent},
-    {path: 'Jammer/team', component: JammerTeamComponent}
+    {path: 'Jammer/team', component: JammerTeamComponent},
+    {path: 'Juez', component: JuezMainComponent}
 ];
