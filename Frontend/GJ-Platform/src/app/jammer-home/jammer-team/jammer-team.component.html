@@ -1,0 +1,38 @@
+    <div class="card-body" style="background: #D9D9D9;
+    border-radius: 35px; border: 1px black solid;
+    border-top: none; border-top-left-radius: 0; border-top-right-radius: 0; padding: 5px;">
+                <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center; color: black; font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                         Members
+                    </div>
+                </div>
+    
+                <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
+                    <div *ngFor="let member of members" style="background: #515151; border-radius: 35px; border: 1px black solid;
+                    padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;">
+                        <div style="color: white; font-size: 12px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                            {{ member.name }}
+                        </div>
+                        <div style="color: white; font-size: 12px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                            {{ member.discord }}
+                        </div>
+                        <div style="color: white; font-size: 12px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                            {{ member.email }}
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
+                    <button class="btn btn-default" style="background: #3EB9FF; border-radius: 15px; color: white; font-size: 20px;
+                     font-family: Inter; font-weight: 400; word-wrap: break-word; max-width: fit-content;" (click)="toggleAddMember()">
+                        Add member
+                    </button>
+                </div>
+    
+                <div class="row" style="display: flex; flex-wrap: wrap; justify-content: right; align-items: flex-end;">
+                    <button class="btn btn-danger" style="background: #FF3E3E; border-radius: 15px; color: white; font-size: 12px;
+                     font-family: Inter; font-weight: 400; word-wrap: break-word; max-width: fit-content; margin-right: 40px;" (click)="leaveTeam()">
+                        Leave Team
+                    </button>
+                </div>
+    </div>
