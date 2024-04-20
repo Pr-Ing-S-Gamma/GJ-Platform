@@ -21,14 +21,53 @@
                         </div>
                     </div>
                 </div>
-    
+
+                <div *ngIf="showAddMemberModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+                z-index: 9999; display: none;" [ngStyle]="{'display': showAddMemberModal ? 'block' : 'none'}">
+                  <div class="modal-header" style="display: flex; justify-content: flex-start; align-items: center;">
+                    <button class="close-btn" style="background: none; border: none; cursor: pointer; margin-right: 10px;" (click)="toggleAddMemberModal()">
+                      <div style="width: 24px; height: 24px; position: relative;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(45deg); width: 12px; height: 2px; background-color: black; transform-origin: center;"></div>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); width: 12px; height: 2px; background-color: black; transform-origin: center;"></div>
+                      </div>
+                    </button>
+                  </div>
+                  <div class="modal-body" style="margin-top: 20px; position: relative;">
+                    <div style="position: relative;">
+                        <input type="text" id="name" [(ngModel)]="newMember.name" name="name" (keydown)="clearInputOnBackspace($event)" (input)="suggestNames($event)" style="width: calc(100% - 32px); padding-right: 30px; border: none; border-bottom: 1px solid black; border-radius: 0;">
+                        <button class="close-btn" style="background: none; border: none; cursor: pointer; position: absolute; top: 50%; right: 0; transform: translateY(-50%);" (click)="toggleSuggestionsVisibility()">
+                            <div class="triangle" [style.transform]="isTriangleUp ? 'rotate(180deg)' : 'rotate(0deg)'" style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid black;"></div>
+                        </button>        
+                        <ul *ngIf="suggestionsVisible" class="name-suggestions" style="position: absolute; top: calc(100% + 5px); left: 0; width: calc(100% - 20px); background-color: #fff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); padding: 5px 0; z-index: 1; list-style: none; margin: 0; padding-inline-start: 0;">
+                            <li *ngFor="let suggestion of filteredSuggestions" (click)="selectSuggestion(suggestion)" style="padding: 5px 10px; cursor: pointer;">{{ suggestion.name}} ({{suggestion.discord}})</li>
+                        </ul>
+                    </div>
+                    <div style="margin-top: 10px;">
+                      <input type="text" id="email" [(ngModel)]="newMember.email" name="email" readonly style="width: calc(100% - 20px); padding-right: 30px; border: none; border-bottom: 1px solid black; border-radius: 0;">
+                    </div>
+                    <div style="margin-top: 10px;">
+                      <input type="text" id="discord" [(ngModel)]="newMember.discord" name="discord" readonly style="width: calc(100% - 20px); padding-right: 30px; border: none; border-bottom: 1px solid black; border-radius: 0;">
+                    </div>
+                  </div>
+                  <div class="modal-footer" style="margin-top: 20px;">
+                    <button class="btn btn-secondary" (click)="toggleAddMemberModal()" style="margin-right: 10px;">Close</button>
+                    <button class="btn btn-primary" (click)="addMember()">Add</button>
+                  </div>
+                </div>
+                
+                
+              
+
+              
+              
                 <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
                     <button class="btn btn-default" style="background: #3EB9FF; border-radius: 15px; color: white; font-size: 20px;
-                     font-family: Inter; font-weight: 400; word-wrap: break-word; max-width: fit-content;" (click)="toggleAddMember()">
+                     font-family: Inter; font-weight: 400; word-wrap: break-word; max-width: fit-content;" (click)="toggleAddMemberModal()">
                         Add member
                     </button>
                 </div>
-    
+                  
                 <div class="row" style="display: flex; flex-wrap: wrap; justify-content: right; align-items: flex-end;">
                     <button class="btn btn-danger" style="background: #FF3E3E; border-radius: 15px; color: white; font-size: 12px;
                      font-family: Inter; font-weight: 400; word-wrap: break-word; max-width: fit-content; margin-right: 40px;" (click)="leaveTeam()">
