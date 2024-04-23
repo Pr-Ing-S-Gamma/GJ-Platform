@@ -52,5 +52,5 @@ jobs:
             ng build --configuration production
             
             cd /home/opc/Documents/main/GJ-Platform/back-end
-            #node index.js
+            pm2 restart pm2produ
 
