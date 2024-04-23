@@ -33,7 +33,7 @@ export class ThemeCrudComponent implements OnInit{
       description : ['', Validators.required],
       manual : ['', Validators.required]
     });
-    this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
+    this.themeService.getThemes('http://149.130.176.112:3000/api/theme/get-themes')
     .subscribe(
       themes => {
         this.dataSource = themes;
@@ -57,7 +57,7 @@ export class ThemeCrudComponent implements OnInit{
   editar() {
     const themeId = this.ThemeToEdit['_id'];
     if (this.myForm.valid) {
-      this.themeService.updateTheme(`http://localhost:3000/api/theme/update-theme/${themeId}`, {
+      this.themeService.updateTheme(`http://149.130.176.112:3000/api/theme/update-theme/${themeId}`, {
         manualPT: this.myForm.value['manual'],
         manualSP: this.myForm.value['manual'],
         manualEN: this.myForm.value['manual'],
@@ -88,7 +88,7 @@ export class ThemeCrudComponent implements OnInit{
 eliminar(elemento: any) {
   const id = elemento._id;
 
-  const url = `http://localhost:3000/api/theme/delete-theme/${id}`;
+  const url = `http://149.130.176.112:3000/api/theme/delete-theme/${id}`;
 
   this.themeService.deleteTheme(url).subscribe({
       next: (data) => {
@@ -105,7 +105,7 @@ eliminar(elemento: any) {
 
   agregar() {
     if (this.myForm.valid) {
-      this.themeService.createTheme(`http://localhost:3000/api/theme/create-theme`, {
+      this.themeService.createTheme(`http://149.130.176.112:3000/api/theme/create-theme`, {
         manualPT: this.myForm.value['manual'],
         manualSP: this.myForm.value['manual'],
         manualEN: this.myForm.value['manual'],

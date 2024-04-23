@@ -38,7 +38,7 @@ export class UserCrudComponent implements OnInit{
       region: ['', Validators.required],
       site: ['', Validators.required]
     });
-    const url = 'http://localhost:3000/api/user/get-users';
+    const url = 'http://149.130.176.112:3000/api/user/get-users';
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
         this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins }));
@@ -47,7 +47,7 @@ export class UserCrudComponent implements OnInit{
         console.error('Error al obtener usuarios:', error);
       }
     );
-    this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
+    this.regionService.getRegions('http://149.130.176.112:3000/api/region/get-regions')
     .subscribe(
       regions => {
         this.regions = regions;
@@ -61,7 +61,7 @@ export class UserCrudComponent implements OnInit{
   onRegionSelection() {
     const selectedValue = this.myForm.get('region')?.value;
     if (selectedValue && selectedValue._id) {
-      this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${selectedValue._id}`)
+      this.siteService.getSitesPerRegion(`http://149.130.176.112:3000/api/site/get-sites-per-region/${selectedValue._id}`)
         .subscribe(
           sites => {
             this.sites = sites;
@@ -83,7 +83,7 @@ export class UserCrudComponent implements OnInit{
     this.indexUser = this.dataSource.indexOf(elemento);
     const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
     const selectedSite = this.sites.find(site => site._id === elemento.site._id);
-    this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${elemento.region._id}`)
+    this.siteService.getSitesPerRegion(`http://149.130.176.112:3000/api/site/get-sites-per-region/${elemento.region._id}`)
     .subscribe(
       sites => {
         this.sites = sites;
@@ -111,7 +111,7 @@ export class UserCrudComponent implements OnInit{
       const userId = this.userToEdit['_id'];
       const { email, name, region, site, rol } = this.myForm.value;
   
-      this.userService.updateUser(`http://localhost:3000/api/user/update-user/${userId}`, {
+      this.userService.updateUser(`http://149.130.176.112:3000/api/user/update-user/${userId}`, {
         name: name,
         email: email,
         region: {
@@ -146,7 +146,7 @@ export class UserCrudComponent implements OnInit{
     eliminar(elemento: any) {
       const id = elemento._id;
   
-      const url = `http://localhost:3000/api/user/delete-user/${id}`;
+      const url = `http://149.130.176.112:3000/api/user/delete-user/${id}`;
   
       this.userService.deleteUser(url).subscribe({
           next: (data) => {
@@ -167,7 +167,7 @@ export class UserCrudComponent implements OnInit{
         
         const { email, name, region, site, rol} = this.myForm.value;
   
-        this.userService.registerUser(`http://localhost:3000/api/user/register-user`, {
+        this.userService.registerUser(`http://149.130.176.112:3000/api/user/register-user`, {
           name: name,
           email: email,
           region: {

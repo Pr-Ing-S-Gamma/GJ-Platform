@@ -46,7 +46,7 @@ export class TeamCrudComponent implements OnInit {
       jammers: this.fb.array<User>([])
     });
 
-    this.gamejamService.getGameJams('http://localhost:3000/api/game-jam/get-game-jams').subscribe(
+    this.gamejamService.getGameJams('http://149.130.176.112:3000/api/game-jam/get-game-jams').subscribe(
       (gamejams: any[]) => {
         this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, theme: gamejam.theme}));
       },
@@ -54,7 +54,7 @@ export class TeamCrudComponent implements OnInit {
         console.error('Error al obtener GameJams:', error);
       }
     );
-    this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
+    this.regionService.getRegions('http://149.130.176.112:3000/api/region/get-regions')
     .subscribe(
       regions => {
         this.regions = regions;
@@ -63,7 +63,7 @@ export class TeamCrudComponent implements OnInit {
         console.error('Error al obtener regiones:', error);
       }
     );
-    this.teamService.getTeams('http://localhost:3000/api/team/get-teams')
+    this.teamService.getTeams('http://149.130.176.112:3000/api/team/get-teams')
     .subscribe(
       teams => {
         this.dataSource = teams;
@@ -77,7 +77,7 @@ export class TeamCrudComponent implements OnInit {
     const selectedValue = this.myForm.get('region')?.value;
     (this.myForm.get('jammers') as FormArray).clear();
     if (selectedValue && selectedValue._id) {
-      this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${selectedValue._id}`)
+      this.siteService.getSitesPerRegion(`http://149.130.176.112:3000/api/site/get-sites-per-region/${selectedValue._id}`)
         .subscribe(
           sites => {
             this.sites = sites;
@@ -86,7 +86,7 @@ export class TeamCrudComponent implements OnInit {
               this.myForm.get('site')?.setValue(this.sites[0]);
               if (sites[0] && sites[0]._id) {
                 console.log(sites[0]._id);
-                this.userService.getUsers(`http://localhost:3000/api/user/get-jammers-per-site/${sites[0]._id}`)
+                this.userService.getUsers(`http://149.130.176.112:3000/api/user/get-jammers-per-site/${sites[0]._id}`)
                 .subscribe(
                   users => {
                     this.users = users;
@@ -113,7 +113,7 @@ export class TeamCrudComponent implements OnInit {
     const selectedValue = this.myForm.get('site')?.value;
     (this.myForm.get('jammers') as FormArray).clear();
     if (selectedValue && selectedValue._id) {
-      this.userService.getUsers(`http://localhost:3000/api/user/get-jammers-per-site/${selectedValue._id}`)
+      this.userService.getUsers(`http://149.130.176.112:3000/api/user/get-jammers-per-site/${selectedValue._id}`)
       .subscribe(
         users => {
           console.log(users);
@@ -157,7 +157,7 @@ removeJammer(jammer: User) {
     this.indexTeam = this.dataSource.indexOf(elemento);
     const selectedGameJam = this.gameJams.find(gameJam => gameJam._id === elemento.gameJam._id);
     const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
-    this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${elemento.region._id}`)
+    this.siteService.getSitesPerRegion(`http://149.130.176.112:3000/api/site/get-sites-per-region/${elemento.region._id}`)
     .subscribe(
       sites => {
         this.sites = sites;
@@ -172,7 +172,7 @@ removeJammer(jammer: User) {
     );
     
     const selectedSite = this.sites.find(site => site._id === elemento.site._id);
-    this.userService.getUsers(`http://localhost:3000/api/user/get-jammers-per-site/${elemento.site._id}`)
+    this.userService.getUsers(`http://149.130.176.112:3000/api/user/get-jammers-per-site/${elemento.site._id}`)
     .subscribe(
       users => {
         this.users = users;
@@ -205,7 +205,7 @@ removeJammer(jammer: User) {
     if (this.myForm.valid) {
     const teamId = this.teamToEdit['_id'];
     const { studioName, description, gameJam, linkTrees, jammers, site, region } = this.myForm.value;
-    this.teamService.updateTeam(`http://localhost:3000/api/team/update-team/${teamId}`, {
+    this.teamService.updateTeam(`http://149.130.176.112:3000/api/team/update-team/${teamId}`, {
       studioName: studioName,
       description: description,
       gameJam: {
@@ -248,7 +248,7 @@ removeJammer(jammer: User) {
   eliminar(elemento: any) {
     const id = elemento._id;
 
-    const url = `http://localhost:3000/api/team/delete-team/${id}`;
+    const url = `http://149.130.176.112:3000/api/team/delete-team/${id}`;
 
     this.teamService.deleteTeam(url).subscribe({
         next: (data) => {
@@ -266,7 +266,7 @@ removeJammer(jammer: User) {
   agregar() {
           if (this.myForm.valid) {
           const { studioName, description, gameJam, linkTrees, jammers, site, region } = this.myForm.value;
-          this.teamService.createTeam(`http://localhost:3000/api/team/create-team`, {
+          this.teamService.createTeam(`http://149.130.176.112:3000/api/team/create-team`, {
             studioName: studioName,
             description: description,
             gameJam: {

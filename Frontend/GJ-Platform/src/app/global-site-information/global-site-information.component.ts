@@ -36,7 +36,7 @@ export class GlobalSiteInformationComponent {
       this.regionParameter = params['region'];
       this.siteParameter = params['site'];
     });
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser('http://149.130.176.112:3000/api/user/get-user')
     .subscribe(
       user => {
         if (user.rol === 'LocalOrganizer') {
@@ -48,7 +48,7 @@ export class GlobalSiteInformationComponent {
         this.router.navigate(['/login']);
       }
     );
-    const url = `http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
+    const url = `http://149.130.176.112:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
         this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins }));

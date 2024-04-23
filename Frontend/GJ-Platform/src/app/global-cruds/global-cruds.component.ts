@@ -42,7 +42,7 @@ export class GlobalCRUDsComponent implements OnInit{
   showJam  : boolean = false;
   constructor(private router: Router, private userService: UserService) { }
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser('http://149.130.176.112:3000/api/user/get-user')
     .subscribe(
       user => {
         if (user.rol === 'LocalOrganizer') {
@@ -108,7 +108,7 @@ toggleJam() {
 }
 
 logOut(): void {
-  this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+  this.userService.logOutUser('http://149.130.176.112:3000/api/user/log-out-user')
     .subscribe(
       () => {
         this.router.navigate(['/login']);
