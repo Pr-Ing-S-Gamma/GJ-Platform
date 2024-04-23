@@ -18,7 +18,7 @@ jobs:
           key: ${{ secrets.SSHOCI }}
           script: |
             sudo su
-            cd /home/opc/Documents/main/GJ-Platform
             git config --global --add safe.directory /home/opc/Documents/main/GJ-Platform
+            cd /home/opc/Documents/main/GJ-Platform
             git pull origin main
             # Ejecuta otros comandos según sea necesario
