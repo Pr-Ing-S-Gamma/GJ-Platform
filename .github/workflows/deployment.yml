@@ -29,17 +29,22 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHOCI }}
           script: |
+            sudo su
             cd /home/opc/Documents/main/GJ-Platform
-            git config --global --add safe.directory /home/opc/Documents/main/GJ-Platform
             git pull origin main
+
             cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform
             nvm install 20.11.1
             nvm use 20.11.1
             npm install -g @angular/cli 
-            ng build --configuration production
-            # Ejecuta otros comandos según sea necesario
+            
             cd /home/opc/Documents/main/GJ-Platform/back-end
             npm i
-            sudo su
+
+            cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform
+            npm i
+            ng build --configuration production
+            
+            cd /home/opc/Documents/main/GJ-Platform/back-end
             node index.js
-            # Ejecuta otros comandos según sea necesario
+
