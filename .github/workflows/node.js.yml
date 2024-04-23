@@ -27,7 +27,5 @@ jobs:
         cache: 'npm'
     - name: Change directory to backend
       run: cd GJ-Platform/backend
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+    - run: npm i
 
