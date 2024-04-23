@@ -66,6 +66,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "host": "149.130.176.112"
+          },
           "configurations": {
             "production": {
               "buildTarget": "GJ-Platform:build:production"
