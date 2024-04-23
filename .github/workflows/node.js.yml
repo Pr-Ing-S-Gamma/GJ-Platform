@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: Red Hat Enterprise Linux release 8.9
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
