@@ -38,5 +38,6 @@ jobs:
             # Ejecuta otros comandos según sea necesario
             cd /home/opc/Documents/main/GJ-Platform/back-end
             npm i
+            sudo su
             node index.js
             # Ejecuta otros comandos según sea necesario
