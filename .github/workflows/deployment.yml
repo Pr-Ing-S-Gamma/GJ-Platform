@@ -17,10 +17,10 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHOCI }}
           script: |
+            sudo su
             cd /home/opc/Documents/main/GJ-Platform
             git pull origin main
             cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform
-            sudo su
             npm install -g @angular/cli 
             ng build --configuration production
             # Ejecuta otros comandos según sea necesario
