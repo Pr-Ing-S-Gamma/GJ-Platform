@@ -28,7 +28,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
         
     - name: Change directory to backend
-      run: cd back-end | ls
+      run: cd back-end
+        
+    - name: te las abe aiosdjoanodsu
+      run: ls
       
     - name: Install dependencies
       run: npm install
