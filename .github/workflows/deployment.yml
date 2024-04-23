@@ -20,8 +20,10 @@ jobs:
             cd /home/opc/Documents/main/GJ-Platform
             git pull origin main
             cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform
+            sudo su
+            npm i
             ng build --configuration production
             # Ejecuta otros comandos según sea necesario
             cd /home/opc/Documents/main/GJ-Platform/back-end
-            sudo su
+            npm i
             node index.js
