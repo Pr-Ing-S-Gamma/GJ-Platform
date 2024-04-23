@@ -13,15 +13,9 @@ jobs:
   build:
     runs-on: Red Hat Enterprise Linux release 8.9
 
-    strategy:
-      matrix:
-        node-version: [20.11.1]
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
+    - name: Run line
+      run: echo "Hello world"
