@@ -52,5 +52,6 @@ jobs:
             ng build --configuration production
             
             cd /home/opc/Documents/main/GJ-Platform/back-end
+            sudo npm install pm2 -g
             pm2 restart pm2produ
 
