@@ -29,6 +29,7 @@ jobs:
         
     - name: Install dependencies
       run: |
+        touch nombre_del_archivo.txt
         cd back-end
         npm install
 
