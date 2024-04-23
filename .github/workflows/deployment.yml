@@ -34,6 +34,7 @@ jobs:
             git pull origin main
 
             cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
             nvm install 20.11.1
             nvm use 20.11.1
             npm install -g @angular/cli 
