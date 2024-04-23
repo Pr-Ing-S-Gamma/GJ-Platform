@@ -20,4 +20,11 @@ jobs:
             cd /home/opc/Documents/main/GJ-Platform
             git config --global --add safe.directory /home/opc/Documents/main/GJ-Platform
             git pull origin main
+            cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform
+            npm install -g @angular/cli 
+            ng build --configuration production
+            # Ejecuta otros comandos según sea necesario
+            cd /home/opc/Documents/main/GJ-Platform/back-end
+            npm i
+            node index.js
             # Ejecuta otros comandos según sea necesario
