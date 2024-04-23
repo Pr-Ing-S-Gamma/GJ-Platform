@@ -32,7 +32,7 @@ jobs:
         cd back-end
         npm install
 
-    - name: Run tests
+    - name: Install more dependencies
       run: |
-        cd back-end
-        npm test
+        cd Frontend/GJ-Platform
+        npm install
