@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.17.0]
+        node-version: [20.11.1]
 
     steps:
       - name: Checkout code
@@ -33,6 +33,8 @@ jobs:
             git config --global --add safe.directory /home/opc/Documents/main/GJ-Platform
             git pull origin main
             cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform
+            nvm install 20.11.1
+            nvm use 20.11.1
             npm install -g @angular/cli 
             ng build --configuration production
             # Ejecuta otros comandos según sea necesario
