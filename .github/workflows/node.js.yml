@@ -29,8 +29,8 @@ jobs:
         
     - name: Change directory and Install dependencies
       run: |
-        cd backend && npm install
-
+        cd backend
+        npm install
 
     - name: Run tests
       run: npm test
