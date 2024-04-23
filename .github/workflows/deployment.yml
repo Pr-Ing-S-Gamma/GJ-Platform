@@ -1,0 +1,22 @@
+name: SSH into Oracle Linux
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into Oracle Linux
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.IP }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHOCI }}
+          script: |
+            cd /home/opc/Documents/main
+            git pull origin main
+            # Ejecuta otros comandos según sea necesario
