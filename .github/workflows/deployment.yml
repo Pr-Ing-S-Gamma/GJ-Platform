@@ -30,7 +30,7 @@ jobs:
           key: ${{ secrets.SSHOCI }}
           script: |
             sudo su
-            sudo chown -R ${{ secrets.USERNAME }}:$USER /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform/node_modules
+            
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
             source ~/.bashrc
 
@@ -45,9 +45,10 @@ jobs:
             
             cd /home/opc/Documents/main/GJ-Platform/back-end
             sudo npm i
-
+            
             cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform
             sudo npm i
+            sudo chown -R ${{ secrets.USERNAME }}:$USER /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform/node_modules
             ng build --configuration production
             
             cd /home/opc/Documents/main/GJ-Platform/back-end
