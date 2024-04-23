@@ -31,7 +31,8 @@ export class RegisterComponent implements OnInit {
       email: ['', Validators.required],
       name: ['', Validators.required],
       region: ['', Validators.required],
-      site: ['', Validators.required]
+      site: ['', Validators.required],
+      discordUsername: ['', Validators.required]
     });
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
     .subscribe(
@@ -81,7 +82,7 @@ export class RegisterComponent implements OnInit {
     if (this.myForm.valid) {
       console.log('Formulario válido');
       
-      const { email, name, region, site} = this.myForm.value;
+      const { email, name, region, site, discordUsername} = this.myForm.value;
   
       this.userService.registerUser(`http://localhost:3000/api/user/register-user`, {
         name: name,
@@ -95,7 +96,8 @@ export class RegisterComponent implements OnInit {
           name: site.name
         },
         rol: 'Jammer',
-        coins: 0
+        coins: 0,
+        discordUsername: discordUsername
       }).subscribe({
         next: (data) => {
           if (data.success) {

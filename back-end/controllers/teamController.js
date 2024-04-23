@@ -55,7 +55,8 @@ const createTeam = async (req, res) => {
             jammers: jammers.map(jammer => ({
                 _id: jammer._id,
                 name: jammer.name,
-                email: jammer.email
+                email: jammer.email,
+                discordUsername: jammer.discordUsername
             })),
             creatorUser: {
                 userId: creatorUser._id,
@@ -180,7 +181,8 @@ const updateTeam = async (req, res) => {
         existingTeam.jammers = jammers.map(jammer => ({
             _id: jammer._id,
             name: jammer.name,
-            email: jammer.email
+            email: jammer.email,
+            discordUsername: jammer.discordUsername
         }));
 
         const updatedTeam = await existingTeam.save();
@@ -295,7 +297,8 @@ const addJammerToTeam = async (req, res) => {
         team.jammers.push({
             _id: jammer._id,
             name: jammer.name,
-            email: jammer.email
+            email: jammer.email,
+            discordUsername: jammer.discordUsername
         });
         await team.save();
 

@@ -38,6 +38,7 @@ export class UserService {
     );
   }
 
+  
   deleteUser(url: string): Observable<any> {
     return this.http.delete(url);
   }
