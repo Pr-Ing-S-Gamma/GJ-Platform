@@ -9,7 +9,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [20.11.1]
+
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+    
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          
       - name: SSH into Oracle Linux
         uses: appleboy/ssh-action@master
         with:
