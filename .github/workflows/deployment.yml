@@ -17,6 +17,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHOCI }}
           script: |
-            cd /home/opc/Documents/main
+            # cd /home/opc/Documents/main
             git pull origin main
             # Ejecuta otros comandos según sea necesario
