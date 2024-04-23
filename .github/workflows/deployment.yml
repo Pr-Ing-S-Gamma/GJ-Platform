@@ -50,5 +50,5 @@ jobs:
             ng build --configuration production
             
             cd /home/opc/Documents/main/GJ-Platform/back-end
-            node index.js
+            #node index.js
 
