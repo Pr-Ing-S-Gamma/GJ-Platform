@@ -33,7 +33,7 @@ export class RegisterComponent implements OnInit {
       region: ['', Validators.required],
       site: ['', Validators.required]
     });
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser('http://149.130.176.112:3000/api/user/get-user')
     .subscribe(
       user => {
         if (user.rol === 'LocalOrganizer') {
@@ -46,7 +46,7 @@ export class RegisterComponent implements OnInit {
       () => {
       }
     );
-    this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
+    this.regionService.getRegions('http://149.130.176.112:3000/api/region/get-regions')
     .subscribe(
       regions => {
         this.regions = regions;
@@ -59,7 +59,7 @@ export class RegisterComponent implements OnInit {
   onRegionSelection() {
     const selectedValue = this.myForm.get('region')?.value;
     if (selectedValue && selectedValue._id) {
-      this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${selectedValue._id}`)
+      this.siteService.getSitesPerRegion(`http://149.130.176.112:3000/api/site/get-sites-per-region/${selectedValue._id}`)
         .subscribe(
           sites => {
             this.sites = sites;
@@ -83,7 +83,7 @@ export class RegisterComponent implements OnInit {
       
       const { email, name, region, site} = this.myForm.value;
   
-      this.userService.registerUser(`http://localhost:3000/api/user/register-user`, {
+      this.userService.registerUser(`http://149.130.176.112:3000/api/user/register-user`, {
         name: name,
         email: email,
         region: {
