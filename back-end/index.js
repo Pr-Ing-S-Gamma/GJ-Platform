@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const dotenv = require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
+const cors = require('cors');
 
 // Crear una instancia de la aplicación Express
 const app = express();
@@ -12,6 +13,13 @@ const port = 3000; // Establecer el puerto en el que el servidor escuchará las 
 
 // Conexión a MongoDB
 mongoose.connect("mongodb://localhost:27017/GameJamDB");
+
+const corsOptions = {
+    origin: 'http://149.130.176.112',
+    optionsSuccessStatus: 200 
+  };
+  
+  app.use(cors(corsOptions));
 
 // Middleware para analizar solicitudes JSON y cookies
 app.use(express.json());
@@ -78,5 +86,5 @@ app.get('*', function(req, res) {
 
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, () => {
-    console.log(`Servidor escuchando en http://149.130.176.112:${port}`);
+    console.log(`Servidor escuchando en ${port}`);
 });
