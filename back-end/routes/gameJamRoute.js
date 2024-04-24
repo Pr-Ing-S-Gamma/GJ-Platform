@@ -14,9 +14,10 @@ const gameJamController = require('../controllers/gameJamController');
 
 game_jam_route.post('/create-game-jam', upload.none(), gameJamController.createGameJam);
 game_jam_route.put('/update-game-jam/:id', upload.none(), gameJamController.updateGameJam);
+game_jam_route.get('/get-current-game-jam', gameJamController.getCurrentGameJam);
 game_jam_route.get('/get-game-jam/:id', gameJamController.getGameJam);
 game_jam_route.get('/get-game-jams', gameJamController.getGameJams);
-game_jam_route.get('/get-time-left/:gameJamId', gameJamController.getTimeRemaining);
+game_jam_route.get('/get-time-left', gameJamController.getTimeRemaining);
 game_jam_route.delete('/delete-game-jam/:id', gameJamController.deleteGameJam);
 
 module.exports = game_jam_route;

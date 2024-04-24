@@ -160,7 +160,9 @@ clearInputOnBackspace(event: KeyboardEvent) {
             this.teamService.removeJammerFromTeam('http://localhost:3000/api/team/remove-jammer/' + this.dataSource[0]._id +'/'+user._id)
             .subscribe(
               () => {
-                this.router.navigate(['/Jammer']);
+                this.router.navigate(['/Jammer']).then(() => {
+                  window.location.reload();
+                });
               },
               () => {}
             );

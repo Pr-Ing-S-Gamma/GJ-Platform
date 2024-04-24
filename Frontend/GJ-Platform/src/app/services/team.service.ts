@@ -38,7 +38,7 @@ export class TeamService {
       map(response => response.data)
     );
   }
-  
+
   deleteTeam(url: string): Observable<any> {
     return this.http.delete(url);
   }
