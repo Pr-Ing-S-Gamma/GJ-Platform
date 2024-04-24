@@ -182,28 +182,6 @@ const getGameJam = async(req,res)=>{
     }
 };
 
-const getCurrentGameJam = async (req, res) => {
-    try {
-        const currentDate = new Date();
-
-        const allGameJams = await GameJam.find({});
-
-        const currentGameJam = allGameJams.find(gameJam => {
-            return gameJam.stages.some(stage => {
-                return currentDate >= stage.startDate && currentDate <= stage.endDate;
-            });
-        });
-
-        if (currentGameJam) {
-            res.status(200).send({ success: true, msg: 'Current Game Jam found', data: currentGameJam });
-        } else {
-            res.status(404).send({ success: false, msg: 'No current Game Jam found' });
-        }
-    } catch (error) {
-        res.status(400).send({ success: false, msg: error.message });
-    }
-};
-
 const getGameJams = async(req,res)=>{
     try{
         const allGameJams = await GameJam.find({});
@@ -244,16 +222,7 @@ const deleteGameJam = async(req,res)=>{
 
 const getTimeRemaining = async (req, res) => {
     try {
-        const currentDate = new Date();
-
-        const allGameJams = await GameJam.find({});
-
-        const currentGameJam = allGameJams.find(gameJam => {
-            return gameJam.stages.some(stage => {
-                return currentDate >= stage.startDate && currentDate <= stage.endDate;
-            });
-        });
-        const gameJamId = currentGameJam._id;
+        const gameJamId = req.params.gameJamId;
         if (!mongoose.Types.ObjectId.isValid(gameJamId)) {
             return res.status(400).json({ success: false, error: 'The provided gameJam ID is not valid.' });
         } else {
@@ -315,7 +284,6 @@ const getTimeRemaining = async (req, res) => {
 module.exports = {
     createGameJam,
     updateGameJam,
-    getCurrentGameJam,
     getGameJam,
     getGameJams,
     deleteGameJam,

@@ -48,9 +48,6 @@ export class GlobalCRUDsComponent implements OnInit{
         if (user.rol === 'LocalOrganizer') {
           this.router.navigate(['/Games']);
         }
-        if (user.rol === 'Jammer') {
-          this.router.navigate(['/Jammer']);
-        }
       },
       () => {
       }

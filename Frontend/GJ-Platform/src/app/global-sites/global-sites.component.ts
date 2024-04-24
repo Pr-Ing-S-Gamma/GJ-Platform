@@ -47,10 +47,6 @@ export class GlobalSitesComponent implements OnInit{
           this.router.navigate(['/Games']);
           return; 
         }
-        if (user.rol === 'Jammer') {
-          this.router.navigate(['/Jammer']);
-          return; 
-        }
       },
       error => {
         this.router.navigate(['/login']);

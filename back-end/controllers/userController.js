@@ -138,7 +138,7 @@ const magicLink = async (req, res) => {
             redirectUrl = 'http://localhost:3000/Games';
         }
         if(rol === 'Jammer') {
-            redirectUrl = 'http://localhost:3000/Jammer';
+            redirectUrl = 'http://localhost:3000/Jammer/Team';
         }
         if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer' && rol !== 'Jammer') {
             return res.clearCookie('token').redirect('http://localhost:3000/login');
