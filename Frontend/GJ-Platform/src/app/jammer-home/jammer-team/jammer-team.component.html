@@ -14,7 +14,7 @@
                             {{ member.name }}
                         </div>
                         <div style="color: white; font-size: 12px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                            {{ member.discordUsername }}
+                            {{ member.discord }}
                         </div>
                         <div style="color: white; font-size: 12px; font-family: Inter; font-weight: 400; word-wrap: break-word">
                             {{ member.email }}
@@ -40,14 +40,14 @@
                             <div class="triangle" [style.transform]="isTriangleUp ? 'rotate(180deg)' : 'rotate(0deg)'" style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid black;"></div>
                         </button>        
                         <ul *ngIf="suggestionsVisible" class="name-suggestions" style="position: absolute; top: calc(100% + 5px); left: 0; width: calc(100% - 20px); background-color: #fff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); padding: 5px 0; z-index: 1; list-style: none; margin: 0; padding-inline-start: 0;">
-                            <li *ngFor="let suggestion of filteredSuggestions" (click)="selectSuggestion(suggestion)" style="padding: 5px 10px; cursor: pointer;">{{ suggestion.name}} ({{suggestion.discordUsername}})</li>
+                            <li *ngFor="let suggestion of filteredSuggestions" (click)="selectSuggestion(suggestion)" style="padding: 5px 10px; cursor: pointer;">{{ suggestion.name}} ({{suggestion.discord}})</li>
                         </ul>
                     </div>
                     <div style="margin-top: 10px;">
                       <input type="text" id="email" [(ngModel)]="newMember.email" name="email" readonly style="width: calc(100% - 20px); padding-right: 30px; border: none; border-bottom: 1px solid black; border-radius: 0;">
                     </div>
                     <div style="margin-top: 10px;">
-                      <input type="text" id="discordUsername" [(ngModel)]="newMember.discordUsername" name="discordUsername" readonly style="width: calc(100% - 20px); padding-right: 30px; border: none; border-bottom: 1px solid black; border-radius: 0;">
+                      <input type="text" id="discord" [(ngModel)]="newMember.discord" name="discord" readonly style="width: calc(100% - 20px); padding-right: 30px; border: none; border-bottom: 1px solid black; border-radius: 0;">
                     </div>
                   </div>
                   <div class="modal-footer" style="margin-top: 20px;">

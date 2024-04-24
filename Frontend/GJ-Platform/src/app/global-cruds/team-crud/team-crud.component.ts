@@ -213,11 +213,10 @@ removeJammer(jammer: User) {
         edition: gameJam.edition
       },
       linkTree: linkTrees,
-      jammers: jammers.map((jammer: { _id: string; name: string; email: string; discordUsername: string; }) => ({
+      jammers: jammers.map((jammer: { _id: string; name: string; email: string; }) => ({
           _id: jammer._id,
           name: jammer.name,
-          email: jammer.email,
-          discordUsername: jammer.discordUsername
+          email: jammer.email
         })),
         site: {
           _id: site._id,
@@ -275,11 +274,10 @@ removeJammer(jammer: User) {
               edition: gameJam.edition
             },
             linkTree: linkTrees,
-            jammers: jammers.map((jammer: { _id: string; name: string; email: string; discordUsername: string; }) => ({
+            jammers: jammers.map((jammer: { _id: string; name: string; email: string; }) => ({
               _id: jammer._id,
               name: jammer.name,
-              email: jammer.email,
-              discordUsername: jammer.discordUsername
+              email: jammer.email
             })),
             site: {
               _id: site._id,

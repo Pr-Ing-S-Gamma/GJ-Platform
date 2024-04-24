@@ -57,9 +57,6 @@ const teamSchema = mongoose.Schema({
         },
         email: { 
             type: String
-        },
-        discordUsername: { 
-            type: String
         }
     }],
     lastSub: {

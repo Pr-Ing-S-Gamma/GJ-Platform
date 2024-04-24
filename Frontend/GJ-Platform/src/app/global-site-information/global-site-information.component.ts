@@ -43,10 +43,6 @@ export class GlobalSiteInformationComponent {
           this.router.navigate(['/Games']);
           return; 
         }
-        if (user.rol === 'Jammer') {
-          this.router.navigate(['/Jammer']);
-          return; 
-        }
       },
       error => {
         this.router.navigate(['/login']);
@@ -55,7 +51,7 @@ export class GlobalSiteInformationComponent {
     const url = `http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
-        this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins, discordUsername: user.discordUsername }));
+        this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins }));
       },
       error => {
         console.error('Error al obtener usuarios:', error);

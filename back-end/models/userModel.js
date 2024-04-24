@@ -6,10 +6,6 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    discordUsername: {
-        type: String,
-        required: true
-    },
     name:{
         type:String,
         required:true

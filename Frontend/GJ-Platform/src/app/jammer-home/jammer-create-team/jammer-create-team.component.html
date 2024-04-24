@@ -1,40 +1,42 @@
-<section class="fondo">
+
+<section class="fondo" >
   <div class="contenedor">
     <div class="header">
-      <div class="title">GJ+ - Jammer {{ username }}</div>
+      <div class="title">GJ+ JAMMER Jefry</div>
     </div>
     
     <div class="content">
-      <div>
-        <div class="Line1"></div>
-        <div class="pestana">Create Team</div>
-        <form [formGroup]="myForm">
-          <div class="rectanguloEquipo">
-            <div>
-              <div>
-                <label class="label" for="studioName"> Studio Name: </label>
-                <input class="textSpace" type="text" placeholder="Enter your Studio Name" formControlName="studioName" required>
-              </div>
-              <div>
-                <label class="label" for="description"> Description: </label>
-                <input class="textSpace" type="text" placeholder="Enter your Description" formControlName="description" required>
-              </div>
-              <div>
-                <label class="label" for="gamejam"> Gamejam: {{ myForm.get('gameJam')?.value.edition }} </label>
-              </div>
-              <div>
-                <label class="label" for="site"> Site: {{ myForm.get('site')?.value.name }} </label>
-              </div>
-              <div>
-                <label class="label" for="region"> Region: {{ myForm.get('region')?.value.name }} </label>
-              </div>
-              <div>
-                <button class="createButton" type="button" (click)="createTeam()">Create Team</button>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
+        <div>
+            <div class="Line1"></div>
+            <div class="pestana">Create Team</div>
+            <form>
+                <div class="rectanguloEquipo">
+                    <div>
+                        <div>
+                            <label class="label" for="studioName"> Studio Name: </label>
+                            <input class="textSpace" type="text" placeholder="Outlander Studio" formControlName="studioName" required>
+                          </div>
+                          <div>
+                            <label class="label" for="description"> Description: </label>
+                            <input class="textSpace" type="text" formControlName="description" placeholder="" required>
+                          </div>
+                          <div>
+                            <label class="label" for="gamejam"> Gamejam: {{ myForm.get('gameJam')?.value }} </label>
+                          </div>
+                          <div>
+                            <label class="label" for="site"> Site: {{ myForm.get('site')?.value }} </label>
+                          </div>
+                          <div>
+                            <label class="label" for="region"> Region: {{ myForm.get('region')?.value }} </label>
+                          </div>
+                          <div>
+                            <button class="createButton"(click)="createTeam()">Create Team</button>
+                          </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
   </div>
+    
 </section>

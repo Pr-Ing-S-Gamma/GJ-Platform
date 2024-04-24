@@ -1,11 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TeamService } from '../../services/team.service';
-import { UserService } from '../../services/user.service';
-import { SiteService } from '../../services/site.service';
-import { Router } from '@angular/router';
-import { Member, Team, User } from '../../../types';
+
 @Component({
   selector: 'app-jammer-team',
   templateUrl: './jammer-team.component.html',
@@ -16,53 +12,17 @@ import { Member, Team, User } from '../../../types';
   ],
   styleUrls: ['./jammer-team.component.css']
 })
-export class JammerTeamComponent implements OnInit {
+export class JammerTeamComponent {
 
-  constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService){
-  }
-
-  dataSource: Team[] = [];
-
-  members: Member[] = [];
-
-  siteId: string | undefined;
+  members = [
+    { id: 1, name: 'David Pastor Barrientos', discord: 'Aldokler', email: 'xdavidpastor@gmail.com' },
+    { id: 2, name: 'Atlas09 Herrera', discord: 'Adrian', email: 'maenomesesucorreo@gmail.com' },
+  ];
+  possibleMembers: any[] = [
+    { id: 3, name: 'Pedro Pascal', discord: 'pedritpo', email: 'pedritpo@gmail.com' },
+    { id: 4, name: 'Miguel Ángel', discord: 'migue123', email: 'migue23@gmail.com' },
+  ];
   
-  possibleMembers: User[] = [];
-  
-  ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
-      .subscribe(
-        user => {
-          if (user.rol === 'LocalOrganizer') {
-            this.router.navigate(['/Games']);
-          }
-          if (user.rol === 'GlobalOrganizer') {
-            this.router.navigate(['/DataManagement']);
-          }
-          this.siteId= user.site._id;
-          this.userService.getUsers('http://localhost:3000/api/user/get-free-jammers-per-site/' + user.site._id)
-            .subscribe(
-              (users: User[]) => {
-                this.possibleMembers = users;
-              },
-              () => {}
-            );
-
-          if (user.team && user.team._id) {
-            this.teamService.getTeamById('http://localhost:3000/api/team/get-team/' + user.team._id)
-              .subscribe(
-                team => {
-                  this.dataSource.push(team);
-                  this.members = team.jammers;
-                },
-                () => {}
-              );
-          }
-        },
-        () => {}
-      );
-  }
-
   showAddMemberModal: boolean = false;
   suggestionsVisible: boolean = false;
   isTriangleUp: boolean = true; 
@@ -70,8 +30,7 @@ export class JammerTeamComponent implements OnInit {
   nameSuggestions: any[] = [];
   memberNameSuggestions: any[] = []; 
   filteredSuggestions: any[] = [];
-  userId: string | undefined;
-  
+
   toggleSuggestionsVisibility() {
     this.suggestionsVisible = !this.suggestionsVisible;
     this.toggleTriangleDirection();
@@ -88,6 +47,8 @@ export class JammerTeamComponent implements OnInit {
     }
     this.filteredSuggestions = [];
   }
+  
+
 
   suggestNames(event: Event) {
     const searchTerm = (event.target as HTMLInputElement).value.trim().toLowerCase();
@@ -103,10 +64,13 @@ export class JammerTeamComponent implements OnInit {
     }
   }
   
+
+  
+  
 clearInputOnBackspace(event: KeyboardEvent) {
     if (event.key === 'Backspace' || event.key === 'Delete') {
       this.newMember.email = "";
-      this.newMember.discordUsername = "";
+      this.newMember.discord = "";
     }
   }
   
@@ -117,31 +81,16 @@ clearInputOnBackspace(event: KeyboardEvent) {
   selectSuggestion(selectedMember: any) {
     this.newMember.name = selectedMember.name;
     this.newMember.email = selectedMember.email;
-    this.newMember.discordUsername = selectedMember.discordUsername;
-    this.newMember._id = selectedMember._id;
+    this.newMember.discord = selectedMember.discord;
     this.filteredSuggestions = [];
   }
   
 
   addMember() {
-    if (this.newMember.email && this.newMember.name && this.newMember.discordUsername) {
+    if (this.newMember.email && this.newMember.name && this.newMember.discord) {
       const newMemberCopy = { ...this.newMember };
       this.members.push(newMemberCopy);
       this.memberNameSuggestions.push(newMemberCopy.name);
-      this.teamService.addJammerToTeam('http://localhost:3000/api/team/add-jammer/' + this.dataSource[0]._id +'/'+newMemberCopy._id)
-      .subscribe(
-        team => {
-          this.possibleMembers = [];
-          this.userService.getUsers('http://localhost:3000/api/user/get-free-jammers-per-site/' + this.siteId)
-          .subscribe(
-            (users: User[]) => {
-              this.possibleMembers = users;
-            },
-            () => {}
-          );
-        },
-        () => {}
-      );
       this.clearForm();
     }
   }
@@ -152,25 +101,6 @@ clearInputOnBackspace(event: KeyboardEvent) {
   }
 
   leaveTeam() {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
-      .subscribe(
-        user => {
-          this.siteId= user.site._id;
-          if (user.team && user.team._id) {
-            this.teamService.removeJammerFromTeam('http://localhost:3000/api/team/remove-jammer/' + this.dataSource[0]._id +'/'+user._id)
-            .subscribe(
-              () => {
-                this.router.navigate(['/Jammer']).then(() => {
-                  window.location.reload();
-                });
-              },
-              () => {}
-            );
-          } else {
-            this.router.navigate(['/Jammer']);
-          }
-        },
-        () => {}
-      );
+
   }
 }

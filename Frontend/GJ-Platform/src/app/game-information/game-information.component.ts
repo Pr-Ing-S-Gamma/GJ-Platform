@@ -20,6 +20,7 @@ export class GameInformationComponent {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.gameParameter = params['game'];
+        // Aquí podrías realizar lógica adicional para cargar datos basados en el nombre
     });
   }
 

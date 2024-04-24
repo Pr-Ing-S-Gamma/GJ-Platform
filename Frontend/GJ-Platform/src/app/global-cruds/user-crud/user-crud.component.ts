@@ -36,13 +36,12 @@ export class UserCrudComponent implements OnInit{
       email: ['', Validators.required],
       rol: ['', Validators.required],
       region: ['', Validators.required],
-      site: ['', Validators.required],
-      discordUsername: ['', Validators.required]
+      site: ['', Validators.required]
     });
     const url = 'http://localhost:3000/api/user/get-users';
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
-        this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins, discordUsername: user.discordUsername }));
+        this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins }));
       },
       error => {
         console.error('Error al obtener usuarios:', error);
@@ -102,8 +101,7 @@ export class UserCrudComponent implements OnInit{
       region: selectedRegion, 
       site: selectedSite, 
       rol: elemento.rol,
-      email: elemento.email,
-      discordUsername: elemento.discordUsername
+      email: elemento.email
     });
   }
 
@@ -111,7 +109,7 @@ export class UserCrudComponent implements OnInit{
     if (this.myForm.valid) {
       console.log('Formulario válido');
       const userId = this.userToEdit['_id'];
-      const { email, name, region, site, rol, discordUsername} = this.myForm.value;
+      const { email, name, region, site, rol } = this.myForm.value;
   
       this.userService.updateUser(`http://localhost:3000/api/user/update-user/${userId}`, {
         name: name,
@@ -126,11 +124,10 @@ export class UserCrudComponent implements OnInit{
         },
         rol: rol,
         coins: 0,
-        discordUsername: discordUsername,
       }).subscribe({
         next: (data) => {
           if (data.success) {
-            this.dataSource[this.indexUser]={ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0, discordUsername: discordUsername};
+            this.dataSource[this.indexUser]={ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0};
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -168,7 +165,7 @@ export class UserCrudComponent implements OnInit{
       if (this.myForm.valid) {
         console.log('Formulario válido');
         
-        const { email, name, region, site, rol, discordUsername} = this.myForm.value;
+        const { email, name, region, site, rol} = this.myForm.value;
   
         this.userService.registerUser(`http://localhost:3000/api/user/register-user`, {
           name: name,
@@ -183,12 +180,11 @@ export class UserCrudComponent implements OnInit{
           },
           rol: rol,
           coins: 0,
-          discordUsername: discordUsername,
         }).subscribe({
           next: (data) => {
             if (data.success) {
               const userId = data.userId;
-              this.dataSource.push({ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0, discordUsername: discordUsername});
+              this.dataSource.push({ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0});
               this.showSuccessMessage(data.msg);
             } else {
               this.showErrorMessage(data.error);

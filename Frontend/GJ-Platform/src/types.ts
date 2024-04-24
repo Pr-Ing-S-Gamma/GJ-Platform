@@ -31,7 +31,6 @@ export interface User {
   _id?: string;
   name: string;
   email: string;
-  discordUsername: string;
   region: {
     _id: string;
     name: string;
@@ -127,7 +126,6 @@ export interface Team {
     _id: string;
     name: string;
     email: string;
-    discordUsername: string;
   }[];
 }
 
@@ -143,11 +141,3 @@ export interface Theme {
   titleEN?: string;
   titlePT?: string;
 }
-
-export interface Member {
-    _id: string;
-    name: string;
-    email: string;
-    discordUsername: string;
-}
-

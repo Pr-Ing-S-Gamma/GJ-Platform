@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 const registerUser = async (req, res) => {
-    const { name, email, region, site, team, rol, coins, discordUsername } = req.body;
+    const { name, email, region, site, team, rol, coins } = req.body;
     try {
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             return res.status(403).json({ success: false, error: 'Invalid email address.' });
@@ -24,7 +24,6 @@ const registerUser = async (req, res) => {
             team: team ? { _id: team._id, name: team.name } : null,
             rol: rol,
             coins: coins,
-            discordUsername: discordUsername,
             creationDate: new Date()
         });
 
@@ -37,7 +36,7 @@ const registerUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { name, email, region, site, team, rol, coins, discordUsername } = req.body;
+    const { name, email, region, site, team, rol, coins } = req.body;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'Invalid user ID.' });
@@ -65,7 +64,6 @@ const updateUser = async (req, res) => {
         if (team) existingUser.team = { _id: team._id, name: team.name };
         if (rol) existingUser.rol = rol;
         if (coins) existingUser.coins = coins;
-        if (discordUsername) existingUser.discordUsername = discordUsername;
         if(rol === 'Jammer') {
             const query = { 'jammers._id': id };
 
@@ -137,10 +135,7 @@ const magicLink = async (req, res) => {
         if(rol === 'LocalOrganizer') {
             redirectUrl = 'http://localhost:3000/Games';
         }
-        if(rol === 'Jammer') {
-            redirectUrl = 'http://localhost:3000/Jammer';
-        }
-        if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer' && rol !== 'Jammer') {
+        if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer') {
             return res.clearCookie('token').redirect('http://localhost:3000/login');
         }
         return res.redirect(redirectUrl);
