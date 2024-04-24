@@ -19,21 +19,9 @@ export class GamejamService {
     return this.http.put(url, gamejam,  { withCredentials: true });
   }
 
-  getCurrentGameJam(url: string): Observable<GameJam> { 
-    return this.http.get<any>(url, { withCredentials: true }).pipe(
-      map(response => response.data) 
-    );
-  }
-
   getGameJams(url: string): Observable<GameJam[]> { 
     return this.http.get<any>(url).pipe( 
       map(response => response.data)
-    );
-  }
-  
-  getTimeRemainingData(url: string): Observable<any> {
-    return this.http.get<any>(url).pipe(
-      map(response => response.timeRemaining)
     );
   }
 
