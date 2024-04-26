@@ -1,0 +1,15 @@
+<section class="vh-100" style="position: relative; background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A5 75%, #3763FF 100%); display: flex; justify-content: flex-start; align-items: flex-start;">
+    <div class="container-fluid h-100" style="display: flex; flex-direction: column; padding-left: 15%; padding-right: 15%;">
+        <div class="row justify-content-between" style="padding-right: 1%; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%);">
+            <div class = "col" style="color: white; font-size: 35px; font-family: K2D; font-weight: 400; word-wrap: break-word">GJ+ - userRole</div>
+            <div class = "col btn btn-primary" style="align-self: center; max-width: fit-content;" (click)="logOut()">
+                Log out
+            </div>
+        </div>
+        <div class="row" style="justify-content: flex-start; align-items: flex-start; flex-grow: 1; background: white;">
+
+            <app-local-site-information *ngIf="localLogged" ></app-local-site-information>
+
+        </div>
+    </div>
+</section>

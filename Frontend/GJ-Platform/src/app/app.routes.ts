@@ -10,6 +10,7 @@ import { JammerHomeComponent } from './jammer-home/jammer-home.component';
 import { JammerTeamComponent } from './jammer-home/jammer-team/jammer-team.component';
 import { JuezMainComponent } from './juez-main/juez-main.component';
 import { JammerCreateTeamComponent } from './jammer-home/jammer-create-team/jammer-create-team.component';
+import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
     {path: '',redirectTo: "Juez", pathMatch: "full"},
@@ -25,5 +26,6 @@ export const routes: Routes = [
     {path: 'Jammer', component: JammerHomeComponent},
     {path: 'Jammer/team', component: JammerTeamComponent},
     {path: 'Juez', component: JuezMainComponent},
-    {path: 'Jammer/team/createTeam', component: JammerCreateTeamComponent}
+    {path: 'Jammer/team/createTeam', component: JammerCreateTeamComponent},
+    {path: 'home', component: HomeComponent}
 ];
