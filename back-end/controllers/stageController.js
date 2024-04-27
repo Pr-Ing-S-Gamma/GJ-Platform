@@ -132,6 +132,27 @@ const updateStage = async (req, res) => {
     }
 };
 
+const getCurrentStage = async (req, res) => {
+    try {
+        const currentDate = new Date();
+
+        const allGameJams = await GameJam.find({});
+
+        for (const gameJam of allGameJams) {
+            for (const stage of gameJam.stages) {
+                if (currentDate >= stage.startDate && currentDate <= stage.endDate) {
+                    res.status(200).send({ success: true, msg: 'Current Stage found', data: stage });
+                    return;
+                }
+            }
+        }
+
+        res.status(404).send({ success: false, msg: 'No current Stage found' });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
 const getStage = async(req,res)=>{
     try{
         const id = req.params.id;
@@ -203,9 +224,12 @@ const deleteStage = async (req, res) => {
     }
 };
 
+
+
 module.exports = {
     createStage,
     updateStage,
+    getCurrentStage,
     getStage,
     getStages,
     deleteStage

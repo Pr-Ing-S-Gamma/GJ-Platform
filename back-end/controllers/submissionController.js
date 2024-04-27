@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const Theme = require('../models/themeModel')
 
 const createSubmission = async (req, res) => {
-    const { description, pitch, game, teamId, categoryId, stageId, themeId } = req.body;
+    const { description, pitch, game, teamId, categoryId, stageId, themeId, title } = req.body;
     try {
         const currentDate = new Date();
 
@@ -57,13 +57,14 @@ const createSubmission = async (req, res) => {
         }
 
         const submission = new Submission({
+            title: title,
             description: description,
             pitch: pitch,
             game: game,
-            team: teamId,
-            category: categoryId,
-            stage: stageId,
-            theme: themeId,
+            teamId: teamId,
+            categoryId: categoryId,
+            stageId: stageId,
+            themeId: themeId,
             score: 0,
             creatorUser: {
                 userId: creatorUser._id,
@@ -89,7 +90,7 @@ const createSubmission = async (req, res) => {
 
 const updateSubmission = async (req, res) => {
     try {
-        const { description, pitch, game, teamId, categoryId, stageId } = req.body;
+        const { description, pitch, game, teamId, categoryId, themeId, stageId, title } = req.body;
         const id = req.params.id;
         const updateFields = {};
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
@@ -114,6 +115,11 @@ const updateSubmission = async (req, res) => {
 
         if (description) {
             updateFields.description = description;
+            changed++;
+        }
+
+        if (title) {
+            updateFields.title = title;
             changed++;
         }
 
@@ -145,7 +151,7 @@ const updateSubmission = async (req, res) => {
                 { $addToSet: { submissions: existingSubmission._id } }
             );
 
-            updateFields.team = teamId;
+            updateFields.teamId = teamId;
             changed++;
         }
 
@@ -158,7 +164,20 @@ const updateSubmission = async (req, res) => {
                     return res.status(404).json({ success: false, error: "That category doesn't exist" });
                 }
             }
-            updateFields.category = categoryId;
+            updateFields.categoryId = categoryId;
+            changed++;
+        }
+
+        if (themeId) {
+            if (!mongoose.Types.ObjectId.isValid(themeId)) {
+                return res.status(400).json({ success: false, error: 'The provided Theme ID is not valid.' });
+            } else {
+                const existingTheme = await Theme.findById(themeId);
+                if (!existingTheme) {
+                    return res.status(404).json({ success: false, error: "That theme doesn't exist" });
+                }
+            }
+            updateFields.themeId = themeId;
             changed++;
         }
 
@@ -171,7 +190,7 @@ const updateSubmission = async (req, res) => {
                     return res.status(404).json({ success: false, error: "That stage doesn't exist" });
                 }
             }
-            updateFields.stage = stageId;
+            updateFields.stageId = stageId;
             changed++;
         }
 
@@ -183,12 +202,27 @@ const updateSubmission = async (req, res) => {
             };
             updateFields.lastUpdateDate = new Date();
         }
-
         await Submission.findByIdAndUpdate(id, updateFields);
 
         res.status(200).send({ success: true, msg: 'Submission updated successfully'});
     } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
+const getCurrentTeamSubmission = async (req, res) => {
+    const { teamId, stageId } = req.params;
+    
+    try {
+        const selectedSubmission = await Submission.findOne({ teamId: teamId, stageId: stageId });
+
+        if (!selectedSubmission) {
+            return res.status(404).json({ success: false, error: 'No submission found for the specified team and stage.' });
+        }
+
+        res.status(200).json({ success: true, msg: 'Submission found successfully.', data: selectedSubmission });
+    } catch (error) {
+        res.status(400).json({ success: false, error: 'Error processing the request.' });
     }
 };
 
@@ -288,16 +322,16 @@ const setEvaluatorToSubmission = async (req, res) => {
 
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         
-        // Verificar si el usuario existe
+
         const creatorUser = await User.findById(userId);
         if (!creatorUser) {
             return res.status(404).json({ message: 'El usuario no fue encontrado.' });
         }
 
-        // Extraer datos del evaluador del cuerpo de la solicitud
+
         const { submissionId, evaluatorId, evaluatorName, evaluatorEmail } = req.body;
 
-        // Verificar si la presentación existe
+
         const submission = await Submission.findById(submissionId);
         if (!submission) {
             return res.status(404).json({ message: 'El submission no fue encontrado.' });
@@ -308,10 +342,10 @@ const setEvaluatorToSubmission = async (req, res) => {
             return res.status(400).json({ message: 'El juez ya está asociado.' });
         }
 
-        // Agregar el juez
+
         submission.evaluators.push({ userId: evaluatorId, name: evaluatorName, email: evaluatorEmail });
         await submission.save();
-        // Enviar respuesta de éxito
+
         res.status(200).json({ message: 'Evaluador agregado exitosamente a la presentación.' });
     } catch (error) {
         res.status(500).json({ message: 'Ocurrió un error' });
@@ -322,6 +356,7 @@ const setEvaluatorToSubmission = async (req, res) => {
 module.exports = {
     createSubmission,
     updateSubmission,
+    getCurrentTeamSubmission,
     getSubmission,
     getSubmissions,
     deleteSubmission,

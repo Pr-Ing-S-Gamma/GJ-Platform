@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const submissionSchema = mongoose.Schema({
+    title:{
+        type:String,
+        required:true
+    },
     description:{
         type:String,
         required:true
@@ -14,22 +18,22 @@ const submissionSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    team: {
+    teamId: {
         type: Schema.Types.ObjectId, 
         ref: 'Team',
         required: true
     },
-    category: {
+    categoryId: {
         type: Schema.Types.ObjectId, 
         ref: 'Category',
         required: false
     },
-    stage: {
+    stageId: {
         type: Schema.Types.ObjectId, 
         ref: 'Stage',
         required: true
     },
-    theme: {
+    themeId: {
         type: Schema.Types.ObjectId, 
         ref: 'Theme',
         required: false

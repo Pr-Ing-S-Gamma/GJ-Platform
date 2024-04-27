@@ -151,3 +151,21 @@ export interface Member {
     discordUsername: string;
 }
 
+export interface Submission {
+  _id?: string;
+  title: string;
+  description: string;
+  pitch: string;
+  game: string;
+  teamId: string;
+  categoryId: string; 
+  stageId?: string; 
+  themeId: string;
+  score: number;
+  evaluators?: {
+      userId?: string;
+      name?: string;
+      email?: string;
+  }[];
+}
+
