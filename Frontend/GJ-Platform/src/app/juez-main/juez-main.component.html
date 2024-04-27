@@ -1,47 +1,49 @@
 <section class="vh-100" style="position: relative; background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A5 75%, #3763FF 100%); display: flex; justify-content: flex-start; align-items: flex-start;">
-    <div class="container-fluid h-100" style="padding-left: 15%; padding-right: 15%;">
-        <div class="row  w-100 justify-content-between" style="background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%);">
+    <div class="container-fluid h-100" style="display: flex; flex-direction: column; padding-left: 15%; padding-right: 15%;">
+        <div class="row justify-content-between" style="padding-right: 1%; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%);">
             <div class = "col" style="color: white; font-size: 35px; font-family: K2D; font-weight: 400; word-wrap: break-word">GJ+ Judge</div>
-            <div class = "col btn btn-primary text-right" style="align-self: center; max-width: fit-content;" (click)="logOut()">
+            <div class = "col btn btn-primary" style="align-self: center; max-width: fit-content;" (click)="logOut()">
                 Log out
             </div>
         </div>
-        <div class="row" style="justify-content: flex-start; align-items: flex-start; background: white;">
-            <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
-                <div style="text-align: center; color: black; font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
-                     Games to rate
-                </div>
-            </div>
-
-            <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
-                <div *ngFor="let game of games" style="background: #515151; border-radius: 35px; border: 1px black solid;
-                padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"
-                class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id">
-                    <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        {{ game.name }}
-                    </div>
-                    <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        {{ game.team }}
+        <div class="row" style="justify-content: flex-start; align-items: flex-start; flex-grow: 1; background: white;">
+            <div class="row" style="justify-content: flex-start; align-items: flex-start;">
+                <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center; color: black; font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
+                         Games to rate
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row" style="justify-content: flex-start; align-items: flex-start; background: white;">
-            <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
-                <div style="text-align: center; color: black; font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
-                     Evaluations
+    
+                <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
+                    <div *ngFor="let game of games" style="background: #515151; border-radius: 35px; border: 1px black solid;
+                    padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"
+                    class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id">
+                        <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                            {{ game.name }}
+                        </div>
+                        <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                            {{ game.team }}
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
-                <div *ngFor="let game of evaluations" style="background: #515151; border-radius: 35px; border: 1px black solid;
-                padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"
-                class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id">
-                    <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        {{ game.name }}
+            <div class="row" style="justify-content: flex-start; align-items: flex-start;">
+                <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center; color: black; font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
+                         Evaluations
                     </div>
-                    <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        {{ game.team }}
+                </div>
+    
+                <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
+                    <div *ngFor="let game of evaluations" style="background: #515151; border-radius: 35px; border: 1px black solid;
+                    padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"
+                    class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id">
+                        <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                            {{ game.name }}
+                        </div>
+                        <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+                            {{ game.team }}
+                        </div>
                     </div>
                 </div>
             </div>

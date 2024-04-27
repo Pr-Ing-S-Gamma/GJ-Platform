@@ -4,7 +4,7 @@
             <span aria-hidden="true" style="color: white; font-size: 50px;">&times;</span>
         </button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" style="display: flex; flex-direction: column;">
         <div class="row" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; width: 100%;">
             <div style="color: white; font-size: 80px; font-family: Inter; font-weight: 400; word-wrap: break-word">
                 {{ dataSource.name }} - {{ dataSource.team }}
@@ -57,6 +57,9 @@
                     {{ category }}
                 </div>
             </div>
+        </div>
+        <div class = "col btn btn-primary" style="display: flex; align-self: center; max-width: fit-content; justify-self: flex-end;">
+            Evaluate
         </div>
 
     </div>
