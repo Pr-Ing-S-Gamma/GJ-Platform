@@ -2,12 +2,18 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { Category } from '../../types';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RateFormComponent } from './rate-form/rate-form.component';
 
 @Component({
   selector: 'app-game-information',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RateFormComponent
   ],
   templateUrl: './game-information.component.html',
   styleUrl: './game-information.component.css'
@@ -15,7 +21,9 @@ import { ActivatedRoute } from '@angular/router';
 export class GameInformationComponent {
   @Input() game!: string;
   gameParameter!: String;
-  constructor(private router: Router, private route: ActivatedRoute) { }
+  ActualUserIsJuez: Boolean = true;
+  evaluando: Boolean = false;
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute) { }
   
   ngOnInit(): void {
     this.route.params.subscribe(params => {

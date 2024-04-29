@@ -58,8 +58,13 @@
                 </div>
             </div>
         </div>
-        <div class = "col btn btn-primary" style="display: flex; align-self: center; max-width: fit-content; justify-self: flex-end;">
-            Evaluate
+        <div *ngIf="ActualUserIsJuez" class = "col btn btn-primary" (click)="evaluando = !evaluando"
+        style="display: flex; align-self: center; max-width: fit-content; justify-self: flex-end; margin: 2%;">
+            Show evaluation form
+        </div>
+
+        <div *ngIf="ActualUserIsJuez && evaluando">
+            <app-rate-form></app-rate-form>
         </div>
 
     </div>
