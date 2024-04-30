@@ -271,6 +271,91 @@ const deleteSubmission = async (req, res) => {
     }
 };
 
+const giveRating = async (req, res) => {
+    try {
+        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        
+        if (!userId) {
+            return res.status(401).json({ success: false, msg: 'Unauthorized' });
+        }
+        
+        const { submissionId, generalFeedback,
+            pitchScore, pitchFeedback,
+            gameDesignScore, gameDesignFeedback,
+            artScore, artFeedback,
+            buildScore, buildFeedback,
+            audioScore, audioFeedback,
+        } = req.body;
+
+        const submission = await Submission.findById(submissionId);
+        if (!submission) {
+            return res.status(404).json({ message: 'El submission no fue encontrado.' });
+        }
+
+        const evaluator = submission.evaluators.find(evaluator => evaluator.userId === userId);
+        if (!evaluator) {
+            return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
+        }
+
+        evaluator.pitchScore = pitchScore;
+        evaluator.pitchFeedback = pitchFeedback;
+        evaluator.gameDesignScore = gameDesignScore;
+        evaluator.gameDesignFeedback = gameDesignFeedback;
+        evaluator.artScore = artScore;
+        evaluator.artFeedback = artFeedback;
+        evaluator.buildScore = buildScore;
+        evaluator.buildFeedback = buildFeedback;
+        evaluator.audioScore = audioScore;
+        evaluator.audioFeedback = audioFeedback;
+        evaluator.generalFeedback = generalFeedback;
+
+        await submission.save();
+
+        res.status(200).json({ success: true, msg: 'Juego calificado' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, msg: 'Internal Server Error' });
+    }
+}
+
+const getRating = async(req,res)=>{
+    try{
+        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        
+        if (!userId) {
+            return res.status(401).json({ success: false, msg: 'Unauthorized' });
+        }
+
+        const submission = await Submission.findById(submissionId);
+        if (!submission) {
+            return res.status(404).json({ message: 'El submission no fue encontrado.' });
+        }
+
+        const evaluator = submission.evaluators.find(evaluator => evaluator.userId === userId);
+        if (!evaluator) {
+            return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
+        }
+
+        const response = {
+            pitchScore: evaluator.pitchScore,
+            pitchFeedback: evaluator.pitchFeedback,
+            gameDesignScore: evaluator.gameDesignScore,
+            gameDesignFeedback: evaluator.gameDesignFeedback,
+            artScore: evaluator.artScore,
+            artFeedback: evaluator.artFeedback,
+            buildScore: evaluator.buildScore,
+            buildFeedback: evaluator.buildFeedback,
+            audioScore: evaluator.audioScore,
+            audioFeedback: evaluator.audioFeedback,
+            generalFeedback: evaluator.generalFeedback
+        }
+
+        res.status(200).send({ success:true, msg:'Rating encontrado correctamente', data: response });
+    } catch(error) {
+        res.status(400).send({ success:false, msg:error.message });
+    }
+};
+
 const setSubmissionScore = async (req, res) => {
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
@@ -361,5 +446,7 @@ module.exports = {
     getSubmissions,
     deleteSubmission,
     setSubmissionScore,
-    setEvaluatorToSubmission
+    setEvaluatorToSubmission,
+    giveRating,
+    getRating
 };

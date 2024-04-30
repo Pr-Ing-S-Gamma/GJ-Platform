@@ -83,7 +83,18 @@ const submissionSchema = mongoose.Schema({
         },
         email: { 
             type: String
-        }
+        },
+        pitchScore: { type: Number },
+        pitchFeedback: { type: String },
+        gameDesignScore: { type: Number },
+        gameDesignFeedback: { type: String },
+        artScore: { type: Number },
+        artFeedback: { type: String },
+        buildScore: { type: Number },
+        buildFeedback: { type: String },
+        audioScore: { type: Number },
+        audioFeedback: { type: String },
+        generalFeedback: { type: String }
     }],
     lastUpdateDate: {
         type: Date

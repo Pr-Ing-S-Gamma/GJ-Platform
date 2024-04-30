@@ -21,4 +21,7 @@ submission_route.get('/get-submissions', submissionController.getSubmissions);
 submission_route.delete('/delete-submission/:id', submissionController.deleteSubmission);
 submission_route.put('/setEvaluatorToSubmission', submissionController.setEvaluatorToSubmission);
 
+submission_route.post('/give-rating', upload.none(), submissionController.giveRating);
+submission_route.get('/get-rating', submissionController.getRating);
+
 module.exports = submission_route;

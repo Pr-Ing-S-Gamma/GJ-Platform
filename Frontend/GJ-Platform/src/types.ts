@@ -169,3 +169,16 @@ export interface Submission {
   }[];
 }
 
+export interface Rating {
+  pitchScore?: Number;
+  pitchFeedback?: String;
+  gameDesignScore?: Number;
+  gameDesignFeedback?: String;
+  artScore?: Number;
+  artFeedback?: String;
+  buildScore?: Number;
+  buildFeedback?: String;
+  audioScore?: Number;
+  audioFeedback?: String;
+  generalFeedback?: String;
+}
