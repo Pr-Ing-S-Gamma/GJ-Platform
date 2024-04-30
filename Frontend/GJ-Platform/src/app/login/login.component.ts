@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit{
 
   ngOnInit(): void {
     this.userService.getCurrentUser('http://149.130.176.112:3000/api/user/get-user')
-    .subscribe(
+    .subscribe( 
       user => {
         if (user.rol === 'LocalOrganizer') {
           this.router.navigate(['/Games']);
