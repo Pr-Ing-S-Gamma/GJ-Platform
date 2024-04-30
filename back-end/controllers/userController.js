@@ -98,7 +98,7 @@ const loginUser = async (req, res) => {
     let rol;
     let userId;
     if (!existingUser) {
-        const registerLink = `http://localhost:3000/register`;
+        const registerLink = `http://149.130.176.112:3000/register`;
         const subject = 'Login in GameJam Platform';
         const text = `Hi, click on this link to create an account: ${registerLink}`;
         await sendEmail(email, subject, text);
@@ -136,7 +136,7 @@ const magicLink = async (req, res) => {
             redirectUrl = 'http://149.130.176.112:3000/Games';
         }
         if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer') {
-            return res.clearCookie('token').redirect('http://localhost:3000/login');
+            return res.clearCookie('token').redirect('http://149.130.176.112:3000/login');
         }
         return res.redirect(redirectUrl);
     } catch (error) {

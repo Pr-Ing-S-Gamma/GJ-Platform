@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit{
   constructor(private router: Router, private userService: UserService) { }
 
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser('http://149.130.176.112:3000/api/user/get-user')
     .subscribe( 
       user => {
         if (user.rol === 'LocalOrganizer') {
@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit{
   }
 
   sendEmail(email: string): void {
-    const url = 'http://localhost:3000/api/user/login-user';
+    const url = 'http://149.130.176.112:3000/api/user/login-user';
     this.userService.loginUser(url, email).subscribe(
       response => {
         this.successMessage = `Link de inicio de sesión enviado a: ${response.email}`;
