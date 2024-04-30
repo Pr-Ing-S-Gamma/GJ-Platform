@@ -37,8 +37,6 @@ const createStage = async (req, res) => {
 
         const startDateCR = new Date(startDate);
         const endDateCR = new Date(endDate);
-        startDateCR.setHours(startDateCR.getHours() - 6); 
-        endDateCR.setHours(endDateCR.getHours() - 6); 
 
         const stage = new Stage({
             name: name,
@@ -101,8 +99,7 @@ const updateStage = async (req, res) => {
 
             const startDateCR = new Date(startDate);
             const endDateCR = new Date(endDate);
-            startDateCR.setHours(startDateCR.getHours() - 6); 
-            endDateCR.setHours(endDateCR.getHours() - 6); 
+
             stage.name = name;
             stage.startDate = startDateCR;
             stage.endDate = endDateCR;
@@ -125,12 +122,24 @@ const updateStage = async (req, res) => {
 
             await stage.save();
 
+            const updatedStages = existingGameJam.stages.map(s => {
+                if (s._id.toString() === stageId) {
+                    return stage; 
+                } else {
+                    return s;
+                }
+            });
+
+            existingGameJam.stages = updatedStages;
+            await existingGameJam.save();
+
             res.status(200).json({ success: true, msg: 'Stage updated successfully', stageId: stage._id });
         }
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
+
 
 const getCurrentStage = async (req, res) => {
     try {
