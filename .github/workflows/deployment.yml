@@ -51,20 +51,7 @@ jobs:
             sudo chown -R ${{ secrets.USERNAME }}:$USER /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform/node_modules
 
             ng build --configuration production
-            cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform/dist/gj-platform/browser
             
-            
-            # Encuentra el nombre del archivo main.js
-            main_js=$(find /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform/dist/gj-platform/browser -name "main*.js" | head -n 1)
-            
-            if [ -n "$main_js" ]; then
-              # Reemplazo de localhost por la dirección IP
-              sed -i 's/localhost/149.130.176.112/g' "$main_js"
-            else
-              echo "No se pudo encontrar el archivo main.js"
-            fi
-            
-
             cd /home/opc/Documents/main/GJ-Platform/back-end
             sudo npm install pm2 -g
             pm2 start index.js --name "pm2produ"
