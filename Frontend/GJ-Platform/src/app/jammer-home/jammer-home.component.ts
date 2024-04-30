@@ -112,6 +112,10 @@ export class JammerHomeComponent implements OnInit {
     this.router.navigate(['/Jammer/Team']);
   }
 
+  redirectToSubmitPage(): void {
+    this.router.navigate(['/Jammer/Team']);
+  }
+
   redirectToCreateTeam(): void {
     this.router.navigate(['Jammer/team/createTeam']);
   }
