@@ -437,6 +437,23 @@ const setEvaluatorToSubmission = async (req, res) => {
     }
 };
 
+const getSubmissionsEvaluator = async(req, res)=>{
+    try{
+        const evaluatorID = req.params.id;
+        const Submissions = Submission.find({
+            evaluators: {
+                $elemMatch: {
+                    userId: evaluatorID
+                }
+            }
+        });
+        res.status(200).send({ success:true, msg:'Se han encontrado entregas en el sistema', data: Submissions });
+    }
+    catch{
+        res.status(400).json({ success: false, error: 'Error processing the request.' });
+    }
+};
+
 
 module.exports = {
     createSubmission,
@@ -448,5 +465,6 @@ module.exports = {
     setSubmissionScore,
     setEvaluatorToSubmission,
     giveRating,
-    getRating
+    getRating,
+    getSubmissionsEvaluator
 };

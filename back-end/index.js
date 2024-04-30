@@ -15,11 +15,11 @@ const port = 3000; // Establecer el puerto en el que el servidor escuchará las 
 mongoose.connect("mongodb://localhost:27017/GameJamDB");
 
 // Configuración de CORS - Permite solicitudes desde un origen específico
-const corsOptions = {
+/*const corsOptions = {
     origin: function(origin, callback) {
         if (!origin) return callback(null, true);
 
-        const allowedOrigins = ['http://localhost:3000', 'http://localhost:4200'];
+        const allowedOrigins = ['http://localhost:3000/', 'http://localhost:4200','http://149.130.176.112:3000'];
         if (allowedOrigins.indexOf(origin) !== -1) {
             // El origen está en la lista de orígenes permitidos
             callback(null, true);
@@ -33,7 +33,7 @@ const corsOptions = {
     credentials: true, // Permite enviar cookies de forma segura
 };
 
-app.use(cors(corsOptions)); // Usar el middleware CORS
+app.use(cors(corsOptions)); // Usar el middleware CORS*/
 
 // Middleware para analizar solicitudes JSON y cookies
 app.use(express.json());
