@@ -1,40 +1,26 @@
-<section class="fondo">
-  <div class="contenedor">
-    <div class="header">
-      <div class="title">GJ+ - Jammer {{ username }}</div>
-    </div>
-    
-    <div class="content">
+<form [formGroup]="myForm">
+  <div class="rectanguloEquipo">
+    <div>
       <div>
-        <div class="Line1"></div>
-        <div class="pestana">Create Team</div>
-        <form [formGroup]="myForm">
-          <div class="rectanguloEquipo">
-            <div>
-              <div>
-                <label class="label" for="studioName"> Studio Name: </label>
-                <input class="textSpace" type="text" placeholder="Enter your Studio Name" formControlName="studioName" required>
-              </div>
-              <div>
-                <label class="label" for="description"> Description: </label>
-                <input class="textSpace" type="text" placeholder="Enter your Description" formControlName="description" required>
-              </div>
-              <div>
-                <label class="label" for="gamejam"> Gamejam: {{ myForm.get('gameJam')?.value.edition }} </label>
-              </div>
-              <div>
-                <label class="label" for="site"> Site: {{ myForm.get('site')?.value.name }} </label>
-              </div>
-              <div>
-                <label class="label" for="region"> Region: {{ myForm.get('region')?.value.name }} </label>
-              </div>
-              <div>
-                <button class="createButton" type="button" (click)="createTeam()">Create Team</button>
-              </div>
-            </div>
-          </div>
-        </form>
+        <label class="label" for="studioName"> Studio Name: </label>
+        <input class="textSpace" type="text" placeholder="Enter your Studio Name" formControlName="studioName" required>
+      </div>
+      <div>
+        <label class="label" for="description"> Description: </label>
+        <input class="textSpace" type="text" placeholder="Enter your Description" formControlName="description" required>
+      </div>
+      <div>
+        <label class="label" for="gamejam"> Gamejam: {{ myForm.get('gameJam')?.value.edition }} </label>
+      </div>
+      <div>
+        <label class="label" for="site"> Site: {{ myForm.get('site')?.value.name }} </label>
+      </div>
+      <div>
+        <label class="label" for="region"> Region: {{ myForm.get('region')?.value.name }} </label>
+      </div>
+      <div>
+        <button class="createButton" type="button" (click)="createTeam()">Create Team</button>
       </div>
     </div>
   </div>
-</section>
+</form>
