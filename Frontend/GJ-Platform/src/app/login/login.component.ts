@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit{
   constructor(private router: Router, private userService: UserService) { }
 
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://149.130.176.112:3000/api/user/get-user')
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
     .subscribe( 
       user => {
         if (user.rol === 'LocalOrganizer') {
