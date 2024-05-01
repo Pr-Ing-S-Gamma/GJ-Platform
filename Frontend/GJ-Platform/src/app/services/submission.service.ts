@@ -25,7 +25,23 @@ export class SubmissionService {
     );
   }
 
+  giveRating(url: string, evaluation: Rating): Observable<any> {
+    return this.http.post(url, evaluation, { withCredentials: true });
+  }
+
   getRating(url: string): Observable<Rating>{
+    return this.http.get<any>(url, { withCredentials: true }).pipe(
+      map(response => response.data) 
+    );
+  }
+
+  getSubmissionsEvaluator(url: string): Observable<Submission[]>{
+    return this.http.get<any>(url, { withCredentials: true }).pipe(
+      map(response => response.data) 
+    );
+  }
+
+  getRatingsEvaluator(url: string): Observable<Submission[]>{
     return this.http.get<any>(url, { withCredentials: true }).pipe(
       map(response => response.data) 
     );

@@ -40,6 +40,7 @@ export class CategoryCrudComponent implements OnInit{
       }
     );
   }
+  
   seleccionarElemento(elemento:any){
     let categoryEditInput = document.getElementById('categoryEditInput') as HTMLInputElement;
     this.CategoryToEdit = elemento;

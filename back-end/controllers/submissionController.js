@@ -326,6 +326,8 @@ const getRating = async(req,res)=>{
             return res.status(401).json({ success: false, msg: 'Unauthorized' });
         }
 
+        const { submissionId } = req.body;
+
         const submission = await Submission.findById(submissionId);
         if (!submission) {
             return res.status(404).json({ message: 'El submission no fue encontrado.' });
@@ -443,7 +445,50 @@ const getSubmissionsEvaluator = async(req, res)=>{
         const Submissions = Submission.find({
             evaluators: {
                 $elemMatch: {
-                    userId: evaluatorID
+                    userId: evaluatorID,
+                    $and: [
+                        { $or: [ { pitchScore: { $exists: false} }, { pitchScore: { $in: ['', null] } } ] } ,
+                        { $or: [ { pitchFeedback: { $exists: false} }, { pitchFeedback: { $in: ['', null] } } ] },
+                        { $or: [ { gameDesignScore: { $exists: false} }, { gameDesignScore: { $in: ['', null] } } ] },
+                        { $or: [ { gameDesignFeedback: { $exists: false} }, { gameDesignFeedback: { $in: ['', null] } } ] },
+                        { $or: [ { artScore: { $exists: false} }, { artScore: { $in: ['', null] } } ] },
+                        { $or: [ { artFeedback: { $exists: false} }, { artFeedback: { $in: ['', null] } } ] },
+                        { $or: [ { buildScore: { $exists: false} }, { buildScore: { $in: ['', null] } } ] },
+                        { $or: [ { buildFeedback: { $exists: false} }, { buildFeedback: { $in: ['', null] } } ] },
+                        { $or: [ { audioScore: { $exists: false} }, { audioScore: { $in: ['', null] } } ] },
+                        { $or: [ { audioFeedback: { $exists: false} }, { audioFeedback: { $in: ['', null] } } ] },
+                        { $or: [ { generalFeedback: { $exists: false} }, { generalFeedback: { $in: ['', null] } } ] }
+                    ]
+                }
+            }
+        });
+        res.status(200).send({ success:true, msg:'Se han encontrado entregas en el sistema', data: Submissions });
+    }
+    catch{
+        res.status(400).json({ success: false, error: 'Error processing the request.' });
+    }
+};
+
+const getRatingsEvaluator = async(req, res)=>{
+    try{
+        const evaluatorID = req.params.id;
+        const Submissions = Submission.find({
+            evaluators: {
+                $elemMatch: {
+                    userId: evaluatorID,
+                    $or: [
+                        { pitchScore: { $ne: 0, $ne: null, $ne: '' } },
+                        { pitchFeedback: { $ne: null, $ne: '' } },
+                        { gameDesignScore: { $ne: 0, $ne: null, $ne: '' } },
+                        { gameDesignFeedback: { $ne: null, $ne: '' } },
+                        { artScore: { $ne: 0, $ne: null, $ne: '' } },
+                        { artFeedback: { $ne: null, $ne: '' } },
+                        { buildScore: { $ne: 0, $ne: null, $ne: '' } },
+                        { buildFeedback: { $ne: null, $ne: '' } },
+                        { audioScore: { $ne: 0, $ne: null, $ne: '' } },
+                        { audioFeedback: { $ne: null, $ne: '' } },
+                        { generalFeedback: { $ne: null, $ne: '' } }
+                    ]
                 }
             }
         });
@@ -466,5 +511,6 @@ module.exports = {
     setEvaluatorToSubmission,
     giveRating,
     getRating,
-    getSubmissionsEvaluator
+    getSubmissionsEvaluator,
+    getRatingsEvaluator
 };
