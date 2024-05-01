@@ -54,11 +54,11 @@
             </div>
   
           </div>
-          <div *ngIf="showUpdateTeam" style="width: 100%;">
+          <div *ngIf="showUpdateTeam" style="width: 70%;">
             <app-jammer-team></app-jammer-team>
           </div>
   
-          <div *ngIf="showCreateTeam" style="width: 100%;">
+          <div *ngIf="showCreateTeam" style="width: 70%;">
             <app-jammer-create-team></app-jammer-create-team>
           </div>
   
@@ -74,10 +74,11 @@
               </button>
             </div>
           </div>
+          <div *ngIf="showSubmit" style="width: 100%; top: 400px; left: 90%; position: absolute;">
+            <app-jammer-submit></app-jammer-submit>
+          </div>
           <div>
-            <div *ngIf="showSubmit" style="width: 100%; top: 400px; left: 90%; position: absolute;">
-                <app-jammer-submit></app-jammer-submit>
-              </div>
+            
           </div>
         </div>
       </div>
