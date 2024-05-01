@@ -6,13 +6,15 @@ import { SiteService } from '../services/site.service';
 import { GamejamService } from '../services/gamejam.service';
 import { Router } from '@angular/router';
 import { JammerCreateTeamComponent } from './jammer-create-team/jammer-create-team.component';
+import { JammerTeamComponent } from './jammer-team/jammer-team.component';
 
 @Component({
   selector: 'app-jammer-home',
   standalone: true,
   imports: [
     JammerCreateTeamComponent,
-    CommonModule
+    CommonModule,
+    JammerTeamComponent
   ],
   templateUrl: './jammer-home.component.html',
   styleUrl: './jammer-home.component.css'
@@ -24,6 +26,7 @@ export class JammerHomeComponent implements OnInit {
   teamName: string | undefined;
   isHovered: boolean = false;
   showCreateTeam :boolean = false;
+  showUpdateTeam :boolean = false;
 
 
 
@@ -74,8 +77,17 @@ export class JammerHomeComponent implements OnInit {
       );
   }
   
-  
+  hideAll(){
+    this.showCreateTeam = false;
+  }
+
+  toggleUpdateTeam(){
+    this.hideAll()
+    this.showUpdateTeam = true;
+  }
+
   toggleCreateTeam(){
+    this.hideAll()
     this.showCreateTeam = true;
   }
   updateTimer() {
