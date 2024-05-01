@@ -1,13 +1,5 @@
 <section *ngIf="!teamSubmission">
   <div>
-      <div class="infoWrapper" [ngClass]="{ 'empty': !teamName }">
-          <div *ngIf="teamName" class="c2">
-              Time Remaining To Submit:
-              <div *ngIf="teamName"  class="contador">
-                  {{timeRemaining}}
-              </div>
-          </div>
-      </div>
       <form [formGroup]="myForm">
           <div class="rectanguloEquipo">
               <div>
@@ -65,14 +57,6 @@
 
 <section *ngIf="teamSubmission">
   <div>
-      <div class="infoWrapper" [ngClass]="{ 'empty': !teamName }">
-          <div *ngIf="teamName" class="c2">
-              Time Remaining To Submit:
-              <div *ngIf="teamName"  class="contador">
-                  {{timeRemaining}}
-              </div>
-          </div>
-      </div>
       <form [formGroup]="myForm">
           <div class="rectanguloEquipo">
               <div>
