@@ -27,6 +27,7 @@ export class JammerHomeComponent implements OnInit {
   username: string | undefined;
   teamName: string | undefined;
   isHovered: boolean = false;
+  isHoveredSub: boolean = false;
   showCreateTeam :boolean = false;
   showUpdateTeam :boolean = false;
   showSubmit : boolean = false;

@@ -40,8 +40,8 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
 
                     <div *ngIf="teamName" style="color: white;
                     font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;"
-                        (click)="toggleUpdateTeam()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
-                        <span [style.textDecoration]="isHovered ? 'underline' : 'none'">{{teamName}}</span>
+                        (click)="toggleUpdateTeam()" (mouseenter)="isHoveredSub = true" (mouseleave)="isHoveredSub = false">
+                        <span [style.textDecoration]="isHoveredSub ? 'underline' : 'none'">{{teamName}}</span>
                     </div>
                     <div *ngIf="showUpdateTeam">
                         <app-jammer-team></app-jammer-team>
