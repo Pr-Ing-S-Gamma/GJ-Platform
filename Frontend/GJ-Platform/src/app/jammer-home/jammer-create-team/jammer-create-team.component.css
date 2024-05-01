@@ -2,7 +2,7 @@
 .createButton {
     width: 29.2%; /* Convertido de 292px a porcentaje */
     height: 7.2%; /* Convertido de 72px a porcentaje */
-    position: absolute;
+    position: relative;
     top: 90%; /* Posiciona el botón en el centro vertical */
     left: 50%; /* Posiciona el botón en el centro horizontal */
     transform: translate(-50%, -50%); /* Centra el botón exactamente en el centro */
@@ -23,7 +23,7 @@
     height: 70%;
     top: 15%;
     left: 10%;
-    position: absolute;
+    position: relative;
     background: white;
     border-radius: 30px;
     border: 2px black solid;
