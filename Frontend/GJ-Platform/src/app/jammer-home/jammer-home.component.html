@@ -47,19 +47,15 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                     {{timeRemaining}}
                 </div>
 
-                <div style="width: 25%; height: 5%; top: 45%; position: absolute;
+                <div [class.hidden]="!teamName" style="width: 25%; height: 5%; top: 45%; position: absolute;
             background: #3EB9FF; border-radius: 20px; text-align: center;">
-                    <div *ngIf="teamName" style="left: 30%; color: black; top: 18%; position: absolute;text-align: center;
+                    <div style="left: 30%; color: black; top: 18%; position: absolute;text-align: center;
             font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;"
-                        (click)="redirectToCreateTeam()" (mouseenter)="isHovered = true"
+                        (click)="redirectToSubmitPage()" (mouseenter)="isHovered = true"
                         (mouseleave)="isHovered = false">
                         <span [style.textDecoration]="isHovered ? 'underline' : 'none'">Submit!</span>
                     </div>
                 </div>
-
-
-
-
 
             </div>
         </div>
