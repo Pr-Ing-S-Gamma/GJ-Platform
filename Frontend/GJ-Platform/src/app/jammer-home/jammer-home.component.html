@@ -55,11 +55,11 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                 </div>
 
                 <div *ngIf="teamName" style=" top: 200px; position: absolute; text-align: center; color: black;
-                    font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word">
+                    font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word  ; z-index: 2">
                     Time Remaining To Submit:
                 </div>
                 <div *ngIf="teamName" style="top: 280px; position: absolute; text-align: center; color: #FF0000;
-                    font-size: 38px; font-family: Kanit; font-weight: 400; word-wrap: break-word; text-align: center">
+                    font-size: 38px; font-family: Kanit; font-weight: 400; word-wrap: break-word; text-align: center ; z-index: 3">
                     {{timeRemaining}}
                 </div>
 
@@ -67,9 +67,9 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                 <div *ngIf="teamName">
 
                     <button style="left: 38%; width: 25%; height: 5%; top: 45%; position: absolute;
-                    background: #3EB9FF; border-radius: 20px; text-align: center;">
+                    background: #3EB9FF; border-radius: 20px; text-align: center; z-index: 4">
                         <div style="left: 30%; color: black; top: 18%; position: absolute;text-align: center;
-                    font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;"
+                    font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 5"
                             (click)="toggleSubmit()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
                             <span [style.textDecoration]="isHovered ? 'underline' : 'none'">Submit!</span>
                         </div>
