@@ -36,6 +36,8 @@ jobs:
 
             sudo chown -R ${{ secrets.USERNAME }}:$USER /home/opc/GJ+/GJ-Platform/Frontend/GJ-Platform/node_modules
 
+
+            cd /home/opc/GJ+/GJ-Platform/Frontend/GJ-Platform
             ng build --configuration production
             
             cd /home/opc/GJ+/GJ-Platform/back-end
