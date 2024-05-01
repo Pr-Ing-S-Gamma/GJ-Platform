@@ -45,10 +45,12 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                         (mouseleave)="isHoveredSub = false">
                         <span [style.textDecoration]="isHoveredSub ? 'darkgray' : 'none'">{{teamName}}</span>
                     </div>
-                    <div *ngIf="showUpdateTeam">
-                        <app-jammer-team></app-jammer-team>
-                    </div>
+                    
                 </div>
+                <div *ngIf="showUpdateTeam" style="width: 100%;">
+                        <app-jammer-team></app-jammer-team>
+                </div>
+
                 <div *ngIf="showCreateTeam"style="width: 100%;">
                     <app-jammer-create-team></app-jammer-create-team>
                 </div>
@@ -61,7 +63,7 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                     font-size: 38px; font-family: Kanit; font-weight: 400; word-wrap: break-word; text-align: center ; z-index: 4">
                     {{timeRemaining}}
                 </div>
-
+                
 
                 <div *ngIf="teamName">
 
@@ -73,10 +75,14 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                             <span [style.textDecoration]="isHovered ? 'underline' : 'none'">Submit!</span>
                         </div>
                     </button>
-                    <div *ngIf="showSubmit">
+                    
+                </div>
+                <div>
+                    <div *ngIf="showSubmit" style="width: 100%;">
                         <app-jammer-submit></app-jammer-submit>
                     </div>
                 </div>
+                
 
 
             </div>
