@@ -9,5 +9,9 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class CustomAlertComponent {
   @Input() message: string = "Agregado con éxito";
 
-  constructor(public dialogRef: MatDialogRef<CustomAlertComponent>){}
+  constructor(public dialogRef: MatDialogRef<CustomAlertComponent>) {}
+
+  closeDialog(): void {
+    this.dialogRef.close();
+  }
 }
