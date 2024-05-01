@@ -156,14 +156,16 @@ ngOnInit(): void {
         }
       );
   }
-  showAlert(message: string): void {
+  showAlert(message: string, callback: () => void): void {
     const dialogRef = this.dialog.open(CustomAlertComponent, {
       width: '400px',
       data: { message: message }
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The alert dialog was closed');
+      if (result === 'ok') {
+        callback();
+      }
     });
   }
   
@@ -236,9 +238,10 @@ ngOnInit(): void {
                 score: 0
               }).subscribe({
                 next: (data) => {
-                  this.showAlert("Agregado con exito");
-                  this.router.navigate(['/Jammer']).then(() => {
-                    window.location.reload();
+                  this.showAlert("Agregado con éxito", () => {
+                    this.router.navigate(['/Jammer']).then(() => {
+                      window.location.reload();
+                    });
                   });
                 },
                 error: (error) => {

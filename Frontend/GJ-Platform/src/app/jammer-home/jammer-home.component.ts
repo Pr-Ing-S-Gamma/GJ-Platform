@@ -90,27 +90,26 @@ export class JammerHomeComponent implements OnInit {
   toggleUpdateTeam() {
     if (this.showUpdateTeam) {
       this.hideAll();
-      this.showSubmitButton=false;
     } else {
       this.hideAll();
       this.showUpdateTeam = true;
+      this.showSubmitButton = !this.showSubmitButton;
     }
   }
 
   toggleCreateTeam() {
     if (this.showCreateTeam) {
       this.hideAll();
-      this.showSubmitButton=false;
     } else {
       this.hideAll();
       this.showCreateTeam = true;
+      this.showSubmitButton = !this.showSubmitButton;
     }
   }
 
   toggleSubmit() {
     if (this.showSubmit) {
       this.hideAll();
-      this.showSubmitButton=false;
     } else {
       this.hideAll();
       this.showSubmit = true;
