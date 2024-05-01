@@ -26,18 +26,18 @@
         style="height: 996px; display: flex;align-items: center;justify-content: space-around; position: relative;">
 
         <div style="width: 80%; height: 0px; top: 13.8%; position: absolute; border: 1px black solid">
-          <div style="position: relative; width: 80%; ">
+          <div style="position: relative; ">
 
-            <div *ngIf="teamName" style="top: 100px; position: absolute; text-align: center; color: black;
+            <div *ngIf="teamName" style="top: 100px; position: relative; text-align: center; color: black;
               font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
               Time Remaining To Submit:
             </div>
-            <div *ngIf="teamName" style="top: 180px; position: absolute; text-align: center; color: #FF0000;
+            <div *ngIf="teamName" style="top: 180px; position: relative; text-align: center; color: #FF0000;
               font-size: 38px; font-family: Kanit; font-weight: 400; word-wrap: break-word; text-align: center;">
               {{timeRemaining}}
             </div>
           
-            <div *ngIf="showUpdateTeam" style="width: 80%; left: 50%; transform: translateX(-50%); z-index: 2;">
+            <div *ngIf="showUpdateTeam" style="width: 100%; left: 50%; transform: translateX(-50%); z-index: 2;">
               <app-jammer-team></app-jammer-team>
             </div>
           
