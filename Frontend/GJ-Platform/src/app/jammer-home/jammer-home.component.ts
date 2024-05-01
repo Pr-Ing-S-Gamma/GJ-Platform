@@ -80,27 +80,41 @@ export class JammerHomeComponent implements OnInit {
       );
   }
   
-  hideAll(){
+  hideAll() {
     this.showCreateTeam = false;
     this.showUpdateTeam = false;
     this.showSubmit = false;
+    this.showSubmitButton = true;
   }
-
-  toggleUpdateTeam(){
-    this.hideAll()
-    this.showUpdateTeam = true;
+  
+  toggleUpdateTeam() {
+    if (this.showUpdateTeam) {
+      this.hideAll();
+    } else {
+      this.hideAll();
+      this.showUpdateTeam = true;
+    }
   }
-
-  toggleCreateTeam(){
-    this.hideAll()
-    this.showCreateTeam = true;
+  
+  toggleCreateTeam() {
+    if (this.showCreateTeam) {
+      this.hideAll();
+    } else {
+      this.hideAll();
+      this.showCreateTeam = true;
+    }
   }
-
-  toggleSubmit(){
-    this.hideAll()
-    this.showSubmit = true;
-    this.showSubmitButton = !this.showSubmitButton;
+  
+  toggleSubmit() {
+    if (this.showSubmit) {
+      this.hideAll();
+    } else {
+      this.hideAll();
+      this.showSubmit = true;
+      this.showSubmitButton = !this.showSubmitButton;
+    }
   }
+  
   
   updateTimer() {
     const now = new Date();

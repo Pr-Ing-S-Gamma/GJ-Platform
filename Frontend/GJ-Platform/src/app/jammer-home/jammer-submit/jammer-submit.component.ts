@@ -222,6 +222,7 @@ ngOnInit(): void {
                 score: 0
               }).subscribe({
                 next: (data) => {
+                  alert('Guardado con éxito');
                   this.router.navigate(['/Jammer']).then(() => {
                     window.location.reload();
                   });
