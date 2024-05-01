@@ -7,7 +7,7 @@
       <div
         style="height: 65px; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%); position: relative; display: flex; align-items: center;">
         <div
-          style="position: absolute; left: 2%; top: 10px; text-align: left; color: white; font-size: 30px; font-family: JejuHallasan; font-weight: 400; word-wrap: break-word;">
+          style="position: absolute; left: 2%; display: flex;top: 10px; text-align: left; color: white; font-size: 30px; font-family: JejuHallasan; font-weight: 400; word-wrap: break-word;">
           GJ+ - Jammer {{username}}
         </div>
         <div class="logout-btn">
@@ -27,15 +27,7 @@
 
         <div style="width: 80%; height: 0px; top: 13.8%; position: absolute; border: 1px black solid">
         </div>
-        <div style="width: 100%; top: 400px; position: absolute; text-align: center;">
-          <div *ngIf="showUpdateTeam" style="width: 90%;">
-            <app-jammer-team></app-jammer-team>
-          </div>
 
-          <div *ngIf="showCreateTeam" style="width: 70%;">
-            <app-jammer-create-team></app-jammer-create-team>
-          </div>
-        </div>
         <div *ngIf="teamName" style=" top: 200px; position: absolute; text-align: center; color: black;
           font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word  ; z-index: 3">
           Time Remaining To Submit:
@@ -62,7 +54,13 @@
           </div>
 
         </div>
-        
+        <div *ngIf="showUpdateTeam" style="width: 50%; left: 40%; position: absolute; transform: translateX(-50%);">
+          <app-jammer-team></app-jammer-team>
+        </div>
+
+        <div *ngIf="showCreateTeam" style="width: 70%;">
+          <app-jammer-create-team></app-jammer-create-team>
+        </div>
 
         <div *ngIf="teamName">
           <div *ngIf="showSubmitButton">
@@ -77,7 +75,7 @@
           </div>
         </div>
         <div>
-          <div *ngIf="showSubmit" style="width: 50%; top: 400px; left: 40%; position: absolute; transform: translateX(-50%);">
+          <div *ngIf="showSubmit" style="width: 60%; top: 300px; left: 40%; position: absolute; transform: translateX(-50%);">
             <app-jammer-submit></app-jammer-submit>
         </div>        
         </div>
