@@ -26,27 +26,28 @@
         style="height: 996px; display: flex;align-items: center;justify-content: space-around; position: relative;">
 
         <div style="width: 80%; height: 0px; top: 13.8%; position: absolute; border: 1px black solid">
-        </div>
-        <div style="position: relative; width: 80%; ">
+          <div style="position: relative; width: 80%; ">
 
-          <div *ngIf="teamName" style="top: 100px; position: absolute; text-align: center; color: black;
-            font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
-            Time Remaining To Submit:
+            <div *ngIf="teamName" style="top: 100px; position: absolute; text-align: center; color: black;
+              font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
+              Time Remaining To Submit:
+            </div>
+            <div *ngIf="teamName" style="top: 180px; position: absolute; text-align: center; color: #FF0000;
+              font-size: 38px; font-family: Kanit; font-weight: 400; word-wrap: break-word; text-align: center;">
+              {{timeRemaining}}
+            </div>
+          
+            <div *ngIf="showUpdateTeam" style="width: 80%; left: 50%; transform: translateX(-50%); z-index: 2;">
+              <app-jammer-team></app-jammer-team>
+            </div>
+          
+            <div *ngIf="showCreateTeam" style="width: 70%; top: 100px; left: 50%; transform: translateX(-50%); z-index: 1;">
+              <app-jammer-create-team></app-jammer-create-team>
+            </div>
+          
           </div>
-          <div *ngIf="teamName" style="top: 180px; position: absolute; text-align: center; color: #FF0000;
-            font-size: 38px; font-family: Kanit; font-weight: 400; word-wrap: break-word; text-align: center;">
-            {{timeRemaining}}
-          </div>
-        
-          <div *ngIf="showUpdateTeam" style="width: 80%; left: 50%; transform: translateX(-50%); z-index: 2;">
-            <app-jammer-team></app-jammer-team>
-          </div>
-        
-          <div *ngIf="showCreateTeam" style="width: 70%; top: 100px; left: 50%; transform: translateX(-50%); z-index: 1;">
-            <app-jammer-create-team></app-jammer-create-team>
-          </div>
-        
         </div>
+        
         
 
         <div style="width: 25%; height: 42px; top: 9.6%; position: absolute;
