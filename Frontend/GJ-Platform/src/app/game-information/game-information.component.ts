@@ -4,7 +4,9 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Category } from '../../types';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SubmissionService } from '../services/submission.service';
 import { RateFormComponent } from './rate-form/rate-form.component';
+import { Submission } from '../../types';
 
 @Component({
   selector: 'app-game-information',
@@ -23,14 +25,26 @@ export class GameInformationComponent {
   gameParameter!: String;
   ActualUserIsJuez: Boolean = true;
   evaluando: Boolean = false;
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute) { }
+  dataSvurce: any;
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private SubmissionService: SubmissionService) { }
   
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.gameParameter = params['game'];
     });
+    var url = `http://localhost:3000/api/submission/get-submission/${this.gameParameter}`;
+    this.SubmissionService.getSubmission(url).subscribe(
+      (game: any) => {
+        this.dataSource = game.map((submission: { _id: any; name: any; teamId: any; }) => ({
+           _id: submission._id, name: submission.name, team: submission.teamId 
+          }));
+      },
+      error => {
+        console.error('Error al obtener juegos:', error);
+      }
+    )
   }
-
+  
   dataSource = {
     name: 'Bloom Tales',
     team: 'Outlander Studio',

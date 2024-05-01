@@ -4,8 +4,10 @@ import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { SubmissionService } from '../services/submission.service';
 import { GameInformationComponent } from '../game-information/game-information.component';
-import { Site, Submission, User } from '../../types';
+import { Site, Submission, Team, User } from '../../types';
 import { SiteService } from '../services/site.service';
+import { forkJoin } from 'rxjs';
+import { TeamService } from '../services/team.service';
 
 @Component({
   selector: 'app-juez-main',
@@ -22,7 +24,7 @@ export class JuezMainComponent implements OnInit {
   evaluations: any[] = []
   userId!: String | undefined
 
-  constructor(private router: Router, private userService: UserService, private SubmissionService: SubmissionService){}
+  constructor(private router: Router, private userService: UserService, private SubmissionService: SubmissionService, private TeamService: TeamService){}
 
   ngOnInit(): void {
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
@@ -34,19 +36,63 @@ export class JuezMainComponent implements OnInit {
         console.error('Error al obtener usuario actual:', error);
       }
     );
-    var url = `http://localhost:3000/api/submission/get-submissions-evaluator/${this.userId}`;
+    const url = `http://localhost:3000/api/submission/get-submissions-evaluator/${this.userId}`;
     this.SubmissionService.getSubmissionsEvaluator(url).subscribe(
-      (juegos: any[]) => {
-        this.games = juegos.map(submission => ({ _id: submission._id, name: submission.name, team: submission.teamId }));
+      (juegos: Submission[]) => {
+        for (const juego of juegos){
+          const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
+          this.TeamService.getTeamById(urlj).subscribe(
+            (team: Team) => {
+              this.games.push(
+                {
+                  id: juego._id,
+                  name: juego.title,
+                  team: team.studioName
+                }
+              );
+            },
+            error => {
+              console.error('Error al obtener juegos:', error);
+            }
+          )
+        }
+        
+        /*
+        this.games = juegos.map(submission => ({
+           _id: submission._id, name: submission.name, team: submission.teamId 
+          }));
+        */
       },
       error => {
         console.error('Error al obtener juegos:', error);
       }
     );
-    url = `http://localhost:3000/api/submission/get-ratings-evaluator/${this.userId}`;
-    this.SubmissionService.getSubmissionsEvaluator(url).subscribe(
-      (juegos: any[]) => {
-        this.evaluations = juegos.map(submission => ({ _id: submission._id, name: submission.name, team: submission.teamId }));
+    const url1 = `http://localhost:3000/api/submission/get-ratings-evaluator/${this.userId}`;
+    this.SubmissionService.getSubmissionsEvaluator(url1).subscribe(
+      (juegos: Submission[]) => {
+        for (const juego of juegos){
+          const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
+          this.TeamService.getTeamById(urlj).subscribe(
+            (team: Team) => {
+              this.evaluations.push(
+                {
+                  id: juego._id,
+                  name: juego.title,
+                  team: team.studioName
+                }
+              );
+            },
+            error => {
+              console.error('Error al obtener juegos:', error);
+            }
+          )
+        }
+        
+        /*
+        this.evaluations = juegos.map(submission => ({
+           _id: submission._id, name: submission.name, team: submission.teamId 
+          }));
+        */
       },
       error => {
         console.error('Error al obtener juegos:', error);

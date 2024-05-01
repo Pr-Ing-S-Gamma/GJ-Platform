@@ -326,7 +326,7 @@ const getRating = async(req,res)=>{
             return res.status(401).json({ success: false, msg: 'Unauthorized' });
         }
 
-        const { submissionId } = req.body;
+        const { submissionId } = req.params;
 
         const submission = await Submission.findById(submissionId);
         if (!submission) {

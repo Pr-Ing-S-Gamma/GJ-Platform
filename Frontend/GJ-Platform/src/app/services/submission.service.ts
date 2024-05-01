@@ -19,6 +19,12 @@ export class SubmissionService {
     return this.http.put(url, team, { withCredentials: true });
   }
 
+  getSubmission(url: string): Observable<Submission> { 
+    return this.http.get<any>(url, { withCredentials: true }).pipe(
+      map(response => response.data) 
+    );
+  }
+
   getCurrentTeamSubmission(url: string): Observable<Submission> { 
     return this.http.get<any>(url, { withCredentials: true }).pipe(
       map(response => response.data) 
