@@ -140,6 +140,9 @@ const magicLink = async (req, res) => {
         if(rol === 'Jammer') {
             redirectUrl = 'http://localhost:3000/Jammer';
         }
+        if(rol === 'Judge') {
+            redirectUrl = 'http://localhost:3000/Juez';
+        }
         if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer' && rol !== 'Jammer') {
             return res.clearCookie('token').redirect('http://localhost:3000/login');
         }
