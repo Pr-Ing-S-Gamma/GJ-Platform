@@ -20,6 +20,7 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                 </div>
             </div>
 
+
         </div>
 
         <div style="width: 65%; height: 996px; top: 65px; position: absolute; background: white;z-index: 1">
@@ -33,21 +34,23 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                 background: #515151; border-top-left-radius: 20px; border-top-right-radius: 20px; text-align: center; z-index: 2">
 
                     <div *ngIf="!teamName" [style.color]="isHovered ? 'darkgray' : 'white'"
-                        style="font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;">
+                        style="font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;"
+                        (click)="toggleCreateTeam()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
                         <span>Create Team</span>
-                    </div>
-
-                    <div *ngIf="showCreateTeam" style="width: 100%; padding: 0 10px;"> <!-- Cambio aquí -->
-                        <app-jammer-create-team></app-jammer-create-team>
                     </div>
                     
                     <div *ngIf="teamName" style="color: white;
-                    font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;">
+                    font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;"
+                        (click)="toggleUpdateTeam()" (mouseenter)="isHoveredSub = true"
+                        (mouseleave)="isHoveredSub = false">
                         <span [style.textDecoration]="isHoveredSub ? 'darkgray' : 'none'">{{teamName}}</span>
                     </div>
                     <div *ngIf="showUpdateTeam">
                         <app-jammer-team></app-jammer-team>
                     </div>
+                </div>
+                <div *ngIf="showCreateTeam"style="width: 100%;">
+                    <app-jammer-create-team></app-jammer-create-team>
                 </div>
 
                 <div *ngIf="teamName" style=" top: 200px; position: absolute; text-align: center; color: black;
@@ -58,6 +61,7 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                     font-size: 38px; font-family: Kanit; font-weight: 400; word-wrap: break-word; text-align: center ; z-index: 4">
                     {{timeRemaining}}
                 </div>
+
 
                 <div *ngIf="teamName">
 
@@ -73,6 +77,8 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                         <app-jammer-submit></app-jammer-submit>
                     </div>
                 </div>
+
+
             </div>
         </div>
     </div>
