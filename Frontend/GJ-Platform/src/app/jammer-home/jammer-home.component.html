@@ -54,7 +54,10 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
 
 
                 <div *ngIf="teamName">
-                    <button (click)="redirectToSubmitPage()">Submi!!!</button>
+                    <button (click)="redirectToSubmitPage()" style="width: 25%; height: 5%; top: 45%; position: absolute;
+                    background: #3EB9FF; border-radius: 20px; text-align: center;">
+                    Submi!!!
+                </button>
                 </div>
 
                 <div [class.hidden]="teamName" style="width: 25%; height: 5%; top: 45%; position: absolute;
@@ -68,6 +71,7 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                 </div>
                 
 
+                
             </div>
         </div>
     </div>
