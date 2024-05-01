@@ -1,11 +1,10 @@
-
 .createButton {
     width: 20.2%; /* Convertido de 292px a porcentaje */
     height: 5.2%; /* Convertido de 72px a porcentaje */
     position: relative;
-    top: 90%; /* Posiciona el botón en el centro vertical */
+    bottom: 20px; /* Distancia desde la parte inferior */
     left: 50%; /* Posiciona el botón en el centro horizontal */
-    transform: translate(-50%, -50%); /* Centra el botón exactamente en el centro */
+    transform: translateX(-50%); /* Centra el botón exactamente en el centro */
     background: #3EB9FF;
     border-radius: 15px;
     font-size: 1.2vw; /* Convertido de 20px a porcentaje */
@@ -17,6 +16,7 @@
 .createButton:hover {
     background: #0964ed; /* Cambia el color de fondo al pasar el ratón */
 }
+
 
 .rectanguloEquipo {
     top: 15%;

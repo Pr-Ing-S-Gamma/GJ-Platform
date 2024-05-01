@@ -1,17 +1,19 @@
 .custom-alert {
     background-color: #ffffff; /* Cambia al color que desees */
-    color: white;
+    color: rgb(0, 0, 0);
     padding: 20px;
     border-radius: 5px;
+    text-align: center;
   }
   
   .message {
     margin-bottom: 10px;
+    color:black;
   }
   
   .ok-button {
     background-color: blue; /* Cambia al color que desees */
-    color: white;
+    color: rgb(63, 84, 236);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
