@@ -1,5 +1,5 @@
 .createButton {
-    width: 20.2%; /* Convertido de 292px a porcentaje */
+    width: auto; /* Convertido de 292px a porcentaje */
     height: 5.2%; /* Convertido de 72px a porcentaje */
     position: relative;
     bottom: 20px; /* Distancia desde la parte inferior */
