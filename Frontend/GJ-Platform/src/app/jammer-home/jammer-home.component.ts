@@ -31,6 +31,7 @@ export class JammerHomeComponent implements OnInit {
   showCreateTeam :boolean = false;
   showUpdateTeam :boolean = false;
   showSubmit : boolean = false;
+  showSubmitButton: boolean = true;
 
   constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService, private gamejamService: GamejamService){
   }
@@ -98,6 +99,7 @@ export class JammerHomeComponent implements OnInit {
   toggleSubmit(){
     this.hideAll()
     this.showSubmit = true;
+    this.showSubmitButton = !this.showSubmitButton;
   }
   
   updateTimer() {

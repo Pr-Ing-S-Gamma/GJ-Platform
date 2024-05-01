@@ -1,7 +1,7 @@
-<div class="container-fluid h-100" style="width: 100vw; height: 100vh; position: relative; overflow: hidden; margin: 0; padding: 0;
+<div class="container-fluid h-100" style="width: 100vw; min-height: 100vh; position: relative; overflow: hidden; margin: 0; padding: 0;
 background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A5 75%, #3763FF 100%)">
 
-    <div style="top: 0;display: flex;align-items: center;justify-content: space-around; position: relative;">
+  <div style="top: 0;display: flex;align-items: center;justify-content: space-around; position: relative;">
 
         <div style="width: 65%; position: relative;">
 
@@ -67,18 +67,20 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
 
                 <div *ngIf="teamName">
 
-                    <button style="left: 38%; width: 25%; height: 5%; top: 45%; position: absolute;
-                    background: #3EB9FF; border-radius: 20px; text-align: center; z-index: 5">
-                        <div style="left: 30%; color: black; top: 18%; position: absolute;text-align: center;
-                    font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 6"
-                            (click)="toggleSubmit()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
-                            <span [style.textDecoration]="isHovered ? 'underline' : 'none'">Submit!</span>
-                        </div>
-                    </button>
+                    <div *ngIf="showSubmitButton">
+                        <button style="left: 38%; width: 25%; height: 5%; top: 45%; position: absolute;
+                        background: #3EB9FF; border-radius: 20px; text-align: center; z-index: 5">
+                            <div style="left: 30%; color: black; top: 18%; position: absolute;text-align: center;
+                        font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 6"
+                                (click)="toggleSubmit()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
+                                <span [style.textDecoration]="isHovered ? 'underline' : 'none'">Submit!</span>
+                            </div>
+                        </button>
+                    </div>
                     
                 </div>
                 <div>
-                    <div *ngIf="showSubmit" style="width: 100%; top: 52%; position: absolute;">
+                    <div *ngIf="showSubmit" style="width: 100%;">
                         <app-jammer-submit></app-jammer-submit>
                     </div>
                 </div>
