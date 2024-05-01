@@ -5,8 +5,10 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
 
         <div style="width: 65%; position: relative;">
 
-            <div style="height: 65px; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%)">
-                <div style="position: absolute; left: 2%; top: 10px; text-align: left; color: white; font-size: 30px; font-family: JejuHallasan; font-weight: 400; word-wrap: break-word">
+            <div
+                style="height: 65px; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%)">
+                <div
+                    style="position: absolute; left: 2%; top: 10px; text-align: left; color: white; font-size: 30px; font-family: JejuHallasan; font-weight: 400; word-wrap: break-word">
                     GJ+ - Jammer {{username}}
                 </div>
                 <img style="width: 44px; height: 41px; top: 21px; position: absolute; right: 2%" src="" />
@@ -15,7 +17,8 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
         </div>
 
         <div style="width: 65%; height: 996px; top: 65px; position: absolute; background: white">
-            <div style="height: 996px; display: flex;align-items: center;justify-content: space-around; position: relative;">
+            <div
+                style="height: 996px; display: flex;align-items: center;justify-content: space-around; position: relative;">
 
                 <div style="width: 80%; height: 0px; top: 13.8%; position: absolute; border: 1px black solid">
                 </div>
@@ -23,17 +26,14 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                 <div style="width: 25%; height: 42px; top: 9.6%; position: absolute;
                 background: #515151; border-top-left-radius: 20px; border-top-right-radius: 20px; text-align: center;">
                     <div *ngIf="!teamName" style="color: white;
-                    font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;" 
-                    (click)="redirectToCreateTeam()"
-                    (mouseenter)="isHovered = true" 
-                    (mouseleave)="isHovered = false">
+                    font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;"
+                        (click)="redirectToCreateTeam()" (mouseenter)="isHovered = true"
+                        (mouseleave)="isHovered = false">
                         <span [style.textDecoration]="isHovered ? 'underline' : 'none'">Create Team</span>
                     </div>
                     <div *ngIf="teamName" style="color: white;
-                    font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;" 
-                    (click)="redirectToTeamPage()"
-                    (mouseenter)="isHovered = true" 
-                    (mouseleave)="isHovered = false">
+                    font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;"
+                        (click)="redirectToTeamPage()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
                         <span [style.textDecoration]="isHovered ? 'underline' : 'none'">{{teamName}}</span>
                     </div>
                 </div>
@@ -47,19 +47,19 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
                     {{timeRemaining}}
                 </div>
 
-                <button style="width: 25%; height: 5%; top: 45%; position: absolute;
-                background: #3EB9FF; border-radius: 20px; text-align: center;">
+                <div style="width: 25%; height: 5%; top: 45%; position: absolute;
+            background: #3EB9FF; border-radius: 20px; text-align: center;">
                     <div *ngIf="teamName" style="left: 30%; color: black; top: 18%; position: absolute;text-align: center;
-                    font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;" 
-                    (click)="redirectToCreateTeam()"
-                    (mouseenter)="isHovered = true" 
-                    (mouseleave)="isHovered = false">
+            font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;"
+                        (click)="redirectToCreateTeam()" (mouseenter)="isHovered = true"
+                        (mouseleave)="isHovered = false">
                         <span [style.textDecoration]="isHovered ? 'underline' : 'none'">Submit!</span>
                     </div>
-                  </button>
+                </div>
 
-                  
-            
+
+
+
 
             </div>
         </div>
