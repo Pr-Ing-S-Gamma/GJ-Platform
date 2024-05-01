@@ -6,6 +6,8 @@ import { UserService } from '../../services/user.service';
 import { SiteService } from '../../services/site.service';
 import { GamejamService } from '../../services/gamejam.service';
 import { Router } from '@angular/router';
+import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-jammer-create-team',
@@ -16,7 +18,7 @@ import { Router } from '@angular/router';
 })
 export class JammerCreateTeamComponent implements OnInit{
   myForm!: FormGroup;
-  constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private teamService: TeamService, private siteService: SiteService, private gamejamService: GamejamService){
+  constructor(private dialog: MatDialog,private fb: FormBuilder, private router: Router, private userService: UserService, private teamService: TeamService, private siteService: SiteService, private gamejamService: GamejamService){
   }
   username: string | undefined;
   ngOnInit(): void {
@@ -53,6 +55,7 @@ export class JammerCreateTeamComponent implements OnInit{
         () => {}
       );
   }
+
   logOut(){
     this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
       .subscribe(
@@ -64,6 +67,17 @@ export class JammerCreateTeamComponent implements OnInit{
         }
       );
   }
+  showAlert(message: string): void {
+    const dialogRef = this.dialog.open(CustomAlertComponent, {
+      width: '400px',
+      data: { message: message }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The alert dialog was closed');
+    });
+  }
+  
 
   createTeam() {
     if (this.myForm.valid) {
@@ -96,7 +110,7 @@ export class JammerCreateTeamComponent implements OnInit{
             }
           }).subscribe({
             next: (data) => {
-              alert('Guardado con éxito');
+              this.showAlert("Agregado con exito");
               this.router.navigate(['/Jammer']).then(() => {
                 window.location.reload();
               });

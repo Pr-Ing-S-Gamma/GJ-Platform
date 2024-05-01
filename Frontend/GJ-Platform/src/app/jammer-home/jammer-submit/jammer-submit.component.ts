@@ -11,6 +11,9 @@ import { Category, Submission, Theme } from '../../../types';
 import { ThemeService } from '../../services/theme.service';
 import { SubmissionService } from '../../services/submission.service';
 import { StageService } from '../../services/stage.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
+
 
 @Component({
   selector: 'app-jammer-submit',
@@ -34,7 +37,7 @@ export class JammerSubmitComponent implements OnInit{
   currentSubmission: Submission | undefined;
   submissionId: string | undefined; 
 
-  constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private teamService: TeamService, private siteService: SiteService, private gamejamService: GamejamService, private categoryService: CategoryService, private themeService: ThemeService, private submissionService: SubmissionService, private stageService: StageService){
+  constructor(private dialog: MatDialog,private fb: FormBuilder, private router: Router, private userService: UserService, private teamService: TeamService, private siteService: SiteService, private gamejamService: GamejamService, private categoryService: CategoryService, private themeService: ThemeService, private submissionService: SubmissionService, private stageService: StageService){
   }
 ngOnInit(): void {
   this.myForm = this.fb.group({
@@ -153,6 +156,17 @@ ngOnInit(): void {
         }
       );
   }
+  showAlert(message: string): void {
+    const dialogRef = this.dialog.open(CustomAlertComponent, {
+      width: '400px',
+      data: { message: message }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The alert dialog was closed');
+    });
+  }
+  
 
   selectTheme(theme: Theme): void {
     this.selectedTheme = theme;
@@ -222,7 +236,7 @@ ngOnInit(): void {
                 score: 0
               }).subscribe({
                 next: (data) => {
-                  alert('Guardado con éxito');
+                  this.showAlert("Agregado con exito");
                   this.router.navigate(['/Jammer']).then(() => {
                     window.location.reload();
                   });
