@@ -1,0 +1,59 @@
+name: SSH into Oracle Linux
+
+on:
+  push:
+    branches:
+      -  "sprint2.1" 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.11.1]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+    
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          
+      - name: SSH into Oracle Linux
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.IP }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSHOCI }}
+          script: |
+            sudo su
+            
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+            source ~/.bashrc
+
+            cd /home/opc/GJ+/GJ-Platform
+            git pull origin main
+
+            cd /home/opc/GJ+/GJ-Platform
+
+            nvm install 20.11.1
+            nvm use 20.11.1
+            npm install -g @angular/cli 
+            
+            cd /home/opc/GJ+/GJ-Platform/back-end
+            sudo npm i
+            
+            cd /home/opc/GJ+/GJ-Platform/Frontend/GJ-Platform
+            sudo npm i
+            sudo chown -R ${{ secrets.USERNAME }}:$USER /home/opc/GJ+/GJ-Platform/Frontend/GJ-Platform/node_modules
+
+            ng build --configuration production
+            
+            cd /home/opc/GJ+/GJ-Platform/back-end
+            sudo npm install pm2 -g
+            pm2 start index.js --name "sprint2"
+            pm2 restart sprint2
+
