@@ -5,11 +5,13 @@ import { UserService } from '../services/user.service';
 import { SiteService } from '../services/site.service';
 import { GamejamService } from '../services/gamejam.service';
 import { Router } from '@angular/router';
+import { JammerCreateTeamComponent } from './jammer-create-team/jammer-create-team.component';
 
 @Component({
   selector: 'app-jammer-home',
   standalone: true,
   imports: [
+    JammerCreateTeamComponent,
     CommonModule
   ],
   templateUrl: './jammer-home.component.html',
@@ -21,6 +23,9 @@ export class JammerHomeComponent implements OnInit {
   username: string | undefined;
   teamName: string | undefined;
   isHovered: boolean = false;
+  showCreateTeam :boolean = false;
+
+
 
   constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService, private gamejamService: GamejamService){
   }
@@ -70,7 +75,9 @@ export class JammerHomeComponent implements OnInit {
   }
   
   
-
+  toggleCreateTeam(){
+    this.showCreateTeam = true;
+  }
   updateTimer() {
     const now = new Date();
   
@@ -116,7 +123,4 @@ export class JammerHomeComponent implements OnInit {
     this.router.navigate(['/Jammer/Team']);
   }
 
-  redirectToCreateTeam(): void {
-    this.router.navigate(['Jammer/team/createTeam']);
-  }
 }
