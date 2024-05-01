@@ -19,8 +19,6 @@
 }
 
 .rectanguloEquipo {
-    width: 80%;
-    height: 70%;
     top: 15%;
     left: 10%;
     position: relative;
@@ -38,8 +36,6 @@
 
 }
 .pestana {
-    width: 20%; /* Convertido de píxeles a porcentaje */
-    height: 8.5%; /* Ajustado para mantener la proporción con respecto al contenedor */
     position: relative; /* Cambiado a relativo */
     top: 20px; /* Ajusta la distancia hacia abajo */
     left: 50%;
