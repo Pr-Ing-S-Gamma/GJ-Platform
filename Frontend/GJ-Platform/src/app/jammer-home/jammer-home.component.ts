@@ -27,8 +27,7 @@ export class JammerHomeComponent implements OnInit {
   isHovered: boolean = false;
   showCreateTeam :boolean = false;
   showUpdateTeam :boolean = false;
-
-
+  showSubmit : boolean = false;
 
   constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService, private gamejamService: GamejamService){
   }
@@ -79,6 +78,8 @@ export class JammerHomeComponent implements OnInit {
   
   hideAll(){
     this.showCreateTeam = false;
+    this.showUpdateTeam = false;
+    this.showSubmit = false;
   }
 
   toggleUpdateTeam(){
@@ -89,6 +90,11 @@ export class JammerHomeComponent implements OnInit {
   toggleCreateTeam(){
     this.hideAll()
     this.showCreateTeam = true;
+  }
+
+  toggleSubmit(){
+    this.hideAll()
+    this.showSubmit = true;
   }
   updateTimer() {
     const now = new Date();
