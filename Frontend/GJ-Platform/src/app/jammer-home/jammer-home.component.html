@@ -45,7 +45,7 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
 
                 <div *ngIf="teamName" style=" top: 200px; position: absolute; text-align: center; color: black;
                     font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word">
-                    Time Remaining To Submit...:
+                    Time Remaining To Submit:
                 </div>
                 <div *ngIf="teamName" style="top: 280px; position: absolute; text-align: center; color: #FF0000;
                     font-size: 38px; font-family: Kanit; font-weight: 400; word-wrap: break-word; text-align: center">
@@ -54,7 +54,7 @@ background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A
 
 
                 <div *ngIf="teamName">
-                    <button (onclick)="redirectToSubmitPage()">Submi!!!</button>
+                    <button (click)="redirectToSubmitPage()">Submi!!!</button>
                 </div>
 
                 <div [class.hidden]="teamName" style="width: 25%; height: 5%; top: 45%; position: absolute;
