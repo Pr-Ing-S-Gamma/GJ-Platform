@@ -76,10 +76,13 @@ export class JammerCreateTeamComponent implements OnInit{
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'ok') {
         callback();
+        this.router.navigate(['/Jammer']).then(() => {
+          window.location.reload();
+        });
       }
     });
   }
-  
+    
   
 
   createTeam() {
@@ -118,7 +121,7 @@ export class JammerCreateTeamComponent implements OnInit{
                   window.location.reload();
                 });
               });
-            },            
+            },                        
             error: (error) => {
               console.error('Error creating team:', error);
             }

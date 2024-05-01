@@ -11,7 +11,7 @@ export class CustomAlertComponent {
 
   constructor(public dialogRef: MatDialogRef<CustomAlertComponent>) {}
 
-  closeDialog(): void {
-    this.dialogRef.close();
+  closeDialog(result: string): void {
+    this.dialogRef.close(result);
   }
 }
