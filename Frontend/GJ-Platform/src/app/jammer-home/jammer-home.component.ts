@@ -144,4 +144,16 @@ export class JammerHomeComponent implements OnInit {
     this.router.navigate(['/Jammer/Team']);
   }
 
+
+  logOut(): void {
+    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+      .subscribe(
+        () => {
+          this.router.navigate(['/login']);
+        },
+        error => {
+          console.error('Error al cerrar sesión:', error);
+        }
+      );
+  }
 }

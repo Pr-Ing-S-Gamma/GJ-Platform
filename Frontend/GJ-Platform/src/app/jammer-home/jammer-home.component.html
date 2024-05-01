@@ -1,18 +1,21 @@
-<div style="width: 100vw; height: 100vh; position: relative; overflow: hidden; margin: 0; padding: 0;
+<div class="container-fluid h-100" style="width: 100vw; height: 100vh; position: relative; overflow: hidden; margin: 0; padding: 0;
 background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A5 75%, #3763FF 100%)">
 
     <div style="top: 0;display: flex;align-items: center;justify-content: space-around; position: relative;">
 
         <div style="width: 65%; position: relative;">
 
-            <div
-                style="height: 65px; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%)">
-                <div
-                    style="position: absolute; left: 2%; top: 10px; text-align: left; color: white; font-size: 30px; font-family: JejuHallasan; font-weight: 400; word-wrap: break-word">
+            <div style="height: 65px; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%); position: relative; display: flex; align-items: center;">
+                <div style="position: absolute; left: 2%; top: 10px; text-align: left; color: white; font-size: 30px; font-family: JejuHallasan; font-weight: 400; word-wrap: break-word;">
                     GJ+ - Jammer {{username}}
                 </div>
-                <img style="width: 44px; height: 41px; top: 21px; position: absolute; right: 2%" src="" />
+                <div class="logout-btn">
+                    <div class="col btn btn-primary text-right" style="top: 15%; margin-left: 92%; max-width: fit-content; font-size: 18px; font-family: JejuHallasan; position: absolute;" (click)="logOut()">
+                        Log out
+                    </div>
+                </div>
             </div>
+            
 
         </div>
 
