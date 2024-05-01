@@ -7,6 +7,7 @@ import { GamejamService } from '../services/gamejam.service';
 import { Router } from '@angular/router';
 import { JammerCreateTeamComponent } from './jammer-create-team/jammer-create-team.component';
 import { JammerTeamComponent } from './jammer-team/jammer-team.component';
+import { JammerSubmitComponent } from './jammer-submit/jammer-submit.component';
 
 @Component({
   selector: 'app-jammer-home',
@@ -14,7 +15,8 @@ import { JammerTeamComponent } from './jammer-team/jammer-team.component';
   imports: [
     JammerCreateTeamComponent,
     CommonModule,
-    JammerTeamComponent
+    JammerTeamComponent,
+    JammerSubmitComponent
   ],
   templateUrl: './jammer-home.component.html',
   styleUrl: './jammer-home.component.css'
@@ -27,8 +29,7 @@ export class JammerHomeComponent implements OnInit {
   isHovered: boolean = false;
   showCreateTeam :boolean = false;
   showUpdateTeam :boolean = false;
-
-
+  showSubmit : boolean = false;
 
   constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService, private gamejamService: GamejamService){
   }
@@ -79,6 +80,8 @@ export class JammerHomeComponent implements OnInit {
   
   hideAll(){
     this.showCreateTeam = false;
+    this.showUpdateTeam = false;
+    this.showSubmit = false;
   }
 
   toggleUpdateTeam(){
@@ -90,6 +93,12 @@ export class JammerHomeComponent implements OnInit {
     this.hideAll()
     this.showCreateTeam = true;
   }
+
+  toggleSubmit(){
+    this.hideAll()
+    this.showSubmit = true;
+  }
+  
   updateTimer() {
     const now = new Date();
   
