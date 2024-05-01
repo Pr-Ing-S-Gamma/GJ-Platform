@@ -27,12 +27,14 @@
 
         <div style="width: 80%; height: 0px; top: 13.8%; position: absolute; border: 1px black solid">
         </div>
-        <div *ngIf="showUpdateTeam" style="width: 90%;">
-          <app-jammer-team></app-jammer-team>
-        </div>
+        <div style="width: 100%; top: 400px; position: absolute; text-align: center;">
+          <div *ngIf="showUpdateTeam" style="width: 90%;">
+            <app-jammer-team></app-jammer-team>
+          </div>
 
-        <div *ngIf="showCreateTeam" style="width: 70%;">
-          <app-jammer-create-team></app-jammer-create-team>
+          <div *ngIf="showCreateTeam" style="width: 70%;">
+            <app-jammer-create-team></app-jammer-create-team>
+          </div>
         </div>
         <div *ngIf="teamName" style=" top: 200px; position: absolute; text-align: center; color: black;
           font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word  ; z-index: 3">
