@@ -128,5 +128,6 @@ export class JuezMainComponent implements OnInit {
 
   selectGame(id: string){
     this.selectedGame = id
+    console.log(this.selectedGame)
   }
 }
