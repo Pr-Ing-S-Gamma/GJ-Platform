@@ -384,6 +384,18 @@ const getRating = async (req, res) => {
             return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
         }*/
 
+        let evaluator = null;
+        const evaluatorss = submission.evaluators;
+        for (const e of evaluatorss) {
+            if (e.userId == userId) {
+                evaluator = e;
+                break; 
+            }
+        }
+        if (!evaluator) {
+            return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
+        }
+
         const response = {
             pitchScore: evaluator.pitchScore,
             pitchFeedback: evaluator.pitchFeedback,
