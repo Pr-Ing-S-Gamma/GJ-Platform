@@ -51,14 +51,14 @@
         <div *ngFor="let game of games">
             <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
                 <div *ngIf="selectedGame === game.id" class="modal-dialog" role="document" style="max-width: 85%;">
-                    <app-game-information [game]="game"></app-game-information>
+                    <app-game-information [game]="selectedGame"></app-game-information>
                 </div>
             </div>
         </div>
         <div *ngFor="let game of evaluations">
             <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
                 <div *ngIf="selectedGame === game.id" class="modal-dialog" role="document" style="max-width: 85%;">
-                    <app-game-information [game]="game"></app-game-information>
+                    <app-game-information [game]="selectedGame"></app-game-information>
                 </div>
             </div>
         </div>
