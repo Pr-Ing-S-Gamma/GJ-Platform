@@ -292,10 +292,8 @@ const giveRating = async (req, res) => {
         if (!submission) {
             return res.status(404).json({ message: 'El submission no fue encontrado.' });
         }
-       // return res.status(200).send({ success:true, msg:'...', data: submission  });
-        res.status(200).send({ success:true, msg:'...', data: userId  + "..." + "66160d0b2bf76a460c689d6f"});
 
-        const evaluator =  submission.evaluators.find(evaluator => evaluator.userId === userId);
+        const evaluator =  await submission.evaluators.find(evaluator => evaluator.userId === userId);
         if (!evaluator) {
             return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
         }
