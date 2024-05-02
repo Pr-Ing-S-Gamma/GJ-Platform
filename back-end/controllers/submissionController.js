@@ -455,7 +455,7 @@ const getSubmissionsEvaluator = async (req, res) => {
         const evaluatorID = req.params.id;
         const Submissions = await Submission.find({
             'evaluators.userId': evaluatorID,
-            $or: [
+            $and: [
             {"pitchScore": null},
             {"pitchFeedback": null},
             {"gameDesignScore": null},
