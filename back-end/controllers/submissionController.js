@@ -204,7 +204,7 @@ const updateSubmission = async (req, res) => {
         }
         await Submission.findByIdAndUpdate(id, updateFields);
 
-        res.status(200).send({ success: true, msg: 'Submission updated successfully'});
+        res.status(200).send({ success: true, msg: 'Submission updated successfully' });
     } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
@@ -212,7 +212,7 @@ const updateSubmission = async (req, res) => {
 
 const getCurrentTeamSubmission = async (req, res) => {
     const { teamId, stageId } = req.params;
-    
+
     try {
         const selectedSubmission = await Submission.findOne({ teamId: teamId, stageId: stageId });
 
@@ -226,8 +226,8 @@ const getCurrentTeamSubmission = async (req, res) => {
     }
 };
 
-const getSubmission = async(req,res)=>{
-    try{
+const getSubmission = async (req, res) => {
+    try {
         const id = req.params.id;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'El ID de entrega proporcionado no es válido.' });
@@ -238,25 +238,25 @@ const getSubmission = async(req,res)=>{
             }
         }
         const selectedSubmission = await Submission.findById(id);
-        res.status(200).send({ success:true, msg:'Entrega encontrada correctamente', data: selectedSubmission });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+        res.status(200).send({ success: true, msg: 'Entrega encontrada correctamente', data: selectedSubmission });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
-const getSubmissions = async(req,res)=>{
-    try{
+const getSubmissions = async (req, res) => {
+    try {
         const allSubmissions = await Submission.find({});
-        res.status(200).send({ success:true, msg:'Se han encontrado entregas en el sistema', data: allSubmissions });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+        res.status(200).send({ success: true, msg: 'Se han encontrado entregas en el sistema', data: allSubmissions });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
 const deleteSubmission = async (req, res) => {
     try {
         const id = req.params.id;
-        
+
         const deletedSubmission = await Submission.findOneAndDelete({ _id: id });
 
         if (deletedSubmission) {
@@ -274,11 +274,11 @@ const deleteSubmission = async (req, res) => {
 const giveRating = async (req, res) => {
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        
+
         if (!userId) {
             return res.status(401).json({ success: false, msg: 'Unauthorized' });
         }
-        
+
         const { submissionId, generalFeedback,
             pitchScore, pitchFeedback,
             gameDesignScore, gameDesignFeedback,
@@ -292,19 +292,21 @@ const giveRating = async (req, res) => {
         if (!submission) {
             return res.status(404).json({ message: 'El submission no fue encontrado.' });
         }
-    
-        const evaluator = null;
+
+        let evaluator = null;
         const evaluatorss = submission.evaluators;
-        for(const e of evaluatorss){
-            if(e.userId == userId){
+        for (const e of evaluatorss) {
+            if (e.userId == userId) {
                 evaluator = e;
+                break; 
             }
         }
-        //const evaluator =  await submission.evaluators.find(evaluator => evaluator.userId === userId);
-        //return res.status(404).json({ message: "..aqui", data: evaluator });
-        if (!evaluator) {
+
+        if (evaluator == null) {
             return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
         }
+
+
 
         evaluator.pitchScore = pitchScore;
         evaluator.pitchFeedback = pitchFeedback;
@@ -327,10 +329,10 @@ const giveRating = async (req, res) => {
     }
 }
 
-const getRating = async(req,res)=>{
-    try{
+const getRating = async (req, res) => {
+    try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        
+
         if (!userId) {
             return res.status(401).json({ success: false, msg: 'Unauthorized' });
         }
@@ -361,28 +363,28 @@ const getRating = async(req,res)=>{
             generalFeedback: evaluator.generalFeedback
         }
 
-        res.status(200).send({ success:true, msg:'Rating encontrado correctamente', data: response });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+        res.status(200).send({ success: true, msg: 'Rating encontrado correctamente', data: response });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
 const setSubmissionScore = async (req, res) => {
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        
+
         if (!userId) {
             return res.status(401).json({ success: false, msg: 'Unauthorized' });
         }
-        
+
         const { id, score } = req.body;
-        
+
         if (!id || !score) {
             return res.status(400).json({ success: false, msg: 'Missing submission ID or score' });
         }
 
         const existingSubmission = await Submission.findById(id);
-        
+
         if (!existingSubmission) {
             return res.status(404).json({ success: false, msg: 'Submission not found' });
         }
@@ -417,7 +419,7 @@ const setEvaluatorToSubmission = async (req, res) => {
     try {
 
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        
+
 
         const creatorUser = await User.findById(userId);
         if (!creatorUser) {
@@ -448,34 +450,34 @@ const setEvaluatorToSubmission = async (req, res) => {
     }
 };
 
-const getSubmissionsEvaluator = async(req, res)=>{
-    try{
+const getSubmissionsEvaluator = async (req, res) => {
+    try {
         const evaluatorID = req.params.id;
         const Submissions = await Submission.find({
             'evaluators.userId': evaluatorID,
             "pitchScore": null,
             "pitchFeedback": null,
-        "gameDesignScore": null,
-        "gameDesignFeedback": null,
-        "artScore": null,
-        "artFeedback": null,
-        "buildScore": null,
-        "buildFeedback": null,
-        "audioScore": null,
-        "audioFeedback": null,
-        "generalFeedback": null,
+            "gameDesignScore": null,
+            "gameDesignFeedback": null,
+            "artScore": null,
+            "artFeedback": null,
+            "buildScore": null,
+            "buildFeedback": null,
+            "audioScore": null,
+            "audioFeedback": null,
+            "generalFeedback": null,
         });
 
-        
-        res.status(200).send({ success:true, msg:'Se han encontrado entregas en el sistema', data: Submissions });
+
+        res.status(200).send({ success: true, msg: 'Se han encontrado entregas en el sistema', data: Submissions });
     }
-    catch{
+    catch {
         res.status(400).json({ success: false, error: 'Error while processing the request.' });
     }
 };
 
-const getRatingsEvaluator = async(req, res)=>{
-    try{
+const getRatingsEvaluator = async (req, res) => {
+    try {
         const evaluatorID = req.params.id;
         const Submissions = await Submission.find({
             evaluators: {
@@ -497,9 +499,9 @@ const getRatingsEvaluator = async(req, res)=>{
                 }
             }
         });
-        res.status(200).send({ success:true, msg:'Se han encontrado entregas en el sistema', data: Submissions });
+        res.status(200).send({ success: true, msg: 'Se han encontrado entregas en el sistema', data: Submissions });
     }
-    catch{
+    catch {
         res.status(400).json({ success: false, error: 'Error processing the request.' });
     }
 };
