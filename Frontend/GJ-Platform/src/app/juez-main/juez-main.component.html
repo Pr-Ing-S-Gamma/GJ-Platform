@@ -17,7 +17,7 @@
                 <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
                     <div *ngFor="let game of games" style="background: #515151; border-radius: 35px; border: 1px black solid;
                     padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"
-                    class="btn btn-primary" (click)="selectGame(game.id)">
+                    class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id" (click)="selectGame(game.id)">
                         <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
                             {{ game.name }}
                         </div>
@@ -37,7 +37,7 @@
                 <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
                     <div *ngFor="let game of evaluations" style="background: #515151; border-radius: 35px; border: 1px black solid;
                     padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"
-                    class="btn btn-primary" (click)="selectGame(game.id)">
+                    class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id" (click)="selectGame(game.id)">
                         <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
                             {{ game.name }}
                         </div>
@@ -48,7 +48,6 @@
                 </div>
             </div>
         </div>
-        <!--
         <div *ngFor="let game of games">
             <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
                 <div class="modal-dialog" role="document" style="max-width: 85%;">
@@ -57,11 +56,11 @@
             </div>
         </div>
         <div *ngFor="let game of evaluations">
-        -->
-            <div class="modal fade" id="gameInfoModal" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
+            <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
                 <div class="modal-dialog" role="document" style="max-width: 85%;">
                     <app-game-information [game]="selectedGame"></app-game-information>
                 </div>
             </div>
+        </div>
     </div>
 </section>
