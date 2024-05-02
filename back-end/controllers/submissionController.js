@@ -6,6 +6,7 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Theme = require('../models/themeModel')
+const { sendScore } = require('../services/mailer');
 
 const createSubmission = async (req, res) => {
     const { description, pitch, game, teamId, categoryId, stageId, themeId, title } = req.body;
@@ -293,6 +294,12 @@ const giveRating = async (req, res) => {
             return res.status(404).json({ message: 'El submission no fue encontrado.' });
         }
 
+        const team = await Team.findById(submission.team);
+
+        if (!team) {
+            return res.status(404).json({ success: false, msg: 'Team not found' });
+        }
+
         let evaluator = null;
         const evaluatorss = submission.evaluators;
         for (const e of evaluatorss) {
@@ -321,6 +328,33 @@ const giveRating = async (req, res) => {
         evaluator.generalFeedback = generalFeedback;
 
         await submission.save();
+
+        const promises = [];
+
+        for (const jammer of team.jammers) {
+            const subject = 'Score Update on GameJam Platform';
+            const message = `Hi ${jammer.name}, your team's submission has been updated. New score: ${score}.`;
+            
+            const emailPromise = sendScore(
+                jammer.email,
+                subject,
+                message,
+                evaluator.pitchScore,
+                evaluator.pitchFeedback,
+                evaluator.gameDesignScore,
+                evaluator.gameDesignFeedback,
+                evaluator.artScore,
+                evaluator.artFeedback,
+                evaluator.buildScore,
+                evaluator.buildFeedback,
+                evaluator.audioScore,
+                evaluator.audioFeedback,
+                evaluator.generalFeedback
+            );
+            promises.push(emailPromise);
+        }        
+
+        await Promise.all(promises);
 
         res.status(200).json({ success: true, msg: 'Juego calificado' });
     } catch (error) {
@@ -394,20 +428,6 @@ const setSubmissionScore = async (req, res) => {
         if (!team) {
             return res.status(404).json({ success: false, msg: 'Team not found' });
         }
-
-        const promises = [];
-
-        for (const jammer of team.jammers) {
-            const updatedSubmission = await Submission.findByIdAndUpdate(id, { score }, { new: true });
-
-            const subject = 'Score Update on GameJam Platform';
-            const text = `Hi ${jammer.name}, your team's submission has been updated. New score: ${score}.`;
-
-            const emailPromise = sendEmail(jammer.email, subject, text);
-            promises.push(emailPromise);
-        }
-
-        await Promise.all(promises);
 
         res.status(200).json({ success: true, msg: 'Score set and emails sent' });
     } catch (error) {

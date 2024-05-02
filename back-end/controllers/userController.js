@@ -102,8 +102,9 @@ const loginUser = async (req, res) => {
     if (!existingUser) {
         const registerLink = `http://localhost:3000/register`;
         const subject = 'Login in GameJam Platform';
-        const text = `Hi, click on this link to create an account: ${registerLink}`;
-        await sendEmail(email, subject, text);
+        const message = `Hi, click on this link to create an account:`;
+        const link = registerLink;
+        await sendEmail(email, subject, message, link);        
         res.status(200).json({ success: true, msg: 'Se envió el registro al usuario.', email, registerLink });
     }
     
@@ -113,8 +114,9 @@ const loginUser = async (req, res) => {
     const token = jwt.sign({ userId, rol }, 'MY_JWT_SECRET', { expiresIn: 600000 });
     const magicLink = `http://localhost:3000/api/user/magic-link/${token}`;
     const subject = 'Login in GameJam Platform';
-    const text = `Hi, click on this link to continue to the app: ${magicLink}`;
-    await sendEmail(email, subject, text);
+    const message = `Hi, click on this link to continue to the app:`;
+    const link = magicLink;
+    await sendEmail(email, subject, message, link);    
     res.status(200).json({ success: true, msg: 'Se envió el magic link al usuario.', email, magicLink });
 };
 
