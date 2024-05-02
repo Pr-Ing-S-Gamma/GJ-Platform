@@ -123,4 +123,8 @@ export class JuezMainComponent implements OnInit {
         }
       );
   }
+
+  trackById(index: number, game: any): any {
+    return game.id;
+  }
 }
