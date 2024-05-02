@@ -86,7 +86,7 @@
             <label class="label"> General Feedback </label>
             <input class="textSpace" id="general" type="text" placeholder="Give Feedback" [disabled]="!evaluando" formControlName="generalFeedback">
         </div>
-        <div class = "col btn btn-primary" style="display: flex; align-self: center; max-width: fit-content; justify-self: flex-end;" type="submit"> <!-- (click)="submitEvaluation()" -->
+        <div class = "col btn btn-primary" style="display: flex; align-self: center; max-width: fit-content; justify-self: flex-end;" type="submit" (click)="submitEvaluation()">
             Evaluate
         </div>
 
