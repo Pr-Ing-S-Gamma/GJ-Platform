@@ -274,6 +274,7 @@ const deleteSubmission = async (req, res) => {
 const giveRating = async (req, res) => {
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        console.log("juez: " + userId);
         
         if (!userId) {
             return res.status(401).json({ success: false, msg: 'Unauthorized' });
