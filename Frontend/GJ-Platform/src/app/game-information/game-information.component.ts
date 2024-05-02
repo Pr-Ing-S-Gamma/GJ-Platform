@@ -50,6 +50,7 @@ export class GameInformationComponent {
                   console.log("id du tema " + game.themeId)
                   this.ThemeService.getTheme(urlt).subscribe(
                     (themes: Theme) => {
+                      console.log("entré")
                       this.dataSource = {
                         name: game.title,
                         team: team.studioName,
