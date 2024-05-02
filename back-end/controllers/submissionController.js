@@ -288,9 +288,12 @@ const giveRating = async (req, res) => {
         } = req.body;
 
         const submission = await Submission.findById(submissionId);
+
         if (!submission) {
             return res.status(404).json({ message: 'El submission no fue encontrado.' });
         }
+        res.status(200).send({ success:true, msg:'...', data: submission  });
+        res.status(200).send({ success:true, msg:'...', data: userId  });
 
         const evaluator =  submission.evaluators.find(evaluator => evaluator.userId === userId);
         if (!evaluator) {
