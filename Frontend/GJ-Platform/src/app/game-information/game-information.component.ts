@@ -35,9 +35,10 @@ export class GameInformationComponent {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       var url = 'http://localhost:3000/api/submission/get-submission/' + this.game;
-      console.log("id du jogo " + this.game)
+      
       this.SubmissionService.getSubmission(url).subscribe(
         (game: Submission) => {
+          console.log("id du jogo " + this.game)
           const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
           console.log("id du temu " +  game.teamId)
           this.TeamService.getTeamById(urlj).subscribe(
