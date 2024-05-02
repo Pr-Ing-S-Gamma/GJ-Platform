@@ -32,7 +32,7 @@ export class GameInformationComponent implements OnInit {
   gameTitle: string = '';
   teamName: string = '';
   gameDescription: string = '';
-  teamMembers: string[] = [];
+  teamMembers: { name: string; discordUsername: string; email: string; }[] = [];
   themes: string[] = [];
   categories: string[] = [];
   gameLink: string = '';
@@ -60,6 +60,13 @@ export class GameInformationComponent implements OnInit {
           console.log("id del equipo " +  game.teamId)
           this.TeamService.getTeamById(urlj).subscribe(
             (team: Team) => {
+              this.teamName = team.studioName;
+              this.gameDescription = game.description;
+              this.teamMembers = team.jammers.map(jammer => ({
+                name: jammer.name,
+                discordUsername: jammer.discordUsername,
+                email: jammer.email
+            }));
               const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId
               console.log("id de la categoría " +  game.categoryId)
               this.CategoryService.getCategory(urlc).subscribe(
@@ -73,9 +80,7 @@ export class GameInformationComponent implements OnInit {
                       console.log(team.jammers)
                       console.log(themes)
                       this.gameTitle = game.title;
-                      this.teamName = team.studioName;
                       this.gameDescription = game.description;
-                      this.teamMembers = team.jammers.map(jammer => jammer.name)
                       if(Array.isArray(themes) && themes.length > 0) {
                         this.themes = themes.map(theme => theme.descriptionEN || '');
                       } else {
