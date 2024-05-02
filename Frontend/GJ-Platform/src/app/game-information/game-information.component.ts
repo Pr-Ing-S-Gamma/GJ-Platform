@@ -67,7 +67,7 @@ export class GameInformationComponent implements OnInit {
                   console.log("id del tema " + game.themeId)
                   this.ThemeService.getTheme(urlt).subscribe(
                     (themes: Theme) => {
-                      console.log("entré")
+                      console.log("entré", team)
                       // Guardar los valores en variables
                       this.gameTitle = game.title;
                       this.teamName = team.studioName;
