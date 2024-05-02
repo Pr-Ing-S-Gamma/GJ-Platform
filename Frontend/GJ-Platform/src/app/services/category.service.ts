@@ -25,6 +25,12 @@ export class CategoryService {
     );
   }
   
+  getCategory(url: string): Observable<Category> { 
+    return this.http.get<any>(url).pipe( 
+      map(response => response.data)
+    );
+  }
+  
   deleteCategory(url: string): Observable<any> {
     return this.http.delete(url);
   }
