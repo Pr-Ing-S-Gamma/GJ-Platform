@@ -24,6 +24,7 @@ export class JuezMainComponent implements OnInit {
   evaluations: any[] = []
   userId!: String | undefined
   selectedGame: string = ''
+  gameInfoModal: string = "gameInfoModal";
 
   constructor(private router: Router, private userService: UserService, private SubmissionService: SubmissionService, private TeamService: TeamService){}
 
