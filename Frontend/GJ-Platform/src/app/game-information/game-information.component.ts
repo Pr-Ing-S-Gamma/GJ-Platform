@@ -28,7 +28,7 @@ export class GameInformationComponent {
   gameParameter!: string;
   ActualUserIsJuez: Boolean = true;
   evaluando: Boolean = false;
-  dataSource: any;
+  dataSource: any = null;
   constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute,
     private SubmissionService: SubmissionService, private TeamService: TeamService, private ThemeService: ThemeService, private CategoryService: CategoryService) { }
   
