@@ -15,9 +15,9 @@
                 </div>
     
                 <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
-                    <div *ngFor="let game of games; trackBy: trackById" style="background: #515151; border-radius: 35px; border: 1px black solid;
+                    <div *ngFor="let game of games" style="background: #515151; border-radius: 35px; border: 1px black solid;
                     padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"
-                    class="btn btn-primary" data-toggle="modal" data-target="#gameInfoModal" (click)="selectedGame = game.id">
+                    class="btn btn-primary" data-toggle="modal" data-target="#gameInfoModal" (click)="selectGame(game.id)">
                         <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
                             {{ game.name }}
                         </div>
@@ -35,9 +35,9 @@
                 </div>
     
                 <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
-                    <div *ngFor="let game of evaluations; trackBy: trackById" style="background: #515151; border-radius: 35px; border: 1px black solid;
+                    <div *ngFor="let game of evaluations" style="background: #515151; border-radius: 35px; border: 1px black solid;
                     padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"
-                    class="btn btn-primary" data-toggle="modal" data-target="#gameInfoModal" (click)="selectedGame = game.id">
+                    class="btn btn-primary" data-toggle="modal" data-target="#gameInfoModal" (click)="selectGame(game.id)">
                         <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
                             {{ game.name }}
                         </div>
