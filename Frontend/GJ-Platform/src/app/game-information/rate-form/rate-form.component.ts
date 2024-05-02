@@ -39,7 +39,7 @@ export class RateFormComponent {
     this.route.params.subscribe(params => {
       this.gameParameter = params['game'];
     });
-    this.SubmissionService.getRating("http://localhost:3000/api/submission/get-rating" + this.gameParameter).subscribe({
+    this.SubmissionService.getRating("http://localhost:3000/api/submission/get-rating/" + this.gameParameter).subscribe({
       next: (data) => {
         console.log(data);
         this.myForm = this.fb.group({
