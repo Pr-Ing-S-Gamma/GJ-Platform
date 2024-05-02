@@ -301,6 +301,7 @@ const giveRating = async (req, res) => {
                 break; 
             }
         }
+        return res.status(200).json({ data: evaluator });
 
         if (evaluator == null) {
             return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
