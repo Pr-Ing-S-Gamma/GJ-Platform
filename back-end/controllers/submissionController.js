@@ -329,6 +329,7 @@ const giveRating = async (req, res) => {
 
         await submission.save();
 
+        /*
         const promises = [];
 
         for (const jammer of team.jammers) {
@@ -355,6 +356,7 @@ const giveRating = async (req, res) => {
         }        
 
         await Promise.all(promises);
+        */
 
         res.status(200).json({ success: true, msg: 'Juego calificado' });
     } catch (error) {
