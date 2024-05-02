@@ -37,6 +37,7 @@ export class GameInformationComponent {
       this.gameParameter = params['game'];
     });
     var url = `http://localhost:3000/api/submission/get-submission/${this.gameParameter}`;
+    console.log(url);
     this.SubmissionService.getSubmission(url).subscribe(
       (game: Submission) => {
         const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
