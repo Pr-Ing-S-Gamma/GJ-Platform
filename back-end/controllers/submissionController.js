@@ -441,16 +441,12 @@ const setEvaluatorToSubmission = async (req, res) => {
 
 const getSubmissionsEvaluator = async(req, res)=>{
     try{
-        console.log("aaaaa")
         const evaluatorID = req.params.id;
-        const Submissions = Submission.find({
-            evaluators: {
-                $elemMatch: {
-                    userId: evaluatorID
-                }
-            }
+        const Submissions = await Submission.find({
+            'evaluators.userId': evaluatorID
         });
-        console.log("bbbbb");
+
+        
         res.status(200).send({ success:true, msg:'Se han encontrado entregas en el sistema', data: Submissions });
     }
     catch{
