@@ -443,7 +443,18 @@ const getSubmissionsEvaluator = async(req, res)=>{
     try{
         const evaluatorID = req.params.id;
         const Submissions = await Submission.find({
-            'evaluators.userId': evaluatorID
+            'evaluators.userId': evaluatorID,
+            "pitchScore": null,
+            "pitchFeedback": null,
+        "gameDesignScore": null,
+        "gameDesignFeedback": null,
+        "artScore": null,
+        "artFeedback": null,
+        "buildScore": null,
+        "buildFeedback": null,
+        "audioScore": null,
+        "audioFeedback": null,
+        "generalFeedback": null,
         });
 
         
