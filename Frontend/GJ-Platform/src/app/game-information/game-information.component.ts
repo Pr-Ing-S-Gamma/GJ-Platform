@@ -32,7 +32,7 @@ export class GameInformationComponent implements OnInit {
   gameTitle: string = '';
   teamName: string = '';
   gameDescription: string = '';
-  teamMembers: string[] = [];
+  teamMembers: { _id: string; name: string; email: string; discordUsername: string; }[] = [];
   themes: string[] = [];
   categories: string[] = [];
   gameLink: string = '';
@@ -72,12 +72,16 @@ export class GameInformationComponent implements OnInit {
                       this.gameTitle = game.title;
                       this.teamName = team.studioName;
                       this.gameDescription = game.description;
-                      this.teamMembers = team.jammers.map(jammer => jammer.name)
+                      //this.teamMembers = team.jammers.map(jammer => jammer.name);
+                      this.teamMembers = team.jammers;
+                      this.themes = [themes.titleEN || ''];
+                      /*
                       if(Array.isArray(themes) && themes.length > 0) {
                         this.themes = themes.map(theme => theme.descriptionEN || '');
                       } else {
                         this.themes = [];
                       }
+                      */
 
                       this.categories = [categories.name]; //cambiar por una lista
                       this.gameLink = game.game;

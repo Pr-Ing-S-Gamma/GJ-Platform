@@ -43,7 +43,7 @@ export class RateFormComponent {
       next: (data) => {
         console.log(data);
         this.myForm = this.fb.group({
-          pitchScore: [data.pitchScore !== undefined ? data.pitchScore: ''],
+          pitchScore: data.pitchScore !== undefined ? data.pitchScore: '',
           pitchFeedback: [data.pitchFeedback !== undefined ? data.pitchFeedback : ''],
           gameDesignScore: [data.gameDesignScore !== undefined ? data.gameDesignScore : ''],
           gameDesignFeedback: [data.gameDesignFeedback !== undefined ? data.gameDesignFeedback : ''],
