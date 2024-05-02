@@ -50,6 +50,7 @@ export class GameInformationComponent implements OnInit {
   
   ngOnInit(): void {
     this.route.params.subscribe(params => {
+      this.gameParameter = this.game;
       var url = 'http://localhost:3000/api/submission/get-submission/' + this.game;
       console.log("id del juego " + this.game)
       this.SubmissionService.getSubmission(url).subscribe(

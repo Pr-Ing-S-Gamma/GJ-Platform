@@ -20,7 +20,6 @@ import { SubmissionService } from '../../services/submission.service';
 export class RateFormComponent {
   myForm!: FormGroup;
   @Input() game!: string;
-  gameParameter!: String;
   rating: number[] = []
   pitchScore: Number | undefined;
   pitchFeedback: String | undefined;
@@ -42,10 +41,7 @@ export class RateFormComponent {
   }
   
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      this.gameParameter = params['game'];
-    });
-    this.SubmissionService.getRating("http://localhost:3000/api/submission/get-rating/" + this.gameParameter).subscribe({
+    this.SubmissionService.getRating("http://localhost:3000/api/submission/get-rating/" + this.game).subscribe({
       next: (data) => {
         console.log(data);
         //básicamente asigna cada campo del form para calificar
@@ -89,7 +85,7 @@ export class RateFormComponent {
   submitEvaluation(): void{
     if (this.myForm.valid) {
       var rating = {
-        submissionId: this.gameParameter,
+        submissionId: this.game,
         generalFeedback: this.myForm.value["generalFeedback"],
         pitchScore: this.myForm.value["pitchScore"],
         pitchFeedback: this.myForm.value["pitchFeedback"],
