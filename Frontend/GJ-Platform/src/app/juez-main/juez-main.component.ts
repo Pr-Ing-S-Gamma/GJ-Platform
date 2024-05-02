@@ -129,6 +129,5 @@ export class JuezMainComponent implements OnInit {
   selectGame(id: string){
     this.selectedGame = id
     console.log("Felicidades, presionaste un botón... esperabas que hiciera algo?")
-    document.getElementById('gameInfoModal')?.classList.add('show');
   }
 }

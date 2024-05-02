@@ -33,9 +33,9 @@ export class GameInformationComponent {
     private SubmissionService: SubmissionService, private TeamService: TeamService, private ThemeService: ThemeService, private CategoryService: CategoryService) { }
   
   ngOnInit(): void {
+    console.log("He iniciado")
     this.route.params.subscribe(params => {
       this.gameParameter = params['game'];
-      console.log(this.gameParameter)
       var url = `http://localhost:3000/api/submission/get-submission/${this.gameParameter}`;
       this.SubmissionService.getSubmission(url).subscribe(
         (game: Submission) => {
