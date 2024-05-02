@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { Category, Team, Theme } from '../../types';
+import { Category, Member, Team, Theme } from '../../types';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SubmissionService } from '../services/submission.service';
 import { RateFormComponent } from './rate-form/rate-form.component';
@@ -32,8 +32,8 @@ export class GameInformationComponent implements OnInit {
   gameTitle: string = '';
   teamName: string = '';
   gameDescription: string = '';
-  teamMembers: string[] = [];
-  themes: string[] = [];
+  members: Member[] = [];
+  theme:  string = '';
   categories: string[] = [];
   gameLink: string = '';
   pitchLink: string = '';
@@ -72,14 +72,14 @@ export class GameInformationComponent implements OnInit {
                       this.gameTitle = game.title;
                       this.teamName = team.studioName;
                       this.gameDescription = game.description;
-                      this.teamMembers = team.jammers.map(jammer => jammer.name)
-                      // Verificar si themes es un arreglo y no está vacío antes de mapear
-                      if(Array.isArray(themes) && themes.length > 0) {
-                        this.themes = themes.map(theme => theme.descriptionEN || '');
+                      this.members = team.jammers;
+                      if (themes.descriptionEN !== undefined) {
+                        this.theme = themes.descriptionEN;
                       } else {
-                        this.themes = [];
+                        // Si themes.descriptionEN es undefined, asignamos un valor predeterminado
+                        this.theme = ""; // O cualquier otro valor predeterminado que desees
                       }
-
+                      
                       this.categories = [categories.name]; //cambiar por una lista
                       this.gameLink = game.game;
                       this.pitchLink = game.pitch;
@@ -89,8 +89,8 @@ export class GameInformationComponent implements OnInit {
                         name: this.gameTitle,
                         team: this.teamName,
                         description: this.gameDescription,
-                        teamMembers: this.teamMembers,
-                        themes: this.themes,
+                        teamMembers: this.members,
+                        themes: this.theme,
                         categories: this.categories,
                         gameLink: this.gameLink,
                         pitchLink: this.pitchLink
