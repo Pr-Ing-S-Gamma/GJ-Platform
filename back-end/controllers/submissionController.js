@@ -456,26 +456,26 @@ const getSubmissionsEvaluator = async (req, res) => {
         const Submissions = await Submission.find({
             'evaluators.userId': evaluatorID,
             $and: [
-            {"pitchScore": null},
-            {"pitchFeedback": null},
-            {"gameDesignScore": null},
-            {"gameDesignFeedback": null},
-            {"artScore": null},
-            {"artFeedback": null},
-            {"buildScore": null},
-            {"buildFeedback": null},
-            {"audioScore": null},
-            {"audioFeedback": null},
-            {"generalFeedback": null}]
+                { "pitchScore": null },
+                { "pitchFeedback": null },
+                { "gameDesignScore": null },
+                { "gameDesignFeedback": null },
+                { "artScore": null },
+                { "artFeedback": null },
+                { "buildScore": null },
+                { "buildFeedback": null },
+                { "audioScore": null },
+                { "audioFeedback": null },
+                { "generalFeedback": null }
+            ]
         });
 
-
         res.status(200).send({ success: true, msg: 'Se han encontrado entregas en el sistema', data: Submissions });
-    }
-    catch {
+    } catch (error) {
         res.status(400).json({ success: false, error: 'Error while processing the request.' });
     }
 };
+
 
 const getRatingsEvaluator = async (req, res) => {
     try {
