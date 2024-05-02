@@ -274,7 +274,6 @@ const deleteSubmission = async (req, res) => {
 const giveRating = async (req, res) => {
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        console.log("juez: " + userId);
         
         if (!userId) {
             return res.status(401).json({ success: false, msg: 'Unauthorized' });
@@ -293,9 +292,9 @@ const giveRating = async (req, res) => {
             return res.status(404).json({ message: 'El submission no fue encontrado.' });
         }
 
-        const evaluator = submission.evaluators.find(evaluator => evaluator.userId === userId);
+        const evaluator = await submission.evaluators.find(evaluator => evaluator.userId === userId);
         if (!evaluator) {
-            return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.'  + userId});
+            return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
         }
 
         evaluator.pitchScore = pitchScore;
