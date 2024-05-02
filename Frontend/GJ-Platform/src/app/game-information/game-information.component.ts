@@ -23,44 +23,77 @@ import { CategoryService } from '../services/category.service';
   templateUrl: './game-information.component.html',
   styleUrl: './game-information.component.css'
 })
-export class GameInformationComponent {
+export class GameInformationComponent implements OnInit {
   @Input() game!: string;
   gameParameter!: string;
   ActualUserIsJuez: Boolean = true;
   evaluando: Boolean = false;
   dataSource: any = null;
-  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute,
-    private SubmissionService: SubmissionService, private TeamService: TeamService, private ThemeService: ThemeService, private CategoryService: CategoryService) { }
+  gameTitle: string = '';
+  teamName: string = '';
+  gameDescription: string = '';
+  teamMembers: string[] = [];
+  themes: string[] = [];
+  categories: string[] = [];
+  gameLink: string = '';
+  pitchLink: string = '';
+
+  constructor(
+    private fb: FormBuilder, 
+    private router: Router, 
+    private route: ActivatedRoute,
+    private SubmissionService: SubmissionService, 
+    private TeamService: TeamService, 
+    private ThemeService: ThemeService, 
+    private CategoryService: CategoryService
+  ) { }
   
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       var url = 'http://localhost:3000/api/submission/get-submission/' + this.game;
-      
+      console.log("id del juego " + this.game)
       this.SubmissionService.getSubmission(url).subscribe(
         (game: Submission) => {
-          console.log("id du jogo " + this.game)
+          console.log("id del juego " + game)
           const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
-          console.log("id du temu " +  game.teamId)
+          console.log("id del equipo " +  game.teamId)
           this.TeamService.getTeamById(urlj).subscribe(
             (team: Team) => {
               const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId
-              console.log("id du catgpsijfa " +  game.categoryId)
+              console.log("id de la categoría " +  game.categoryId)
               this.CategoryService.getCategory(urlc).subscribe(
                 (categories: Category) => {
                   const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId
-                  console.log("id du tema " + game.themeId)
+                  console.log("id del tema " + game.themeId)
                   this.ThemeService.getTheme(urlt).subscribe(
                     (themes: Theme) => {
                       console.log("entré")
+                      // Guardar los valores en variables
+                      this.gameTitle = game.title;
+                      this.teamName = team.studioName;
+                      this.gameDescription = game.description;
+                      this.teamMembers = team.jammers.map(jammer => jammer.name)
+                      // Verificar si themes es un arreglo y no está vacío antes de mapear
+                      if(Array.isArray(themes) && themes.length > 0) {
+                        this.themes = themes.map(theme => theme.descriptionEN || '');
+                      } else {
+                        this.themes = [];
+                      }
+
+                      this.categories = [categories.name]; //cambiar por una lista
+                      this.gameLink = game.game;
+                      this.pitchLink = game.pitch;
+                      
+                      // Asignar valores a dataSource
                       this.dataSource = {
-                        name: game.title,
-                        team: team.studioName,
-                        description: game.description,
-                        teamMembers: team.jammers,
-                        themes: [themes.descriptionEN], //cambiar por una lista
-                        categories: [categories.name], //cambiar por una lista
-                        gameLink: game.game,
-                        pitchLink: game.pitch
+                        name: this.gameTitle,
+                        team: this.teamName,
+                        description: this.gameDescription,
+                        teamMembers: this.teamMembers,
+                        themes: this.themes,
+                        categories: this.categories,
+                        gameLink: this.gameLink,
+                        pitchLink: this.pitchLink
                       }
                       console.log(this.dataSource)
                     },
@@ -85,6 +118,8 @@ export class GameInformationComponent {
       )
     });
   }
+}
+
   
   /*
   dataSource = {
@@ -102,4 +137,3 @@ export class GameInformationComponent {
   }
   */
 
-}
