@@ -37,7 +37,7 @@ export class GameInformationComponent {
     this.route.params.subscribe(params => {
       console.log(params)
       console.log(params['game'])
-      this.gameParameter = params['game'];
+      this.gameParameter = this.game;
       console.log(this.gameParameter)
       var url = `http://localhost:3000/api/submission/get-submission/${this.gameParameter}`;
       this.SubmissionService.getSubmission(url).subscribe(
