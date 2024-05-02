@@ -1,48 +1,95 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { SubmissionService } from '../services/submission.service';
+import { GameInformationComponent } from '../game-information/game-information.component';
+import { Site, Submission, Team, User } from '../../types';
+import { SiteService } from '../services/site.service';
+import { forkJoin } from 'rxjs';
 import { TeamService } from '../services/team.service';
-import { Team, Submission } from '../../types';
 
 @Component({
   selector: 'app-juez-main',
+  standalone: true,
+  imports: [
+    CommonModule,
+    GameInformationComponent
+  ],
   templateUrl: './juez-main.component.html',
-  styleUrls: ['./juez-main.component.css']
+  styleUrl: './juez-main.component.css'
 })
 export class JuezMainComponent implements OnInit {
-  games: any[] = [];
-  evaluations: any[] = [];
-  userId!: string | undefined;
-  selectedGame: string = '';
+  games: any[] = []
+  evaluations: any[] = []
+  userId!: String | undefined
+  selectedGame: string = ''
   gameInfoModal: string = "gameInfoModal";
 
-  constructor(
-    private router: Router,
-    private userService: UserService,
-    private submissionService: SubmissionService,
-    private teamService: TeamService
-  ) {}
+  constructor(private router: Router, private userService: UserService, private SubmissionService: SubmissionService, private TeamService: TeamService){}
 
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user').subscribe(
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    .subscribe(
       user => {
         this.userId = user._id;
-        const submissionsEvaluatorUrl = `http://localhost:3000/api/submission/get-submissions-evaluator/${this.userId}`;
-        const ratingsEvaluatorUrl = `http://localhost:3000/api/submission/get-ratings-evaluator/${this.userId}`;
-
-        this.submissionService.getSubmissionsEvaluator(submissionsEvaluatorUrl).subscribe(
-          (games: Submission[]) => {
-            this.processGames(games);
+        const url = `http://localhost:3000/api/submission/get-submissions-evaluator/${this.userId}`;
+        this.SubmissionService.getSubmissionsEvaluator(url).subscribe(
+          (juegos: Submission[]) => {
+            for (const juego of juegos){
+              const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
+              this.TeamService.getTeamById(urlj).subscribe(
+                (team: Team) => {
+                  this.games.push(
+                    {
+                      id: juego._id,
+                      name: juego.title,
+                      team: team.studioName
+                    }
+                  );
+                },
+                error => {
+                  console.error('Error al obtener juegos:', error);
+                }
+              )
+            }
+            
+            /*
+            this.games = juegos.map(submission => ({
+               _id: submission._id, name: submission.name, team: submission.teamId 
+              }));
+            */
           },
           error => {
             console.error('Error al obtener juegos:', error);
           }
         );
-
-        this.submissionService.getSubmissionsEvaluator(ratingsEvaluatorUrl).subscribe(
-          (evaluations: Submission[]) => {
-            this.processEvaluations(evaluations);
+        const url1 = `http://localhost:3000/api/submission/get-ratings-evaluator/${this.userId}`;
+        this.SubmissionService.getSubmissionsEvaluator(url1).subscribe(
+          (juegos: Submission[]) => {
+            for (const juego of juegos){
+              const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
+              this.TeamService.getTeamById(urlj).subscribe(
+                (team: Team) => {
+                  this.evaluations.push(
+                    {
+                      id: juego._id,
+                      name: juego.title,
+                      team: team.studioName
+                    }
+                  );
+                },
+                error => {
+                  console.error('Error al obtener juegos:', error);
+                }
+              )
+            }
+            
+            /*
+            this.evaluations = juegos.map(submission => ({
+               _id: submission._id, name: submission.name, team: submission.teamId 
+              }));
+            */
           },
           error => {
             console.error('Error al obtener juegos:', error);
@@ -55,57 +102,6 @@ export class JuezMainComponent implements OnInit {
     );
   }
 
-  processGames(games: Submission[]): void {
-    for (const game of games) {
-      const teamUrl = `http://localhost:3000/api/team/get-team/${game.teamId}`;
-      this.teamService.getTeamById(teamUrl).subscribe(
-        (team: Team) => {
-          this.games.push({
-            id: game._id,
-            name: game.title,
-            team: team.studioName
-          });
-        },
-        error => {
-          console.error('Error al obtener juegos:', error);
-        }
-      );
-    }
-  }
-
-  processEvaluations(evaluations: Submission[]): void {
-    for (const evaluation of evaluations) {
-      const teamUrl = `http://localhost:3000/api/team/get-team/${evaluation.teamId}`;
-      this.teamService.getTeamById(teamUrl).subscribe(
-        (team: Team) => {
-          this.evaluations.push({
-            id: evaluation._id,
-            name: evaluation.title,
-            team: team.studioName
-          });
-        },
-        error => {
-          console.error('Error al obtener juegos:', error);
-        }
-      );
-    }
-  }
-
-  logOut(): void {
-    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user').subscribe(
-      () => {
-        this.router.navigate(['/login']);
-      },
-      error => {
-        console.error('Error al cerrar sesión:', error);
-      }
-    );
-  }
-
-  selectGame(id: string): void {
-    this.selectedGame = id;
-  }
-}
   /*
   games = [
     {id:1, name: 'Bloom Tales', team: 'Outlander studio'},
@@ -117,3 +113,20 @@ export class JuezMainComponent implements OnInit {
     {id:2, name: 'Space Pinbam', team: 'Flipper Studio'}
   ]
   */
+
+  logOut(){
+    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+      .subscribe(
+        () => {
+          this.router.navigate(['/login']);
+        },
+        error => {
+          console.error('Error al cerrar sesión:', error);
+        }
+      );
+  }
+
+  selectGame(id: string){
+    this.selectedGame = id
+  }
+}
