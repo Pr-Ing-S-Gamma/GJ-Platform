@@ -33,22 +33,21 @@ export class GameInformationComponent {
     private SubmissionService: SubmissionService, private TeamService: TeamService, private ThemeService: ThemeService, private CategoryService: CategoryService) { }
   
   ngOnInit(): void {
-    console.log("He iniciado")
     this.route.params.subscribe(params => {
-      console.log(params)
-      console.log(params['game'])
-      this.gameParameter = this.game;
-      console.log(this.gameParameter)
-      var url = `http://localhost:3000/api/submission/get-submission/${this.gameParameter}`;
+      var url = 'http://localhost:3000/api/submission/get-submission/' + this.game;
+      console.log("id du jogo " + this.game)
       this.SubmissionService.getSubmission(url).subscribe(
         (game: Submission) => {
           const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
+          console.log("id du temu " +  game.teamId)
           this.TeamService.getTeamById(urlj).subscribe(
             (team: Team) => {
               const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId
+              console.log("id du catgpsijfa " +  game.categoryId)
               this.CategoryService.getCategory(urlc).subscribe(
                 (categories: Category) => {
                   const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId
+                  console.log("id du tema " + game.themeId)
                   this.ThemeService.getTheme(urlt).subscribe(
                     (themes: Theme) => {
                       this.dataSource = {
