@@ -80,18 +80,7 @@ export class GameInformationComponent implements OnInit {
                   console.log("id del tema " + game.themeId)
                   this.ThemeService.getTheme(urlt).subscribe(
                     (themes: Theme) => {
-                      // Guardar los valores en variables
-                      
-                      
-                      if(Array.isArray(themes) && themes.length > 0) {
-                        this.themes = themes.map(theme => theme.descriptionEN || '');
-                      } else {
-                        this.themes = [];
-                      }
-
-                      
-                      
-                      
+                      this.themes = ["Trains"]
                       // Asignar valores a dataSource
                       this.dataSource = {
                         name: this.gameTitle,
