@@ -23,7 +23,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './game-information.component.css'
 })
 export class GameInformationComponent implements OnInit {
-  @Input() game!: string;
+  @Input() game!: Submission;
   gameParameter!: string;
   ActualUserIsJuez: Boolean = true;
   evaluando: Boolean = false;
@@ -39,8 +39,8 @@ export class GameInformationComponent implements OnInit {
   ) { }
   
   ngOnInit(): void {
+    const gameId = this.game;
     const url = 'http://localhost:3000/api/submission/get-submission/' + this.game;
-
     this.http.get<Submission>(url).subscribe(
       (game: Submission) => {
         const teamUrl = 'http://localhost:3000/api/team/get-team/' + game.teamId;
