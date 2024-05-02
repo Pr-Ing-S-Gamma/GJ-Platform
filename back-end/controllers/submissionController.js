@@ -468,7 +468,7 @@ const getSubmissionsEvaluator = async(req, res)=>{
 const getRatingsEvaluator = async(req, res)=>{
     try{
         const evaluatorID = req.params.id;
-        const Submissions = Submission.find({
+        const Submissions = await Submission.find({
             evaluators: {
                 $elemMatch: {
                     userId: evaluatorID,
