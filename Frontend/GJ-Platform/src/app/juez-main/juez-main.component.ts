@@ -31,71 +31,71 @@ export class JuezMainComponent implements OnInit {
     .subscribe(
       user => {
         this.userId = user._id;
+        const url = `http://localhost:3000/api/submission/get-submissions-evaluator/${this.userId}`;
+        this.SubmissionService.getSubmissionsEvaluator(url).subscribe(
+          (juegos: Submission[]) => {
+            for (const juego of juegos){
+              const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
+              this.TeamService.getTeamById(urlj).subscribe(
+                (team: Team) => {
+                  this.games.push(
+                    {
+                      id: juego._id,
+                      name: juego.title,
+                      team: team.studioName
+                    }
+                  );
+                },
+                error => {
+                  console.error('Error al obtener juegos:', error);
+                }
+              )
+            }
+            
+            /*
+            this.games = juegos.map(submission => ({
+               _id: submission._id, name: submission.name, team: submission.teamId 
+              }));
+            */
+          },
+          error => {
+            console.error('Error al obtener juegos:', error);
+          }
+        );
+        const url1 = `http://localhost:3000/api/submission/get-ratings-evaluator/${this.userId}`;
+        this.SubmissionService.getSubmissionsEvaluator(url1).subscribe(
+          (juegos: Submission[]) => {
+            for (const juego of juegos){
+              const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
+              this.TeamService.getTeamById(urlj).subscribe(
+                (team: Team) => {
+                  this.evaluations.push(
+                    {
+                      id: juego._id,
+                      name: juego.title,
+                      team: team.studioName
+                    }
+                  );
+                },
+                error => {
+                  console.error('Error al obtener juegos:', error);
+                }
+              )
+            }
+            
+            /*
+            this.evaluations = juegos.map(submission => ({
+               _id: submission._id, name: submission.name, team: submission.teamId 
+              }));
+            */
+          },
+          error => {
+            console.error('Error al obtener juegos:', error);
+          }
+        );
       },
       error => {
         console.error('Error al obtener usuario actual:', error);
-      }
-    );
-    const url = `http://localhost:3000/api/submission/get-submissions-evaluator/${this.userId}`;
-    this.SubmissionService.getSubmissionsEvaluator(url).subscribe(
-      (juegos: Submission[]) => {
-        for (const juego of juegos){
-          const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
-          this.TeamService.getTeamById(urlj).subscribe(
-            (team: Team) => {
-              this.games.push(
-                {
-                  id: juego._id,
-                  name: juego.title,
-                  team: team.studioName
-                }
-              );
-            },
-            error => {
-              console.error('Error al obtener juegos:', error);
-            }
-          )
-        }
-        
-        /*
-        this.games = juegos.map(submission => ({
-           _id: submission._id, name: submission.name, team: submission.teamId 
-          }));
-        */
-      },
-      error => {
-        console.error('Error al obtener juegos:', error);
-      }
-    );
-    const url1 = `http://localhost:3000/api/submission/get-ratings-evaluator/${this.userId}`;
-    this.SubmissionService.getSubmissionsEvaluator(url1).subscribe(
-      (juegos: Submission[]) => {
-        for (const juego of juegos){
-          const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
-          this.TeamService.getTeamById(urlj).subscribe(
-            (team: Team) => {
-              this.evaluations.push(
-                {
-                  id: juego._id,
-                  name: juego.title,
-                  team: team.studioName
-                }
-              );
-            },
-            error => {
-              console.error('Error al obtener juegos:', error);
-            }
-          )
-        }
-        
-        /*
-        this.evaluations = juegos.map(submission => ({
-           _id: submission._id, name: submission.name, team: submission.teamId 
-          }));
-        */
-      },
-      error => {
-        console.error('Error al obtener juegos:', error);
       }
     );
   }
