@@ -83,6 +83,7 @@ export class RateFormComponent {
   }
 
   submitEvaluation(): void{
+    console.log("Guardando la info pa")
     if (this.myForm.valid) {
       var rating = {
         submissionId: this.game,
