@@ -22,7 +22,7 @@ import { Submission } from '../../types';
 })
 export class GameInformationComponent {
   @Input() game!: string;
-  gameParameter!: String;
+  gameParameter!: string;
   ActualUserIsJuez: Boolean = true;
   evaluando: Boolean = false;
   dataSvurce: any;
