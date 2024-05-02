@@ -35,50 +35,49 @@ export class GameInformationComponent {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.gameParameter = params['game'];
-    });
-    var url = `http://localhost:3000/api/submission/get-submission/${this.gameParameter}`;
-    console.log(url);
-    this.SubmissionService.getSubmission(url).subscribe(
-      (game: Submission) => {
-        const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
-        this.TeamService.getTeamById(urlj).subscribe(
-          (team: Team) => {
-            const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId
-            this.CategoryService.getCategory(urlc).subscribe(
-              (categories: Category) => {
-                const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId
-                this.ThemeService.getTheme(urlt).subscribe(
-                  (themes: Theme) => {
-                    this.dataSource = {
-                      name: game.title,
-                      team: team.studioName,
-                      description: game.description,
-                      teamMembers: team.jammers,
-                      themes: [themes.descriptionEN], //cambiar por una lista
-                      categories: [categories.name], //cambiar por una lista
-                      gameLink: game.game,
-                      pitchLink: game.pitch
+      var url = `http://localhost:3000/api/submission/get-submission/${this.gameParameter}`;
+      this.SubmissionService.getSubmission(url).subscribe(
+        (game: Submission) => {
+          const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
+          this.TeamService.getTeamById(urlj).subscribe(
+            (team: Team) => {
+              const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId
+              this.CategoryService.getCategory(urlc).subscribe(
+                (categories: Category) => {
+                  const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId
+                  this.ThemeService.getTheme(urlt).subscribe(
+                    (themes: Theme) => {
+                      this.dataSource = {
+                        name: game.title,
+                        team: team.studioName,
+                        description: game.description,
+                        teamMembers: team.jammers,
+                        themes: [themes.descriptionEN], //cambiar por una lista
+                        categories: [categories.name], //cambiar por una lista
+                        gameLink: game.game,
+                        pitchLink: game.pitch
+                      }
+                    },
+                    error => {
+                      console.error('Error al obtener juegos:', error);
                     }
-                  },
-                  error => {
-                    console.error('Error al obtener juegos:', error);
-                  }
-                )
-              },
-              error => {
-                console.error('Error al obtener juegos:', error);
-              }
-            )
-          },
-          error => {
-            console.error('Error al obtener juegos:', error);
-          }
-        )
-      },
-      error => {
-        console.error('Error al obtener juegos:', error);
-      }
-    )
+                  )
+                },
+                error => {
+                  console.error('Error al obtener juegos:', error);
+                }
+              )
+            },
+            error => {
+              console.error('Error al obtener juegos:', error);
+            }
+          )
+        },
+        error => {
+          console.error('Error al obtener juegos:', error);
+        }
+      )
+    });
   }
   
   /*
