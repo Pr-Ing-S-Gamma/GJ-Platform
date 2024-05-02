@@ -22,11 +22,17 @@ export class RateFormComponent {
   @Input() game!: string;
   gameParameter!: String;
   rating: number[] = []
-  pitchScore: number | undefined;
-  gameDesignScore: number | undefined;
-  artScore: number | undefined;
-  buildScore: number | undefined;
-  audioScore: number | undefined;
+  pitchScore: Number | undefined;
+  pitchFeedback: String | undefined;
+  gameDesignScore: Number | undefined;
+  gameDesignFeedback: String | undefined;
+  artScore: Number | undefined;
+  artFeedback: String | undefined;
+  buildScore: Number | undefined;
+  buildFeedback: String | undefined;
+  audioScore: Number | undefined;
+  audioFeedback: String | undefined;
+  generalFeedback: String | undefined;
   evaluando: boolean | undefined;
   constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private SubmissionService: SubmissionService) {
     for (let i = 1; i <= 10; i++) {
@@ -42,24 +48,36 @@ export class RateFormComponent {
     this.SubmissionService.getRating("http://localhost:3000/api/submission/get-rating/" + this.gameParameter).subscribe({
       next: (data) => {
         console.log(data);
+        //básicamente asigna cada campo del form para calificar
+        this.pitchScore = data.pitchScore !== undefined ? data.pitchScore: 0;
+        this.pitchRating(this.pitchScore.valueOf());
+        this.pitchFeedback = data.pitchFeedback !== undefined ? data.pitchFeedback : '';
+        this.gameDesignScore = data.gameDesignScore !== undefined ? data.gameDesignScore : 0;
+        this.gameDesignRating(this.gameDesignScore.valueOf());
+        this.gameDesignFeedback = data.gameDesignFeedback !== undefined ? data.gameDesignFeedback : '';
+        this.artScore = data.artScore !== undefined ? data.artScore : 0;
+        this.artRating(this.artScore.valueOf());
+        this.artFeedback = data.artFeedback !== undefined ? data.artFeedback : '';
+        this.buildScore = data.buildScore !== undefined ? data.buildScore : 0;
+        this.buildRating(this.buildScore.valueOf());
+        this.buildFeedback = data.buildFeedback !== undefined ? data.buildFeedback : '';
+        this.audioScore = data.audioScore !== undefined ? data.audioScore : 0;
+        this.audioRating(this.audioScore.valueOf());
+        this.audioFeedback = data.audioFeedback !== undefined ? data.audioFeedback : '';
+        this.generalFeedback = data.generalFeedback !== undefined ? data.generalFeedback : '';
         this.myForm = this.fb.group({
-          pitchScore: data.pitchScore !== undefined ? data.pitchScore: '',
-          pitchFeedback: [data.pitchFeedback !== undefined ? data.pitchFeedback : ''],
-          gameDesignScore: [data.gameDesignScore !== undefined ? data.gameDesignScore : ''],
-          gameDesignFeedback: [data.gameDesignFeedback !== undefined ? data.gameDesignFeedback : ''],
-          artScore: [data.artScore !== undefined ? data.artScore : ''],
-          artFeedback: [data.artFeedback !== undefined ? data.artFeedback : ''],
-          buildScore: [data.buildScore !== undefined ? data.buildScore : ''],
-          buildFeedback: [data.buildFeedback !== undefined ? data.buildFeedback : ''],
-          audioScore: [data.audioScore !== undefined ? data.audioScore : ''],
-          audioFeedback: [data.audioFeedback !== undefined ? data.audioFeedback : ''],
-          generalFeedback: [data.generalFeedback !== undefined ? data.generalFeedback : '', Validators.required]
+          pitchScore: this.pitchScore,
+          pitchFeedback: this.pitchFeedback,
+          gameDesignScore: this.gameDesignScore,
+          gameDesignFeedback: this.gameDesignFeedback,
+          artScore: this.artScore,
+          artFeedback: this.artFeedback,
+          buildScore: this.buildScore,
+          buildFeedback: this.buildFeedback,
+          audioScore: this.audioScore,
+          audioFeedback: this.audioFeedback,
+          generalFeedback: this.generalFeedback
         });
-        data.pitchScore !== undefined ? this.pitchRating(data.pitchScore.valueOf()) : this.pitchScore = data.pitchScore;
-        data.gameDesignScore !== undefined ? this.gameDesignRating(data.gameDesignScore.valueOf()) : this.gameDesignScore = data.gameDesignScore;
-        data.artScore !== undefined ? this.artRating(data.artScore.valueOf()) : this.artScore = data.artScore;
-        data.buildScore !== undefined ? this.buildRating(data.buildScore.valueOf()) : this.buildScore = data.buildScore;
-        data.audioScore !== undefined ? this.audioRating(data.audioScore.valueOf()) : this.audioScore = data.audioScore;
       },
       error: (error) => {
         console.log(error);
