@@ -69,6 +69,8 @@ export class GameInformationComponent implements OnInit {
                     (themes: Theme) => {
                       console.log("entré", team)
                       // Guardar los valores en variables
+                      console.log(team.jammers)
+                      console.log(themes)
                       this.gameTitle = game.title;
                       this.teamName = team.studioName;
                       this.gameDescription = game.description;
