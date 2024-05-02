@@ -36,6 +36,7 @@ export class GameInformationComponent {
     console.log("He iniciado")
     this.route.params.subscribe(params => {
       this.gameParameter = params['game'];
+      console.log(this.gameParameter)
       var url = `http://localhost:3000/api/submission/get-submission/${this.gameParameter}`;
       this.SubmissionService.getSubmission(url).subscribe(
         (game: Submission) => {
@@ -58,6 +59,7 @@ export class GameInformationComponent {
                         gameLink: game.game,
                         pitchLink: game.pitch
                       }
+                      console.log(this.dataSource)
                     },
                     error => {
                       console.error('Error al obtener juegos:', error);
