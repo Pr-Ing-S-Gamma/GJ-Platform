@@ -441,31 +441,20 @@ const setEvaluatorToSubmission = async (req, res) => {
 
 const getSubmissionsEvaluator = async(req, res)=>{
     try{
+        console.log("aaaaa")
         const evaluatorID = req.params.id;
         const Submissions = Submission.find({
             evaluators: {
                 $elemMatch: {
-                    userId: evaluatorID,
-                    $and: [
-                        { $or: [ { pitchScore: { $exists: false} }, { pitchScore: { $in: ['', null] } } ] } ,
-                        { $or: [ { pitchFeedback: { $exists: false} }, { pitchFeedback: { $in: ['', null] } } ] },
-                        { $or: [ { gameDesignScore: { $exists: false} }, { gameDesignScore: { $in: ['', null] } } ] },
-                        { $or: [ { gameDesignFeedback: { $exists: false} }, { gameDesignFeedback: { $in: ['', null] } } ] },
-                        { $or: [ { artScore: { $exists: false} }, { artScore: { $in: ['', null] } } ] },
-                        { $or: [ { artFeedback: { $exists: false} }, { artFeedback: { $in: ['', null] } } ] },
-                        { $or: [ { buildScore: { $exists: false} }, { buildScore: { $in: ['', null] } } ] },
-                        { $or: [ { buildFeedback: { $exists: false} }, { buildFeedback: { $in: ['', null] } } ] },
-                        { $or: [ { audioScore: { $exists: false} }, { audioScore: { $in: ['', null] } } ] },
-                        { $or: [ { audioFeedback: { $exists: false} }, { audioFeedback: { $in: ['', null] } } ] },
-                        { $or: [ { generalFeedback: { $exists: false} }, { generalFeedback: { $in: ['', null] } } ] }
-                    ]
+                    userId: evaluatorID
                 }
             }
         });
+        console.log("bbbbb");
         res.status(200).send({ success:true, msg:'Se han encontrado entregas en el sistema', data: Submissions });
     }
     catch{
-        res.status(400).json({ success: false, error: 'Error processing the request.' });
+        res.status(400).json({ success: false, error: 'Error while processing the request.' });
     }
 };
 
