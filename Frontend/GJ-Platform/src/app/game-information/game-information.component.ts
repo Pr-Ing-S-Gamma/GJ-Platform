@@ -37,52 +37,53 @@ export class GameInformationComponent {
       var url = 'http://localhost:3000/api/submission/get-submission/' + this.game;
       console.log("id du jogo " + this.game)
       this.SubmissionService.getSubmission(url).subscribe(
-        (game: Submission) => {
-          const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
-          console.log("id du temu " +  game.teamId)
-          this.TeamService.getTeamById(urlj).subscribe(
-            (team: Team) => {
-              const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId
-              console.log("id du catgpsijfa " +  game.categoryId)
-              this.CategoryService.getCategory(urlc).subscribe(
-                (categories: Category) => {
-                  const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId
-                  console.log("id du tema " + game.themeId)
-                  this.ThemeService.getTheme(urlt).subscribe(
-                    (themes: Theme) => {
-                      console.log("entré")
-                      this.dataSource = {
-                        name: game.title,
-                        team: team.studioName,
-                        description: game.description,
-                        teamMembers: team.jammers,
-                        themes: [themes.descriptionEN], //cambiar por una lista
-                        categories: [categories.name], //cambiar por una lista
-                        gameLink: game.game,
-                        pitchLink: game.pitch
-                      }
-                      console.log(this.dataSource)
-                    },
-                    error => {
+          (game: Submission) => {
+              const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
+              console.log("id du temu " +  game.teamId)
+              this.TeamService.getTeamById(urlj).subscribe(
+                  (team: Team) => {
+                      const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId
+                      console.log("id du catgpsijfa " +  game.categoryId)
+                      this.CategoryService.getCategory(urlc).subscribe(
+                          (categories: Category) => {
+                              const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId
+                              console.log("id du tema " + game.themeId)
+                              this.ThemeService.getTheme(urlt).subscribe(
+                                  (themes: Theme) => {
+                                      console.log("entré")
+                                      this.dataSource = {
+                                          name: game.title,
+                                          team: team.studioName,
+                                          description: game.description,
+                                          teamMembers: team.jammers,
+                                          themes: [themes.descriptionEN], //cambiar por una lista
+                                          categories: [categories.name], //cambiar por una lista
+                                          gameLink: game.game,
+                                          pitchLink: game.pitch
+                                      }
+                                      console.log(this.dataSource)
+                                  },
+                                  error => {
+                                      console.error('Error al obtener juegos:', error);
+                                  }
+                              )
+                          },
+                          error => {
+                              console.error('Error al obtener juegos:', error);
+                          }
+                      )
+                  },
+                  error => {
                       console.error('Error al obtener juegos:', error);
-                    }
-                  )
-                },
-                error => {
-                  console.error('Error al obtener juegos:', error);
-                }
+                  }
               )
-            },
-            error => {
+          },
+          error => {
               console.error('Error al obtener juegos:', error);
-            }
-          )
-        },
-        error => {
-          console.error('Error al obtener juegos:', error);
-        }
+          }
       )
-    });
+  });
+  
   }
   
   /*
