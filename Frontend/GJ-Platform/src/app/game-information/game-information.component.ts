@@ -55,6 +55,10 @@ export class GameInformationComponent implements OnInit {
       console.log("id del juego " + this.game)
       this.SubmissionService.getSubmission(url).subscribe(
         (game: Submission) => {
+          this.gameLink = game.game;
+          this.pitchLink = game.pitch;
+          this.gameTitle = game.title;
+          this.gameDescription = game.description;
           console.log("id del juego " + game)
           const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
           console.log("id del equipo " +  game.teamId)
@@ -71,25 +75,22 @@ export class GameInformationComponent implements OnInit {
               console.log("id de la categoría " +  game.categoryId)
               this.CategoryService.getCategory(urlc).subscribe(
                 (categories: Category) => {
+                  this.categories = [categories.name]; //cambiar por una lista
                   const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId
                   console.log("id del tema " + game.themeId)
                   this.ThemeService.getTheme(urlt).subscribe(
                     (themes: Theme) => {
-                      console.log("entré", team)
                       // Guardar los valores en variables
-                      console.log(team.jammers)
-                      console.log(themes)
-                      this.gameTitle = game.title;
-                      this.gameDescription = game.description;
+                      
+                      
                       if(Array.isArray(themes) && themes.length > 0) {
                         this.themes = themes.map(theme => theme.descriptionEN || '');
                       } else {
                         this.themes = [];
                       }
 
-                      this.categories = [categories.name]; //cambiar por una lista
-                      this.gameLink = game.game;
-                      this.pitchLink = game.pitch;
+                      
+                      
                       
                       // Asignar valores a dataSource
                       this.dataSource = {
