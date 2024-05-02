@@ -87,15 +87,15 @@ export class RateFormComponent {
       var rating = {
         submissionId: this.game,
         generalFeedback: this.myForm.value["generalFeedback"],
-        pitchScore: this.myForm.value["pitchScore"],
+        pitchScore: this.pitchScore,
         pitchFeedback: this.myForm.value["pitchFeedback"],
-        gameDesignScore: this.myForm.value["gameDesignScore"],
+        gameDesignScore: this.gameDesignScore,
         gameDesignFeedback: this.myForm.value["gameDesignFeedback"],
-        artScore: this.myForm.value["artScore"],
+        artScore: this.artScore,
         artFeedback: this.myForm.value["artFeedback"],
-        buildScore: this.myForm.value["buildScore"],
+        buildScore: this.buildScore,
         buildFeedback: this.myForm.value["buildFeedback"],
-        audioScore: this.myForm.value["audioScore"],
+        audioScore: this.audioScore,
         audioFeedback: this.myForm.value["audioFeedback"],
       };
       this.SubmissionService.giveRating("http://localhost:3000/api/submission/give-rating", 
@@ -121,27 +121,27 @@ export class RateFormComponent {
 
   pitchRating(rating: number): void {
     this.pitchScore = rating;
-    this.myForm.get('pitchScore')?.setValue(rating);
+    //this.myForm.get('pitchScore')?.setValue(rating);
   }
 
   gameDesignRating(rating: number): void {
     this.gameDesignScore = rating;
-    this.myForm.get('gameDesignScore')?.setValue(rating);
+    //this.myForm.get('gameDesignScore')?.setValue(rating);
   }
 
   artRating(rating: number): void {
     this.artScore = rating;
-    this.myForm.get('artScore')?.setValue(rating);
+    //this.myForm.get('artScore')?.setValue(rating);
   }
 
   buildRating(rating: number): void {
     this.buildScore = rating;
-    this.myForm.get('buildScore')?.setValue(rating);
+    //this.myForm.get('buildScore')?.setValue(rating);
   }
 
   audioRating(rating: number): void {
     this.audioScore = rating;
-    this.myForm.get('audioScore')?.setValue(rating);
+    //this.myForm.get('audioScore')?.setValue(rating);
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
