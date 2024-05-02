@@ -294,6 +294,7 @@ const giveRating = async (req, res) => {
         }
 
         const evaluator =  await submission.evaluators.find(evaluator => evaluator.userId === userId);
+        return res.status(404).json({ message: "..aqui", data: evaluator });
         if (!evaluator) {
             return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
         }
