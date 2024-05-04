@@ -100,7 +100,7 @@ const loginUser = async (req, res) => {
     let rol;
     let userId;
     if (!existingUser) {
-        const registerLink = `http://localhost:3000/register`;
+        const registerLink = `http://149.130.176.112:3000/register`;
         const subject = 'Login in GameJam Platform';
         const message = `Hi, click on this link to create an account:`;
         const link = registerLink;
@@ -112,7 +112,7 @@ const loginUser = async (req, res) => {
     userId = existingUser._id;
 
     const token = jwt.sign({ userId, rol }, 'MY_JWT_SECRET', { expiresIn: 600000 });
-    const magicLink = `http://localhost:3000/api/user/magic-link/${token}`;
+    const magicLink = `http://149.130.176.112:3000/api/user/magic-link/${token}`;
     const subject = 'Login in GameJam Platform';
     const message = `Hi, click on this link to continue to the app:`;
     const link = magicLink;
@@ -134,19 +134,19 @@ const magicLink = async (req, res) => {
         });
         let redirectUrl;
         if (rol === 'GlobalOrganizer') {
-            redirectUrl = 'http://localhost:3000/DataManagement';
+            redirectUrl = 'http://149.130.176.112:3000/DataManagement';
         }
         if(rol === 'LocalOrganizer') {
-            redirectUrl = 'http://localhost:3000/Games';
+            redirectUrl = 'http://149.130.176.112:3000/Games';
         }
         if(rol === 'Jammer') {
-            redirectUrl = 'http://localhost:3000/Jammer';
+            redirectUrl = 'http://149.130.176.112:3000/Jammer';
         }
         if(rol === 'Judge') {
-            redirectUrl = 'http://localhost:3000/Juez';
+            redirectUrl = 'http://149.130.176.112:3000/Juez';
         }
         if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer' && rol !== 'Jammer' && rol !== 'Judge') {
-            return res.clearCookie('token').redirect('http://localhost:3000/login');
+            return res.clearCookie('token').redirect('http://149.130.176.112:3000/login');
         }
         return res.redirect(redirectUrl);
     } catch (error) {
