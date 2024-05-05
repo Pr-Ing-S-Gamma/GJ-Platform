@@ -17,6 +17,7 @@ submission_route.put('/update-submission/:id', upload.none(), submissionControll
 submission_route.get('/get-current-submission/:teamId/:stageId', submissionController.getCurrentTeamSubmission);
 submission_route.get('/get-submission/:id', submissionController.getSubmission);
 submission_route.get('/get-submissions', submissionController.getSubmissions);
+submission_route.get('/get-submissions-site/:id', submissionController.getSubmissionsSite);
 submission_route.get('/get-new-evaluation', submissionController.setEvaluatorToSubmission);
 submission_route.delete('/delete-submission/:id', submissionController.deleteSubmission);
 

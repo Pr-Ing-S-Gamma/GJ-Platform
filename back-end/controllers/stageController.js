@@ -3,6 +3,7 @@ const User = require('../models/userModel');
 const GameJam = require('../models/gameJamEventModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const schedule = require('node-schedule');
 
 const createStage = async (req, res) => {
     const { name, startDate, endDate, gameJam, startDateEvaluation, endDateEvaluation } = req.body;
@@ -88,6 +89,10 @@ const createStage = async (req, res) => {
 
         await existingGameJam.save();
 
+        schedule.scheduleJob(endDateEvaluation, async function() {
+            console.log('endDateEvaluation reached!');
+        });
+
         res.status(200).json({ success: true, msg: 'Stage created successfully', stageId: stage._id });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
@@ -96,7 +101,7 @@ const createStage = async (req, res) => {
 
 const updateStage = async (req, res) => {
     const stageId = req.params.id;
-    const { name, startDate, endDate, gameJam } = req.body;
+    const { name, startDate, endDate, gameJam, startDateEvaluation, endDateEvaluation } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
@@ -113,6 +118,27 @@ const updateStage = async (req, res) => {
                 return res.status(404).json({ success: false, error: "That GameJam does not exist" });
             }
 
+            if (!startDate || !endDate || !startDateEvaluation || !endDateEvaluation) {
+                return res.status(400).json({ error: "Start and end dates for both stage and evaluation are required." });
+            }
+
+            const startDateObj = new Date(startDate);
+            const endDateObj = new Date(endDate);
+            const startDateEvaluationObj = new Date(startDateEvaluation);
+            const endDateEvaluationObj = new Date(endDateEvaluation);
+
+            if (startDateObj >= endDateObj) {
+                return res.status(400).json({ error: "Start date must be before end date." });
+            }
+
+            if (startDateEvaluationObj >= endDateEvaluationObj) {
+                return res.status(400).json({ error: "Start date of evaluation must be before end date of evaluation." });
+            }
+
+            if (startDateEvaluationObj <= startDateObj || endDateEvaluationObj <= endDateObj) {
+                return res.status(400).json({ error: "Evaluation dates must be outside the stage dates." });
+            }
+
             const conflictingStage = existingGameJam.stages.find(stage => 
                 (startDate >= stage.startDate && startDate <= stage.endDate) ||
                 (endDate >= stage.startDate && endDate <= stage.endDate)
@@ -125,22 +151,14 @@ const updateStage = async (req, res) => {
             stage.name = name;
             stage.startDate = startDate;
             stage.endDate = endDate;
+            stage.startDateEvaluation = startDateEvaluation;
+            stage.endDateEvaluation = endDateEvaluation;
             stage.creationDate = new Date();
             stage.creatorUser = {
                 userId: creatorUser._id,
                 name: creatorUser.name,
                 email: creatorUser.email
             };
-
-            const otherStages = existingGameJam.stages.filter(s => s._id.toString() !== stageId);
-            const newConflictingStage = otherStages.find(s => 
-                (startDate >= s.startDate && startDate <= s.endDate) ||
-                (endDate >= s.startDate && endDate <= s.endDate)
-            );
-
-            if (newConflictingStage) {
-                return res.status(403).json({ error: `Updating this stage would cause conflicts with other stages. End date of the conflicting stage: ${newConflictingStage.endDate}` });
-            }
 
             await stage.save();
 
@@ -161,7 +179,6 @@ const updateStage = async (req, res) => {
         res.status(400).json({ success: false, error: error.message });
     }
 };
-
 
 const getCurrentStage = async (req, res) => {
     try {

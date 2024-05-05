@@ -1,7 +1,5 @@
 const GameJam = require('../models/gameJamEventModel');
 const User = require('../models/userModel');
-const Site = require('../models/siteModel');
-const Region = require('../models/regionModel');
 const Stage = require('../models/stageModel');
 const Team = require('../models/teamModel');
 const Theme = require("../models/themeModel");
@@ -221,6 +219,9 @@ const getTimeRemaining = async (req, res) => {
                 return currentDate >= stage.startDate && currentDate <= stage.endDate;
             });
         });
+        if (!currentGameJam) {
+            return res.status(200).json({ success: true, msg: 'No active stages found in this gameJam', timeRemaining: '0:0:0:0' });
+        }
         const gameJamId = currentGameJam._id;
         if (!mongoose.Types.ObjectId.isValid(gameJamId)) {
             return res.status(400).json({ success: false, error: 'The provided gameJam ID is not valid.' });
@@ -280,6 +281,79 @@ const getTimeRemaining = async (req, res) => {
     }
 };
 
+const getTimeRemainingEvaluation = async (req, res) => {
+    try {
+        const currentDate = new Date();
+
+        const allGameJams = await GameJam.find({});
+
+        const currentGameJam = allGameJams.find(gameJam => {
+            return gameJam.stages.some(stage => {
+                return currentDate >= stage.startDateEvaluation && currentDate <= stage.endDateEvaluation;
+            });
+        });
+        if (!currentGameJam) {
+            return res.status(200).json({ success: true, msg: 'No active stages found in this gameJam', timeRemaining: '0:0:0:0' });
+        }
+        const gameJamId = currentGameJam._id;
+        if (!mongoose.Types.ObjectId.isValid(gameJamId)) {
+            return res.status(400).json({ success: false, error: 'The provided gameJam ID is not valid.' });
+        } else {
+            const gameJam = await GameJam.findById(gameJamId).populate('stages._id');
+            if (!gameJam) {
+                return res.status(404).json({ success: false, error: "That gameJam does not exist" });
+            }
+
+            const currentDate = new Date();
+            let closestStage;
+            let closestTimeDifference = Infinity;
+
+            for (const stage of gameJam.stages) {
+                const startDate = new Date(stage.startDateEvaluation);
+                const endDate = new Date(stage.endDateEvaluation);
+
+                if (currentDate < startDate) {
+                    const timeDifference = startDate - currentDate;
+                    if (timeDifference < closestTimeDifference) {
+                        closestTimeDifference = timeDifference;
+                        closestStage = stage;
+                    }
+                } else if (currentDate >= startDate && currentDate <= endDate) {
+                    closestStage = stage;
+                    break;
+                }
+            }
+
+            if (closestStage) {
+                const startDate = new Date(closestStage.startDateEvaluation);
+                const endDate = new Date(closestStage.endDateEvaluation);
+
+                if (currentDate < startDate) {
+                    const timeInMilliseconds = startDate - currentDate;
+                    const days = Math.floor(timeInMilliseconds / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeInMilliseconds % (1000 * 60)) / 1000);
+                    const timeRemaining = `${days}:${hours}:${minutes}:${seconds}`;
+                    return res.status(200).json({ success: true, msg: 'The stage has not started yet', timeRemaining });
+                } else if (currentDate >= startDate && currentDate <= endDate) {
+                    const timeInMilliseconds = endDate - currentDate;
+                    const days = Math.floor(timeInMilliseconds / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeInMilliseconds % (1000 * 60)) / 1000);
+                    const timeRemaining = `${days}:${hours}:${minutes}:${seconds}`;
+                    return res.status(200).json({ success: true, msg: 'The stage is in progress', timeRemaining });
+                }
+            }
+
+            return res.status(200).json({ success: true, msg: 'No active stages found in this gameJam', timeRemaining: '0:0:0:0' });
+        }
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
 module.exports = {
     createGameJam,
     updateGameJam,
@@ -288,5 +362,6 @@ module.exports = {
     getGameJam,
     getGameJams,
     deleteGameJam,
-    getTimeRemaining
+    getTimeRemaining,
+    getTimeRemainingEvaluation
 };

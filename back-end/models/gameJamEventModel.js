@@ -17,6 +17,12 @@ const gameJamSchema = mongoose.Schema({
         endDate: { 
             type: Date
         },
+        startDateEvaluation: { 
+            type: Date
+        },
+        endDateEvaluation: { 
+            type: Date
+        },
     }],
     theme:  {
         _id: { 

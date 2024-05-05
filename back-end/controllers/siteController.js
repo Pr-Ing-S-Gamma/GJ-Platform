@@ -187,6 +187,26 @@ const getSite = async(req,res)=>{
     }
 };
 
+const changeStatus = async (req, res) => {
+    try {
+        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        const creatorUser = await User.findById(userId);
+
+        const site = await Site.findById(creatorUser.site._id);
+        if(site.open === 1) {
+            site.open = 0;
+        } else {
+            site.open = 1;
+        }
+        
+        await site.save(); 
+        res.status(200).json({ success: true, msg: 'Site status updated successfully'});
+    } catch (error) {
+        res.status(400).json({ success: false, msg: error.message });
+    }
+};
+
+
 const getSites = async(req,res)=>{
     try{
         const allSites = await Site.find({});
@@ -300,5 +320,6 @@ module.exports = {
     getCountries,
     getSitesPerRegion,
     getSitesPerRegionOpen,
-    deleteSite
+    deleteSite,
+    changeStatus
 };

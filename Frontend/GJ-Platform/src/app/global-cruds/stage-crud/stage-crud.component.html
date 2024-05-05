@@ -21,10 +21,10 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                 <tr *ngFor="let row of obtenerDatosPagina()">
                     <td>{{ row._id }}</td>
                     <td>{{ row.name }}</td>
-                    <td>{{ row.startDate | date:'dd/MM/yyyy' }}</td>
-                    <td>{{ row.endDate | date:'dd/MM/yyyy' }}</td>
-                    <td>{{ row.startDateEvaluation | date:'dd/MM/yyyy' }}</td>
-                    <td>{{ row.endDateEvaluation | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ row.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                    <td>{{ row.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                    <td>{{ row.startDateEvaluation | date:'dd/MM/yyyy':'UTC' }}</td>
+                    <td>{{ row.endDateEvaluation | date:'dd/MM/yyyy':'UTC' }}</td>                                 
                     <td>{{ row.gameJam._id }}</td>
                     <td>{{ row.gameJam.edition }}</td>
                     <td>

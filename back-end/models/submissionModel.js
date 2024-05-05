@@ -6,8 +6,9 @@ const submissionSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    evaluated: {
-        type: Number
+    participating: {
+        type: Number,
+        required: true
     },
     description:{
         type:String,
@@ -40,10 +41,6 @@ const submissionSchema = mongoose.Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Theme',
         required: false
-    },
-    score: {
-        type: Number,
-        required: true
     },
     creatorUser:  {
         userId: {

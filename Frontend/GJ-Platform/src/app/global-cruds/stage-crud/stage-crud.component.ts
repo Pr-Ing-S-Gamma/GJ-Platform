@@ -163,7 +163,8 @@ export class StageCrudComponent implements OnInit{
         next: (data) => {
           if (data.success) {
             const stageId = data.stageId;
-            this.dataSource.push({ _id: stageId, name: name, startDate: startDate, endDate: endDate,             startDateEvaluation: startDateEvaluation,
+            this.dataSource.push({ _id: stageId, name: name, startDate: startDate, endDate: endDate, 
+            startDateEvaluation: startDateEvaluation,
             endDateEvaluation: endDateEvaluation,
             gameJam: {
               _id: gameJam._id,

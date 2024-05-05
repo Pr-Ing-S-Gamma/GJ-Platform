@@ -20,6 +20,7 @@ game_jam_route.get('/get-eval-game-jam', gameJamController.getGameJamToEvaluate)
 game_jam_route.get('/get-game-jam/:id', gameJamController.getGameJam);
 game_jam_route.get('/get-game-jams', gameJamController.getGameJams);
 game_jam_route.get('/get-time-left', gameJamController.getTimeRemaining);
+game_jam_route.get('/get-time-left-evaluator', gameJamController.getTimeRemainingEvaluation);
 game_jam_route.delete('/delete-game-jam/:id', gameJamController.deleteGameJam);
 
 module.exports = game_jam_route;

@@ -67,8 +67,7 @@ const teamSchema = mongoose.Schema({
     }],
     lastSub: {
         type: Schema.Types.ObjectId,
-        ref: 'Submission',
-        require: true
+        ref: 'Submission'
     },
     submissions:   [{
         type: Schema.Types.ObjectId, 

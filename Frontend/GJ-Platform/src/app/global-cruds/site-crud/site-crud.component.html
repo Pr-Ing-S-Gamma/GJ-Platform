@@ -9,6 +9,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <th scope="col">Country</th>
                     <th scope="col">Name</th>
                     <th scope="col">Region</th>
+                    <th scope="col">Modality</th>
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
                 </tr>
@@ -19,6 +20,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <td>{{ row.country.name }}</td>
                     <td>{{ row.name }}</td>
                     <td>{{ row.region.name }}</td>
+                    <td>{{ row.modality }}</td>
                     <td>
                         <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
                     </td>
@@ -116,6 +118,20 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                             </div>
                         </div>
                         
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                        font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        Modality
+                        </div>
+                        
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <select #editModalityInput class="form-control" id="editSiteModalityInput" formControlName="modality">
+                                    <option value="in-person">In-person</option>
+                                    <option value="virtual">Virtual</option>
+                                    <option value="hybrid">Hybrid</option>       
+                                </select>
+                            </div>
+                        </div>                    
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -188,6 +204,21 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                             </div>
                         </div>
                     
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                        font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        Modality
+                        </div>
+                        
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <select #createModalityInput class="form-control" id="createSiteModalityInput" formControlName="modality">
+                                    <option value="" disabled selected hidden>Modality</option>
+                                    <option value="in-person">In-person</option>
+                                    <option value="virtual">Virtual</option>
+                                    <option value="hybrid">Hybrid</option>                                    
+                                </select>
+                            </div>
+                        </div>                    
 
                     </div>
                 </div>

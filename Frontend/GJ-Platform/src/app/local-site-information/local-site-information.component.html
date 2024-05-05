@@ -6,7 +6,17 @@
                 Log out
             </div>
         </div>
-        <div class="row" style="justify-content: flex-start; align-items: flex-start; background: white; height: calc(100vh - 53px);">
+        <div class="row" style="justify-content: flex-start; align-items: flex-start; background: white; height: 100%;">
+            <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
+                <div style="text-align: center; font-size: 64px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
+                    Site status: <span [style.color]="currentStatus === 'Open' ? 'green' : 'red'">{{ currentStatus }}</span>
+                </div>                        
+            </div>
+            <div class="row" style="justify-content: center; align-items: center; background: white; margin-top: 3%;">
+                <div class="col text-center">
+                    <app-upload-csv></app-upload-csv>
+                </div>
+            </div>            
             <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
                 <div style="text-align: center; color: black; font-size: 64px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
                      Games of {{ site?.name }}
@@ -29,7 +39,7 @@
             <div *ngFor="let game of games">
                 <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
                     <div class="modal-dialog" role="document" style="max-width: 85%;">
-                        <app-game-information [game]="game.name"></app-game-information>
+                        <app-game-information [game]="game.id"></app-game-information>
                     </div>
                 </div>
             </div>

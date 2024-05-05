@@ -10,6 +10,7 @@ import { Submission } from '../../types';
 import { TeamService } from '../services/team.service';
 import { ThemeService } from '../services/theme.service';
 import { CategoryService } from '../services/category.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-game-information',
@@ -26,7 +27,7 @@ import { CategoryService } from '../services/category.service';
 export class GameInformationComponent implements OnInit {
   @Input() game!: string;
   gameParameter!: string;
-  ActualUserIsJuez: Boolean = true;
+  ActualUserIsJuez: Boolean = false;
   evaluando: Boolean = false;
   dataSource: any = null;
   gameTitle: string = '';
@@ -45,23 +46,31 @@ export class GameInformationComponent implements OnInit {
     private SubmissionService: SubmissionService, 
     private TeamService: TeamService, 
     private ThemeService: ThemeService, 
-    private CategoryService: CategoryService
+    private CategoryService: CategoryService,
+    private UserService: UserService
   ) { }
   
   ngOnInit(): void {
     this.route.params.subscribe(params => {
+      this.UserService.getCurrentUser('http://localhost:3000/api/user/get-user')
+      .subscribe(
+        user => {
+          if (user.rol === 'Judge') {
+            this.ActualUserIsJuez = true;
+          }
+        },
+        () => {
+        }
+      );
       this.gameParameter = this.game;
       var url = 'http://localhost:3000/api/submission/get-submission/' + this.game;
-      console.log("id del juego " + this.game)
       this.SubmissionService.getSubmission(url).subscribe(
         (game: Submission) => {
           this.gameLink = game.game;
           this.pitchLink = game.pitch;
           this.gameTitle = game.title;
           this.gameDescription = game.description;
-          console.log("id del juego " + game)
           const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
-          console.log("id del equipo " +  game.teamId)
           this.TeamService.getTeamById(urlj).subscribe(
             (team: Team) => {
               this.teamName = team.studioName;
@@ -77,10 +86,9 @@ export class GameInformationComponent implements OnInit {
                 (categories: Category) => {
                   this.categories = [categories.titleEN];
                   const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId
-                  console.log("id del tema " + game.themeId)
                   this.ThemeService.getTheme(urlt).subscribe(
                     (themes: Theme) => {
-                      this.themes = ["Trains"]
+                      this.themes = themes.titleEN !== undefined ? [themes.titleEN] : [];
                       this.dataSource = {
                         name: this.gameTitle,
                         team: this.teamName,

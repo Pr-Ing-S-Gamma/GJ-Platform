@@ -30,6 +30,7 @@ export class SiteCrudComponent implements OnInit {
   ngOnInit(): void {
     this.myForm = this.fb.group({
       name: ['', Validators.required],
+      modality: ['', Validators.required], 
       country: ['', Validators.required],
       region: ['', Validators.required]
     });
@@ -57,25 +58,26 @@ export class SiteCrudComponent implements OnInit {
         this.dataSource = sites;
       },
       error => {
-        console.error('Error al obtener países:', error);
+        console.error('Error al obtener sitios:', error);
       }
     );
   }
-
+  
   seleccionarElemento(elemento: any) {
     this.siteToEdit = elemento;
     this.indexSite = this.dataSource.indexOf(elemento);
-
+  
     const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
     const selectedCountry = this.countries.find(country => country.name === elemento.country.name);
-
+  
     this.myForm.patchValue({
       name: elemento.name,
+      modality: elemento.modality, 
       region: selectedRegion, 
       country: selectedCountry 
     });
   }
-
+  
   editar() {
     if (this.myForm.valid) {
       
@@ -86,6 +88,7 @@ export class SiteCrudComponent implements OnInit {
       console.log(this.myForm.value["country"].name);
       this.siteService.updateSite(url, {
         name: this.myForm.value["name"],
+        modality: this.myForm.value["modality"], 
         region: this.myForm.value["region"],
         country: this.myForm.value["country"].name
       }).subscribe({
@@ -94,6 +97,7 @@ export class SiteCrudComponent implements OnInit {
           this.dataSource[this.indexSite] = {
             _id: siteId,
             name: this.myForm.value["name"],
+            modality: this.myForm.value["modality"],
             region: this.myForm.value["region"],
             country: this.myForm.value["country"]
           };
@@ -131,13 +135,14 @@ export class SiteCrudComponent implements OnInit {
     if (this.myForm.valid) {
       this.siteService.createSite(`http://localhost:3000/api/site/create-site`, {
         name: this.myForm.value["name"],
+        modality: this.myForm.value["modality"], 
         region: this.myForm.value["region"],
         country: this.myForm.value["country"].name
       }).subscribe({
         next: (data) => {
           if (data.success) {
             const siteId = data.siteId;
-            this.dataSource.push({ _id: siteId, name: this.myForm.value["name"], region: this.myForm.value["region"], country: this.myForm.value["country"]});
+            this.dataSource.push({ _id: siteId, name: this.myForm.value["name"], modality: this.myForm.value["modality"], region: this.myForm.value["region"], country: this.myForm.value["country"]});
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -151,7 +156,7 @@ export class SiteCrudComponent implements OnInit {
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
-
+  
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  

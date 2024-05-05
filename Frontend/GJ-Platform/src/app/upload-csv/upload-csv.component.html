@@ -1,0 +1,66 @@
+<style>
+    .custom-file-button {
+      display: inline-block;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 20px;
+    }
+  
+    .custom-file-button:hover {
+      background-color: #0056b3;
+    }
+  
+    .app-upload-csv input[type="file"] {
+      display: none;
+    }
+
+      .custom-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .custom-list li {
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+    }
+
+    .custom-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .custom-list li.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .custom-list li.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+  </style>
+  
+  <div class="app-upload-csv">
+    <button class="custom-file-button" (click)="changeStatus()">Change Site Status</button>
+    <button class="custom-file-button" (click)="fileInput.click()">Upload CSV File</button>
+    <input #fileInput id="file-upload" type="file" (change)="onFileSelected($event)" accept=".csv" />
+    
+    <ng-container *ngIf="file && file.name">
+        <button class="custom-file-button" (click)="uploadFile()">Save Users</button>
+      </ng-container>
+    
+      <ul class="custom-list">
+        <li *ngFor="let result of registrationResults" [ngClass]="{'success': !errorLog.length}">{{ result }}</li>
+      </ul>
+      
+      <ul class="custom-list">
+        <li *ngFor="let error of errorLog" [ngClass]="{'error': errorLog.length}">{{ error }}</li>
+      </ul>      
+  </div>
+  

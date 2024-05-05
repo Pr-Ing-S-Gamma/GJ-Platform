@@ -6,13 +6,15 @@ import { GameInformationComponent } from '../game-information/game-information.c
 import { UserService } from '../services/user.service';
 import { Site, User } from '../../types';
 import { SiteService } from '../services/site.service';
+import { UploadCsvComponent } from '../upload-csv/upload-csv.component';
 
 @Component({
   selector: 'app-local-site-information',
   standalone: true,
   imports: [
     CommonModule,
-    GameInformationComponent
+    GameInformationComponent,
+    UploadCsvComponent
   ],
   templateUrl: './local-site-information.component.html',
   styleUrl: './local-site-information.component.css'
@@ -20,19 +22,10 @@ import { SiteService } from '../services/site.service';
 export class LocalSiteInformationComponent implements OnInit{
   constructor(private router: Router, private userService: UserService, private siteService: SiteService){}
   site: Site | undefined;
+  currentStatus: string = "";
+  games: any[] = [];
+
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
-    .subscribe(
-      user => {
-        if (user.rol === 'GlobalOrganizer') {
-          this.router.navigate(['/DataManagement']);
-          return; 
-        }
-      },
-      error => {
-        this.router.navigate(['/login']);
-      }
-    );
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
       .subscribe(
         user => {
@@ -40,9 +33,24 @@ export class LocalSiteInformationComponent implements OnInit{
             .subscribe(
               site => {
                 this.site = site;
+                if (site.open == 0) {
+                  this.currentStatus = "Open";
+                } else {
+                  this.currentStatus = "Closed";
+                }
               },
               error => {
                 console.error('Error al obtener el sitio del usuario:', error);
+              }
+            );
+
+          this.siteService.getSubmissions(`http://localhost:3000/api/submission/get-submissions-site/${user.site._id}`)
+            .subscribe(
+              submissions  => {
+                this.games = submissions;
+              },
+              error => {
+                console.error('Error al obtener las entregas:', error);
               }
             );
         },
@@ -52,10 +60,6 @@ export class LocalSiteInformationComponent implements OnInit{
       );
   }
 
-  games = [
-    {id:1, name: 'Bloom Tales', team: 'Outlander studio'},
-    {id:2, name: 'Space Pinbam', team: 'Flipper Studio'}
-  ]
 
   logOut(): void {
     this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')

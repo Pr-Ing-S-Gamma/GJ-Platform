@@ -51,6 +51,8 @@ export interface User {
 export interface Site {
     _id?: string;
     name: string;
+    open?: number;
+    modality?: string;
     region: {
       _id: string;
       name: string;

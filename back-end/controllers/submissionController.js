@@ -1,6 +1,7 @@
 const Submission = require('../models/submissionModel');
 const Stage = require('../models/stageModel');
 const Category = require('../models/categoryModel');
+const GameJam = require('../models/gameJamEventModel');
 const Team = require('../models/teamModel');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
@@ -59,6 +60,7 @@ const createSubmission = async (req, res) => {
 
         const submission = new Submission({
             title: title,
+            participating: 1,
             description: description,
             pitch: pitch,
             game: game,
@@ -66,7 +68,6 @@ const createSubmission = async (req, res) => {
             categoryId: categoryId,
             stageId: stageId,
             themeId: themeId,
-            score: 0,
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,
@@ -253,6 +254,30 @@ const getSubmissions = async (req, res) => {
     }
 };
 
+const getSubmissionsSite = async (req, res) => {
+    try {
+        const siteId = req.params.id;
+        
+        const teams = await Team.find({ 'site._id': siteId });
+
+        const teamIds = teams.map(team => team._id);
+
+        const allSubmissions = await Submission.find({ teamId: { $in: teamIds } })
+            .populate('teamId', 'studioName')
+            .select('title teamId');
+
+        const submissionsArray = allSubmissions.map(submission => ({
+            id: submission._id,
+            name: submission.title,
+            team: submission.teamId.studioName
+        }));
+
+        res.status(200).send({ success: true, msg: 'Submissions found in the system', data: submissionsArray });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
 const deleteSubmission = async (req, res) => {
     try {
         const id = req.params.id;
@@ -412,8 +437,31 @@ const setEvaluatorToSubmission = async (req, res) => {
         if (!creatorUser) {
             return res.status(404).json({ message: 'User not found.' });
         }
+        const currentDate = new Date();
+        const allGameJams = await GameJam.find({});
+        let stageIdFound = null;
 
-        const submissions = await Submission.find({});
+        for (const gameJam of allGameJams) {
+            for (const stage of gameJam.stages) {
+                if (currentDate >= stage.startDateEvaluation && currentDate <= stage.endDateEvaluation) {
+                    stageIdFound = stage._id;
+                    break;
+                }
+            }
+            if (stageIdFound) {
+                break;
+            }
+        }
+
+        if (!stageIdFound) {
+            return res.status(404).json({ message: 'No active stage found.' });
+        }
+
+        const submissions = await Submission.find({ stageId: stageIdFound });
+
+        if (submissions.length === 0) {
+            return res.status(404).json({ message: 'No submissions available for evaluation in this stage.' });
+        }
 
         let minCount = Infinity; 
         submissions.forEach(submission => {
@@ -427,7 +475,7 @@ const setEvaluatorToSubmission = async (req, res) => {
                 minCount = count;
             }
         });
-        
+
         const submissionsWithMinEvaluators = submissions.filter(submission => {
             let count = 0;
             submission.evaluators.forEach(evaluator => {
@@ -437,14 +485,9 @@ const setEvaluatorToSubmission = async (req, res) => {
             });
             return count === minCount;
         });
-        
-        if (submissions.length === 0) {
-            return res.status(404).json({ message: 'No submissions available for evaluation.' });
-        }
 
         const randomSubmission = submissionsWithMinEvaluators[Math.floor(Math.random() * submissionsWithMinEvaluators.length)];
         
-
         const existingEvaluator = randomSubmission.evaluators.find(evaluator => evaluator.userId.toString() === evaluatorId.toString());
         if (existingEvaluator) {
             return res.status(400).json({ message: 'Evaluator already associated.' });
@@ -457,6 +500,7 @@ const setEvaluatorToSubmission = async (req, res) => {
         res.status(500).json({ message: 'An error occurred.' });
     }
 };
+
 
 const getSubmissionsEvaluator = async (req, res) => {
     try {
@@ -519,6 +563,7 @@ module.exports = {
     getCurrentTeamSubmission,
     getSubmission,
     getSubmissions,
+    getSubmissionsSite,
     deleteSubmission,
     setEvaluatorToSubmission,
     giveRating,

@@ -124,8 +124,8 @@ export class RegisterComponent implements OnInit {
   showErrorMessage(message: string) {
     this.errorMessage = message;
     setTimeout(() => {
-      this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-    }, 5000); // Limpia el mensaje después de 5 segundos
+      this.errorMessage = '';
+    }, 5000);
   }
 
 }
