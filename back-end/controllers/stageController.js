@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 const createStage = async (req, res) => {
-    const { name, startDate, endDate, gameJam } = req.body;
+    const { name, startDate, endDate, gameJam, startDateEvaluation, endDateEvaluation } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
@@ -14,34 +14,56 @@ const createStage = async (req, res) => {
             return res.status(400).json({ success: false, error: 'The provided GameJam is invalid.' });
         }
 
-        if (!startDate || !endDate) {
-            return res.status(400).json({ error: "Start and end dates are required." });
+        if (!startDate || !endDate || !startDateEvaluation || !endDateEvaluation) {
+            return res.status(400).json({ error: "Start and end dates for both stage and evaluation are required." });
         }
 
         const startDateObj = new Date(startDate);
         const endDateObj = new Date(endDate);
+        const startDateEvaluationObj = new Date(startDateEvaluation);
+        const endDateEvaluationObj = new Date(endDateEvaluation);
+
+        if (startDateObj >= endDateObj) {
+            return res.status(400).json({ error: "Start date must be before end date." });
+        }
+
+        if (startDateEvaluationObj >= endDateEvaluationObj) {
+            return res.status(400).json({ error: "Start date of evaluation must be before end date of evaluation." });
+        }
+
+        if (startDateEvaluationObj <= startDateObj || endDateEvaluationObj <= endDateObj) {
+            return res.status(400).json({ error: "Evaluation dates must be outside the stage dates." });
+        }
 
         const existingGameJam = await GameJam.findById(gameJam._id);
         if (!existingGameJam) {
             return res.status(404).json({ success: false, error: "That GameJam does not exist" });
         }
+        const allStages = await Stage.find({});
 
-        const conflictingStage = existingGameJam.stages.find(stage => 
-            (startDateObj >= stage.startDate && startDateObj <= stage.endDate) ||
-            (endDateObj >= stage.startDate && endDateObj <= stage.endDate)
-        );
-
-        if (conflictingStage) {
-            return res.status(403).json({ error: `There is already a stage within the specified time range. End date of the conflicting stage: ${conflictingStage.endDate}` });
+        let isConflict = false;
+        for (const stage of allStages) {
+            const startDate = new Date(stage.startDate);
+            const endDate = new Date(stage.endDate);
+            const startDateEvaluation = new Date(stage.startDateEvaluation);
+            const endDateEvaluation = new Date(stage.endDateEvaluation);
+        
+            if (startDateObj >= startDate && startDateObj <= endDateEvaluation) {
+                isConflict = true;
+                break;
+            }
         }
-
-        const startDateCR = new Date(startDate);
-        const endDateCR = new Date(endDate);
-
+        
+        if (isConflict) {
+            return res.status(403).json({ error: `There is a conflict with existing activities within the specified time range.` });
+        }
+        console.log(startDateObj);
         const stage = new Stage({
             name: name,
-            startDate: startDateCR,
-            endDate: endDateCR,
+            startDate: startDate,
+            endDate: endDate,
+            startDateEvaluation: startDateEvaluation,
+            endDateEvaluation: endDateEvaluation,
             gameJam: {
                 _id: existingGameJam._id,
                 edition: existingGameJam.edition
@@ -58,7 +80,9 @@ const createStage = async (req, res) => {
             _id: stage._id,
             name: stage.name,
             startDate: stage.startDate,
-            endDate: stage.endDate
+            endDate: stage.endDate,
+            startDateEvaluation: stage.startDateEvaluation,
+            endDateEvaluation: stage.endDateEvaluation
         });
 
         await existingGameJam.save();
@@ -97,12 +121,9 @@ const updateStage = async (req, res) => {
                 return res.status(403).json({ error: `There is already a stage within the specified time range. End date of the conflicting stage: ${conflictingStage.endDate}` });
             }
 
-            const startDateCR = new Date(startDate);
-            const endDateCR = new Date(endDate);
-
             stage.name = name;
-            stage.startDate = startDateCR;
-            stage.endDate = endDateCR;
+            stage.startDate = startDate;
+            stage.endDate = endDate;
             stage.creationDate = new Date();
             stage.creatorUser = {
                 userId: creatorUser._id,
@@ -112,8 +133,8 @@ const updateStage = async (req, res) => {
 
             const otherStages = existingGameJam.stages.filter(s => s._id.toString() !== stageId);
             const newConflictingStage = otherStages.find(s => 
-                (startDateCR >= s.startDate && startDateCR <= s.endDate) ||
-                (endDateCR >= s.startDate && endDateCR <= s.endDate)
+                (startDate >= s.startDate && startDate <= s.endDate) ||
+                (endDate >= s.startDate && endDate <= s.endDate)
             );
 
             if (newConflictingStage) {

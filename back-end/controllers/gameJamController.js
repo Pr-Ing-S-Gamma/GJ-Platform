@@ -204,6 +204,28 @@ const getCurrentGameJam = async (req, res) => {
     }
 };
 
+const getGameJamToEvaluate = async (req, res) => {
+    try {
+        const currentDate = new Date();
+
+        const allGameJams = await GameJam.find({});
+
+        const currentGameJam = allGameJams.find(gameJam => {
+            return gameJam.stages.some(stage => {
+                return currentDate >= stage.startDateEvaluation && currentDate <= stage.endDateEvaluation;
+            });
+        });
+
+        if (currentGameJam) {
+            res.status(200).send({ success: true, msg: 'Current Game Jam found', data: currentGameJam });
+        } else {
+            res.status(404).send({ success: false, msg: 'No current Game Jam found' });
+        }
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
 const getGameJams = async(req,res)=>{
     try{
         const allGameJams = await GameJam.find({});
@@ -316,6 +338,7 @@ module.exports = {
     createGameJam,
     updateGameJam,
     getCurrentGameJam,
+    getGameJamToEvaluate,
     getGameJam,
     getGameJams,
     deleteGameJam,

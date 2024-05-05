@@ -6,6 +6,10 @@ const siteSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    open: {
+        type: Number,
+        required: true
+    },
     region:  {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,

@@ -6,6 +6,9 @@ const gameJamSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    stage: {
+        type: Number
+    },
     stages: [{
         _id: { type: Schema.Types.ObjectId, ref: 'Stage'},
         name: { 

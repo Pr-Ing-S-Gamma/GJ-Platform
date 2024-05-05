@@ -8,10 +8,10 @@ function get(obj, desc) {
 }
 
 function replaceTokens(HTML, replacements) {
-    return HTML.split('{{').map(function (i) {
-        var symbol = i.substring(0, i.indexOf('}}')).trim();
-        return i.replace(symbol + '}}', get(replacements, symbol));
-    }).join('');
+    return HTML.replace(/{{(.*?)}}/g, function(match, token) {
+        var symbol = token.trim();
+        return get(replacements, symbol);
+    });
 }
 
 const sendEmail = async (email, subject, message, link) => {
@@ -47,6 +47,7 @@ const sendEmail = async (email, subject, message, link) => {
 
 const sendScore = async (email, subject, pitchScore, pitchFeedback, gameDesignScore, gameDesignFeedback, artScore, artFeedback, buildScore, buildFeedback, audioScore, audioFeedback, generalFeedback) => {
     try {
+
         let transporter = nodemailer.createTransport({
             host: "smtp.office365.com",
             port: 587,
@@ -58,21 +59,20 @@ const sendScore = async (email, subject, pitchScore, pitchFeedback, gameDesignSc
             tls: { ciphers: 'SSLv3' }
         });
 
-        const htmlTemplate = await fs.promises.readFile('services/email_template.html', 'utf-8');
+        const htmlTemplate = await fs.promises.readFile('services/score_template.html', 'utf-8');
 
-        const htmlContent = replaceTokens(htmlTemplate, { 
-            subject, 
-            pitchScore, 
-            pitchFeedback, 
-            gameDesignScore, 
-            gameDesignFeedback, 
-            artScore, 
-            artFeedback, 
-            buildScore, 
-            buildFeedback, 
-            audioScore, 
-            audioFeedback, 
-            generalFeedback 
+        const htmlContent = replaceTokens(htmlTemplate, {
+            pitchScore,
+            pitchFeedback,
+            gameDesignScore,
+            gameDesignFeedback,
+            artScore,
+            artFeedback,
+            buildScore,
+            buildFeedback,
+            audioScore,
+            audioFeedback,
+            generalFeedback
         });
 
         const mailOptions = {
@@ -88,5 +88,6 @@ const sendScore = async (email, subject, pitchScore, pitchFeedback, gameDesignSc
         console.log("Error al enviar el correo electrónico:", error);
     }
 }
+
 
 module.exports = { sendEmail, sendScore };

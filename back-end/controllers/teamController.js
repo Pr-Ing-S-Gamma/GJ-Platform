@@ -39,6 +39,7 @@ const createTeam = async (req, res) => {
         const createdTeam = new Team({
             studioName: studioName,
             description: description,
+            stage: 0,
             site: {
                 _id: existingSite._id,
                 name: existingSite.name

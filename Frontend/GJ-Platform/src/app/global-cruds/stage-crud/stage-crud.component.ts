@@ -33,6 +33,8 @@ export class StageCrudComponent implements OnInit{
       name: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      startDateEvaluation: ['', Validators.required],
+      endDateEvaluation: ['', Validators.required],
       gameJam : ['', Validators.required]
     });
 
@@ -55,7 +57,7 @@ export class StageCrudComponent implements OnInit{
       }
     );
   }
-
+  
   seleccionarElemento(elemento: any) {
     this.stageToEdit = elemento;
     this.indexStage = this.dataSource.indexOf(elemento);
@@ -63,17 +65,26 @@ export class StageCrudComponent implements OnInit{
     
     const startDate = new Date(elemento.startDate);
     const endDate = new Date(elemento.endDate);
+
+    const startDateEvaluation = new Date(elemento.startDateEvaluation);
+    const endDateEvaluation = new Date(elemento.endDateEvaluation);
   
     const formattedStartDate = startDate.toISOString().split('T')[0];
     const formattedEndDate = endDate.toISOString().split('T')[0];
+
+    const formattedStartDateEvaluation = startDateEvaluation.toISOString().split('T')[0];
+    const formattedEndDateEvaluation = endDateEvaluation.toISOString().split('T')[0];
   
     this.myForm.patchValue({
       name: elemento.name,
       startDate: formattedStartDate,
       endDate: formattedEndDate,
+      startDateEvaluation: formattedStartDateEvaluation,
+      endDateEvaluation: formattedEndDateEvaluation,
       gameJam: selectedGameJam
     });
   }
+
 
   eliminar(elemento: any) {
     const id = elemento._id;
@@ -97,11 +108,13 @@ export class StageCrudComponent implements OnInit{
     if (this.myForm.valid) {
       console.log('Formulario válido');
       const stageId = this.stageToEdit['_id'];
-      const { name, startDate, endDate, gameJam} = this.myForm.value;
+      const { name, startDate, endDate, gameJam, startDateEvaluation, endDateEvaluation} = this.myForm.value;
       this.stageService.updateStage(`http://localhost:3000/api/stage/update-stage/${stageId}`, {
         name: name,
         startDate: startDate,
         endDate: endDate,
+        startDateEvaluation: startDateEvaluation,
+        endDateEvaluation: endDateEvaluation,
         gameJam: {
           _id: gameJam._id,
           edition: gameJam.edition
@@ -113,7 +126,9 @@ export class StageCrudComponent implements OnInit{
               gameJam: {
                 _id: gameJam._id,
                 edition: gameJam.edition
-              }
+              },
+              startDateEvaluation: startDateEvaluation,
+              endDateEvaluation: endDateEvaluation
             }
             this.showSuccessMessage(data.msg);
           } else {
@@ -133,11 +148,13 @@ export class StageCrudComponent implements OnInit{
     if (this.myForm.valid) {
       console.log('Formulario válido');
       
-      const { name, startDate, endDate, gameJam} = this.myForm.value;
+      const { name, startDate, endDate, gameJam, startDateEvaluation, endDateEvaluation} = this.myForm.value;
       this.stageService.createStage(`http://localhost:3000/api/stage/create-stage`, {
         name: name,
         startDate: startDate,
         endDate: endDate,
+        startDateEvaluation: startDateEvaluation,
+        endDateEvaluation: endDateEvaluation,
         gameJam: {
           _id: gameJam._id,
           edition: gameJam.edition
@@ -146,7 +163,8 @@ export class StageCrudComponent implements OnInit{
         next: (data) => {
           if (data.success) {
             const stageId = data.stageId;
-            this.dataSource.push({ _id: stageId, name: name, startDate: startDate, endDate: endDate,
+            this.dataSource.push({ _id: stageId, name: name, startDate: startDate, endDate: endDate,             startDateEvaluation: startDateEvaluation,
+            endDateEvaluation: endDateEvaluation,
             gameJam: {
               _id: gameJam._id,
               edition: gameJam.edition

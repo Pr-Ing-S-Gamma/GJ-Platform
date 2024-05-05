@@ -43,8 +43,6 @@ export class RateFormComponent {
   ngOnInit(): void {
     this.SubmissionService.getRating("http://localhost:3000/api/submission/get-rating/" + this.game).subscribe({
       next: (data) => {
-        console.log(data);
-        //básicamente asigna cada campo del form para calificar
         this.pitchScore = data.pitchScore !== undefined ? data.pitchScore: 0;
         this.pitchRating(this.pitchScore.valueOf());
         this.pitchFeedback = data.pitchFeedback !== undefined ? data.pitchFeedback : '';
@@ -62,18 +60,18 @@ export class RateFormComponent {
         this.audioFeedback = data.audioFeedback !== undefined ? data.audioFeedback : '';
         this.generalFeedback = data.generalFeedback !== undefined ? data.generalFeedback : '';
         this.myForm = this.fb.group({
-          pitchScore: this.pitchScore,
-          pitchFeedback: this.pitchFeedback,
-          gameDesignScore: this.gameDesignScore,
-          gameDesignFeedback: this.gameDesignFeedback,
-          artScore: this.artScore,
-          artFeedback: this.artFeedback,
-          buildScore: this.buildScore,
-          buildFeedback: this.buildFeedback,
-          audioScore: this.audioScore,
-          audioFeedback: this.audioFeedback,
-          generalFeedback: this.generalFeedback
-        });
+          pitchScore: [this.pitchScore, Validators.required],
+          pitchFeedback: [this.pitchFeedback, Validators.required],
+          gameDesignScore: [this.gameDesignScore, Validators.required],
+          gameDesignFeedback: [this.gameDesignFeedback, Validators.required],
+          artScore: [this.artScore, Validators.required],
+          artFeedback: [this.artFeedback, Validators.required],
+          buildScore: [this.buildScore, Validators.required],
+          buildFeedback: [this.buildFeedback, Validators.required],
+          audioScore: [this.audioScore, Validators.required],
+          audioFeedback: [this.audioFeedback, Validators.required],
+          generalFeedback: [this.generalFeedback, Validators.required]
+      });
       },
       error: (error) => {
         console.log(error);
@@ -83,7 +81,6 @@ export class RateFormComponent {
   }
 
   submitEvaluation(): void{
-    console.log("Guardando la info pa")
     if (this.myForm.valid) {
       var rating = {
         submissionId: this.game,

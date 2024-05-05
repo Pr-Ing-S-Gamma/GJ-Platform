@@ -60,7 +60,7 @@ export class RegisterComponent implements OnInit {
   onRegionSelection() {
     const selectedValue = this.myForm.get('region')?.value;
     if (selectedValue && selectedValue._id) {
-      this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${selectedValue._id}`)
+      this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region-open/${selectedValue._id}`)
         .subscribe(
           sites => {
             this.sites = sites;
@@ -80,7 +80,6 @@ export class RegisterComponent implements OnInit {
   
   submitForm() {
     if (this.myForm.valid) {
-      console.log('Formulario válido');
       
       const { email, name, region, site, discordUsername} = this.myForm.value;
   

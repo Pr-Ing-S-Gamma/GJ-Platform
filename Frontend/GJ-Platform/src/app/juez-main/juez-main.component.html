@@ -7,6 +7,13 @@
             </div>
         </div>
         <div class="row" style="justify-content: flex-start; align-items: flex-start; flex-grow: 1; background: white;">
+            <div class="row" style="justify-content: flex-start; align-items: flex-start; margin-left: 35%; margin-top:10%">
+                <button style="width: 25%; height: 10%; background: #3EB9FF; border-radius: 20px; text-align: center; margin-bottom: 20px;" (click)="getNewEvaluation()">
+                    <div style="color: black; font-size: 25px; font-family: Inter; font-weight: 400; cursor: pointer;">
+                        Get New Evaluation
+                    </div>
+                </button>
+            </div>
             <div class="row" style="justify-content: flex-start; align-items: flex-start;">
                 <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
                     <div style="text-align: center; color: black; font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
@@ -33,7 +40,6 @@
                          Evaluations
                     </div>
                 </div>
-    
                 <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
                     <div *ngFor="let game of evaluations" style="background: #515151; border-radius: 35px; border: 1px black solid;
                     padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"

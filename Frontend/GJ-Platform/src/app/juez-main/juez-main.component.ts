@@ -25,6 +25,7 @@ export class JuezMainComponent implements OnInit {
   userId!: String | undefined
   selectedGame: string = ''
   gameInfoModal: string = "gameInfoModal";
+  isHovered: boolean = false;
 
   constructor(private router: Router, private userService: UserService, private SubmissionService: SubmissionService, private TeamService: TeamService){}
 
@@ -53,12 +54,6 @@ export class JuezMainComponent implements OnInit {
                 }
               )
             }
-            
-            /*
-            this.games = juegos.map(submission => ({
-               _id: submission._id, name: submission.name, team: submission.teamId 
-              }));
-            */
           },
           error => {
             console.error('Error al obtener juegos:', error);
@@ -84,12 +79,6 @@ export class JuezMainComponent implements OnInit {
                 }
               )
             }
-            
-            /*
-            this.evaluations = juegos.map(submission => ({
-               _id: submission._id, name: submission.name, team: submission.teamId 
-              }));
-            */
           },
           error => {
             console.error('Error al obtener juegos:', error);
@@ -101,18 +90,6 @@ export class JuezMainComponent implements OnInit {
       }
     );
   }
-
-  /*
-  games = [
-    {id:1, name: 'Bloom Tales', team: 'Outlander studio'},
-    {id:2, name: 'Space Pinbam', team: 'Flipper Studio'}
-  ]  
-
-  evaluations = [
-    {id:1, name: 'Bloom Tales', team: 'Outlander studio'},
-    {id:2, name: 'Space Pinbam', team: 'Flipper Studio'}
-  ]
-  */
 
   logOut(){
     this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
@@ -128,5 +105,31 @@ export class JuezMainComponent implements OnInit {
 
   selectGame(id: string){
     this.selectedGame = id
+  }
+
+  getNewEvaluation() {
+    this.SubmissionService.getCurrentTeamSubmission(`http://localhost:3000/api/submission/get-new-evaluation`).subscribe(
+      (juego: Submission) => {
+        console.log(juego)
+        const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
+        this.TeamService.getTeamById(urlj).subscribe(
+          (team: Team) => {
+            this.games.push(
+              {
+                id: juego._id,
+                name: juego.title,
+                team: team.studioName
+              }
+            );
+          },
+          error => {
+            console.error('Error al obtener juegos:', error);
+          }
+        )
+      },
+      error => {
+        console.error('Error al obtener juegos:', error);
+      }
+    );
   }
 }

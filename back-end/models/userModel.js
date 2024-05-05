@@ -49,10 +49,6 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    rolAddded: {
-        type: String,
-        required: false
-    },
     coins: { 
         type: Number, 
         required: true

@@ -67,6 +67,7 @@ const createSubmission = async (req, res) => {
             stageId: stageId,
             themeId: themeId,
             score: 0,
+            evaluated: 0,
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,
@@ -118,7 +119,7 @@ const updateSubmission = async (req, res) => {
             updateFields.description = description;
             changed++;
         }
-
+        updateFields.evaluated = 0;
         if (title) {
             updateFields.title = title;
             changed++;
@@ -294,7 +295,7 @@ const giveRating = async (req, res) => {
             return res.status(404).json({ message: 'El submission no fue encontrado.' });
         }
 
-        const team = await Team.findById(submission.team);
+        const team = await Team.findById(submission.teamId);
 
         if (!team) {
             return res.status(404).json({ success: false, msg: 'Team not found' });
@@ -313,8 +314,6 @@ const giveRating = async (req, res) => {
             return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
         }
 
-
-
         evaluator.pitchScore = pitchScore;
         evaluator.pitchFeedback = pitchFeedback;
         evaluator.gameDesignScore = gameDesignScore;
@@ -326,37 +325,33 @@ const giveRating = async (req, res) => {
         evaluator.audioScore = audioScore;
         evaluator.audioFeedback = audioFeedback;
         evaluator.generalFeedback = generalFeedback;
-
+        submission.evaluated = 1;
         await submission.save();
 
-        /*
         const promises = [];
 
         for (const jammer of team.jammers) {
             const subject = 'Score Update on GameJam Platform';
-            const message = `Hi ${jammer.name}, your team's submission has been updated. New score: ${score}.`;
             
             const emailPromise = sendScore(
                 jammer.email,
                 subject,
-                message,
-                evaluator.pitchScore,
-                evaluator.pitchFeedback,
-                evaluator.gameDesignScore,
-                evaluator.gameDesignFeedback,
-                evaluator.artScore,
-                evaluator.artFeedback,
-                evaluator.buildScore,
-                evaluator.buildFeedback,
-                evaluator.audioScore,
-                evaluator.audioFeedback,
-                evaluator.generalFeedback
+                pitchScore,
+                pitchFeedback,
+                gameDesignScore,
+                gameDesignFeedback,
+                artScore,
+                artFeedback,
+                buildScore,
+                buildFeedback,
+                audioScore,
+                audioFeedback,
+                generalFeedback
             );
             promises.push(emailPromise);
         }        
 
         await Promise.all(promises);
-        */
 
         res.status(200).json({ success: true, msg: 'Juego calificado' });
     } catch (error) {
@@ -418,70 +413,37 @@ const getRating = async (req, res) => {
     }
 };
 
-const setSubmissionScore = async (req, res) => {
-    try {
-        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-
-        if (!userId) {
-            return res.status(401).json({ success: false, msg: 'Unauthorized' });
-        }
-
-        const { id, score } = req.body;
-
-        if (!id || !score) {
-            return res.status(400).json({ success: false, msg: 'Missing submission ID or score' });
-        }
-
-        const existingSubmission = await Submission.findById(id);
-
-        if (!existingSubmission) {
-            return res.status(404).json({ success: false, msg: 'Submission not found' });
-        }
-
-        const team = await Team.findById(existingSubmission.team);
-
-        if (!team) {
-            return res.status(404).json({ success: false, msg: 'Team not found' });
-        }
-
-        res.status(200).json({ success: true, msg: 'Score set and emails sent' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, msg: 'Internal Server Error' });
-    }
-};
 const setEvaluatorToSubmission = async (req, res) => {
     try {
+        const evaluatorId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
 
-        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-
-
-        const creatorUser = await User.findById(userId);
+        const creatorUser = await User.findById(evaluatorId);
         if (!creatorUser) {
-            return res.status(404).json({ message: 'El usuario no fue encontrado.' });
+            return res.status(404).json({ message: 'User not found.' });
         }
 
+        const minEvaluatedValue = await Submission.aggregate([
+            { $group: { _id: null, minEvaluated: { $min: "$evaluated" } } }
+        ]);
 
-        const { submissionId, evaluatorId, evaluatorName, evaluatorEmail } = req.body;
-
-
-        const submission = await Submission.findById(submissionId);
-        if (!submission) {
-            return res.status(404).json({ message: 'El submission no fue encontrado.' });
+        if (!minEvaluatedValue || minEvaluatedValue.length === 0) {
+            return res.status(404).json({ message: 'No submissions available for evaluation.' });
         }
 
-        const existingEvaluator = submission.evaluators.find(evaluator => evaluator.userId === evaluatorId);
+        const submissionsWithMinEvaluated = await Submission.find({ evaluated: minEvaluatedValue[0].minEvaluated });
+
+        const randomSubmission = submissionsWithMinEvaluated[Math.floor(Math.random() * submissionsWithMinEvaluated.length)];
+
+        const existingEvaluator = randomSubmission.evaluators.find(evaluator => evaluator.userId.toString() === evaluatorId.toString());
         if (existingEvaluator) {
-            return res.status(400).json({ message: 'El juez ya está asociado.' });
-        }
+            return res.status(400).json({ message: 'Evaluator already associated.' });
+        }        
+        randomSubmission.evaluators.push({ userId: evaluatorId, name: creatorUser.name, email: creatorUser.email });
+        await randomSubmission.save();
 
-
-        submission.evaluators.push({ userId: evaluatorId, name: evaluatorName, email: evaluatorEmail });
-        await submission.save();
-
-        res.status(200).json({ message: 'Evaluador agregado exitosamente a la presentación.' });
+        res.status(200).json({ message: 'Evaluator successfully added to the submission.', data: randomSubmission });
     } catch (error) {
-        res.status(500).json({ message: 'Ocurrió un error' });
+        res.status(500).json({ message: 'An error occurred.' });
     }
 };
 
@@ -491,17 +453,17 @@ const getSubmissionsEvaluator = async (req, res) => {
         const Submissions = await Submission.find({
             'evaluators.userId': evaluatorID,
             $and: [
-                { "pitchScore": null },
-                { "pitchFeedback": null },
-                { "gameDesignScore": null },
-                { "gameDesignFeedback": null },
-                { "artScore": null },
-                { "artFeedback": null },
-                { "buildScore": null },
-                { "buildFeedback": null },
-                { "audioScore": null },
-                { "audioFeedback": null },
-                { "generalFeedback": null }
+                { "evaluators.pitchScore": null },
+                { "evaluators.pitchFeedback": null },
+                { "evaluators.gameDesignScore": null },
+                { "evaluators.gameDesignFeedback": null },
+                { "evaluators.artScore": null },
+                { "evaluators.artFeedback": null },
+                { "evaluators.buildScore": null },
+                { "evaluators.buildFeedback": null },
+                { "evaluators.audioScore": null },
+                { "evaluators.audioFeedback": null },
+                { "evaluators.generalFeedback": null }
             ]
         });
 
@@ -551,7 +513,6 @@ module.exports = {
     getSubmission,
     getSubmissions,
     deleteSubmission,
-    setSubmissionScore,
     setEvaluatorToSubmission,
     giveRating,
     getRating,

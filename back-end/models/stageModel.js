@@ -14,6 +14,14 @@ const stageSchema = mongoose.Schema({
         type: Date,
         required: true
     },
+    startDateEvaluation: {
+        type: Date,
+        required: true
+    },
+    endDateEvaluation: {
+        type: Date,
+        required: true
+    },
     gameJam:  {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,

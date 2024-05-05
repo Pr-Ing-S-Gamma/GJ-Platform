@@ -6,6 +6,9 @@ const submissionSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    evaluated: {
+        type: Number
+    },
     description:{
         type:String,
         required:true

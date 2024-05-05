@@ -100,6 +100,8 @@ export interface Stage {
   name: string;
   startDate: Date;
   endDate: Date;
+  startDateEvaluation: Date;
+  endDateEvaluation: Date;
   gameJam: {
     _id: string;
     edition: string;
@@ -157,6 +159,7 @@ export interface Submission {
   description: string;
   pitch: string;
   game: string;
+  evaluated?: number;
   teamId: string;
   categoryId: string; 
   stageId?: string; 
