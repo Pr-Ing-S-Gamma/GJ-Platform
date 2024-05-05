@@ -68,8 +68,17 @@ export interface Region {
 
 export interface Category {
   _id?: string;
-  name: string;
+  titleSP: string;
+  titleEN: string;
+  titlePT: string;
+  descriptionSP: string;
+  descriptionEN: string;
+  descriptionPT: string;
+  manualSP: string;
+  manualEN: string;
+  manualPT: string;
 }
+
 
 export interface Country {
   name: string;
@@ -79,14 +88,6 @@ export interface Country {
 export interface GameJam {
   _id?: string;
   edition: string;
-  region: {
-    _id: string;
-    name: string;
-  };
-  site: {
-    _id: string;
-    name: string;
-  };
   theme: {
     _id: string;
     titleEN: string;
@@ -159,7 +160,6 @@ export interface Submission {
   description: string;
   pitch: string;
   game: string;
-  evaluated?: number;
   teamId: string;
   categoryId: string; 
   stageId?: string; 

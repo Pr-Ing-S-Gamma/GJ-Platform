@@ -9,28 +9,10 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 const createGameJam = async (req, res) => {
-    const { edition, region, site, theme } = req.body;
+    const { edition, theme } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
-
-        if (!mongoose.Types.ObjectId.isValid(region._id)) {
-            return res.status(400).json({ success: false, error: 'The provided region ID is not valid.' });
-        } else {
-            const existingRegion = await Region.findById(region._id);
-            if (!existingRegion) {
-                return res.status(404).json({ success: false, error: "That region does not exist." });
-            }
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(site._id)) {
-            return res.status(400).json({ success: false, error: 'The provided site ID is not valid.' });
-        } else {
-            const existingSite = await Site.findById(site._id);
-            if (!existingSite) {
-                return res.status(404).json({ success: false, error: "That site does not exist." });
-            }
-        }
 
         if (!mongoose.Types.ObjectId.isValid(theme._id)) {
             return res.status(400).json({ success: false, error: 'The provided theme ID is not valid.' });
@@ -43,14 +25,6 @@ const createGameJam = async (req, res) => {
 
         const gameJam = new GameJam({
             edition: edition,
-            region: {
-                _id: region._id,
-                name: region.name
-            },
-            site: {
-                _id: site._id,
-                name: site.name
-            },
             theme: {
                 _id: theme._id,
                 titleEN: theme.titleEN,
@@ -75,7 +49,7 @@ const createGameJam = async (req, res) => {
 
 const updateGameJam = async (req, res) => {
     const { id } = req.params;
-    const { edition, region, site, theme } = req.body;
+    const { edition, theme } = req.body;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'The provided ID is not valid.' });
@@ -110,34 +84,6 @@ const updateGameJam = async (req, res) => {
             .catch(error => {
               console.error('Error updating documents:', error);
             });
-        }
-        if (region) {
-            if (region._id && mongoose.Types.ObjectId.isValid(region._id)) {
-                const existingRegion = await Region.findById(region._id);
-                if (!existingRegion) {
-                    return res.status(404).json({ success: false, error: "That region does not exist." });
-                }
-                gameJam.region = {
-                    _id: region._id,
-                    name: region.name
-                };
-            } else {
-                return res.status(400).json({ success: false, error: 'Invalid region ID provided.' });
-            }
-        }
-        if (site) {
-            if (site._id && mongoose.Types.ObjectId.isValid(site._id)) {
-                const existingSite = await Site.findById(site._id);
-                if (!existingSite) {
-                    return res.status(404).json({ success: false, error: "That site does not exist." });
-                }
-                gameJam.site = {
-                    _id: site._id,
-                    name: site.name
-                };
-            } else {
-                return res.status(400).json({ success: false, error: 'Invalid site ID provided.' });
-            }
         }
 
         if (theme) {

@@ -67,7 +67,6 @@ const createSubmission = async (req, res) => {
             stageId: stageId,
             themeId: themeId,
             score: 0,
-            evaluated: 0,
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,
@@ -119,7 +118,6 @@ const updateSubmission = async (req, res) => {
             updateFields.description = description;
             changed++;
         }
-        updateFields.evaluated = 0;
         if (title) {
             updateFields.title = title;
             changed++;
@@ -325,7 +323,6 @@ const giveRating = async (req, res) => {
         evaluator.audioScore = audioScore;
         evaluator.audioFeedback = audioFeedback;
         evaluator.generalFeedback = generalFeedback;
-        submission.evaluated = 1;
         await submission.save();
 
         const promises = [];
@@ -375,12 +372,6 @@ const getRating = async (req, res) => {
             return res.status(404).json({ message: 'El submission no fue encontrado.' });
         }
 
-        /*
-        const evaluator = submission.evaluators.find(evaluator => evaluator.userId === userId);
-        if (!evaluator) {
-            return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
-        }*/
-
         let evaluator = null;
         const evaluatorss = submission.evaluators;
         for (const e of evaluatorss) {
@@ -422,17 +413,37 @@ const setEvaluatorToSubmission = async (req, res) => {
             return res.status(404).json({ message: 'User not found.' });
         }
 
-        const minEvaluatedValue = await Submission.aggregate([
-            { $group: { _id: null, minEvaluated: { $min: "$evaluated" } } }
-        ]);
+        const submissions = await Submission.find({});
 
-        if (!minEvaluatedValue || minEvaluatedValue.length === 0) {
+        let minCount = Infinity; 
+        submissions.forEach(submission => {
+            let count = 0;
+            submission.evaluators.forEach(evaluator => {
+                if (evaluator.pitchScore !== undefined) {
+                    count++;
+                }
+            });
+            if (count < minCount) {
+                minCount = count;
+            }
+        });
+        
+        const submissionsWithMinEvaluators = submissions.filter(submission => {
+            let count = 0;
+            submission.evaluators.forEach(evaluator => {
+                if (evaluator.pitchScore !== undefined) {
+                    count++;
+                }
+            });
+            return count === minCount;
+        });
+        
+        if (submissions.length === 0) {
             return res.status(404).json({ message: 'No submissions available for evaluation.' });
         }
 
-        const submissionsWithMinEvaluated = await Submission.find({ evaluated: minEvaluatedValue[0].minEvaluated });
-
-        const randomSubmission = submissionsWithMinEvaluated[Math.floor(Math.random() * submissionsWithMinEvaluated.length)];
+        const randomSubmission = submissionsWithMinEvaluators[Math.floor(Math.random() * submissionsWithMinEvaluators.length)];
+        
 
         const existingEvaluator = randomSubmission.evaluators.find(evaluator => evaluator.userId.toString() === evaluatorId.toString());
         if (existingEvaluator) {
@@ -479,24 +490,20 @@ const getRatingsEvaluator = async (req, res) => {
     try {
         const evaluatorID = req.params.id;
         const Submissions = await Submission.find({
-            evaluators: {
-                $elemMatch: {
-                    userId: evaluatorID,
-                    $or: [
-                        { pitchScore: { $ne: 0, $ne: null, $ne: '' } },
-                        { pitchFeedback: { $ne: null, $ne: '' } },
-                        { gameDesignScore: { $ne: 0, $ne: null, $ne: '' } },
-                        { gameDesignFeedback: { $ne: null, $ne: '' } },
-                        { artScore: { $ne: 0, $ne: null, $ne: '' } },
-                        { artFeedback: { $ne: null, $ne: '' } },
-                        { buildScore: { $ne: 0, $ne: null, $ne: '' } },
-                        { buildFeedback: { $ne: null, $ne: '' } },
-                        { audioScore: { $ne: 0, $ne: null, $ne: '' } },
-                        { audioFeedback: { $ne: null, $ne: '' } },
-                        { generalFeedback: { $ne: null, $ne: '' } }
-                    ]
-                }
-            }
+            'evaluators.userId': evaluatorID,
+            $and: [
+                { "evaluators.pitchScore": { $exists: true, $ne: null } },
+                { "evaluators.pitchFeedback": { $exists: true, $ne: null } },
+                { "evaluators.gameDesignScore": { $exists: true, $ne: null } },
+                { "evaluators.gameDesignFeedback": { $exists: true, $ne: null } },
+                { "evaluators.artScore": { $exists: true, $ne: null } },
+                { "evaluators.artFeedback": { $exists: true, $ne: null } },
+                { "evaluators.buildScore": { $exists: true, $ne: null } },
+                { "evaluators.buildFeedback": { $exists: true, $ne: null } },
+                { "evaluators.audioScore": { $exists: true, $ne: null } },
+                { "evaluators.audioFeedback": { $exists: true, $ne: null } },
+                { "evaluators.generalFeedback": { $exists: true, $ne: null } }
+            ]
         });
         res.status(200).send({ success: true, msg: 'Se han encontrado entregas en el sistema', data: Submissions });
     }

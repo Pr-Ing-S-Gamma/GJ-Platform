@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, FormBuilder, FormGroup, Validators, ReactiveFormsModule  } from '@angular/forms';
+import { FormsModule, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
@@ -24,8 +24,8 @@ import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
 })
 export class JammerSubmitComponent implements OnInit{
   myForm!: FormGroup;
-  gjThemes : Theme[]= [];
-  gjCategories : Category [] = [];
+  gjThemes: Theme[] = [];
+  gjCategories: Category[] = [];
   selectedTheme: Theme | null = null;
   selectedCategory: Category | null = null;
   targetTime: Date | undefined;
@@ -51,7 +51,7 @@ ngOnInit(): void {
   const url = 'http://localhost:3000/api/category/get-categories';
   this.categoryService.getCategories(url).subscribe(
     (categories: Category[]) => {
-      this.gjCategories = categories.map(category => ({ _id: category._id, name: category.name }));
+      this.gjCategories = categories; // No necesitas hacer un mapeo aquí
     },
     error => {
       console.error('Error al obtener categorías:', error);
@@ -364,4 +364,3 @@ ngOnInit(): void {
     }
   }  
 }
-

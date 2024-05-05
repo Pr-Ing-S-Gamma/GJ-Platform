@@ -29,110 +29,101 @@ export class ThemeCrudComponent implements OnInit{
 
   ngOnInit(): void {
     this.myForm = this.fb.group({
-      title: ['', Validators.required],
-      description : ['', Validators.required],
-      manual : ['', Validators.required]
+      titleEN: ['', Validators.required],
+      titleSP: ['', Validators.required],
+      titlePT: ['', Validators.required],
+      descriptionEN: ['', Validators.required],
+      descriptionSP: ['', Validators.required],
+      descriptionPT: ['', Validators.required],
+      manualEN: ['', Validators.required],
+      manualSP: ['', Validators.required],
+      manualPT: ['', Validators.required]
     });
     this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
-    .subscribe(
-      themes => {
-        this.dataSource = themes;
-      },
-      error => {
-        console.error('Error al obtener temas:', error);
-      }
-    );
+      .subscribe(
+        themes => {
+          this.dataSource = themes;
+        },
+        error => {
+          console.error('Error al obtener temas:', error);
+        }
+      );
   }
 
-  seleccionarElemento(elemento:any){
+  seleccionarElemento(elemento: any) {
     this.ThemeToEdit = elemento;
     this.indexTheme = this.dataSource.indexOf(elemento);
     this.myForm.patchValue({
-      title: elemento.titleEN,
-      description: elemento.descriptionEN,
-      manual: elemento.manualEN
+      titleEN: elemento.titleEN,
+      titleSP: elemento.titleSP,
+      titlePT: elemento.titlePT,
+      descriptionEN: elemento.descriptionEN,
+      descriptionSP: elemento.descriptionSP,
+      descriptionPT: elemento.descriptionPT,
+      manualEN: elemento.manualEN,
+      manualSP: elemento.manualSP,
+      manualPT: elemento.manualPT
     });
   }
 
   editar() {
     const themeId = this.ThemeToEdit['_id'];
     if (this.myForm.valid) {
-      this.themeService.updateTheme(`http://localhost:3000/api/theme/update-theme/${themeId}`, {
-        manualPT: this.myForm.value['manual'],
-        manualSP: this.myForm.value['manual'],
-        manualEN: this.myForm.value['manual'],
-        descriptionSP: this.myForm.value['description'],
-        descriptionPT: this.myForm.value['description'],
-        descriptionEN: this.myForm.value['description'],
-        titleSP: this.myForm.value['title'],
-        titleEN: this.myForm.value['title'],
-        titlePT: this.myForm.value['title']
-      }).subscribe({
-        next: (data) => {
-          if (data.success) {
-          this.dataSource[this.dataSource.findIndex(theme => theme._id === data.theme._id)] = data.theme;
-          this.showSuccessMessage(data.msg);
-          } else {
-            this.showErrorMessage(data.error);
-          }
-        },
-        error: (error) => {
-          this.showErrorMessage(error.error.error);
-        },
-      });
+      this.themeService.updateTheme(`http://localhost:3000/api/theme/update-theme/${themeId}`, this.myForm.value)
+        .subscribe({
+          next: (data) => {
+            if (data.success) {
+              this.dataSource[this.dataSource.findIndex(theme => theme._id === data.theme._id)] = data.theme;
+              this.showSuccessMessage(data.msg);
+            } else {
+              this.showErrorMessage(data.error);
+            }
+          },
+          error: (error) => {
+            this.showErrorMessage(error.error.error);
+          },
+        });
     } else {
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
 
-eliminar(elemento: any) {
-  const id = elemento._id;
-
-  const url = `http://localhost:3000/api/theme/delete-theme/${id}`;
-
-  this.themeService.deleteTheme(url).subscribe({
+  eliminar(elemento: any) {
+    const id = elemento._id;
+    const url = `http://localhost:3000/api/theme/delete-theme/${id}`;
+    this.themeService.deleteTheme(url).subscribe({
       next: (data) => {
-          console.log('Tema eliminado correctamente:', data);
-          this.dataSource = this.dataSource.filter(item => item !== elemento);
-          this.showSuccessMessage(data.msg);
+        console.log('Tema eliminado correctamente:', data);
+        this.dataSource = this.dataSource.filter(item => item !== elemento);
+        this.showSuccessMessage(data.msg);
       },
       error: (error) => {
-          console.error('Error al eliminar el tema:', error);
-          this.showErrorMessage(error.error.msg);
+        console.error('Error al eliminar el tema:', error);
+        this.showErrorMessage(error.error.msg);
       }
-  });
-}
+    });
+  }
 
   agregar() {
     if (this.myForm.valid) {
-      this.themeService.createTheme(`http://localhost:3000/api/theme/create-theme`, {
-        manualPT: this.myForm.value['manual'],
-        manualSP: this.myForm.value['manual'],
-        manualEN: this.myForm.value['manual'],
-        descriptionSP: this.myForm.value['description'],
-        descriptionPT: this.myForm.value['description'],
-        descriptionEN: this.myForm.value['description'],
-        titleSP: this.myForm.value['title'],
-        titleEN: this.myForm.value['title'],
-        titlePT: this.myForm.value['title']
-      }).subscribe({
-        next: (data) => {
-          if (data.success) {
-            this.dataSource.push(data.theme); 
-            this.showSuccessMessage(data.msg);
-          } else {
-            this.showErrorMessage(data.error);
-          }
-        },
-        error: (error) => {
-          this.showErrorMessage(error.error.error);
-        },
-      });
+      this.themeService.createTheme(`http://localhost:3000/api/theme/create-theme`, this.myForm.value)
+        .subscribe({
+          next: (data) => {
+            if (data.success) {
+              this.dataSource.push(data.theme);
+              this.showSuccessMessage(data.msg);
+            } else {
+              this.showErrorMessage(data.error);
+            }
+          },
+          error: (error) => {
+            this.showErrorMessage(error.error.error);
+          },
+        });
     } else {
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  

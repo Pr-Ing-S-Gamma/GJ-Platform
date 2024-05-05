@@ -6,9 +6,6 @@ const gameJamSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    stage: {
-        type: Number
-    },
     stages: [{
         _id: { type: Schema.Types.ObjectId, ref: 'Stage'},
         name: { 
@@ -21,28 +18,6 @@ const gameJamSchema = mongoose.Schema({
             type: Date
         },
     }],
-    region:  {
-        _id: { 
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Region',
-            required: true
-        },
-        name: { 
-            type: String, 
-            required: true 
-        }
-    },
-    site:  {
-        _id: { 
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Site',
-            required: true
-        },
-        name: { 
-            type: String, 
-            required: true 
-        }
-    },
     theme:  {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,

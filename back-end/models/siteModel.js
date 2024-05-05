@@ -10,6 +10,10 @@ const siteSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    modality: {
+        type: String,
+        required: true
+    },
     region:  {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,

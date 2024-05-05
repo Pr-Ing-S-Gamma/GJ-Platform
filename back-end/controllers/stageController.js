@@ -48,7 +48,9 @@ const createStage = async (req, res) => {
             const startDateEvaluation = new Date(stage.startDateEvaluation);
             const endDateEvaluation = new Date(stage.endDateEvaluation);
         
-            if (startDateObj >= startDate && startDateObj <= endDateEvaluation) {
+            if ((startDateObj <= startDate && endDateEvaluationObj >= startDate)
+                || (startDateObj >= startDate && endDateEvaluationObj <= endDateEvaluation)
+                || (startDateObj.getTime() === endDateEvaluation.getTime())) {
                 isConflict = true;
                 break;
             }
@@ -57,7 +59,6 @@ const createStage = async (req, res) => {
         if (isConflict) {
             return res.status(403).json({ error: `There is a conflict with existing activities within the specified time range.` });
         }
-        console.log(startDateObj);
         const stage = new Stage({
             name: name,
             startDate: startDate,

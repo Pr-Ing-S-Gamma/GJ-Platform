@@ -103,6 +103,7 @@ export class RateFormComponent {
           console.log(data);
           if (data.success) {
             this.showSuccessMessage(data.msg);
+            window.location.reload();
           } else {
             this.showErrorMessage(data.error);
           }

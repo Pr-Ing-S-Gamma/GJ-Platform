@@ -9,7 +9,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 const createSite = async (req, res) => {
-    const { name, region, country } = req.body;
+    const { name, region, country, modality } = req.body;
     const countryName = country;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
@@ -34,6 +34,7 @@ const createSite = async (req, res) => {
 
         const site = new Site({
             name: name,
+            modality: modality,
             country: {
                 name: countryName,
                 code: country.code 
@@ -69,7 +70,8 @@ const updateSite = async (req, res) => {
         const region = req.body.region;
         const countryName = req.body.country;
         const open = req.body.open;
-        
+        const modality = req.body.modality;
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'El ID de site proporcionado no es válido.' });
         } else {
@@ -139,6 +141,17 @@ const updateSite = async (req, res) => {
             changed++;
         }
  
+
+        if (open) {
+            updateFields.open = open;
+            changed++;
+        }
+
+        if (modality) {
+            updateFields.modality = modality;
+            changed++;
+        }
+
         if (changed > 0) {
             updateFields.lastUpdateUser = {
                 userId: lastUpdateUser._id,
@@ -157,25 +170,6 @@ const updateSite = async (req, res) => {
 
 
 const getSite = async(req,res)=>{
-    try{
-        const id = req.params.id;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ success: false, error: 'El ID de site proporcionado no es válido.' });
-        } else {
-            const existingRegion = await Site.findById(id);
-            if (!existingRegion) {
-                return res.status(404).json({ success: false, error: "Ese site no existe" });
-            }
-        }
-        const selectedSite = await Site.findById(id);
-        res.status(200).send({ success:true, msg:'Site encontrado correctamente', data: selectedSite });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
-    }
-};
-
-
-const changeStatus = async(req,res)=>{
     try{
         const id = req.params.id;
         if (!mongoose.Types.ObjectId.isValid(id)) {
