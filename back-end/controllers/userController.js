@@ -1,11 +1,15 @@
 const User = require('../models/userModel');
 const Team = require('../models/teamModel');
+const Site = require('../models/siteModel');
+const GameJam = require('../models/gameJamEventModel');
 const { sendEmail } = require('../services/mailer');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const csv = require('csv-parser');
+const fs = require('fs');
 
 const registerUser = async (req, res) => {
-    const { name, email, region, site, team, rol, coins } = req.body;
+    const { name, email, region, site, team, rol, coins, discordUsername } = req.body;
     try {
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             return res.status(403).json({ success: false, error: 'Invalid email address.' });
@@ -16,6 +20,12 @@ const registerUser = async (req, res) => {
             return res.status(409).json({ success: false, error: "The email is already in use." });
         }
 
+        const existingDiscordUsername = await User.findOne({ discordUsername });
+
+        if (existingDiscordUsername) {
+            return res.status(409).json({ success: false, error: "The Discord Username is already in use." });
+        }
+
         const user = new User({
             name: name,
             email: email,
@@ -24,6 +34,7 @@ const registerUser = async (req, res) => {
             team: team ? { _id: team._id, name: team.name } : null,
             rol: rol,
             coins: coins,
+            discordUsername: discordUsername,
             creationDate: new Date()
         });
 
@@ -36,7 +47,7 @@ const registerUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { name, email, region, site, team, rol, coins } = req.body;
+    const { name, email, region, site, team, rol, coins, discordUsername } = req.body;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'Invalid user ID.' });
@@ -64,6 +75,7 @@ const updateUser = async (req, res) => {
         if (team) existingUser.team = { _id: team._id, name: team.name };
         if (rol) existingUser.rol = rol;
         if (coins) existingUser.coins = coins;
+        if (discordUsername) existingUser.discordUsername = discordUsername;
         if(rol === 'Jammer') {
             const query = { 'jammers._id': id };
 
@@ -98,10 +110,11 @@ const loginUser = async (req, res) => {
     let rol;
     let userId;
     if (!existingUser) {
-        const registerLink = `http://149.130.176.112:3000/register`;
+        const registerLink = `http://${process.env.PORT}:3000/register`;
         const subject = 'Login in GameJam Platform';
-        const text = `Hi, click on this link to create an account: ${registerLink}`;
-        await sendEmail(email, subject, text);
+        const message = `Hi, click on this link to create an account:`;
+        const link = registerLink;
+        await sendEmail(email, subject, message, link);        
         res.status(200).json({ success: true, msg: 'Se envió el registro al usuario.', email, registerLink });
     }
     
@@ -109,10 +122,11 @@ const loginUser = async (req, res) => {
     userId = existingUser._id;
 
     const token = jwt.sign({ userId, rol }, 'MY_JWT_SECRET', { expiresIn: 600000 });
-    const magicLink = `http://149.130.176.112:3000/api/user/magic-link/${token}`;
+    const magicLink = `http://${process.env.PORT}:3000/api/user/magic-link/${token}`;
     const subject = 'Login in GameJam Platform';
-    const text = `Hi, click on this link to continue to the app: ${magicLink}`;
-    await sendEmail(email, subject, text);
+    const message = `Hi, click on this link to continue to the app:`;
+    const link = magicLink;
+    await sendEmail(email, subject, message, link);    
     res.status(200).json({ success: true, msg: 'Se envió el magic link al usuario.', email, magicLink });
 };
 
@@ -130,13 +144,19 @@ const magicLink = async (req, res) => {
         });
         let redirectUrl;
         if (rol === 'GlobalOrganizer') {
-            redirectUrl = 'http://149.130.176.112:3000/DataManagement';
+            redirectUrl = `http://${process.env.PORT}:3000/DataManagement`;
         }
         if(rol === 'LocalOrganizer') {
-            redirectUrl = 'http://149.130.176.112:3000/Games';
+            redirectUrl = `http://${process.env.PORT}:3000/Games`;
         }
-        if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer') {
-            return res.clearCookie('token').redirect('http://149.130.176.112:3000/login');
+        if(rol === 'Jammer') {
+            redirectUrl = `http://${process.env.PORT}:3000/Jammer`;
+        }
+        if(rol === 'Judge') {
+            redirectUrl = `http://${process.env.PORT}:3000/Juez`;
+        }
+        if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer' && rol !== 'Jammer' && rol !== 'Judge') {
+            return res.clearCookie('token').redirect(`http://${process.env.PORT}:3000/login`);
         }
         return res.redirect(redirectUrl);
     } catch (error) {
@@ -258,6 +278,115 @@ const deleteUser = async(req,res)=>{
     }
 };
 
+const registerUsersFromCSV = async (req, res) => {
+    try {
+        if (!req.file || req.file.mimetype !== 'text/csv') {
+            return res.status(400).json({ success: false, error: 'Please upload a CSV file.' });
+        }
+
+        const evaluatorId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        const creatorUser = await User.findById(evaluatorId);
+        const users = [];
+
+        const fileData = req.file.buffer.toString('utf8');
+        const lines = fileData.split('\n');
+        lines.forEach(line => {
+            const [name, email, rol, discordUsername, studioName] = line.split(',');
+            users.push({ name, email, rol, discordUsername, studioName });
+        });
+
+        const registrationResults = [];
+        const errorLog = [];
+        const currentDate = new Date();
+
+        const allGameJams = await GameJam.find({});
+        const currentGameJam = allGameJams.find(gameJam => {
+            return gameJam.stages.some(stage => {
+                return currentDate >= stage.startDate && currentDate <= stage.endDate;
+            });
+        });
+
+        if (!currentGameJam) {
+            errorLog.push('No active game jam found');
+            return res.status(200).json({ success: false, errorLog });
+        }
+        
+        const site = await Site.findById(creatorUser.site._id);
+        if (site.open === 1) {
+            errorLog.push('Site is currently closed');
+            return res.status(200).json({ success: false, errorLog });
+        }
+        
+        for (const userData of users) {
+            const { name, email, rol, discordUsername, studioName } = userData;
+            const region = creatorUser.region;
+            const site = creatorUser.site;
+            
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errorLog.push(`Invalid email address for user: ${name} (${email}, ${discordUsername})`);
+                continue;
+            }
+
+            const existingEmail = await User.findOne({ email });
+            if (existingEmail) {
+                errorLog.push(`The email is already in use for user: ${name} (${email}, ${discordUsername})`);
+                continue;
+            }
+
+            const existingDiscordUsername = await User.findOne({ discordUsername });
+            if (existingDiscordUsername) {
+                errorLog.push(`The Discord Username is already in use for user: ${name} (${email}, ${discordUsername})`);
+                continue;
+            }
+            
+            let team = await Team.findOne({ studioName });
+            if (!team) {
+                team = new Team({
+                    studioName,
+                    description: 'Description...',
+                    region: { _id: region._id, name: region.name },
+                    site: { _id: site._id, name: site.name },
+                    linkTree: [], 
+                    gameJam: { _id: currentGameJam._id, edition: currentGameJam.edition }, 
+                    creatorUser: {
+                        userId: creatorUser._id,
+                        name: creatorUser.name,
+                        email: creatorUser.email
+                    },
+                    creationDate: new Date(),
+                    lastUpdateDate: new Date()
+                });
+                await team.save();
+            } else if (team.site._id.toString() !== site._id.toString()) {
+                errorLog.push(`The team is in a different site for user: ${name} (${email}, ${discordUsername})`);
+                continue;
+            }
+            
+            const jammer = await User.create({
+                name,
+                email,
+                region: { _id: region._id, name: region.name },
+                site: { _id: site._id, name: site.name },
+                rol,
+                coins: 0,
+                discordUsername,
+                creationDate: new Date()
+            });
+            
+            if (team.region._id.toString() === region._id.toString()) {
+                team.jammers.push({ _id: jammer._id, name, email, discordUsername });
+                await team.save();
+            }
+
+            registrationResults.push(`Registered successfully for user: ${name} (${email}, ${discordUsername})`);
+        }
+        res.status(200).json({ success: true, msg: 'User registration completed.', registrationResults, errorLog });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+
 module.exports = {
     registerUser,
     updateUser,
@@ -271,5 +400,6 @@ module.exports = {
     getUsers,
     getJammersPerSite,
     getJammersNotInTeamPerSite,
-    getStaffPerSite
+    getStaffPerSite,
+    registerUsersFromCSV
 };

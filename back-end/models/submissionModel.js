@@ -2,6 +2,14 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const submissionSchema = mongoose.Schema({
+    title:{
+        type:String,
+        required:true
+    },
+    participating: {
+        type: Number,
+        required: true
+    },
     description:{
         type:String,
         required:true
@@ -14,22 +22,22 @@ const submissionSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    team: {
+    teamId: {
         type: Schema.Types.ObjectId, 
         ref: 'Team',
         required: true
     },
-    category: {
+    categoryId: {
         type: Schema.Types.ObjectId, 
         ref: 'Category',
         required: false
     },
-    stage: {
+    stageId: {
         type: Schema.Types.ObjectId, 
         ref: 'Stage',
         required: true
     },
-    theme: {
+    themeId: {
         type: Schema.Types.ObjectId, 
         ref: 'Theme',
         required: false
@@ -65,6 +73,29 @@ const submissionSchema = mongoose.Schema({
             type: String
         }
     },
+    evaluators: [{
+        userId: {
+            type: Schema.Types.ObjectId, 
+            ref: 'User'
+        },
+        name: { 
+            type: String
+        },
+        email: { 
+            type: String
+        },
+        pitchScore: { type: Number },
+        pitchFeedback: { type: String },
+        gameDesignScore: { type: Number },
+        gameDesignFeedback: { type: String },
+        artScore: { type: Number },
+        artFeedback: { type: String },
+        buildScore: { type: Number },
+        buildFeedback: { type: String },
+        audioScore: { type: Number },
+        audioFeedback: { type: String },
+        generalFeedback: { type: String }
+    }],
     lastUpdateDate: {
         type: Date
     }

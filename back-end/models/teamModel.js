@@ -10,6 +10,9 @@ const teamSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    stage:{
+        type: Number
+    },
     region:  {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,
@@ -57,12 +60,14 @@ const teamSchema = mongoose.Schema({
         },
         email: { 
             type: String
+        },
+        discordUsername: { 
+            type: String
         }
     }],
     lastSub: {
         type: Schema.Types.ObjectId,
-        ref: 'Submission',
-        require: true
+        ref: 'Submission'
     },
     submissions:   [{
         type: Schema.Types.ObjectId, 

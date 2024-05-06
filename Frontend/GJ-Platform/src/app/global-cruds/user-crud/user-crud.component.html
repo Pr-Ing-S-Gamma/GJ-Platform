@@ -3,11 +3,39 @@
 border-radius: 35px; border: 1px black solid;
 border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
     <div class="table-responsive">
+        <div class="filters">
+            <select [(ngModel)]="selectedHeader">
+                <option value="_id">ID</option> 
+                <option value="name">Name</option>
+                <option value="email">Email</option>
+                <option value="discordUsername">Discord Username</option>
+                <option value="region.name">Region Name</option>
+                <option value="site.name">Site Name</option>
+                <option value="team.name">Team Name</option>
+                <option value="rol">Role</option>
+            </select>
+        
+            <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
+        
+            <select multiple [(ngModel)]="selectedColumns">
+                <option value="_id">ID</option>
+                <option value="name">Name</option>
+                <option value="email">Email</option>
+                <option value="discordUsername">Discord Username</option>
+                <option value="region.name">Region Name</option>
+                <option value="site.name">Site Name</option>
+                <option value="team.name">Team Name</option>
+                <option value="rol">Role</option>
+            </select>
+        
+            <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+        </div>        
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Discord Username</th>
                     <th scope="col">Email</th>
                     <th scope="col">Role</th>
                     <th scope="col">Region</th>
@@ -20,6 +48,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                 <tr *ngFor="let row of obtenerDatosPagina()">
                     <td>{{ row._id }}</td>
                     <td>{{ row.name }}</td>
+                    <td>{{ row.discordUsername }}</td>
                     <td>{{ row.email }}</td>
                     <td>{{ row.rol }}</td>
                     <td>{{ row.region.name }}</td>
@@ -130,6 +159,18 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                                     placeholder="Name" formControlName="name">
                             </div>
                         </div>
+                        
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            Discord Username</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group"
+                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <input #editDiscordUsernameInput class="form-control" id="editDiscordUsernameInput" required
+                                    placeholder="Discord Username" formControlName="discordUsername">
+                            </div>
+                        </div>
 
                         <div style="margin-left: 50px; text-align: left; color: black;
                             font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
@@ -221,6 +262,18 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                                 style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
                                 <input #editNameInput class="form-control" id="editNameInput" required
                                     placeholder="Name" formControlName="name">
+                            </div>
+                        </div>
+
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                            Discord Username</div>
+
+                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                            <div class="form-group"
+                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                                <input #editDiscordUsernameInput class="form-control" id="editDiscordUsernameInput" required
+                                    placeholder="Discord Username" formControlName="discordUsername">
                             </div>
                         </div>
 

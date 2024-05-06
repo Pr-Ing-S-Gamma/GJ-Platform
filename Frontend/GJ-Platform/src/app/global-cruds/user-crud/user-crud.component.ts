@@ -7,7 +7,8 @@ import { Region, Site, User } from '../../../types';
 import { SiteService } from '../../services/site.service';
 import { RegionService } from '../../services/region.service';
 declare var $: any;
-
+import { jsPDF }  from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-user-crud',
@@ -28,7 +29,10 @@ export class UserCrudComponent implements OnInit{
   rols = ['GlobalOrganizer', 'LocalOrganizer', 'Judge', 'Jammer']
   
   userToEdit : any;
-  indexUser = 0
+  indexUser = 0;
+  selectedHeader: string | undefined;
+  filterValue: string = '';
+  selectedColumns: (keyof User)[] = []; 
   constructor(private fb: FormBuilder, private userService: UserService, private siteService: SiteService, private regionService: RegionService){}
   ngOnInit(): void {
     this.myForm = this.fb.group({
@@ -36,12 +40,13 @@ export class UserCrudComponent implements OnInit{
       email: ['', Validators.required],
       rol: ['', Validators.required],
       region: ['', Validators.required],
-      site: ['', Validators.required]
+      site: ['', Validators.required],
+      discordUsername: ['', Validators.required]
     });
     const url = 'http://149.130.176.112:3000/api/user/get-users';
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
-        this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins }));
+        this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins, discordUsername: user.discordUsername }));
       },
       error => {
         console.error('Error al obtener usuarios:', error);
@@ -101,7 +106,8 @@ export class UserCrudComponent implements OnInit{
       region: selectedRegion, 
       site: selectedSite, 
       rol: elemento.rol,
-      email: elemento.email
+      email: elemento.email,
+      discordUsername: elemento.discordUsername
     });
   }
 
@@ -109,7 +115,7 @@ export class UserCrudComponent implements OnInit{
     if (this.myForm.valid) {
       console.log('Formulario válido');
       const userId = this.userToEdit['_id'];
-      const { email, name, region, site, rol } = this.myForm.value;
+      const { email, name, region, site, rol, discordUsername} = this.myForm.value;
   
       this.userService.updateUser(`http://149.130.176.112:3000/api/user/update-user/${userId}`, {
         name: name,
@@ -124,10 +130,11 @@ export class UserCrudComponent implements OnInit{
         },
         rol: rol,
         coins: 0,
+        discordUsername: discordUsername,
       }).subscribe({
         next: (data) => {
           if (data.success) {
-            this.dataSource[this.indexUser]={ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0};
+            this.dataSource[this.indexUser]={ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0, discordUsername: discordUsername};
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -165,7 +172,7 @@ export class UserCrudComponent implements OnInit{
       if (this.myForm.valid) {
         console.log('Formulario válido');
         
-        const { email, name, region, site, rol} = this.myForm.value;
+        const { email, name, region, site, rol, discordUsername} = this.myForm.value;
   
         this.userService.registerUser(`http://149.130.176.112:3000/api/user/register-user`, {
           name: name,
@@ -180,11 +187,12 @@ export class UserCrudComponent implements OnInit{
           },
           rol: rol,
           coins: 0,
+          discordUsername: discordUsername,
         }).subscribe({
           next: (data) => {
             if (data.success) {
               const userId = data.userId;
-              this.dataSource.push({ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0});
+              this.dataSource.push({ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0, discordUsername: discordUsername});
               this.showSuccessMessage(data.msg);
             } else {
               this.showErrorMessage(data.error);
@@ -230,10 +238,116 @@ export class UserCrudComponent implements OnInit{
 
   // Función para obtener los datos de la página actual
   obtenerDatosPagina() {
+    let filteredData = this.dataSource;
+
+    if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
+        const filterText = this.filterValue.trim().toLowerCase();
+        filteredData = filteredData.filter(item => {
+            switch (this.selectedHeader) {
+                case '_id':
+                case 'name':
+                case 'email':
+                case 'discordUsername':
+                case 'region.name':
+                case 'site.name':
+                case 'team.name':
+                case 'rol':
+                    return this.getPropertyValue(item, this.selectedHeader).toLowerCase().startsWith(filterText);
+                default:
+                    return false;
+            }
+        });
+    }
+
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, this.dataSource.length);
-    return this.dataSource.slice(startIndex, endIndex);
+    return filteredData.slice(startIndex, startIndex + this.pageSize);
+}
+
+getPropertyValue(obj: any, key: string) {
+  if (!obj || !key) return '';
+  const keys = key.split('.');
+  let value = obj;
+  for (const k of keys) {
+      if (Array.isArray(value)) {
+          value = value.map((item: any) => item[k]);
+      } else {
+          value = value[k];
+      }
+      if (value === undefined || value === null) return '';
   }
+  return Array.isArray(value) ? value.join(', ') : value;
+}
+
+exportToPDF() {
+    const doc = new jsPDF();
+
+    const url = 'http://localhost:3000/api/user/get-users';
+    this.userService.getUsers(url).subscribe(
+        (users: User[]) => {
+            const data = users.map(user => ({
+                _id: user._id || '',
+                name: user.name || '',
+                email: user.email || '',
+                discordUsername: user.discordUsername || '',
+                region: {
+                    _id: user.region._id || '',
+                    name: user.region.name || ''
+                },
+                site: {
+                    _id: user.site._id || '',
+                    name: user.site.name || ''
+                },
+                team: {
+                    _id: user.team?._id || '',
+                    name: user.team?.name || ''
+                },
+                rol: user.rol || ''
+            }));
+
+            const selectedData = data.map(row => {
+                const rowData: any[] = [];
+                this.selectedColumns.forEach(column => {
+                    if (column.startsWith('region.')) {
+                        const subProperty = column.split('.')[1];
+                        rowData.push(((row.region as {[key: string]: string})[subProperty]));
+                    } else if (column.startsWith('site.')) {
+                        const subProperty = column.split('.')[1];
+                        rowData.push(((row.site as {[key: string]: string})[subProperty]));
+                    } else if (column.startsWith('team.')) {
+                        const subProperty = column.split('.')[1];
+                        rowData.push(((row.team as {[key: string]: string})[subProperty]));
+                    } else {
+                        rowData.push((row as any)[column]);
+                    }
+                });
+                return rowData;
+            });
+
+            const headers = this.selectedColumns.map((column: string) => {
+                if (column === '_id') return 'ID';
+                if (column === 'name') return 'Name';
+                if (column === 'email') return 'Email';
+                if (column === 'discordUsername') return 'Discord';
+                if (column === 'region.name') return 'Region';
+                if (column === 'site.name') return 'Site';
+                if (column === 'team.name') return 'Team';
+                if (column === 'rol') return 'Role';
+                return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+            });
+
+            autoTable(doc, {
+                head: [headers],
+                body: selectedData
+            });
+
+            doc.save('users.pdf');
+        },
+        error => {
+            console.error('Error fetching teams:', error);
+        }
+    );
+}
+
 
   get paginasMostradas(): (number | '...')[] {
     const totalPaginas = this.totalPaginas;

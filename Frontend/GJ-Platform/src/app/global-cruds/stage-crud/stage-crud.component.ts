@@ -6,6 +6,8 @@ import { StageService } from '../../services/stage.service';
 import { GameJam, Stage } from '../../../types';
 import { GamejamService } from '../../services/gamejam.service';
 declare var $: any;
+import { jsPDF }  from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-stage-crud',
@@ -26,6 +28,9 @@ export class StageCrudComponent implements OnInit{
 
   stageToEdit: any;
   indexStage = 0;
+  selectedHeader: string | undefined;
+  filterValue: string = '';
+  selectedColumns: (keyof Stage)[] = []; 
   constructor(private fb: FormBuilder, private stageService: StageService, private gamejamService: GamejamService){
   }
   ngOnInit(): void {
@@ -33,10 +38,12 @@ export class StageCrudComponent implements OnInit{
       name: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      startDateEvaluation: ['', Validators.required],
+      endDateEvaluation: ['', Validators.required],
       gameJam : ['', Validators.required]
     });
 
-    const url = 'http://149.130.176.112:3000/api/game-jam/get-game-jams';
+    const url = 'http://localhost:3000/api/game-jam/get-game-jams';
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
         this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, theme: gamejam.theme}));
@@ -45,7 +52,7 @@ export class StageCrudComponent implements OnInit{
         console.error('Error al obtener GameJams:', error);
       }
     );
-    this.stageService.getStages('http://149.130.176.112:3000/api/stage/get-stages')
+    this.stageService.getStages('http://localhost:3000/api/stage/get-stages')
     .subscribe(
       stages => {
         this.dataSource = stages;
@@ -55,7 +62,7 @@ export class StageCrudComponent implements OnInit{
       }
     );
   }
-
+  
   seleccionarElemento(elemento: any) {
     this.stageToEdit = elemento;
     this.indexStage = this.dataSource.indexOf(elemento);
@@ -63,22 +70,31 @@ export class StageCrudComponent implements OnInit{
     
     const startDate = new Date(elemento.startDate);
     const endDate = new Date(elemento.endDate);
+
+    const startDateEvaluation = new Date(elemento.startDateEvaluation);
+    const endDateEvaluation = new Date(elemento.endDateEvaluation);
   
     const formattedStartDate = startDate.toISOString().split('T')[0];
     const formattedEndDate = endDate.toISOString().split('T')[0];
+
+    const formattedStartDateEvaluation = startDateEvaluation.toISOString().split('T')[0];
+    const formattedEndDateEvaluation = endDateEvaluation.toISOString().split('T')[0];
   
     this.myForm.patchValue({
       name: elemento.name,
       startDate: formattedStartDate,
       endDate: formattedEndDate,
+      startDateEvaluation: formattedStartDateEvaluation,
+      endDateEvaluation: formattedEndDateEvaluation,
       gameJam: selectedGameJam
     });
   }
 
+
   eliminar(elemento: any) {
     const id = elemento._id;
 
-    const url = `http://149.130.176.112:3000/api/stage/delete-stage/${id}`;
+    const url = `http://localhost:3000/api/stage/delete-stage/${id}`;
 
     this.stageService.deleteStage(url).subscribe({
         next: (data) => {
@@ -97,11 +113,13 @@ export class StageCrudComponent implements OnInit{
     if (this.myForm.valid) {
       console.log('Formulario válido');
       const stageId = this.stageToEdit['_id'];
-      const { name, startDate, endDate, gameJam} = this.myForm.value;
-      this.stageService.updateStage(`http://149.130.176.112:3000/api/stage/update-stage/${stageId}`, {
+      const { name, startDate, endDate, gameJam, startDateEvaluation, endDateEvaluation} = this.myForm.value;
+      this.stageService.updateStage(`http://localhost:3000/api/stage/update-stage/${stageId}`, {
         name: name,
         startDate: startDate,
         endDate: endDate,
+        startDateEvaluation: startDateEvaluation,
+        endDateEvaluation: endDateEvaluation,
         gameJam: {
           _id: gameJam._id,
           edition: gameJam.edition
@@ -113,7 +131,9 @@ export class StageCrudComponent implements OnInit{
               gameJam: {
                 _id: gameJam._id,
                 edition: gameJam.edition
-              }
+              },
+              startDateEvaluation: startDateEvaluation,
+              endDateEvaluation: endDateEvaluation
             }
             this.showSuccessMessage(data.msg);
           } else {
@@ -133,11 +153,13 @@ export class StageCrudComponent implements OnInit{
     if (this.myForm.valid) {
       console.log('Formulario válido');
       
-      const { name, startDate, endDate, gameJam} = this.myForm.value;
-      this.stageService.createStage(`http://149.130.176.112:3000/api/stage/create-stage`, {
+      const { name, startDate, endDate, gameJam, startDateEvaluation, endDateEvaluation} = this.myForm.value;
+      this.stageService.createStage(`http://localhost:3000/api/stage/create-stage`, {
         name: name,
         startDate: startDate,
         endDate: endDate,
+        startDateEvaluation: startDateEvaluation,
+        endDateEvaluation: endDateEvaluation,
         gameJam: {
           _id: gameJam._id,
           edition: gameJam.edition
@@ -146,7 +168,9 @@ export class StageCrudComponent implements OnInit{
         next: (data) => {
           if (data.success) {
             const stageId = data.stageId;
-            this.dataSource.push({ _id: stageId, name: name, startDate: startDate, endDate: endDate,
+            this.dataSource.push({ _id: stageId, name: name, startDate: startDate, endDate: endDate, 
+            startDateEvaluation: startDateEvaluation,
+            endDateEvaluation: endDateEvaluation,
             gameJam: {
               _id: gameJam._id,
               edition: gameJam.edition
@@ -200,9 +224,100 @@ showErrorMessage(message: string) {
 
   // Función para obtener los datos de la página actual
   obtenerDatosPagina() {
+    let filteredData = this.dataSource;
+  
+    if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
+      const filterText = this.filterValue.trim().toLowerCase();
+      filteredData = filteredData.filter(item => {
+        switch (this.selectedHeader) {
+          case '_id':
+          case 'name':
+          case 'startDate':
+          case 'endDate':
+          case 'startDateEvaluation':
+          case 'endDateEvaluation':
+          case 'gameJam._id':
+          case 'gameJam.edition':
+            return this.getPropertyValue(item, this.selectedHeader).toLowerCase().startsWith(filterText);
+          default:
+            return false;
+        }
+      });
+    }
+  
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, this.dataSource.length);
-    return this.dataSource.slice(startIndex, endIndex);
+    return filteredData.slice(startIndex, startIndex + this.pageSize);
+  }
+  
+  getPropertyValue(obj: any, key: string) {
+    if (!obj || !key) return '';
+    const keys = key.split('.');
+    let value = obj;
+    for (const k of keys) {
+      value = value[k];
+      if (value === undefined || value === null) return '';
+    }
+    return value;
+  }
+  
+  exportToPDF() {
+    const doc = new jsPDF();
+  
+    const url = 'http://localhost:3000/api/stage/get-stages';
+    this.stageService.getStages(url).subscribe(
+      (stages: Stage[]) => {
+        const data = stages.map(stage => ({
+          _id: stage._id || '',
+          name: stage.name || '',
+          startDate: stage.startDate ? new Date(stage.startDate).toLocaleDateString('en-GB', { timeZone: 'UTC' }) : '',
+          endDate: stage.endDate ? new Date(stage.endDate).toLocaleDateString('en-GB', { timeZone: 'UTC' }) : '',
+          startDateEvaluation: stage.startDateEvaluation ? new Date(stage.startDateEvaluation).toLocaleDateString('en-GB', { timeZone: 'UTC' }) : '',
+          endDateEvaluation: stage.endDateEvaluation ? new Date(stage.endDateEvaluation).toLocaleDateString('en-GB', { timeZone: 'UTC' }) : '',
+          gameJam: {
+              _id: stage.gameJam._id || '',
+              edition: stage.gameJam.edition || ''
+          }
+      }));      
+        const selectedData = data.map(row => {
+          const rowData: any[] = [];
+          this.selectedColumns.forEach(column => {
+            if (column.startsWith('gameJam.')) {
+              const subProperty = column.split('.')[1];
+              rowData.push(((row.gameJam as {[key: string]: string})[subProperty]));
+            } else {
+              rowData.push((row as any)[column]);
+            }
+          });
+          return rowData;
+        });
+  
+        const headers = this.selectedColumns.map((column: string) => {
+          if (column === '_id') return 'ID';
+          if (column === 'name') return 'Name';
+          if (column === 'startDate') return 'Start';
+          if (column === 'endDate') return 'End';
+          if (column === 'startDateEvaluation') return 'Start Eval';
+          if (column === 'endDateEvaluation') return 'End Eval';
+          if (column === 'gameJam._id') return 'GJ ID';
+          if (column === 'gameJam.edition') return 'GJ Edition';
+          return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+        });
+  
+        autoTable(doc, {
+          head: [headers],
+          body: selectedData
+        });
+  
+        doc.save('stages.pdf');
+      },
+      error => {
+        console.error('Error al obtener los escenarios:', error);
+      }
+    );
+  }  
+
+  isDateFilterSelected(): boolean {
+    return this.selectedHeader === 'startDate' || this.selectedHeader === 'endDate' || this.selectedHeader === 'startDateEvaluation' || this.selectedHeader === 'endDateEvaluation';
   }
 
   get paginasMostradas(): (number | '...')[] {

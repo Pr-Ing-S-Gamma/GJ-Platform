@@ -31,9 +31,10 @@ export class RegisterComponent implements OnInit {
       email: ['', Validators.required],
       name: ['', Validators.required],
       region: ['', Validators.required],
-      site: ['', Validators.required]
+      site: ['', Validators.required],
+      discordUsername: ['', Validators.required]
     });
-    this.userService.getCurrentUser('http://149.130.176.112:3000/api/user/get-user')
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
     .subscribe(
       user => {
         if (user.rol === 'LocalOrganizer') {
@@ -46,7 +47,7 @@ export class RegisterComponent implements OnInit {
       () => {
       }
     );
-    this.regionService.getRegions('http://149.130.176.112:3000/api/region/get-regions')
+    this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
     .subscribe(
       regions => {
         this.regions = regions;
@@ -59,7 +60,7 @@ export class RegisterComponent implements OnInit {
   onRegionSelection() {
     const selectedValue = this.myForm.get('region')?.value;
     if (selectedValue && selectedValue._id) {
-      this.siteService.getSitesPerRegion(`http://149.130.176.112:3000/api/site/get-sites-per-region/${selectedValue._id}`)
+      this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region-open/${selectedValue._id}`)
         .subscribe(
           sites => {
             this.sites = sites;
@@ -79,11 +80,10 @@ export class RegisterComponent implements OnInit {
   
   submitForm() {
     if (this.myForm.valid) {
-      console.log('Formulario válido');
       
-      const { email, name, region, site} = this.myForm.value;
+      const { email, name, region, site, discordUsername} = this.myForm.value;
   
-      this.userService.registerUser(`http://149.130.176.112:3000/api/user/register-user`, {
+      this.userService.registerUser(`http://localhost:3000/api/user/register-user`, {
         name: name,
         email: email,
         region: {
@@ -95,7 +95,8 @@ export class RegisterComponent implements OnInit {
           name: site.name
         },
         rol: 'Jammer',
-        coins: 0
+        coins: 0,
+        discordUsername: discordUsername
       }).subscribe({
         next: (data) => {
           if (data.success) {
@@ -123,8 +124,8 @@ export class RegisterComponent implements OnInit {
   showErrorMessage(message: string) {
     this.errorMessage = message;
     setTimeout(() => {
-      this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-    }, 5000); // Limpia el mensaje después de 5 segundos
+      this.errorMessage = '';
+    }, 5000);
   }
 
 }

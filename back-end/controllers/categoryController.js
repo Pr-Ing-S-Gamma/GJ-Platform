@@ -5,9 +5,9 @@ const mongoose = require('mongoose');
 const Submission = require('../models/submissionModel')
 
 const createCategory = async (req, res) => {
-    const { name } = req.body;
+    const { titleSP, titleEN, titlePT, descriptionSP, descriptionEN, descriptionPT, manualSP, manualEN, manualPT } = req.body;
     try {
-        const existingCategory = await Category.findOne({ name: name });
+        const existingCategory = await Category.findOne({ titleEN: titleEN });
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
         if (existingCategory) {
@@ -15,7 +15,15 @@ const createCategory = async (req, res) => {
         }
 
         const category = new Category({
-            name: name,
+            titleSP: titleSP,
+            titleEN: titleEN,
+            titlePT: titlePT,
+            descriptionSP: descriptionSP,
+            descriptionEN: descriptionEN,
+            descriptionPT: descriptionPT,
+            manualSP: manualSP,
+            manualEN: manualEN,
+            manualPT: manualPT,
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,
@@ -35,6 +43,7 @@ const createCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
     try {
         const id = req.params.id;
+        const { titleSP, titleEN, titlePT, descriptionSP, descriptionEN, descriptionPT, manualSP, manualEN, manualPT } = req.body;
         const updateFields = {};
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const lastUpdateUser = await User.findById(userId);
@@ -46,13 +55,21 @@ const updateCategory = async (req, res) => {
                 return res.status(404).json({ success: false, error: "Category does not exist" });
             }
         }
-        if (req.body.name) {
-            const existingCategory = await Category.findOne({ name: req.body.name });
+        if (titleEN) {
+            const existingCategory = await Category.findOne({ titleEN: titleEN });
             if (existingCategory) {
                 return res.status(409).json({ success: false, error: "Category with this name already exists" });
             }
             
-            updateFields.name = req.body.name;
+            updateFields.titleSP = titleSP;
+            updateFields.titleEN = titleEN;
+            updateFields.titlePT = titlePT;
+            updateFields.descriptionSP = descriptionSP;
+            updateFields.descriptionEN = descriptionEN;
+            updateFields.descriptionPT = descriptionPT;
+            updateFields.manualSP = manualSP;
+            updateFields.manualEN = manualEN;
+            updateFields.manualPT = manualPT;
             updateFields.lastUpdateUser = {
                 userId: lastUpdateUser._id,
                 name: lastUpdateUser.name,

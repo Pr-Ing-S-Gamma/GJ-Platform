@@ -5,6 +5,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ThemeService } from '../../services/theme.service';
 import { Theme } from '../../../types';
 declare var $: any;
+import { jsPDF }  from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-theme-crud',
@@ -24,115 +26,109 @@ export class ThemeCrudComponent implements OnInit{
 
   ThemeToEdit: any;
   indexTheme = 0;
+  selectedHeader: string | undefined;
+  filterValue: string = '';
+  selectedColumns: (keyof Theme)[] = []; 
 
   constructor(private fb: FormBuilder, private themeService: ThemeService){}
 
   ngOnInit(): void {
     this.myForm = this.fb.group({
-      title: ['', Validators.required],
-      description : ['', Validators.required],
-      manual : ['', Validators.required]
+      titleEN: ['', Validators.required],
+      titleSP: ['', Validators.required],
+      titlePT: ['', Validators.required],
+      descriptionEN: ['', Validators.required],
+      descriptionSP: ['', Validators.required],
+      descriptionPT: ['', Validators.required],
+      manualEN: ['', Validators.required],
+      manualSP: ['', Validators.required],
+      manualPT: ['', Validators.required]
     });
-    this.themeService.getThemes('http://149.130.176.112:3000/api/theme/get-themes')
-    .subscribe(
-      themes => {
-        this.dataSource = themes;
-      },
-      error => {
-        console.error('Error al obtener temas:', error);
-      }
-    );
+    this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
+      .subscribe(
+        themes => {
+          this.dataSource = themes;
+        },
+        error => {
+          console.error('Error al obtener temas:', error);
+        }
+      );
   }
 
-  seleccionarElemento(elemento:any){
+  seleccionarElemento(elemento: any) {
     this.ThemeToEdit = elemento;
     this.indexTheme = this.dataSource.indexOf(elemento);
     this.myForm.patchValue({
-      title: elemento.titleEN,
-      description: elemento.descriptionEN,
-      manual: elemento.manualEN
+      titleEN: elemento.titleEN,
+      titleSP: elemento.titleSP,
+      titlePT: elemento.titlePT,
+      descriptionEN: elemento.descriptionEN,
+      descriptionSP: elemento.descriptionSP,
+      descriptionPT: elemento.descriptionPT,
+      manualEN: elemento.manualEN,
+      manualSP: elemento.manualSP,
+      manualPT: elemento.manualPT
     });
   }
 
   editar() {
     const themeId = this.ThemeToEdit['_id'];
     if (this.myForm.valid) {
-      this.themeService.updateTheme(`http://149.130.176.112:3000/api/theme/update-theme/${themeId}`, {
-        manualPT: this.myForm.value['manual'],
-        manualSP: this.myForm.value['manual'],
-        manualEN: this.myForm.value['manual'],
-        descriptionSP: this.myForm.value['description'],
-        descriptionPT: this.myForm.value['description'],
-        descriptionEN: this.myForm.value['description'],
-        titleSP: this.myForm.value['title'],
-        titleEN: this.myForm.value['title'],
-        titlePT: this.myForm.value['title']
-      }).subscribe({
-        next: (data) => {
-          if (data.success) {
-          this.dataSource[this.dataSource.findIndex(theme => theme._id === data.theme._id)] = data.theme;
-          this.showSuccessMessage(data.msg);
-          } else {
-            this.showErrorMessage(data.error);
-          }
-        },
-        error: (error) => {
-          this.showErrorMessage(error.error.error);
-        },
-      });
+      this.themeService.updateTheme(`http://localhost:3000/api/theme/update-theme/${themeId}`, this.myForm.value)
+        .subscribe({
+          next: (data) => {
+            if (data.success) {
+              this.dataSource[this.dataSource.findIndex(theme => theme._id === data.theme._id)] = data.theme;
+              this.showSuccessMessage(data.msg);
+            } else {
+              this.showErrorMessage(data.error);
+            }
+          },
+          error: (error) => {
+            this.showErrorMessage(error.error.error);
+          },
+        });
     } else {
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
 
-eliminar(elemento: any) {
-  const id = elemento._id;
-
-  const url = `http://149.130.176.112:3000/api/theme/delete-theme/${id}`;
-
-  this.themeService.deleteTheme(url).subscribe({
+  eliminar(elemento: any) {
+    const id = elemento._id;
+    const url = `http://localhost:3000/api/theme/delete-theme/${id}`;
+    this.themeService.deleteTheme(url).subscribe({
       next: (data) => {
-          console.log('Tema eliminado correctamente:', data);
-          this.dataSource = this.dataSource.filter(item => item !== elemento);
-          this.showSuccessMessage(data.msg);
+        console.log('Tema eliminado correctamente:', data);
+        this.dataSource = this.dataSource.filter(item => item !== elemento);
+        this.showSuccessMessage(data.msg);
       },
       error: (error) => {
-          console.error('Error al eliminar el tema:', error);
-          this.showErrorMessage(error.error.msg);
+        console.error('Error al eliminar el tema:', error);
+        this.showErrorMessage(error.error.msg);
       }
-  });
-}
+    });
+  }
 
   agregar() {
     if (this.myForm.valid) {
-      this.themeService.createTheme(`http://149.130.176.112:3000/api/theme/create-theme`, {
-        manualPT: this.myForm.value['manual'],
-        manualSP: this.myForm.value['manual'],
-        manualEN: this.myForm.value['manual'],
-        descriptionSP: this.myForm.value['description'],
-        descriptionPT: this.myForm.value['description'],
-        descriptionEN: this.myForm.value['description'],
-        titleSP: this.myForm.value['title'],
-        titleEN: this.myForm.value['title'],
-        titlePT: this.myForm.value['title']
-      }).subscribe({
-        next: (data) => {
-          if (data.success) {
-            this.dataSource.push(data.theme); 
-            this.showSuccessMessage(data.msg);
-          } else {
-            this.showErrorMessage(data.error);
-          }
-        },
-        error: (error) => {
-          this.showErrorMessage(error.error.error);
-        },
-      });
+      this.themeService.createTheme(`http://localhost:3000/api/theme/create-theme`, this.myForm.value)
+        .subscribe({
+          next: (data) => {
+            if (data.success) {
+              this.dataSource.push(data.theme);
+              this.showSuccessMessage(data.msg);
+            } else {
+              this.showErrorMessage(data.error);
+            }
+          },
+          error: (error) => {
+            this.showErrorMessage(error.error.error);
+          },
+        });
     } else {
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  
@@ -168,8 +164,84 @@ showErrorMessage(message: string) {
 
   // Función para obtener los datos de la página actual
   obtenerDatosPagina() {
+    let filteredData = this.dataSource;
+  
+    if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
+      const filterText = this.filterValue.trim().toLowerCase();
+      filteredData = filteredData.filter(item => {
+        switch (this.selectedHeader) {
+          case '_id':
+            return item._id && item._id.toLowerCase().startsWith(filterText);
+          case 'titleSP':
+          case 'titleEN':
+          case 'titlePT':
+          case 'descriptionSP':
+          case 'descriptionEN':
+          case 'descriptionPT':
+          case 'manualSP':
+          case 'manualEN':
+          case 'manualPT':
+            if (item[this.selectedHeader]) {
+              return item[this.selectedHeader].toLowerCase().startsWith(filterText);
+            }
+            return false;
+          default:
+            return false;
+        }
+      });
+    }
+  
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.dataSource.slice(startIndex, startIndex + this.pageSize);
+    return filteredData.slice(startIndex, startIndex + this.pageSize);
+}
+
+
+  exportToPDF() {
+    const doc = new jsPDF();
+  
+    const url = 'http://localhost:3000/api/theme/get-themes';
+    this.themeService.getThemes(url).subscribe(
+      (themes: any[]) => {
+        const data = themes.map(theme => ({
+          _id: theme._id,
+          titleSP: theme.titleSP,
+          titleEN: theme.titleEN,
+          titlePT: theme.titlePT,
+          descriptionSP: theme.descriptionSP,
+          descriptionEN: theme.descriptionEN,
+          descriptionPT: theme.descriptionPT,
+          manualSP: theme.manualSP,
+          manualEN: theme.manualEN,
+          manualPT: theme.manualPT
+        }));
+  
+        const selectedData = data.map(row => {
+          const rowData: any[] = [];
+          this.selectedColumns.forEach(column => {
+            if (column === '_id') {
+              rowData.push(row[column] || ''); 
+            } else {
+              rowData.push(row[column] || ''); 
+            }
+          });
+          return rowData;
+        });
+  
+        const headers = this.selectedColumns.map(column => {
+            return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+        });
+  
+        autoTable(doc, {
+          head: [headers],
+          body: selectedData
+        });
+  
+        doc.save('themes.pdf');
+      },
+      error => {
+        console.error('Error al obtener themes:', error);
+      }
+    );
   }
 
   get paginasMostradas(): (number | '...')[] {

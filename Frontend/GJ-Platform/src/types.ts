@@ -31,6 +31,7 @@ export interface User {
   _id?: string;
   name: string;
   email: string;
+  discordUsername: string;
   region: {
     _id: string;
     name: string;
@@ -50,6 +51,8 @@ export interface User {
 export interface Site {
     _id?: string;
     name: string;
+    open?: number;
+    modality?: string;
     region: {
       _id: string;
       name: string;
@@ -67,8 +70,17 @@ export interface Region {
 
 export interface Category {
   _id?: string;
-  name: string;
+  titleSP: string;
+  titleEN: string;
+  titlePT: string;
+  descriptionSP: string;
+  descriptionEN: string;
+  descriptionPT: string;
+  manualSP: string;
+  manualEN: string;
+  manualPT: string;
 }
+
 
 export interface Country {
   name: string;
@@ -78,14 +90,6 @@ export interface Country {
 export interface GameJam {
   _id?: string;
   edition: string;
-  region: {
-    _id: string;
-    name: string;
-  };
-  site: {
-    _id: string;
-    name: string;
-  };
   theme: {
     _id: string;
     titleEN: string;
@@ -99,6 +103,8 @@ export interface Stage {
   name: string;
   startDate: Date;
   endDate: Date;
+  startDateEvaluation: Date;
+  endDateEvaluation: Date;
   gameJam: {
     _id: string;
     edition: string;
@@ -126,18 +132,58 @@ export interface Team {
     _id: string;
     name: string;
     email: string;
+    discordUsername: string;
   }[];
 }
 
 export interface Theme {
   _id?: string;
-  manualPT?: string;
-  manualSP?: string;
-  manualEN?: string;
-  descriptionSP?: string;
-  descriptionPT?: string;
-  descriptionEN?: string;
-  titleSP?: string;
-  titleEN?: string;
-  titlePT?: string;
+  manualPT: string;
+  manualSP: string;
+  manualEN: string;
+  descriptionSP: string;
+  descriptionPT: string;
+  descriptionEN: string;
+  titleSP: string;
+  titleEN: string;
+  titlePT: string;
+}
+
+export interface Member {
+    _id: string;
+    name: string;
+    email: string;
+    discordUsername: string;
+}
+
+export interface Submission {
+  _id?: string;
+  title: string;
+  description: string;
+  pitch: string;
+  game: string;
+  teamId: string;
+  categoryId: string; 
+  stageId?: string; 
+  themeId: string;
+  score: number;
+  evaluators?: {
+      userId?: string;
+      name?: string;
+      email?: string;
+  }[];
+}
+
+export interface Rating {
+  pitchScore?: Number;
+  pitchFeedback?: String;
+  gameDesignScore?: Number;
+  gameDesignFeedback?: String;
+  artScore?: Number;
+  artFeedback?: String;
+  buildScore?: Number;
+  buildFeedback?: String;
+  audioScore?: Number;
+  audioFeedback?: String;
+  generalFeedback?: String;
 }

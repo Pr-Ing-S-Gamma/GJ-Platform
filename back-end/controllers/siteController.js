@@ -9,7 +9,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 const createSite = async (req, res) => {
-    const { name, region, country } = req.body;
+    const { name, region, country, modality } = req.body;
     const countryName = country;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
@@ -34,6 +34,7 @@ const createSite = async (req, res) => {
 
         const site = new Site({
             name: name,
+            modality: modality,
             country: {
                 name: countryName,
                 code: country.code 
@@ -42,6 +43,7 @@ const createSite = async (req, res) => {
                 _id: region._id,
                 name: region.name
             },
+            open: 0,
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,
@@ -67,7 +69,9 @@ const updateSite = async (req, res) => {
         const lastUpdateUser = await User.findById(userId);
         const region = req.body.region;
         const countryName = req.body.country;
-        
+        const open = req.body.open;
+        const modality = req.body.modality;
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'El ID de site proporcionado no es válido.' });
         } else {
@@ -137,6 +141,17 @@ const updateSite = async (req, res) => {
             changed++;
         }
  
+
+        if (open) {
+            updateFields.open = open;
+            changed++;
+        }
+
+        if (modality) {
+            updateFields.modality = modality;
+            changed++;
+        }
+
         if (changed > 0) {
             updateFields.lastUpdateUser = {
                 userId: lastUpdateUser._id,
@@ -171,6 +186,26 @@ const getSite = async(req,res)=>{
         res.status(400).send({ success:false, msg:error.message });
     }
 };
+
+const changeStatus = async (req, res) => {
+    try {
+        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        const creatorUser = await User.findById(userId);
+
+        const site = await Site.findById(creatorUser.site._id);
+        if(site.open === 1) {
+            site.open = 0;
+        } else {
+            site.open = 1;
+        }
+        
+        await site.save(); 
+        res.status(200).json({ success: true, msg: 'Site status updated successfully'});
+    } catch (error) {
+        res.status(400).json({ success: false, msg: error.message });
+    }
+};
+
 
 const getSites = async(req,res)=>{
     try{
@@ -211,6 +246,25 @@ const getSitesPerRegion = async (req, res) => {
                 return res.status(404).json({ success: false, error: "Esa región no existe" });
             } else {
                 const selectedSites = await Site.find({ 'region._id': region });
+                return res.status(200).json({ success: true, msg: 'Sitios encontrados correctamente', data: selectedSites });
+            }
+        }
+    } catch (error) {
+        return res.status(400).json({ success: false, msg: error.message });
+    }
+};
+
+const getSitesPerRegionOpen = async (req, res) => {
+    try {
+        const region = req.params.regionId;
+        if (!mongoose.Types.ObjectId.isValid(region)) {
+            return res.status(400).json({ success: false, error: 'El ID de región proporcionado no es válido.' });
+        } else {
+            const existingRegion = await Region.findById(region);
+            if (!existingRegion) {
+                return res.status(404).json({ success: false, error: "Esa región no existe" });
+            } else {
+                const selectedSites = await Site.find({ 'region._id': region, 'open': 0  });
                 return res.status(200).json({ success: true, msg: 'Sitios encontrados correctamente', data: selectedSites });
             }
         }
@@ -265,5 +319,7 @@ module.exports = {
     getSites,
     getCountries,
     getSitesPerRegion,
-    deleteSite
+    getSitesPerRegionOpen,
+    deleteSite,
+    changeStatus
 };

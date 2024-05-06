@@ -9,6 +9,8 @@ import { RegionService } from '../../services/region.service';
 import { SiteService } from '../../services/site.service';
 import { GamejamService } from '../../services/gamejam.service';
 declare var $: any;
+import { jsPDF }  from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-team-crud',
@@ -30,6 +32,9 @@ export class TeamCrudComponent implements OnInit {
   gameJams: GameJam[] = [];
   teamToEdit: any;
   indexTeam = 0;
+  selectedHeader: string | undefined;
+  filterValue: string = '';
+  selectedColumns: (keyof Team)[] = []; 
   constructor(private fb: FormBuilder, private teamService: TeamService, private userService: UserService, private regionService: RegionService, private siteService: SiteService, private gamejamService: GamejamService){
   }
 
@@ -213,10 +218,11 @@ removeJammer(jammer: User) {
         edition: gameJam.edition
       },
       linkTree: linkTrees,
-      jammers: jammers.map((jammer: { _id: string; name: string; email: string; }) => ({
+      jammers: jammers.map((jammer: { _id: string; name: string; email: string; discordUsername: string; }) => ({
           _id: jammer._id,
           name: jammer.name,
-          email: jammer.email
+          email: jammer.email,
+          discordUsername: jammer.discordUsername
         })),
         site: {
           _id: site._id,
@@ -274,10 +280,11 @@ removeJammer(jammer: User) {
               edition: gameJam.edition
             },
             linkTree: linkTrees,
-            jammers: jammers.map((jammer: { _id: string; name: string; email: string; }) => ({
+            jammers: jammers.map((jammer: { _id: string; name: string; email: string; discordUsername: string; }) => ({
               _id: jammer._id,
               name: jammer.name,
-              email: jammer.email
+              email: jammer.email,
+              discordUsername: jammer.discordUsername
             })),
             site: {
               _id: site._id,
@@ -361,10 +368,117 @@ removeLinkTree(link: string) {
   
     // Función para obtener los datos de la página actual
     obtenerDatosPagina() {
+      let filteredData = this.dataSource;
+    
+      if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
+        const filterText = this.filterValue.trim().toLowerCase();
+        filteredData = filteredData.filter(item => {
+          switch (this.selectedHeader) {
+            case '_id':
+            case 'studioName':
+            case 'description':
+            case 'region.name':
+            case 'site.name':
+            case 'gameJam._id':
+            case 'gameJam.edition':
+              return this.getPropertyValue(item, this.selectedHeader).toLowerCase().startsWith(filterText);
+            default:
+              return false;
+          }
+        });
+      }
+    
       const startIndex = (this.currentPage - 1) * this.pageSize;
-      const endIndex = Math.min(startIndex + this.pageSize, this.dataSource.length);
-      return this.dataSource.slice(startIndex, endIndex);
-    }
+      return filteredData.slice(startIndex, startIndex + this.pageSize);
+  }
+  
+  getPropertyValue(obj: any, key: string) {
+      if (!obj || !key) return '';
+      const keys = key.split('.');
+      let value = obj;
+      for (const k of keys) {
+          if (Array.isArray(value)) {
+              value = value.map((item: any) => item[k]);
+          } else {
+              value = value[k];
+          }
+          if (value === undefined || value === null) return '';
+      }
+      return Array.isArray(value) ? value.join(', ') : value;
+  }
+
+  exportToPDF() {
+    const doc = new jsPDF();
+  
+    const url = 'http://localhost:3000/api/team/get-teams';
+    this.teamService.getTeams(url).subscribe(
+        (teams: Team[]) => {
+            const data = teams.map(team => ({
+                _id: team._id || '',
+                studioName: team.studioName || '',
+                description: team.description || '',
+                region: {
+                    _id: team.region._id || '',
+                    name: team.region.name || ''
+                },
+                site: {
+                    _id: team.site._id || '',
+                    name: team.site.name || ''
+                },
+                gameJam: {
+                    _id: team.gameJam._id || '',
+                    edition: team.gameJam.edition || ''
+                },
+                jammers: team.jammers.map(jammer => ({
+                    _id: jammer._id || '',
+                    name: jammer.name || '',
+                    email: jammer.email || '',
+                    discordUsername: jammer.discordUsername || ''
+                }))
+            }));
+  
+            const selectedData = data.map(row => {
+              const rowData: any[] = [];
+              this.selectedColumns.forEach(column => {
+                  if (column.startsWith('region.')) {
+                      const subProperty = column.split('.')[1];
+                      rowData.push(((row.region as {[key: string]: string})[subProperty]));
+                  } else if (column.startsWith('site.')) {
+                      const subProperty = column.split('.')[1];
+                      rowData.push(((row.site as {[key: string]: string})[subProperty]));
+                  } else if (column.startsWith('gameJam.')) {
+                      const subProperty = column.split('.')[1];
+                      rowData.push(((row.gameJam as {[key: string]: string})[subProperty]));
+                  } else if (column.startsWith('jammers.')) {
+                  } else {
+                      rowData.push((row as any)[column]);
+                  }
+              });
+              return rowData;
+          });          
+  
+            const headers = this.selectedColumns.map((column: string) => {
+                if (column === '_id') return 'ID';
+                if (column === 'studioName') return 'Name';
+                if (column === 'description') return 'Description';
+                if (column === 'region.name') return 'Region Name';
+                if (column === 'site.name') return 'Site Name';
+                if (column === 'gameJam.edition') return 'GJ Edition';
+                return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+            });
+  
+            autoTable(doc, {
+                head: [headers],
+                body: selectedData
+            });
+  
+            doc.save('teams.pdf');
+        },
+        error => {
+            console.error('Error al obtener los equipos:', error);
+        }
+    );
+}
   
     get paginasMostradas(): (number | '...')[] {
       const totalPaginas = this.totalPaginas;

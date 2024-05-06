@@ -23,6 +23,9 @@ export class LoginComponent implements OnInit{
         if (user.rol === 'GlobalOrganizer') {
           this.router.navigate(['/DataManagement']);
         }
+        if (user.rol === 'Judge') {
+          this.router.navigate(['/Juez']);
+        }
       },
       () => {
       }

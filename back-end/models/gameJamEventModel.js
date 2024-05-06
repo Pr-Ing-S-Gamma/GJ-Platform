@@ -17,29 +17,13 @@ const gameJamSchema = mongoose.Schema({
         endDate: { 
             type: Date
         },
+        startDateEvaluation: { 
+            type: Date
+        },
+        endDateEvaluation: { 
+            type: Date
+        },
     }],
-    region:  {
-        _id: { 
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Region',
-            required: true
-        },
-        name: { 
-            type: String, 
-            required: true 
-        }
-    },
-    site:  {
-        _id: { 
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Site',
-            required: true
-        },
-        name: { 
-            type: String, 
-            required: true 
-        }
-    },
     theme:  {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,

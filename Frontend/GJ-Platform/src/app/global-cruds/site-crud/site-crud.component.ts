@@ -6,6 +6,8 @@ import { Country, Region, Site } from '../../../types';
 import { RegionService } from '../../services/region.service';
 import { SiteService } from '../../services/site.service';
 declare var $: any;
+import { jsPDF }  from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-site-crud',
@@ -26,10 +28,14 @@ export class SiteCrudComponent implements OnInit {
 
   siteToEdit: any;
   indexSite = 0;
+  selectedHeader: string | undefined;
+  filterValue: string = '';
+  selectedColumns: (keyof Site)[] = []; 
   constructor(private fb: FormBuilder, private siteService: SiteService, private regionService: RegionService){}
   ngOnInit(): void {
     this.myForm = this.fb.group({
       name: ['', Validators.required],
+      modality: ['', Validators.required], 
       country: ['', Validators.required],
       region: ['', Validators.required]
     });
@@ -57,25 +63,26 @@ export class SiteCrudComponent implements OnInit {
         this.dataSource = sites;
       },
       error => {
-        console.error('Error al obtener países:', error);
+        console.error('Error al obtener sitios:', error);
       }
     );
   }
-
+  
   seleccionarElemento(elemento: any) {
     this.siteToEdit = elemento;
     this.indexSite = this.dataSource.indexOf(elemento);
-
+  
     const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
     const selectedCountry = this.countries.find(country => country.name === elemento.country.name);
-
+  
     this.myForm.patchValue({
       name: elemento.name,
+      modality: elemento.modality, 
       region: selectedRegion, 
       country: selectedCountry 
     });
   }
-
+  
   editar() {
     if (this.myForm.valid) {
       
@@ -86,6 +93,7 @@ export class SiteCrudComponent implements OnInit {
       console.log(this.myForm.value["country"].name);
       this.siteService.updateSite(url, {
         name: this.myForm.value["name"],
+        modality: this.myForm.value["modality"], 
         region: this.myForm.value["region"],
         country: this.myForm.value["country"].name
       }).subscribe({
@@ -94,6 +102,7 @@ export class SiteCrudComponent implements OnInit {
           this.dataSource[this.indexSite] = {
             _id: siteId,
             name: this.myForm.value["name"],
+            modality: this.myForm.value["modality"],
             region: this.myForm.value["region"],
             country: this.myForm.value["country"]
           };
@@ -131,13 +140,14 @@ export class SiteCrudComponent implements OnInit {
     if (this.myForm.valid) {
       this.siteService.createSite(`http://149.130.176.112:3000/api/site/create-site`, {
         name: this.myForm.value["name"],
+        modality: this.myForm.value["modality"], 
         region: this.myForm.value["region"],
         country: this.myForm.value["country"].name
       }).subscribe({
         next: (data) => {
           if (data.success) {
             const siteId = data.siteId;
-            this.dataSource.push({ _id: siteId, name: this.myForm.value["name"], region: this.myForm.value["region"], country: this.myForm.value["country"]});
+            this.dataSource.push({ _id: siteId, name: this.myForm.value["name"], modality: this.myForm.value["modality"], region: this.myForm.value["region"], country: this.myForm.value["country"]});
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -151,7 +161,7 @@ export class SiteCrudComponent implements OnInit {
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
-
+  
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
@@ -188,11 +198,98 @@ showErrorMessage(message: string) {
 
   // Función para obtener los datos de la página actual
   obtenerDatosPagina() {
+    let filteredData = this.dataSource;
+  
+    if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
+      const filterText = this.filterValue.trim().toLowerCase();
+      filteredData = filteredData.filter(item => {
+        switch (this.selectedHeader) {
+          case '_id':
+          case 'name':
+          case 'modality':
+          case 'region.name':
+          case 'country.name':
+            return this.getPropertyValue(item, this.selectedHeader).toLowerCase().startsWith(filterText);
+          default:
+            return false;
+        }
+      });
+    }
+  
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, this.dataSource.length);
-    return this.dataSource.slice(startIndex, endIndex);
+    return filteredData.slice(startIndex, startIndex + this.pageSize);
+  }
+  
+  getPropertyValue(obj: any, key: string) {
+    if (!obj || !key) return '';
+    const keys = key.split('.');
+    let value = obj;
+    for (const k of keys) {
+      value = value[k];
+      if (value === undefined || value === null) return '';
+    }
+    return value;
   }
 
+  exportToPDF() {
+    const doc = new jsPDF();
+  
+    const url = 'http://localhost:3000/api/site/get-sites';
+    this.siteService.getSites(url).subscribe(
+      (sites: Site[]) => {
+        const data = sites.map(site => ({
+          _id: site._id || '',
+          name: site.name || '',
+          modality: site.modality,
+          region: {
+            _id: site.region._id || '',
+            name: site.region.name || ''
+          },
+          country: {
+            name: site.country.name || '',
+            code: site.country.code || ''
+          }
+        }));
+  
+        const selectedData = data.map(row => {
+          const rowData: any[] = [];
+          this.selectedColumns.forEach(column => {
+            if (column.startsWith('region.')) {
+              const subProperty = column.split('.')[1];
+              rowData.push(((row.region as {[key: string]: string})[subProperty]));
+            } else if (column.startsWith('country.')) {
+              const subProperty = column.split('.')[1];
+              rowData.push(((row.country as {[key: string]: string})[subProperty]));
+            } else {
+              rowData.push((row as any)[column]);
+            }
+          });
+          return rowData;
+        });
+  
+        const headers = this.selectedColumns.map((column: string) => {
+          if (column === '_id') return 'ID';
+          if (column === 'modality') return 'Modality';
+          if (column === 'region._id') return 'Region ID';
+          if (column === 'region.name') return 'Region Name';
+          if (column === 'country.name') return 'Country Name';
+          if (column === 'country.code') return 'Country Code';
+          return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+        });
+  
+        autoTable(doc, {
+          head: [headers],
+          body: selectedData
+        });
+  
+        doc.save('sites.pdf');
+      },
+      error => {
+        console.error('Error al obtener los sitios:', error);
+      }
+    );
+  }
+  
   get paginasMostradas(): (number | '...')[] {
     const totalPaginas = this.totalPaginas;
     const currentPage = this.currentPage;

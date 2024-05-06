@@ -6,6 +6,10 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    discordUsername: {
+        type: String,
+        required: true
+    },
     name:{
         type:String,
         required:true
@@ -14,22 +18,22 @@ const userSchema = mongoose.Schema({
         _id: { 
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Region',
-            required: true
+            required: false
         },
         name: { 
             type: String, 
-            required: true 
+            required: false 
         }
     },
     site:  {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Site',
-            required: true
+            required: false
         },
         name: { 
             type: String, 
-            required: true 
+            required: false 
         }
     },
     team:  {

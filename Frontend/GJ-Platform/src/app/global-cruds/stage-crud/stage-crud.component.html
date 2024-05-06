@@ -1,9 +1,39 @@
 <div class="card-body" style="background: white;
 border-radius: 35px; border: 1px black solid;
 border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
-    <!-- Aquí puedes colocar tus formularios o contenido CRUD -->
-    <!-- TODO: -->
     <div class="table-responsive">
+        <div class="filters">
+            <select [(ngModel)]="selectedHeader">
+                <option value="_id">ID</option>
+                <option value="name">Name</option>
+                <option value="startDate">Start Date</option>
+                <option value="endDate">End Date</option>
+                <option value="startDateEvaluation">Start Date Evaluation</option>
+                <option value="endDateEvaluation">End Date Evaluation</option>
+                <option value="gameJam._id">Game Jam ID</option>
+                <option value="gameJam.edition">Game Jam Edition</option>
+            </select>
+            
+            <div *ngIf="isDateFilterSelected()">
+                <input type="date" [(ngModel)]="filterValue" placeholder="Select Date">
+            </div>
+            
+            <input *ngIf="!isDateFilterSelected()" type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
+            
+        
+            <select multiple [(ngModel)]="selectedColumns">
+                <option value="_id">ID</option>
+                <option value="name">Name</option>
+                <option value="startDate">Start Date</option>
+                <option value="endDate">End Date</option>
+                <option value="startDateEvaluation">Start Date Evaluation</option>
+                <option value="endDateEvaluation">End Date Evaluation</option>
+                <option value="gameJam._id">Game Jam ID</option>
+                <option value="gameJam.edition">Game Jam Edition</option>
+            </select>
+        
+            <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+        </div>        
         <table class="table">
             <thead>
                 <tr>
@@ -11,6 +41,8 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <th scope="col">Name</th>
                     <th scope="col">StartDate</th>
                     <th scope="col">EndDate</th>
+                    <th scope="col">StartDateEvaluation</th>
+                    <th scope="col">EndDateEvaluation</th>
                     <th scope="col">GameJamId</th>
                     <th scope="col">GameJamEdition</th>
                     <th scope="col">Update</th>
@@ -21,8 +53,10 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                 <tr *ngFor="let row of obtenerDatosPagina()">
                     <td>{{ row._id }}</td>
                     <td>{{ row.name }}</td>
-                    <td>{{ row.startDate | date:'dd/MM/yyyy' }}</td>
-                    <td>{{ row.endDate | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ row.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                    <td>{{ row.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
+                    <td>{{ row.startDateEvaluation | date:'dd/MM/yyyy':'UTC' }}</td>
+                    <td>{{ row.endDateEvaluation | date:'dd/MM/yyyy':'UTC' }}</td>                                 
                     <td>{{ row.gameJam._id }}</td>
                     <td>{{ row.gameJam.edition }}</td>
                     <td>
@@ -133,6 +167,28 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                                 <input type="date" class="form-control" id="editendDateInput" required placeholder="endDate" formControlName="endDate">
                             </div>
                         </div>
+
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                        font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        Start Date Evaluation</div>
+
+                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                        <div class="form-group"
+                            style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                            <input type="date" class="form-control" id="editstartDateEvaluationInput" required placeholder="startDateEvaluation" formControlName="startDateEvaluation">
+                        </div>
+                    </div>
+
+                    <div style="margin-left: 50px; text-align: left; color: black;
+                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    End Date Evaluation</div>
+
+                <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                    <div class="form-group"
+                        style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <input type="date" class="form-control" id="editendDateEvaluationInput" required placeholder="endDateEvaluation" formControlName="endDateEvaluation">
+                    </div>
+                </div>
                         
                     </div>
                 </div>
@@ -217,6 +273,28 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                                 <input type="date" class="form-control" id="editendDateInput" required placeholder="endDate" formControlName="endDate">
                             </div>
                         </div>
+
+                        <div style="margin-left: 50px; text-align: left; color: black;
+                        font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        Start Date Evaluation</div>
+
+                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                        <div class="form-group"
+                            style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                            <input type="date" class="form-control" id="editstartDateEvaluationInput" required placeholder="startDateEvaluation" formControlName="startDateEvaluation">
+                        </div>
+                    </div>
+
+                    <div style="margin-left: 50px; text-align: left; color: black;
+                        font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        End Date Evaluation</div>
+
+                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                        <div class="form-group"
+                            style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                            <input type="date" class="form-control" id="editendDateEvaluationInput" required placeholder="endDateEvaluation" formControlName="endDateEvaluation">
+                        </div>
+                    </div>
                         
                     </div>
                 </div>

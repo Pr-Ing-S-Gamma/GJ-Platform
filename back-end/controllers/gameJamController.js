@@ -1,7 +1,5 @@
 const GameJam = require('../models/gameJamEventModel');
 const User = require('../models/userModel');
-const Site = require('../models/siteModel');
-const Region = require('../models/regionModel');
 const Stage = require('../models/stageModel');
 const Team = require('../models/teamModel');
 const Theme = require("../models/themeModel");
@@ -9,28 +7,10 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 const createGameJam = async (req, res) => {
-    const { edition, region, site, theme } = req.body;
+    const { edition, theme } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
-
-        if (!mongoose.Types.ObjectId.isValid(region._id)) {
-            return res.status(400).json({ success: false, error: 'The provided region ID is not valid.' });
-        } else {
-            const existingRegion = await Region.findById(region._id);
-            if (!existingRegion) {
-                return res.status(404).json({ success: false, error: "That region does not exist." });
-            }
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(site._id)) {
-            return res.status(400).json({ success: false, error: 'The provided site ID is not valid.' });
-        } else {
-            const existingSite = await Site.findById(site._id);
-            if (!existingSite) {
-                return res.status(404).json({ success: false, error: "That site does not exist." });
-            }
-        }
 
         if (!mongoose.Types.ObjectId.isValid(theme._id)) {
             return res.status(400).json({ success: false, error: 'The provided theme ID is not valid.' });
@@ -43,14 +23,6 @@ const createGameJam = async (req, res) => {
 
         const gameJam = new GameJam({
             edition: edition,
-            region: {
-                _id: region._id,
-                name: region.name
-            },
-            site: {
-                _id: site._id,
-                name: site.name
-            },
             theme: {
                 _id: theme._id,
                 titleEN: theme.titleEN,
@@ -75,7 +47,7 @@ const createGameJam = async (req, res) => {
 
 const updateGameJam = async (req, res) => {
     const { id } = req.params;
-    const { edition, region, site, theme } = req.body;
+    const { edition, theme } = req.body;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'The provided ID is not valid.' });
@@ -110,34 +82,6 @@ const updateGameJam = async (req, res) => {
             .catch(error => {
               console.error('Error updating documents:', error);
             });
-        }
-        if (region) {
-            if (region._id && mongoose.Types.ObjectId.isValid(region._id)) {
-                const existingRegion = await Region.findById(region._id);
-                if (!existingRegion) {
-                    return res.status(404).json({ success: false, error: "That region does not exist." });
-                }
-                gameJam.region = {
-                    _id: region._id,
-                    name: region.name
-                };
-            } else {
-                return res.status(400).json({ success: false, error: 'Invalid region ID provided.' });
-            }
-        }
-        if (site) {
-            if (site._id && mongoose.Types.ObjectId.isValid(site._id)) {
-                const existingSite = await Site.findById(site._id);
-                if (!existingSite) {
-                    return res.status(404).json({ success: false, error: "That site does not exist." });
-                }
-                gameJam.site = {
-                    _id: site._id,
-                    name: site.name
-                };
-            } else {
-                return res.status(400).json({ success: false, error: 'Invalid site ID provided.' });
-            }
         }
 
         if (theme) {
@@ -182,6 +126,50 @@ const getGameJam = async(req,res)=>{
     }
 };
 
+const getCurrentGameJam = async (req, res) => {
+    try {
+        const currentDate = new Date();
+
+        const allGameJams = await GameJam.find({});
+
+        const currentGameJam = allGameJams.find(gameJam => {
+            return gameJam.stages.some(stage => {
+                return currentDate >= stage.startDate && currentDate <= stage.endDate;
+            });
+        });
+
+        if (currentGameJam) {
+            res.status(200).send({ success: true, msg: 'Current Game Jam found', data: currentGameJam });
+        } else {
+            res.status(404).send({ success: false, msg: 'No current Game Jam found' });
+        }
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
+const getGameJamToEvaluate = async (req, res) => {
+    try {
+        const currentDate = new Date();
+
+        const allGameJams = await GameJam.find({});
+
+        const currentGameJam = allGameJams.find(gameJam => {
+            return gameJam.stages.some(stage => {
+                return currentDate >= stage.startDateEvaluation && currentDate <= stage.endDateEvaluation;
+            });
+        });
+
+        if (currentGameJam) {
+            res.status(200).send({ success: true, msg: 'Current Game Jam found', data: currentGameJam });
+        } else {
+            res.status(404).send({ success: false, msg: 'No current Game Jam found' });
+        }
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
 const getGameJams = async(req,res)=>{
     try{
         const allGameJams = await GameJam.find({});
@@ -222,7 +210,19 @@ const deleteGameJam = async(req,res)=>{
 
 const getTimeRemaining = async (req, res) => {
     try {
-        const gameJamId = req.params.gameJamId;
+        const currentDate = new Date();
+
+        const allGameJams = await GameJam.find({});
+
+        const currentGameJam = allGameJams.find(gameJam => {
+            return gameJam.stages.some(stage => {
+                return currentDate >= stage.startDate && currentDate <= stage.endDate;
+            });
+        });
+        if (!currentGameJam) {
+            return res.status(200).json({ success: true, msg: 'No active stages found in this gameJam', timeRemaining: '0:0:0:0' });
+        }
+        const gameJamId = currentGameJam._id;
         if (!mongoose.Types.ObjectId.isValid(gameJamId)) {
             return res.status(400).json({ success: false, error: 'The provided gameJam ID is not valid.' });
         } else {
@@ -281,11 +281,87 @@ const getTimeRemaining = async (req, res) => {
     }
 };
 
+const getTimeRemainingEvaluation = async (req, res) => {
+    try {
+        const currentDate = new Date();
+
+        const allGameJams = await GameJam.find({});
+
+        const currentGameJam = allGameJams.find(gameJam => {
+            return gameJam.stages.some(stage => {
+                return currentDate >= stage.startDateEvaluation && currentDate <= stage.endDateEvaluation;
+            });
+        });
+        if (!currentGameJam) {
+            return res.status(200).json({ success: true, msg: 'No active stages found in this gameJam', timeRemaining: '0:0:0:0' });
+        }
+        const gameJamId = currentGameJam._id;
+        if (!mongoose.Types.ObjectId.isValid(gameJamId)) {
+            return res.status(400).json({ success: false, error: 'The provided gameJam ID is not valid.' });
+        } else {
+            const gameJam = await GameJam.findById(gameJamId).populate('stages._id');
+            if (!gameJam) {
+                return res.status(404).json({ success: false, error: "That gameJam does not exist" });
+            }
+
+            const currentDate = new Date();
+            let closestStage;
+            let closestTimeDifference = Infinity;
+
+            for (const stage of gameJam.stages) {
+                const startDate = new Date(stage.startDateEvaluation);
+                const endDate = new Date(stage.endDateEvaluation);
+
+                if (currentDate < startDate) {
+                    const timeDifference = startDate - currentDate;
+                    if (timeDifference < closestTimeDifference) {
+                        closestTimeDifference = timeDifference;
+                        closestStage = stage;
+                    }
+                } else if (currentDate >= startDate && currentDate <= endDate) {
+                    closestStage = stage;
+                    break;
+                }
+            }
+
+            if (closestStage) {
+                const startDate = new Date(closestStage.startDateEvaluation);
+                const endDate = new Date(closestStage.endDateEvaluation);
+
+                if (currentDate < startDate) {
+                    const timeInMilliseconds = startDate - currentDate;
+                    const days = Math.floor(timeInMilliseconds / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeInMilliseconds % (1000 * 60)) / 1000);
+                    const timeRemaining = `${days}:${hours}:${minutes}:${seconds}`;
+                    return res.status(200).json({ success: true, msg: 'The stage has not started yet', timeRemaining });
+                } else if (currentDate >= startDate && currentDate <= endDate) {
+                    const timeInMilliseconds = endDate - currentDate;
+                    const days = Math.floor(timeInMilliseconds / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeInMilliseconds % (1000 * 60)) / 1000);
+                    const timeRemaining = `${days}:${hours}:${minutes}:${seconds}`;
+                    return res.status(200).json({ success: true, msg: 'The stage is in progress', timeRemaining });
+                }
+            }
+
+            return res.status(200).json({ success: true, msg: 'No active stages found in this gameJam', timeRemaining: '0:0:0:0' });
+        }
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+
 module.exports = {
     createGameJam,
     updateGameJam,
+    getCurrentGameJam,
+    getGameJamToEvaluate,
     getGameJam,
     getGameJams,
     deleteGameJam,
-    getTimeRemaining
+    getTimeRemaining,
+    getTimeRemainingEvaluation
 };

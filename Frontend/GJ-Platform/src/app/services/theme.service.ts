@@ -26,6 +26,12 @@ export class ThemeService {
     );
   }
   
+  getTheme(url: string): Observable<Theme> { 
+    return this.http.get<any>(url).pipe( 
+      map(response => response.theme)
+    );
+  }
+  
   deleteTheme(url: string): Observable<any> {
     return this.http.delete(url);
   }

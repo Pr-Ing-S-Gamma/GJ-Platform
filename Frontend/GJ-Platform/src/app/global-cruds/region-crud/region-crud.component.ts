@@ -5,6 +5,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RegionService } from '../../services/region.service';
 import { Region } from '../../../types';
 declare var $: any;
+import { jsPDF }  from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-region-crud',
@@ -23,6 +25,9 @@ export class RegionCRUDComponent implements OnInit{
   
   regionToEdit: any;
   indexRegion = 0;
+  selectedHeader: string | undefined;
+  filterValue: string = '';
+  selectedColumns: (keyof Region)[] = []; 
   constructor(private fb: FormBuilder, private regionService: RegionService){
   }
   ngOnInit(): void {
@@ -92,6 +97,44 @@ export class RegionCRUDComponent implements OnInit{
     });
   }
 
+  exportToPDF() {
+    const doc = new jsPDF();
+  
+    const url = 'http://localhost:3000/api/region/get-regions';
+    this.regionService.getRegions(url).subscribe(
+      (regions: Region[]) => {
+        const data = regions.map(region => ({
+          _id: region._id || '',
+          name: region.name || '',
+        }));
+  
+        const selectedData = data.map(row => {
+          const rowData: any[] = [];
+          this.selectedColumns.forEach(column => {
+            rowData.push(row[column] || '');
+          });
+          return rowData;
+        });
+  
+        const headers = this.selectedColumns.map((column: string) => {
+          if (column === '_id') return 'ID';
+          if (column === 'name') return 'Name';
+          return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+        });
+  
+        autoTable(doc, {
+          head: [headers],
+          body: selectedData
+        });
+  
+        doc.save('categories.pdf');
+      },
+      error => {
+        console.error('Error al obtener categorías:', error);
+      }
+    );
+  }
+  
   agregar() {
     if (this.myForm.valid) {
       var regionName = this.myForm.value["region"];
@@ -101,7 +144,7 @@ export class RegionCRUDComponent implements OnInit{
         next: (data) => {
           console.log(data);
           if (data.success) {
-            const regionId = data.regionId; // Obtén el ID de la región creada desde la respuesta
+            const regionId = data.regionId; 
             this.dataSource.push({ _id: regionId, name: this.myForm.value["region"] });
             this.showSuccessMessage(data.msg);
           } else {
@@ -153,9 +196,26 @@ export class RegionCRUDComponent implements OnInit{
 
   // Función para obtener los datos de la página actual
   obtenerDatosPagina() {
+    let filteredData = this.dataSource;
+  
+    if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
+      const filterText = this.filterValue.trim().toLowerCase();
+      filteredData = filteredData.filter(item => {
+        switch (this.selectedHeader) {
+          case '_id':
+            return item._id && item._id.toLowerCase().startsWith(filterText);
+          case 'name':
+            return item.name.toLowerCase().startsWith(filterText);
+          default:
+            return false;
+        }
+      });
+    }
+  
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.dataSource.slice(startIndex, startIndex + this.pageSize);
+    return filteredData.slice(startIndex, startIndex + this.pageSize);
   }
+  
 
   get paginasMostradas(): (number | '...')[] {
     const totalPaginas = this.totalPaginas;

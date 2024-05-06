@@ -1,14 +1,52 @@
 <div class="card-body" style="background: white;
 border-radius: 35px; border: 1px black solid;
 border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
-    <!-- Aquí puedes colocar tus formularios o contenido CRUD -->
-    <!-- TODO: -->
+<div class="table-container">
+    <div class="filters">
+        <select [(ngModel)]="selectedHeader">
+            <option value="titleSP">Title (SP)</option>
+            <option value="titleEN">Title (EN)</option>
+            <option value="titlePT">Title (PT)</option>
+            <option value="descriptionSP">Description (SP)</option>
+            <option value="descriptionEN">Description (EN)</option>
+            <option value="descriptionPT">Description (PT)</option>
+            <option value="manualSP">Manual (SP)</option>
+            <option value="manualEN">Manual (EN)</option>
+            <option value="manualPT">Manual (PT)</option>
+        </select>
+
+        <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
+
+        <select multiple [(ngModel)]="selectedColumns">
+            <option value="_id">ID</option>
+            <option value="titleSP">Title (SP)</option>
+            <option value="titleEN">Title (EN)</option>
+            <option value="titlePT">Title (PT)</option>
+            <option value="descriptionSP">Description (SP)</option>
+            <option value="descriptionEN">Description (EN)</option>
+            <option value="descriptionPT">Description (PT)</option>
+            <option value="manualSP">Manual (SP)</option>
+            <option value="manualEN">Manual (EN)</option>
+            <option value="manualPT">Manual (PT)</option>
+        </select>
+
+        <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+    </div>
+
     <div class="table-responsive">
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">Category</th>
+                    <th scope="col">Title (SP)</th>
+                    <th scope="col">Description (SP)</th>
+                    <th scope="col">Manual (SP)</th>
+                    <th scope="col">Title (EN)</th>
+                    <th scope="col">Description (EN)</th>
+                    <th scope="col">Manual (EN)</th>
+                    <th scope="col">Title (PT)</th>
+                    <th scope="col">Description (PT)</th>
+                    <th scope="col">Manual (PT)</th>
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
                 </tr>
@@ -16,9 +54,16 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             <tbody>
                 <tr *ngFor="let row of obtenerDatosPagina()">
                     <td>{{ row._id }}</td>
-                    <td>{{ row.name }}</td>
+                    <td>{{ row.titleSP }}</td>
+                    <td>{{ row.descriptionSP }}</td>
+                    <td>{{ row.manualSP }}</td>
+                    <td>{{ row.titleEN }}</td>
+                    <td>{{ row.descriptionEN }}</td>
+                    <td>{{ row.manualEN }}</td>
+                    <td>{{ row.titlePT }}</td>
+                    <td>{{ row.descriptionPT }}</td>
+                    <td>{{ row.manualPT }}</td>
                     <td>
-                        <!-- Aquí puedes agregar los botones de acciones -->
                         <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
                     </td>
                     <td>
@@ -28,6 +73,8 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </tbody>
         </table>
     </div>
+</div>
+
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <ul class="pagination">
             <!-- Botón para ir a la primera página -->
@@ -45,8 +92,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             <!-- Limitar el número de páginas mostradas -->
             <ng-container *ngFor="let page of paginasMostradas">
                 <li class="page-item" *ngIf="page !== '...'">
-                    <a class="page-link" (click)="cambiarPagina(page)" [class.active]="currentPage === page">{{ page
-                        }}</a>
+                    <a class="page-link" (click)="cambiarPagina(page)" [class.active]="currentPage === page">{{ page }}</a>
                 </li>
             </ng-container>
             <!-- Botón para ir a la página siguiente -->
@@ -79,32 +125,37 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Category</div>
-
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                <input #categoryEditInput class="form-control" id="categoryEditInput" required
-                                    placeholder="Ex. LATAM" formControlName="category">
-                            </div>
+                    <div class="row">
+                        <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                            <label for="title{{language}}">Title ({{language}})</label>
+                            <input type="text" class="form-control" id="title{{language}}" placeholder="Enter title" formControlName="title{{language}}">
                         </div>
-
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                            <label for="description{{language}}">Description ({{language}})</label>
+                            <input type="text" class="form-control" id="description{{language}}" placeholder="Enter description" formControlName="description{{language}}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                            <label for="manual{{language}}">Manual ({{language}})</label>
+                            <input type="text" class="form-control" id="manual{{language}}" placeholder="Enter manual" formControlName="manual{{language}}">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                <!-- Aquí van los mensajes de éxito y error -->
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ successMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{ errorMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
                         <span aria-hidden="true">&times;</span>
@@ -129,32 +180,37 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Category</div>
-
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                <input #categoryInput class="form-control" id="categoryInput" required
-                                    placeholder="Ex. RPG, SHOOTER, ..." formControlName="category">
-                            </div>
+                    <div class="row">
+                        <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                            <label for="title{{language}}">Title ({{language}})</label>
+                            <input type="text" class="form-control" id="title{{language}}" placeholder="Enter title" formControlName="title{{language}}">
                         </div>
-
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                            <label for="description{{language}}">Description ({{language}})</label>
+                            <input type="text" class="form-control" id="description{{language}}" placeholder="Enter description" formControlName="description{{language}}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                            <label for="manual{{language}}">Manual ({{language}})</label>
+                            <input type="text" class="form-control" id="manual{{language}}" placeholder="Enter manual" formControlName="manual{{language}}">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                <!-- Aquí van los mensajes de éxito y error -->
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ successMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{ errorMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
                         <span aria-hidden="true">&times;</span>
@@ -163,4 +219,4 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </div>
         </form>
     </div>
-</div>
+</div>  
