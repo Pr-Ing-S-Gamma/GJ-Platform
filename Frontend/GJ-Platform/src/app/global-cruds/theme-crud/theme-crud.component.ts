@@ -5,6 +5,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ThemeService } from '../../services/theme.service';
 import { Theme } from '../../../types';
 declare var $: any;
+import { jsPDF }  from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-theme-crud',
@@ -24,6 +26,9 @@ export class ThemeCrudComponent implements OnInit{
 
   ThemeToEdit: any;
   indexTheme = 0;
+  selectedHeader: string | undefined;
+  filterValue: string = '';
+  selectedColumns: (keyof Theme)[] = []; 
 
   constructor(private fb: FormBuilder, private themeService: ThemeService){}
 
@@ -159,8 +164,84 @@ showErrorMessage(message: string) {
 
   // Función para obtener los datos de la página actual
   obtenerDatosPagina() {
+    let filteredData = this.dataSource;
+  
+    if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
+      const filterText = this.filterValue.trim().toLowerCase();
+      filteredData = filteredData.filter(item => {
+        switch (this.selectedHeader) {
+          case '_id':
+            return item._id && item._id.toLowerCase().startsWith(filterText);
+          case 'titleSP':
+          case 'titleEN':
+          case 'titlePT':
+          case 'descriptionSP':
+          case 'descriptionEN':
+          case 'descriptionPT':
+          case 'manualSP':
+          case 'manualEN':
+          case 'manualPT':
+            if (item[this.selectedHeader]) {
+              return item[this.selectedHeader].toLowerCase().startsWith(filterText);
+            }
+            return false;
+          default:
+            return false;
+        }
+      });
+    }
+  
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.dataSource.slice(startIndex, startIndex + this.pageSize);
+    return filteredData.slice(startIndex, startIndex + this.pageSize);
+}
+
+
+  exportToPDF() {
+    const doc = new jsPDF();
+  
+    const url = 'http://localhost:3000/api/theme/get-themes';
+    this.themeService.getThemes(url).subscribe(
+      (themes: any[]) => {
+        const data = themes.map(theme => ({
+          _id: theme._id,
+          titleSP: theme.titleSP,
+          titleEN: theme.titleEN,
+          titlePT: theme.titlePT,
+          descriptionSP: theme.descriptionSP,
+          descriptionEN: theme.descriptionEN,
+          descriptionPT: theme.descriptionPT,
+          manualSP: theme.manualSP,
+          manualEN: theme.manualEN,
+          manualPT: theme.manualPT
+        }));
+  
+        const selectedData = data.map(row => {
+          const rowData: any[] = [];
+          this.selectedColumns.forEach(column => {
+            if (column === '_id') {
+              rowData.push(row[column] || ''); 
+            } else {
+              rowData.push(row[column] || ''); 
+            }
+          });
+          return rowData;
+        });
+  
+        const headers = this.selectedColumns.map(column => {
+            return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+        });
+  
+        autoTable(doc, {
+          head: [headers],
+          body: selectedData
+        });
+  
+        doc.save('themes.pdf');
+      },
+      error => {
+        console.error('Error al obtener themes:', error);
+      }
+    );
   }
 
   get paginasMostradas(): (number | '...')[] {

@@ -2,6 +2,37 @@
 border-radius: 35px; border: 1px black solid;
 border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
     <div class="table-responsive">
+        <div class="filters">
+            <select [(ngModel)]="selectedHeader">
+                <option value="_id">ID</option>
+                <option value="titleSP">Title (Spanish)</option>
+                <option value="titlePT">Title (Portuguese)</option>
+                <option value="titleEN">Title (English)</option>
+                <option value="descriptionSP">Description (Spanish)</option>
+                <option value="descriptionPT">Description (Portuguese)</option>
+                <option value="descriptionEN">Description (English)</option>
+                <option value="manualSP">Manual (Spanish)</option>
+                <option value="manualPT">Manual (Portuguese)</option>
+                <option value="manualEN">Manual (English)</option>
+            </select>
+        
+            <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
+        
+            <select multiple [(ngModel)]="selectedColumns">
+                <option value="_id">ID</option>
+                <option value="titleSP">Title (Spanish)</option>
+                <option value="titlePT">Title (Portuguese)</option>
+                <option value="titleEN">Title (English)</option>
+                <option value="descriptionSP">Description (Spanish)</option>
+                <option value="descriptionPT">Description (Portuguese)</option>
+                <option value="descriptionEN">Description (English)</option>
+                <option value="manualSP">Manual (Spanish)</option>
+                <option value="manualPT">Manual (Portuguese)</option>
+                <option value="manualEN">Manual (English)</option>
+            </select>
+        
+            <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+        </div>        
         <table class="table">
             <thead>
                 <tr>

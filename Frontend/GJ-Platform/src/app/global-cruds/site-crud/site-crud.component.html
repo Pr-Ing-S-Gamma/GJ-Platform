@@ -2,6 +2,28 @@
 border-radius: 35px; border: 1px black solid;
 border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
     <div class="table-responsive">
+        <div class="filters">
+            <select [(ngModel)]="selectedHeader">
+                <option value="_id">ID</option> 
+                <option value="name">Name</option>
+                <option value="modality">Modality</option>
+                <option value="region.name">Region Name</option>
+                <option value="country.name">Country Name</option>
+            </select>
+        
+            <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
+        
+            <select multiple [(ngModel)]="selectedColumns">
+                <option value="_id">ID</option>
+                <option value="name">Name</option>
+                <option value="modality">Modality</option>
+                <option value="region._id">Region ID</option>
+                <option value="region.name">Region Name</option>
+                <option value="country.name">Country Name</option>
+            </select>
+        
+            <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+        </div>        
         <table class="table">
             <thead>
                 <tr>

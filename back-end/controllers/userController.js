@@ -306,17 +306,22 @@ const registerUsersFromCSV = async (req, res) => {
             });
         });
 
+        if (!currentGameJam) {
+            errorLog.push('No active game jam found');
+            return res.status(200).json({ success: false, errorLog });
+        }
+        
         const site = await Site.findById(creatorUser.site._id);
         if (site.open === 1) {
             errorLog.push('Site is currently closed');
             return res.status(200).json({ success: false, errorLog });
         }
-
+        
         for (const userData of users) {
             const { name, email, rol, discordUsername, studioName } = userData;
             const region = creatorUser.region;
             const site = creatorUser.site;
-
+            
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 errorLog.push(`Invalid email address for user: ${name} (${email}, ${discordUsername})`);
                 continue;
@@ -333,7 +338,7 @@ const registerUsersFromCSV = async (req, res) => {
                 errorLog.push(`The Discord Username is already in use for user: ${name} (${email}, ${discordUsername})`);
                 continue;
             }
-
+            
             let team = await Team.findOne({ studioName });
             if (!team) {
                 team = new Team({
@@ -356,7 +361,7 @@ const registerUsersFromCSV = async (req, res) => {
                 errorLog.push(`The team is in a different site for user: ${name} (${email}, ${discordUsername})`);
                 continue;
             }
-
+            
             const jammer = await User.create({
                 name,
                 email,
@@ -367,7 +372,7 @@ const registerUsersFromCSV = async (req, res) => {
                 discordUsername,
                 creationDate: new Date()
             });
-
+            
             if (team.region._id.toString() === region._id.toString()) {
                 team.jammers.push({ _id: jammer._id, name, email, discordUsername });
                 await team.save();

@@ -4,6 +4,9 @@ import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms'
 import { ReactiveFormsModule } from '@angular/forms';
 import { CategoryService } from '../../services/category.service';
 import { Category } from '../../../types';
+import { jsPDF }  from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 declare var $: any;
 
 @Component({
@@ -23,7 +26,8 @@ export class CategoryCrudComponent implements OnInit{
 
   CategoryToEdit: any;
   indexCategory = 0;
-
+  selectedHeader: string | undefined;
+  filterValue: string = '';
   constructor(private fb: FormBuilder, private categoryService: CategoryService){}
 
   ngOnInit(): void {
@@ -60,6 +64,58 @@ export class CategoryCrudComponent implements OnInit{
       }
     );
   }
+  
+  selectedColumns: (keyof Category)[] = []; 
+
+  exportToPDF() {
+    const doc = new jsPDF();
+  
+    const url = 'http://localhost:3000/api/category/get-categories';
+    this.categoryService.getCategories(url).subscribe(
+      (categories: any[]) => {
+        const data = categories.map(category => ({
+          _id: category._id,
+          titleSP: category.titleSP,
+          titleEN: category.titleEN,
+          titlePT: category.titlePT,
+          descriptionSP: category.descriptionSP,
+          descriptionEN: category.descriptionEN,
+          descriptionPT: category.descriptionPT,
+          manualSP: category.manualSP,
+          manualEN: category.manualEN,
+          manualPT: category.manualPT
+        }));
+  
+        const selectedData = data.map(row => {
+          const rowData: any[] = [];
+          this.selectedColumns.forEach(column => {
+            if (column === '_id') {
+              rowData.push(row[column] || ''); 
+            } else {
+              rowData.push(row[column] || ''); 
+            }
+          });
+          return rowData;
+        });
+  
+        const headers = this.selectedColumns.map(column => {
+            return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+        });
+  
+        autoTable(doc, {
+          head: [headers],
+          body: selectedData
+        });
+  
+        doc.save('categories.pdf');
+      },
+      error => {
+        console.error('Error al obtener categorías:', error);
+      }
+    );
+  }
+  
+  
   
   seleccionarElemento(elemento: any) {
     this.CategoryToEdit = elemento;
@@ -213,9 +269,34 @@ showErrorMessage(message: string) {
 
   // Función para obtener los datos de la página actual
   obtenerDatosPagina() {
+    let filteredData = this.dataSource;
+  
+    if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
+      const filterText = this.filterValue.trim().toLowerCase();
+      filteredData = filteredData.filter(item => {
+        switch (this.selectedHeader) {
+          case '_id':
+            return item._id && item._id.toLowerCase().startsWith(filterText);
+          case 'titleSP':
+          case 'titleEN':
+          case 'titlePT':
+          case 'descriptionSP':
+          case 'descriptionEN':
+          case 'descriptionPT':
+          case 'manualSP':
+          case 'manualEN':
+          case 'manualPT':
+            return item[this.selectedHeader].toLowerCase().startsWith(filterText);
+          default:
+            return false;
+        }
+      });
+    }
+  
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.dataSource.slice(startIndex, startIndex + this.pageSize);
-  }
+    return filteredData.slice(startIndex, startIndex + this.pageSize);
+  }  
+  
 
   get paginasMostradas(): (number | '...')[] {
     const totalPaginas = this.totalPaginas;

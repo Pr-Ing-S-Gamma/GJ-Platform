@@ -3,6 +3,33 @@
 border-radius: 35px; border: 1px black solid;
 border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
     <div class="table-responsive">
+        <div class="filters">
+            <select [(ngModel)]="selectedHeader">
+                <option value="_id">ID</option> 
+                <option value="name">Name</option>
+                <option value="email">Email</option>
+                <option value="discordUsername">Discord Username</option>
+                <option value="region.name">Region Name</option>
+                <option value="site.name">Site Name</option>
+                <option value="team.name">Team Name</option>
+                <option value="rol">Role</option>
+            </select>
+        
+            <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
+        
+            <select multiple [(ngModel)]="selectedColumns">
+                <option value="_id">ID</option>
+                <option value="name">Name</option>
+                <option value="email">Email</option>
+                <option value="discordUsername">Discord Username</option>
+                <option value="region.name">Region Name</option>
+                <option value="site.name">Site Name</option>
+                <option value="team.name">Team Name</option>
+                <option value="rol">Role</option>
+            </select>
+        
+            <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+        </div>        
         <table class="table">
             <thead>
                 <tr>

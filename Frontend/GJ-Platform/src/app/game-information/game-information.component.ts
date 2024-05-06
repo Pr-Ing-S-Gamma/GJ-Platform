@@ -81,14 +81,13 @@ export class GameInformationComponent implements OnInit {
                 email: jammer.email
             }));
               const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId
-              console.log("id de la categoría " +  game.categoryId)
               this.CategoryService.getCategory(urlc).subscribe(
                 (categories: Category) => {
                   this.categories = [categories.titleEN];
                   const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId
                   this.ThemeService.getTheme(urlt).subscribe(
-                    (themes: Theme) => {
-                      this.themes = themes.titleEN !== undefined ? [themes.titleEN] : [];
+                    (theme: Theme) => { 
+                      this.themes = theme.titleEN !== undefined ? [theme.titleEN] : [];
                       this.dataSource = {
                         name: this.gameTitle,
                         team: this.teamName,
@@ -99,7 +98,6 @@ export class GameInformationComponent implements OnInit {
                         gameLink: this.gameLink,
                         pitchLink: this.pitchLink
                       }
-                      console.log(this.dataSource)
                     },
                     error => {
                       console.error('Error al obtener juegos:', error);

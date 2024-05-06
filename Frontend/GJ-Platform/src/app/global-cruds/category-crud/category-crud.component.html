@@ -1,6 +1,38 @@
 <div class="card-body" style="background: white;
 border-radius: 35px; border: 1px black solid;
 border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
+<div class="table-container">
+    <div class="filters">
+        <select [(ngModel)]="selectedHeader">
+            <option value="titleSP">Title (SP)</option>
+            <option value="titleEN">Title (EN)</option>
+            <option value="titlePT">Title (PT)</option>
+            <option value="descriptionSP">Description (SP)</option>
+            <option value="descriptionEN">Description (EN)</option>
+            <option value="descriptionPT">Description (PT)</option>
+            <option value="manualSP">Manual (SP)</option>
+            <option value="manualEN">Manual (EN)</option>
+            <option value="manualPT">Manual (PT)</option>
+        </select>
+
+        <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
+
+        <select multiple [(ngModel)]="selectedColumns">
+            <option value="_id">ID</option>
+            <option value="titleSP">Title (SP)</option>
+            <option value="titleEN">Title (EN)</option>
+            <option value="titlePT">Title (PT)</option>
+            <option value="descriptionSP">Description (SP)</option>
+            <option value="descriptionEN">Description (EN)</option>
+            <option value="descriptionPT">Description (PT)</option>
+            <option value="manualSP">Manual (SP)</option>
+            <option value="manualEN">Manual (EN)</option>
+            <option value="manualPT">Manual (PT)</option>
+        </select>
+
+        <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+    </div>
+
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -41,6 +73,8 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </tbody>
         </table>
     </div>
+</div>
+
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <ul class="pagination">
             <!-- Botón para ir a la primera página -->

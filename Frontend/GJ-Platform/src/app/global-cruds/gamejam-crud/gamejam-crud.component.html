@@ -2,6 +2,29 @@
 border-radius: 35px; border: 1px black solid;
 border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
     <div class="table-responsive">
+        <div class="filters">
+            <select [(ngModel)]="selectedHeader">
+                <option value="_id">ID</option>
+                <option value="edition">Edition</option>
+                <option value="theme._id">ID Theme</option>
+                <option value="theme.titleEN">Theme Name (EN)</option>
+                <option value="theme.descriptionEN">Theme Description (EN)</option>
+                <option value="theme.manualEN">Theme Manual (EN)</option>
+            </select>
+        
+            <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
+        
+            <select multiple [(ngModel)]="selectedColumns">
+                <option value="_id">ID</option>
+                <option value="edition">Edition</option>
+                <option value="theme._id">ID Theme</option>
+                <option value="theme.titleEN">Theme Name (EN)</option>
+                <option value="theme.descriptionEN">Theme Description (EN)</option>
+                <option value="theme.manualEN">Theme Manual (EN)</option>
+            </select>
+        
+            <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+        </div>
         <table class="table">
             <thead>
                 <tr>

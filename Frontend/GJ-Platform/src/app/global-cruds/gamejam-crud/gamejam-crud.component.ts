@@ -6,7 +6,8 @@ import { GameJam, Theme } from '../../../types';
 import { ThemeService } from '../../services/theme.service';
 import { GamejamService } from '../../services/gamejam.service';
 declare var $: any;
-
+import { jsPDF }  from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-gamejam-crud',
@@ -26,6 +27,8 @@ export class GamejamCrudComponent implements OnInit{
   
   userToEdit : any;
   indexUser = 0
+  selectedHeader: string | undefined;
+  filterValue: string = '';
   constructor(private fb: FormBuilder, private gamejamService: GamejamService, private themeService: ThemeService){}
   ngOnInit(): void {
     this.myForm = this.fb.group({
@@ -51,6 +54,60 @@ export class GamejamCrudComponent implements OnInit{
       }
     );
   }
+  selectedColumns: (keyof GameJam)[] = []; 
+  exportToPDF() {
+    const doc = new jsPDF();
+  
+    const url = 'http://localhost:3000/api/game-jam/get-game-jams';
+    this.gamejamService.getGameJams(url).subscribe(
+      (gameJams: GameJam[]) => {
+        const data = gameJams.map(gameJam => ({
+          _id: gameJam._id || '',
+          edition: gameJam.edition,
+          theme: {
+            _id: gameJam.theme._id, 
+            titleEN: gameJam.theme.titleEN, 
+            descriptionEN: gameJam.theme.descriptionEN, 
+            manualEN: gameJam.theme.manualEN 
+          }
+        }));
+  
+        const selectedData = data.map(row => {
+          const rowData: any[] = [];
+          this.selectedColumns.forEach(column => {
+            if (column.startsWith('theme.')) {
+              const themeProperty = column.split('.')[1];
+              rowData.push((row.theme as {[key: string]: string})[themeProperty]);
+            } else {
+              rowData.push(row[column]);
+            }
+          });
+          return rowData;
+        });
+        
+        const headers = this.selectedColumns.map((column: string) => {
+          if (column === '_id') return 'ID';
+          if (column === 'edition') return 'Edition';
+          if (column === 'theme._id') return 'Theme ID';
+          if (column === 'theme.titleEN') return 'Theme Title';
+          if (column === 'theme.descriptionEN') return 'Theme Description';
+          if (column === 'theme.manualEN') return 'Theme Manual';
+          return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+        });
+  
+        autoTable(doc, {
+          head: [headers],
+          body: selectedData
+        });
+  
+        doc.save('gameJams.pdf');
+      },
+      error => {
+        console.error('Error al obtener las Game Jams:', error);
+      }
+    );
+  }
+  
 
   seleccionarElemento(elemento: any) {
     this.userToEdit = elemento;
@@ -171,10 +228,29 @@ export class GamejamCrudComponent implements OnInit{
   }
 
   obtenerDatosPagina() {
+    let filteredData = this.dataSource;
+  
+    if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
+      const filterText = this.filterValue.trim().toLowerCase();
+      filteredData = filteredData.filter(item => {
+        switch (this.selectedHeader) {
+          case '_id':
+            return item._id && item._id.toLowerCase().startsWith(filterText);
+          case 'edition':
+          case 'theme.titleEN':
+          case 'theme._id':
+          case 'theme.descriptionEN':
+          case 'theme.manualEN':
+            return (item[this.selectedHeader as keyof GameJam] as string).toLowerCase().startsWith(filterText);
+          default:
+            return false;
+        }
+      });
+    }
+  
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, this.dataSource.length);
-    return this.dataSource.slice(startIndex, endIndex);
-  }
+    return filteredData.slice(startIndex, startIndex + this.pageSize);
+  }  
 
   get paginasMostradas(): (number | '...')[] {
     const totalPaginas = this.totalPaginas;

@@ -1,5 +1,29 @@
     <div class="card-body" style="background: white; border-radius: 35px; border: 1px black solid; border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
         <div class="table-responsive">
+            <div class="filters">
+                <select [(ngModel)]="selectedHeader">
+                    <option value="_id">ID</option> 
+                    <option value="studioName">Studio Name</option>
+                    <option value="description">Description</option>
+                    <option value="region.name">Region Name</option>
+                    <option value="site.name">Site Name</option>
+                    <option value="gameJam._id">Game Jam ID</option>
+                    <option value="gameJam.edition">Game Jam Edition</option>
+                </select>
+            
+                <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
+            
+                <select multiple [(ngModel)]="selectedColumns">
+                    <option value="_id">ID</option>
+                    <option value="studioName">Studio Name</option>
+                    <option value="description">Description</option>
+                    <option value="region.name">Region Name</option>
+                    <option value="site.name">Site Name</option>
+                    <option value="gameJam.edition">Game Jam Edition</option>
+                </select>
+            
+                <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+            </div>            
             <table class="table">
                 <thead>
                     <tr>

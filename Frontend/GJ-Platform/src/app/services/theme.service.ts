@@ -28,7 +28,7 @@ export class ThemeService {
   
   getTheme(url: string): Observable<Theme> { 
     return this.http.get<any>(url).pipe( 
-      map(response => response.data)
+      map(response => response.theme)
     );
   }
   
