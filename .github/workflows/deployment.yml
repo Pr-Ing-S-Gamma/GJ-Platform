@@ -3,7 +3,7 @@ name: SSH into Oracle Linux
 on:
   push:
     branches:
-      - main
+      -  "main" 
 
 jobs:
   deploy:
@@ -31,29 +31,18 @@ jobs:
           script: |
             sudo su
             
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
-            source ~/.bashrc
-
-            cd /home/opc/Documents/main/GJ-Platform
+            cd /home/opc/GJ+/GJ-Platform
             git pull origin main
 
-            cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform
+            sudo chown -R ${{ secrets.USERNAME }}:$USER /home/opc/GJ+/GJ-Platform/Frontend/GJ-Platform/node_modules
 
-            nvm install 20.11.1
-            nvm use 20.11.1
-            npm install -g @angular/cli 
-            
-            cd /home/opc/Documents/main/GJ-Platform/back-end
-            sudo npm i
-            
-            cd /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform
-            sudo npm i
-            sudo chown -R ${{ secrets.USERNAME }}:$USER /home/opc/Documents/main/GJ-Platform/Frontend/GJ-Platform/node_modules
 
+            cd /home/opc/GJ+/GJ-Platform/Frontend/GJ-Platform
             ng build --configuration production
             
-            cd /home/opc/Documents/main/GJ-Platform/back-end
+            cd /home/opc/GJ+/GJ-Platform/back-end
+
             sudo npm install pm2 -g
-            pm2 start index.js --name "pm2produ"
-            pm2 restart pm2produ
+            pm2 start index.js --name "produccion"
+            pm2 restart produccion
 
