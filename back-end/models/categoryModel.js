@@ -4,58 +4,58 @@ const { Schema } = mongoose;
 const categorySchema = mongoose.Schema({
     titleSP: {
         type: String,
-        required: true
+        required: false
     },
     titleEN: {
         type: String,
-        required: true
+        required: false
     },
     titlePT: {
         type: String,
-        required: true
+        required: false
     },
     descriptionSP: {
         type: String,
-        required: true
+        required: false
     },
     descriptionEN: {
         type: String,
-        required: true
+        required: false
     },
     descriptionPT: {
         type: String,
-        required: true
+        required: false
     },
     manualSP: {
         type: String,
-        required: true
+        required: false
     },
     manualEN: {
         type: String,
-        required: true
+        required: false
     },
     manualPT: {
         type: String,
-        required: true
+        required: false
     },
     creatorUser: {
         userId: {
             type: Schema.Types.ObjectId,
             ref: 'GlobalOrganizer',
-            required: true
+            required: false
         },
         name: {
             type: String,
-            required: true
+            required: false
         },
         email: {
             type: String,
-            required: true
+            required: false
         }
     },
     creationDate: {
         type: Date,
-        required: true
+        required: false
     },
     lastUpdateUser: {
         userId: {
