@@ -101,5 +101,5 @@ app.get('*', function(req, res) {
 
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, () => {
-    console.log(`Servidor escuchando en http://localhost:${port}`);
+    console.log(`Servidor escuchando en http://${process.env.PORT}:${port}`);
 });
