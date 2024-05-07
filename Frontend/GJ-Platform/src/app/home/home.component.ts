@@ -3,25 +3,43 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { SiteService } from '../services/site.service';
-import { LocalSiteInformationComponent } from '../local-site-information/local-site-information.component';
+import { LocalHomeComponent } from '../local-home/local-home.component';
 import { JammerHomeComponent } from '../jammer-home/jammer-home.component';
 import { JuezMainComponent } from '../juez-main/juez-main.component';
+import { GlobalHomeComponent } from '../global-home/global-home.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     CommonModule,
-    LocalSiteInformationComponent,
+    LocalHomeComponent,
     JammerHomeComponent,
-    JuezMainComponent
+    JuezMainComponent,
+    GlobalHomeComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
   localLogged: boolean = false;
+  username: string | undefined;
+  userRole: string | undefined;
   constructor(private router: Router, private userService: UserService, private siteService: SiteService){}
+  
+  ngOnInit(): void {
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+      .subscribe(
+        user => {
+          this.userRole = user.rol
+          this.username = user.name + "(" + user.discordUsername + ")";
+
+          //quitar
+          this.userRole = "GlobalOrganizer"
+        },
+        () => {}
+      );
+  }
 
   logOut(){
     this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
