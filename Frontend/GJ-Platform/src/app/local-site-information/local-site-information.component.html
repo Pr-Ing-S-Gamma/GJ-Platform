@@ -1,25 +1,17 @@
-<section class="vh-100" style="position: relative; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%); display: flex; justify-content: flex-start; align-items: flex-start;">
-    <div class="container-fluid h-100">
-        <div class="row  w-100 justify-content-between">
-            <div class = "col" style="color: white; font-size: 35px; font-family: K2D; font-weight: 400; word-wrap: break-word">GJ+ Local Organizer</div>
-            <div class = "col btn btn-primary text-right" style="align-self: center; max-width: fit-content;" (click)="logOut()">
-                Log out
-            </div>
-        </div>
         <div class="row" style="justify-content: flex-start; align-items: flex-start; background: white; height: 100%;">
             <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
-                <div style="text-align: center; font-size: 64px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
+                <div style="text-align: center; font-size: 32px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
                     Site status: <span [style.color]="currentStatus === 'Open' ? 'green' : 'red'">{{ currentStatus }}</span>
                 </div>                        
             </div>
-            <div class="row" style="justify-content: center; align-items: center; background: white; margin-top: 3%;">
+            <div class="row" style="justify-content: center; align-items: center; margin-top: 3%;">
                 <div class="col text-center">
                     <app-upload-csv></app-upload-csv>
                 </div>
             </div>            
             <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
-                <div style="text-align: center; color: black; font-size: 64px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
-                     Games of {{ site?.name }}
+                <div style="text-align: center; color: black; font-size: 32px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
+                     Games of {{ site?.name }}:
                 </div>
             </div>
 
@@ -44,5 +36,3 @@
                 </div>
             </div>
         </div>
-    </div>
-</section>

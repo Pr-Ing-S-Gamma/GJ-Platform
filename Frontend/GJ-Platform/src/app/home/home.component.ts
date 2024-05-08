@@ -35,10 +35,10 @@ export class HomeComponent {
           this.username = user.name + "(" + user.discordUsername + ")";
 
           //quitar
-          this.userRole = "GlobalOrganizer"
         },
         () => {}
       );
+      this.userRole = "GlobalOrganizer"
   }
 
   logOut(){

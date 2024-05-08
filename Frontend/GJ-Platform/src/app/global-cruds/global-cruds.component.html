@@ -1,124 +1,78 @@
-<section class="vh-100" style="position: relative; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%); display: flex; justify-content: flex-start; align-items: flex-start;">
-    <div class="container-fluid h-100">
-        <div class="row  w-100 justify-content-between">
-            <div style="color: white; font-size: 35px; font-family: K2D; font-weight: 400; word-wrap: break-word">GJ+ Global Organizer</div>
-            <div class = "col btn btn-primary text-right" style="align-self: center; max-width: fit-content;" (click)="logOut()">
-                Log out
-            </div>
-        </div>
-        <div class="row" style="justify-content: flex-start; align-items: center;  background: white;">
+<div class="Card-body">
 
-            <!-- Tab -->
-            <div class="col" style="background: #D9D9D9; border-top-left-radius: 20px; border-top-right-radius: 20px; max-width: 117px; margin-left: 50px;  margin-top: 20px;">
-                <button class="btn btn-default" style="color: black; font-size: 40px; font-family: Inter; font-weight: 400; word-wrap: break-word" (click)="moveToSites()">
-                    <div style="color: black; font-size: 26px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        Sites
-                    </div>
-                </button>
-            </div>
-
-            <!-- Tab -->
-            <div class="col" style=" background: #3D3D3D; border-top-left-radius: 20px; border-top-right-radius: 20px; max-width: 279px; margin-left: 15px; margin-top: 20px;">
-                <button class="btn btn-default">
-                    <div style="color: white; font-size: 26px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        Data Management
-                    </div>
-                </button>
-            </div>
-            
-        </div>
-        <div class="row h-100" style="justify-content: center; align-items: flex-start;  background: white;">
-            <div class="col" style="justify-content: center; align-items: center;">
-                <div class="Card" style="background: white; border-radius: 35px; border: 1px #3D3D3D solid; padding: 40px;">
-                    <div class="Card-body">
-
-
-                        <button class="btn btn-default w-100" (click)="toggleCategories()" 
-                        style="background: white; border-radius: 35px; border: 3px black solid; 
+    <button class="btn btn-default w-100" (click)="toggleCategories()" style="background: white; border-radius: 35px; border: 3px black solid; 
                         color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
                         text-align: left; padding-left: 25px; margin-top: 30px;">
-                            Categories
-                </button>
-                <div *ngIf="showCategories" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                    <app-category-crud></app-category-crud>
-                </div>
-            
-                
-                <button class="btn btn-default w-100" (click)="toggleRegions()" 
-                style="background: white; border-radius: 35px; border: 3px black solid; 
-                color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                text-align: left; padding-left: 25px; margin-top: 30px;">
-                Regions
-                </button>
-                <div *ngIf="showRegions" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                    <app-region-crud></app-region-crud>
-                </div>
-
-                
-                <button class="btn btn-default w-100" (click)="toggleSites()" 
-                        style="background: white; border-radius: 35px; border: 3px black solid; 
-                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                        text-align: left; padding-left: 25px; margin-top: 30px;">
-                            Sites
-                </button>
-                <div *ngIf="showSites" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                    <app-site-crud></app-site-crud>
-                </div>
-                
-                <button class="btn btn-default w-100" (click)="toggleStage()" 
-                        style="background: white; border-radius: 35px; border: 3px black solid; 
-                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                        text-align: left; padding-left: 25px; margin-top: 30px;">
-                            Stages
-                </button>
-                <div *ngIf="showStage" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                    <app-stage-crud></app-stage-crud>
-                </div>
-                
-                <button class="btn btn-default w-100" (click)="toggleTeams()" 
-                        style="background: white; border-radius: 35px; border: 3px black solid; 
-                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                        text-align: left; padding-left: 25px; margin-top: 30px;">
-                            Team
-                </button>
-                <div *ngIf="showTeams" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                    <app-team-crud></app-team-crud>
-                </div>
-                
-                <button class="btn btn-default w-100" (click)="toggleThemes()" 
-                        style="background: white; border-radius: 35px; border: 3px black solid; 
-                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                        text-align: left; padding-left: 25px; margin-top: 30px;">
-                            Themes
-                </button>
-                <div *ngIf="showThemes" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                    <app-theme-crud></app-theme-crud>
-                </div>
-                
-                <button class="btn btn-default w-100" (click)="toggleUser()" 
-                        style="background: white; border-radius: 35px; border: 3px black solid; 
-                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                        text-align: left; padding-left: 25px; margin-top: 30px;">
-                            Users
-                </button>
-                <div *ngIf="showUser" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                    <app-user-crud></app-user-crud>
-                </div>
-                
-                <button class="btn btn-default w-100" (click)="toggleJam()" 
-                style="background: white; border-radius: 35px; border: 3px black solid; 
-                color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
-                text-align: left; padding-left: 25px; margin-top: 30px;">
-                    GameJams
-                </button>
-                <div *ngIf="showJam" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
-                    <app-gamejam-crud></app-gamejam-crud>
-                </div>
-
-                            
-                    </div>
-                </div>
-            </div>
-        </div>
+        Categories
+    </button>
+    <div *ngIf="showCategories" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+        <app-category-crud></app-category-crud>
     </div>
-</section>
+
+
+    <button class="btn btn-default w-100" (click)="toggleRegions()" style="background: white; border-radius: 35px; border: 3px black solid; 
+                color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                text-align: left; padding-left: 25px; margin-top: 30px;">
+        Regions
+    </button>
+    <div *ngIf="showRegions" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+        <app-region-crud></app-region-crud>
+    </div>
+
+
+    <button class="btn btn-default w-100" (click)="toggleSites()" style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+        Sites
+    </button>
+    <div *ngIf="showSites" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+        <app-site-crud></app-site-crud>
+    </div>
+
+    <button class="btn btn-default w-100" (click)="toggleStage()" style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+        Stages
+    </button>
+    <div *ngIf="showStage" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+        <app-stage-crud></app-stage-crud>
+    </div>
+
+    <button class="btn btn-default w-100" (click)="toggleTeams()" style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+        Team
+    </button>
+    <div *ngIf="showTeams" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+        <app-team-crud></app-team-crud>
+    </div>
+
+    <button class="btn btn-default w-100" (click)="toggleThemes()" style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+        Themes
+    </button>
+    <div *ngIf="showThemes" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+        <app-theme-crud></app-theme-crud>
+    </div>
+
+    <button class="btn btn-default w-100" (click)="toggleUser()" style="background: white; border-radius: 35px; border: 3px black solid; 
+                        color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                        text-align: left; padding-left: 25px; margin-top: 30px;">
+        Users
+    </button>
+    <div *ngIf="showUser" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+        <app-user-crud></app-user-crud>
+    </div>
+
+    <button class="btn btn-default w-100" (click)="toggleJam()" style="background: white; border-radius: 35px; border: 3px black solid; 
+                color: black; font-size: 30px; font-family: Inter; font-weight: 400; word-wrap: break-word;
+                text-align: left; padding-left: 25px; margin-top: 30px;">
+        GameJams
+    </button>
+    <div *ngIf="showJam" class="card" style="margin-left: 35px; margin-right: 35px; border: 0px">
+        <app-gamejam-crud></app-gamejam-crud>
+    </div>
+
+
+</div>
