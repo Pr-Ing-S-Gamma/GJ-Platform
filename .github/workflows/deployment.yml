@@ -38,6 +38,7 @@ jobs:
 
 
             cd /home/opc/GJ+/GJ-Platform/Frontend/GJ-Platform
+            npm i
             ng build --configuration production
             
             cd /home/opc/GJ+/GJ-Platform/back-end
