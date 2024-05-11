@@ -3,7 +3,7 @@ name: SSH into Oracle Linux
 on:
   push:
     branches:
-      -  "sprint2.1" 
+      -  "Sprint-3" 
 
 jobs:
   deploy:

@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "sprint2.1" ]
+    branches: [ "Sprint-3" ]
   pull_request:
-    branches: [ "sprint2.1" ]
+    branches: [ "Sprint-3" ]
 
 jobs:
   build:

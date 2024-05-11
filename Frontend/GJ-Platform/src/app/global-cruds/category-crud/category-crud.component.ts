@@ -6,6 +6,8 @@ import { CategoryService } from '../../services/category.service';
 import { Category } from '../../../types';
 import { jsPDF }  from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { CustomAlertComponent } from '../../jammer-home/custom-alert/custom-alert.component';
+import { MatDialog } from '@angular/material/dialog';
 
 declare var $: any;
 
@@ -28,7 +30,7 @@ export class CategoryCrudComponent implements OnInit{
   indexCategory = 0;
   selectedHeader: string | undefined;
   filterValue: string = '';
-  constructor(private fb: FormBuilder, private categoryService: CategoryService){}
+  constructor(private dialog: MatDialog, private fb: FormBuilder, private categoryService: CategoryService){}
 
   ngOnInit(): void {
     this.myForm = this.fb.group({
@@ -63,6 +65,18 @@ export class CategoryCrudComponent implements OnInit{
         console.error('Error al obtener categorías:', error);
       }
     );
+  }
+  showAlert(message: string, callback: () => void): void {
+    const dialogRef = this.dialog.open(CustomAlertComponent, {
+      width: '400px',
+      data: { message: message }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'ok') {
+        callback();
+      }
+    });
   }
   
   selectedColumns: (keyof Category)[] = []; 
@@ -163,7 +177,9 @@ export class CategoryCrudComponent implements OnInit{
             manualEN: this.myForm.value['manualEN'],
             manualPT: this.myForm.value['manualPT']
           };
-          this.showSuccessMessage('Category updated successfully!');
+          this.showAlert("Agregado con éxito", () => {
+            window.location.reload();
+          });
         },
         error: (error) => {
           console.error('Error al actualizar la región:', error);
