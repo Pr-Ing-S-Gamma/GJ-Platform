@@ -72,42 +72,42 @@ export class GlobalCRUDsComponent implements OnInit{
   }
 toggleRegions() {
   this.hideAll();
-  this.showRegions = true;
+  this.showRegions = !this.showRegions;
 }
 
 toggleSites() {
   this.hideAll();
-  this.showSites = true;
+  this.showSites = !this.showSites;
 }
 
 toggleCategories() {
   this.hideAll();
-  this.showCategories = true;
+  this.showCategories = !this.showCategories;
 }
 
 toggleThemes() {
   this.hideAll();
-  this.showThemes = true;
+  this.showThemes = !this.showThemes;
 }
 
 toggleTeams() {
   this.hideAll();
-  this.showTeams = true;
+  this.showTeams = !this.showTeams;
 }
 
 toggleStage() {
   this.hideAll();
-  this.showStage = true;
+  this.showStage = !this.showStage;
 }
 
 toggleUser() {
   this.hideAll();
-  this.showUser = true;
+  this.showUser = !this.showUser;
 }
 
 toggleJam() {
   this.hideAll();
-  this.showJam = true;
+  this.showJam = !this.showJam;
 }
 
 logOut(): void {

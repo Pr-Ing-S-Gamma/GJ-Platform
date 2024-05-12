@@ -38,7 +38,7 @@ export class HomeComponent {
         },
         () => {}
       );
-      this.userRole = "Jammer"
+      this.userRole = "GlobalOrganizer"
   }
 
   logOut(){

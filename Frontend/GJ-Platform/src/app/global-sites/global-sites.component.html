@@ -1,44 +1,25 @@
-<div class="Card-heading" style="display: flex; justify-content: flex-start; align-items: flex-start;">
-    <div
-        style="color: black; font-size: 50px; font-family: Inter; font-style: italic; font-weight: 700; word-wrap: break-word; margin-top: -20px; margin-bottom: 20px;">
-        <img class="btn btn-default" (click)="moveToRegionsRoot()" *ngIf="regionParameter != 'Regions'"
-            src="/assets/Images/back_arrow.png" alt="Lights" style="max-width: 65px;">
+<div class="Card-heading flexToStart">
+    <div class="regionName">
+        <img class="btn btn-default" (click)="moveToRegionsRoot()" *ngIf="regionParameter != 'Regions'" src="/assets/Images/back_arrow.png" alt="Lights"><!--style="max-width: 65px;"-->
         {{ regionParameter }}
     </div>
 </div>
 
 <div class="Card-body">
 
-    <div *ngIf="regionParameter === 'Regions'" style="display: flex; flex-wrap: wrap;">
-        <div *ngFor="let region of regions" class="btn btn-default" (click)="moveToRegionSites(region.name)"
-            style="display: flex; background: white; border-radius: 35px; border: 2px black solid;
-                            padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;">
-            <div
-                style="display: flex; text-align: center; color: black; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                {{ region.name }}
-            </div>
+    <div *ngIf="regionParameter === 'Regions'" class="flexWrap">
+        <div *ngFor="let region of regions" class="btn btn-default cardContent" (click)="moveToRegionSites(region.name)">
+            <div class="cardText">{{ region.name }}</div>
         </div>
     </div>
 
     <div *ngIf="regionParameter != 'Regions'">
         <div *ngFor="let region of regions">
-            <div *ngIf="region.name === regionParameter" style="display: flex; flex-wrap: wrap;">
-                <div *ngFor="let site of region.sites" class="btn btn-default"
-                    (click)="moveToSiteInformation(site.name)"
-                    style="background: white; border-radius: 35px; border: 2px black solid;
-                                    padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;">
-                    <div
-                        style="text-align: center; color: black; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        {{ site.name }}
-                    </div>
-                    <div
-                        style="text-align: center; color: black; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        -
-                    </div>
-                    <div
-                        style="text-align: center; color: black; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        {{ site.country }}
-                    </div>
+            <div *ngIf="region.name === regionParameter" class="flexWrap">
+                <div *ngFor="let site of region.sites" class="btn btn-default cardContent" (click)="moveToSiteInformation(site.name)">
+                    <div class="cardText">{{ site.name }}</div>
+                    <div class="cardText">-</div>
+                    <div class="cardText">{{ site.country }}</div>
                 </div>
             </div>
         </div>
