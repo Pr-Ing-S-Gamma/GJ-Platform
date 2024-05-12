@@ -4,13 +4,11 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
     <div class="table-responsive">
         <div class="filters">
             <select [(ngModel)]="selectedHeader">
-                <option value="_id">ID</option>
                 <option value="name">Name</option>
                 <option value="startDate">Start Date</option>
                 <option value="endDate">End Date</option>
                 <option value="startDateEvaluation">Start Date Evaluation</option>
                 <option value="endDateEvaluation">End Date Evaluation</option>
-                <option value="gameJam._id">Game Jam ID</option>
                 <option value="gameJam.edition">Game Jam Edition</option>
             </select>
             
@@ -22,13 +20,11 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             
         
             <select multiple [(ngModel)]="selectedColumns">
-                <option value="_id">ID</option>
                 <option value="name">Name</option>
                 <option value="startDate">Start Date</option>
                 <option value="endDate">End Date</option>
                 <option value="startDateEvaluation">Start Date Evaluation</option>
                 <option value="endDateEvaluation">End Date Evaluation</option>
-                <option value="gameJam._id">Game Jam ID</option>
                 <option value="gameJam.edition">Game Jam Edition</option>
             </select>
         
@@ -37,13 +33,11 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
                     <th scope="col">Name</th>
                     <th scope="col">StartDate</th>
                     <th scope="col">EndDate</th>
                     <th scope="col">StartDateEvaluation</th>
                     <th scope="col">EndDateEvaluation</th>
-                    <th scope="col">GameJamId</th>
                     <th scope="col">GameJamEdition</th>
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
@@ -51,13 +45,11 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </thead>
             <tbody>
                 <tr *ngFor="let row of obtenerDatosPagina()">
-                    <td>{{ row._id }}</td>
                     <td>{{ row.name }}</td>
                     <td>{{ row.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
                     <td>{{ row.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
                     <td>{{ row.startDateEvaluation | date:'dd/MM/yyyy':'UTC' }}</td>
                     <td>{{ row.endDateEvaluation | date:'dd/MM/yyyy':'UTC' }}</td>                                 
-                    <td>{{ row.gameJam._id }}</td>
                     <td>{{ row.gameJam.edition }}</td>
                     <td>
                         <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>

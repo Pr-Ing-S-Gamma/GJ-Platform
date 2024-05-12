@@ -4,14 +4,12 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
     <div class="table-responsive">
         <div class="filters">
             <select [(ngModel)]="selectedHeader">
-                <option value="_id">ID</option>
                 <option value="name">Name</option>
             </select>
         
             <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
         
             <select multiple [(ngModel)]="selectedColumns">
-                <option value="_id">ID</option>
                 <option value="name">Name</option>
             </select>
         
@@ -21,7 +19,6 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
                     <th scope="col">Region</th>
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
@@ -29,7 +26,6 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </thead>
             <tbody>
                 <tr *ngFor="let row of obtenerDatosPagina()">
-                    <td>{{ row._id }}</td>
                     <td>{{ row.name }}</td>
                     <td>
                         <!-- Aquí puedes agregar los botones de acciones -->

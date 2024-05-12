@@ -4,29 +4,29 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
 <div class="table-container">
     <div class="filters">
         <select [(ngModel)]="selectedHeader">
-            <option value="titleSP">Title (SP)</option>
+            <option value="titleSP">Title (ESP)</option>
             <option value="titleEN">Title (EN)</option>
-            <option value="titlePT">Title (PT)</option>
-            <option value="descriptionSP">Description (SP)</option>
+            <option value="titlePT">Title (PT-BR)</option>
+            <option value="descriptionSP">Description (ESP)</option>
             <option value="descriptionEN">Description (EN)</option>
-            <option value="descriptionPT">Description (PT)</option>
-            <option value="manualSP">Manual (SP)</option>
+            <option value="descriptionPT">Description (PT-BR)</option>
+            <option value="manualSP">Manual (ESP)</option>
             <option value="manualEN">Manual (EN)</option>
-            <option value="manualPT">Manual (PT)</option>
+            <option value="manualPT">Manual (PT-BR)</option>
         </select>
 
         <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
 
         <select multiple [(ngModel)]="selectedColumns">
-            <option value="titleSP">Title (SP)</option>
+            <option value="titleSP">Title (ESP)</option>
             <option value="titleEN">Title (EN)</option>
-            <option value="titlePT">Title (PT)</option>
-            <option value="descriptionSP">Description (SP)</option>
+            <option value="titlePT">Title (PT-BR)</option>
+            <option value="descriptionSP">Description (ESP)</option>
             <option value="descriptionEN">Description (EN)</option>
-            <option value="descriptionPT">Description (PT)</option>
-            <option value="manualSP">Manual (SP)</option>
+            <option value="descriptionPT">Description (PT-BR)</option>
+            <option value="manualSP">Manual (ESP)</option>
             <option value="manualEN">Manual (EN)</option>
-            <option value="manualPT">Manual (PT)</option>
+            <option value="manualPT">Manual (PT-BR)</option>
         </select>
 
         <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
@@ -36,15 +36,15 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">Title (SP)</th>
-                    <th scope="col">Description (SP)</th>
-                    <th scope="col">Manual (SP)</th>
+                    <th scope="col">Title (ESP)</th>
+                    <th scope="col">Description (ESP)</th>
+                    <th scope="col">Manual (ESP)</th>
                     <th scope="col">Title (EN)</th>
                     <th scope="col">Description (EN)</th>
                     <th scope="col">Manual (EN)</th>
-                    <th scope="col">Title (PT)</th>
-                    <th scope="col">Description (PT)</th>
-                    <th scope="col">Manual (PT)</th>
+                    <th scope="col">Title (PT-BR)</th>
+                    <th scope="col">Description (PT-BR)</th>
+                    <th scope="col">Manual (PT-BR)</th>
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
                 </tr>

@@ -4,7 +4,6 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
     <div class="table-responsive">
         <div class="filters">
             <select [(ngModel)]="selectedHeader">
-                <option value="_id">ID</option> 
                 <option value="name">Name</option>
                 <option value="modality">Modality</option>
                 <option value="region.name">Region Name</option>
@@ -14,10 +13,8 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
         
             <select multiple [(ngModel)]="selectedColumns">
-                <option value="_id">ID</option>
                 <option value="name">Name</option>
                 <option value="modality">Modality</option>
-                <option value="region._id">Region ID</option>
                 <option value="region.name">Region Name</option>
                 <option value="country.name">Country Name</option>
             </select>
@@ -27,7 +24,6 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
                     <th scope="col">Country</th>
                     <th scope="col">Name</th>
                     <th scope="col">Region</th>
@@ -38,7 +34,6 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </thead>
             <tbody>
                 <tr *ngFor="let row of obtenerDatosPagina()">
-                    <td>{{ row._id }}</td>
                     <td>{{ row.country.name }}</td>
                     <td>{{ row.name }}</td>
                     <td>{{ row.region.name }}</td>

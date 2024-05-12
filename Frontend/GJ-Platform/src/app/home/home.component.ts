@@ -33,12 +33,9 @@ export class HomeComponent {
         user => {
           this.userRole = user.rol
           this.username = user.name + "(" + user.discordUsername + ")";
-
-          //quitar
         },
         () => {}
       );
-      this.userRole = "GlobalOrganizer"
   }
 
   logOut(){

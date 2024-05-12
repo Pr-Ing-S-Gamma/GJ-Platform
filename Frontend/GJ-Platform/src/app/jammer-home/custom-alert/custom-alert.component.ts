@@ -1,15 +1,23 @@
-import { Component, Input } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-custom-alert',
   templateUrl: './custom-alert.component.html',
   styleUrls: ['./custom-alert.component.css']
 })
-export class CustomAlertComponent {
-  @Input() message: string = "Agregado con éxito";
+export class CustomAlertComponent implements OnInit {
 
-  constructor(public dialogRef: MatDialogRef<CustomAlertComponent>) {}
+  message?: string;
+
+  constructor(
+    public dialogRef: MatDialogRef<CustomAlertComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+
+  ngOnInit(): void {
+    this.message = this.data.message;
+  }
 
   closeDialog(result: string): void {
     this.dialogRef.close(result);

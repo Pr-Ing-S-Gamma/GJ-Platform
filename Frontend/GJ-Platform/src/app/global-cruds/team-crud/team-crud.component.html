@@ -2,19 +2,16 @@
         <div class="table-responsive">
             <div class="filters">
                 <select [(ngModel)]="selectedHeader">
-                    <option value="_id">ID</option> 
                     <option value="studioName">Studio Name</option>
                     <option value="description">Description</option>
                     <option value="region.name">Region Name</option>
                     <option value="site.name">Site Name</option>
-                    <option value="gameJam._id">Game Jam ID</option>
                     <option value="gameJam.edition">Game Jam Edition</option>
                 </select>
             
                 <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
             
                 <select multiple [(ngModel)]="selectedColumns">
-                    <option value="_id">ID</option>
                     <option value="studioName">Studio Name</option>
                     <option value="description">Description</option>
                     <option value="region.name">Region Name</option>
@@ -27,10 +24,8 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">ID</th>
                         <th scope="col">Studio Name</th>
                         <th scope="col">Description</th>
-                        <th scope="col">GameJam ID</th>
                         <th scope="col">GameJam Edition</th>
                         <th scope="col">Region</th>
                         <th scope="col">Site</th>
@@ -42,10 +37,8 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let row of obtenerDatosPagina()">
-                        <td>{{ row._id }}</td>
                         <td>{{ row.studioName }}</td>
                         <td>{{ row.description }}</td>
-                        <td>{{ row.gameJam._id }}</td>
                         <td>{{ row.gameJam.edition }}</td>
                         <td>{{ row.region.name }}</td>
                         <td>{{ row.site.name }}</td>

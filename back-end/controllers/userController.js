@@ -142,19 +142,8 @@ const magicLink = async (req, res) => {
         res.cookie('token', newToken, {
             httpOnly: false
         });
-        let redirectUrl;
-        if (rol === 'GlobalOrganizer') {
-            redirectUrl = `http://${process.env.PORT}:3000/DataManagement`;
-        }
-        if(rol === 'LocalOrganizer') {
-            redirectUrl = `http://${process.env.PORT}:3000/Games`;
-        }
-        if(rol === 'Jammer') {
-            redirectUrl = `http://${process.env.PORT}:3000/Jammer`;
-        }
-        if(rol === 'Judge') {
-            redirectUrl = `http://${process.env.PORT}:3000/Juez`;
-        }
+        let redirectUrl
+        redirectUrl = `http://${process.env.PORT}:3000/Home`;
         if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer' && rol !== 'Jammer' && rol !== 'Judge') {
             return res.clearCookie('token').redirect(`http://${process.env.PORT}:3000/login`);
         }
