@@ -1,0 +1,14 @@
+.cardBackground{
+    background: white;
+    border-radius: 35px;
+    border: 1px black solid;
+    border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.navBarStyle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

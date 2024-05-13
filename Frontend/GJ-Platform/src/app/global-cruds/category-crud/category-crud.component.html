@@ -1,6 +1,4 @@
-<div class="card-body" style="background: white;
-border-radius: 35px; border: 1px black solid;
-border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
+<div class="card-body cardBackground">
 <div class="table-container">
     <div class="filters">
         <select [(ngModel)]="selectedHeader">
@@ -72,7 +70,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
     </div>
 </div>
 
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="navBarStyle">
         <ul class="pagination">
             <!-- Botón para ir a la primera página -->
             <li class="page-item" [class.disabled]="currentPage === 1">

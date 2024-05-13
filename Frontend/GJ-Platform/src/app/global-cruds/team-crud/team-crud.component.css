@@ -1,0 +1,58 @@
+.cardBackground{
+    background: white;
+    border-radius: 35px;
+    border: 1px black solid;
+    border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.navBarStyle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.centerRow{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.formTitle{
+    margin-left: 50px;
+    text-align: left;
+    color: black;
+    font-size: 24px;
+    font-family: K2D;
+    font-weight: 400;
+    word-wrap: break-word;
+}
+
+.formList{
+    margin-top: 20px;
+    margin-bottom: 10px;
+    border-radius: 44px;
+    max-width: 400px;
+}
+
+.formInput{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    max-width: 425px;
+}
+
+.formButton{
+    width: 200px;
+    align-self: center;
+}
+
+.formLinks{
+    margin-top: 20px;
+    align-self: center;
+}
+
+.messageSpacer{
+    margin-left: 10px;
+    margin-right: 10px;
+}

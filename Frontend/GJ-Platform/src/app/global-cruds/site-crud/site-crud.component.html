@@ -1,7 +1,4 @@
-<div class="card-body" style="background: white;
-border-radius: 35px; border: 1px black solid;
-border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
-    <div class="table-responsive">
+<div class="card-body cardBackground">
         <div class="filters">
             <select [(ngModel)]="selectedHeader">
                 <option value="name">Name</option>
@@ -48,7 +45,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </tbody>
         </table>
     </div>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="navBarStyle">
         <ul class="pagination">
             <!-- Botón para ir a la primera página -->
             <li class="page-item" [class.disabled]="currentPage === 1">
@@ -99,49 +96,37 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                    <div class="row centerRow">
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Region</div>
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <select class="form-control" id="regions" 
-                            style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="region">
+                        <div class="formTitle">Region</div>
+                        <div class="row centerRow">
+                            <select class="form-control formList" id="regions" required formControlName="region">
                               <option value="" disabled selected hidden>Region of the site</option>
                               <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
                             </select>
                           </div>
 
-                          <div style="margin-left: 50px; text-align: left; color: black;
-                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                             Country</div>
-                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                             <select class="form-control" id="countries" 
-                             style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="country">
+                          <div class="formTitle">Country</div>
+                         <div class="row centerRow">
+                             <select class="form-control formList" id="countries" required formControlName="country">
                                <option value="" disabled selected hidden>Country of the site</option>
                                <option *ngFor="let country of countries" [ngValue]="country">{{ country.name }}</option>
                              </select>
                            </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Site</div>
+                        <div class="formTitle">Site</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <input #editSiteInput class="form-control" id="editSiteNameInput" required
                                     placeholder="Name" formControlName="name">
                             </div>
                         </div>
                         
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                        font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                        Modality
-                        </div>
+                        <div class="formTitle">Modality</div>
                         
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <select #editModalityInput class="form-control" id="editSiteModalityInput" formControlName="modality">
                                     <option value="in-person">In-person</option>
                                     <option value="virtual">Virtual</option>
@@ -155,13 +140,13 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show messageSpacer" role="alert">
                     {{ successMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show messageSpacer" role="alert">
                     {{ errorMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
                         <span aria-hidden="true">&times;</span>
@@ -185,49 +170,37 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                    <div class="row centerRow">
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Region</div>
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <select class="form-control" id="regions" 
-                            style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="region">
+                        <div class="formTitle">Region</div>
+                        <div class="row centerRow">
+                            <select class="form-control formList" id="regions" required formControlName="region">
                               <option value="" disabled selected hidden>Region of the site</option>
                               <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
                             </select>
                           </div>
 
-                          <div style="margin-left: 50px; text-align: left; color: black;
-                          font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                             Country</div>
-                         <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                             <select class="form-control" id="countries" 
-                             style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="country">
+                          <div class="formTitle">Country</div>
+                         <div class="row centerRow">
+                             <select class="form-control formList" id="countries" required formControlName="country">
                                <option value="" disabled selected hidden>Country of the site</option>
                                <option *ngFor="let country of countries" [ngValue]="country">{{ country.name }}</option>
                              </select>
                            </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Site</div>
+                        <div class="formTitle">Site</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <input #createSiteInput class="form-control" id="createSiteNameInput" required
                                     placeholder="Name" formControlName="name">
                             </div>
                         </div>
                     
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                        font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                        Modality
-                        </div>
+                        <div class="formTitle">Modality</div>
                         
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <select #createModalityInput class="form-control" id="createSiteModalityInput" formControlName="modality">
                                     <option value="" disabled selected hidden>Modality</option>
                                     <option value="in-person">In-person</option>
@@ -243,13 +216,13 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show messageSpacer" role="alert">
                     {{ successMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show messageSpacer" role="alert">
                     {{ errorMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
                         <span aria-hidden="true">&times;</span>

@@ -1,4 +1,4 @@
-    <div class="card-body" style="background: white; border-radius: 35px; border: 1px black solid; border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
+    <div class="card-body cardBackground">
         <div class="table-responsive">
             <div class="filters">
                 <select [(ngModel)]="selectedHeader">
@@ -67,7 +67,7 @@
                 </tbody>
             </table>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="navBarStyle">
             <ul class="pagination">
                 <!-- Botón para ir a la primera página -->
                 <li class="page-item" [class.disabled]="currentPage === 1">
@@ -115,76 +115,63 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         Studio Name
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input #createStudioInput class="form-control" id="createStudioInput" required
                                 placeholder="Studio" formControlName="studioName">
                         </div>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         Description
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input #createdescriptionInput class="form-control" id="createdescriptionInput" required
                                 placeholder="description" formControlName="description">
                         </div>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                        Gamejam</div>
 
-                   <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="editGJInput"  
-                       style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="gameJam">
+                   <div class="row centerRow">
+                       <select class="form-control formList" id="editGJInput" required formControlName="gameJam">
                        <option value="" disabled selected hidden>Team Gamejam</option>
                        <option *ngFor="let gameJam of gameJams" [ngValue]="gameJam">{{ gameJam.edition }}</option>
                        </select>
                    </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                        Region</div>
-                   <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="regions" 
-                       style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="region" (change)="onRegionSelection()">
+                   <div class="row centerRow">
+                       <select class="form-control formList" id="regions" required formControlName="region" (change)="onRegionSelection()">
                          <option value="" disabled selected hidden>Region</option>
                          <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
                        </select>
                      </div>
-                     <div style="margin-left: 50px; text-align: left; color: black;
-                     font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                     <div class="formTitle">
                         Site</div>
-                     <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="sites"  
-                       style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="site" (change)="onSiteSelection()">
+                     <div class="row centerRow">
+                       <select class="form-control formList" id="sites" required formControlName="site" (change)="onSiteSelection()">
                          <option value="" disabled selected hidden>Site</option>
                          <option *ngFor="let site of sites" [ngValue]="site">{{ site.name }}</option>
                        </select>
                      </div>
-                     <div style="margin-left: 50px; text-align: left; color: black;
-                     font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                     <div class="formTitle">
                         Jammers
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <select formControlName="selectedUser" class="form-control" id="users"
-                        style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;">
+                    <div class="row centerRow">
+                        <select formControlName="selectedUser" class="form-control formList" id="users">
                             <option value="" disabled selected hidden>Users</option>
                             <option *ngFor="let user of users" [ngValue]="user">{{ user.name + ' - ' + user.email }}</option>
                         </select>
                     </div>
-                    <button type="button" (click)="addJammer()" class="btn btn-primary"  style="
-                    width: 200px;
-                    align-self: center;">Add Jammer</button>
-                    <div *ngFor="let jammer of myForm.get('jammers')?.value" class="row"  style="
-                    margin-top: 20px; align-self: center;">
+                    <button type="button" (click)="addJammer()" class="btn btn-primary formButton">Add Jammer</button>
+                    <div *ngFor="let jammer of myForm.get('jammers')?.value" class="row formLinks">
                         <div class="col">
                         <label>Jammer:</label>
                         <p>{{ jammer.name }}</p>
@@ -198,18 +185,14 @@
                         </div>
                     </div>
   
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         LinkTree
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <input formControlName="linkTree" type="text" class="form-control" id="linkTree"
-                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;"
-                            placeholder="Enter link">
-                        <button type="button" (click)="addLinkTree()" class="btn btn-primary" style="width: 200px; align-self: center;">Add Link</button>
+                    <div class="row centerRow">
+                        <input formControlName="linkTree" type="text" class="form-control formList" id="linkTree" placeholder="Enter link">
+                        <button type="button" (click)="addLinkTree()" class="btn btn-primary formButton">Add Link</button>
                     </div>                        
-                    <div *ngFor="let linkTree of myForm.get('linkTrees')?.value" class="row"  style="
-                    margin-top: 20px; align-self: center;">
+                    <div *ngFor="let linkTree of myForm.get('linkTrees')?.value" class="row formLinks">
                         <div class="col">
                           <label>Link:</label>
                           <p>{{ linkTree }}</p>
@@ -222,15 +205,14 @@
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
-                    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert"
-                        style="margin-left: 10px; margin-right: 10px;">
+                    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show messageSpacer" role="alert">
                         {{ successMessage }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"
                             (click)="successMessage=''">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show messageSpacer" role="alert">
                         {{ errorMessage }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
                             <span aria-hidden="true">&times;</span>
@@ -255,76 +237,63 @@
                         </button>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         Studio Name
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input #createStudioInput class="form-control" id="createStudioInput" required
                                 placeholder="Studio" formControlName="studioName">
                         </div>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         Description
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input #createdescriptionInput class="form-control" id="createdescriptionInput" required
                                 placeholder="description" formControlName="description">
                         </div>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                        Gamejam</div>
 
-                   <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="editGJInput"  
-                       style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="gameJam">
+                   <div class="row centerRow">
+                       <select class="form-control formList" id="editGJInput" required formControlName="gameJam">
                        <option value="" disabled selected hidden>Team Gamejam</option>
                        <option *ngFor="let gameJam of gameJams" [ngValue]="gameJam">{{ gameJam.edition }}</option>
                        </select>
                    </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                        Region</div>
-                   <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="regions" 
-                       style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="region" (change)="onRegionSelection()">
+                   <div class="row centerRow">
+                       <select class="form-control formList" id="regions" required formControlName="region" (change)="onRegionSelection()">
                          <option value="" disabled selected hidden>Region</option>
                          <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
                        </select>
                      </div>
-                     <div style="margin-left: 50px; text-align: left; color: black;
-                     font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                     <div class="formTitle">
                         Site</div>
-                     <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="sites"  
-                       style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="site" (change)="onSiteSelection()">
+                     <div class="row centerRow">
+                       <select class="form-control formList" id="sites" required formControlName="site" (change)="onSiteSelection()">
                          <option value="" disabled selected hidden>Site</option>
                          <option *ngFor="let site of sites" [ngValue]="site">{{ site.name }}</option>
                        </select>
                      </div>
-                     <div style="margin-left: 50px; text-align: left; color: black;
-                     font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                     <div class="formTitle">
                         Jammers
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <select formControlName="selectedUser" class="form-control" id="users"
-                        style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;">
+                    <div class="row centerRow">
+                        <select formControlName="selectedUser" class="form-control formList" id="users">
                             <option value="" disabled selected hidden>Users</option>
                             <option *ngFor="let user of users" [ngValue]="user">{{ user.name + ' - ' + user.email }}</option>
                         </select>
                     </div>
-                    <button type="button" (click)="addJammer()" class="btn btn-primary"  style="
-                    width: 200px;
-                    align-self: center;">Add Jammer</button>
-                    <div *ngFor="let jammer of myForm.get('jammers')?.value" class="row"  style="
-                    margin-top: 20px; align-self: center;">
+                    <button type="button" (click)="addJammer()" class="btn btn-primary formButton">Add Jammer</button>
+                    <div *ngFor="let jammer of myForm.get('jammers')?.value" class="row formLinks">
                         <div class="col">
                         <label>Jammer:</label>
                         <p>{{ jammer.name }}</p>
@@ -341,18 +310,14 @@
                         <button class="btn btn-danger" (click)="removeJammer(jammer)">Remove</button>
                         </div>
                     </div>
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         LinkTree
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <input formControlName="linkTree" type="text" class="form-control" id="linkTree"
-                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;"
-                            placeholder="Enter link">
-                        <button type="button" (click)="addLinkTree()" class="btn btn-primary" style="width: 200px; align-self: center;">Add Link</button>
+                    <div class="row centerRow">
+                        <input formControlName="linkTree" type="text" class="form-control formList" id="linkTree" placeholder="Enter link">
+                        <button type="button" (click)="addLinkTree()" class="btn btn-primary formButton">Add Link</button>
                     </div>                        
-                    <div *ngFor="let linkTree of myForm.get('linkTrees')?.value" class="row"  style="
-                    margin-top: 20px; align-self: center;">
+                    <div *ngFor="let linkTree of myForm.get('linkTrees')?.value" class="row formLinks">
                         <div class="col">
                           <label>Link:</label>
                           <p>{{ linkTree }}</p>
@@ -365,15 +330,14 @@
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
-                    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert"
-                        style="margin-left: 10px; margin-right: 10px;">
+                    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show messageSpacer" role="alert">
                         {{ successMessage }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"
                             (click)="successMessage=''">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show messageSpacer" role="alert">
                         {{ errorMessage }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
                             <span aria-hidden="true">&times;</span>

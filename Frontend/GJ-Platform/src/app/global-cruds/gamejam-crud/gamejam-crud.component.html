@@ -1,7 +1,4 @@
-<div class="card-body" style="background: white;
-border-radius: 35px; border: 1px black solid;
-border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
-    <div class="table-responsive">
+<div class="card-body cardBackground">
         <div class="filters">
             <select [(ngModel)]="selectedHeader">
                 <option value="edition">Edition</option>
@@ -48,7 +45,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </tbody>
         </table>
     </div>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="navBarStyle">
         <ul class="pagination">
             <!-- Botón para ir a la primera página -->
             <li class="page-item" [class.disabled]="currentPage === 1">
@@ -99,25 +96,19 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                    <div class="row centerRow">
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word;">
-                            Theme</div>
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <select class="form-control" id="themes"  
-                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="theme">
+                        <div class="formTitle">Theme</div>
+                        <div class="row centerRow">
+                            <select class="form-control formList" id="themes" required formControlName="theme">
                               <option value="" disabled selected hidden>Theme</option>
                               <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN + ' - ' + theme.descriptionEN }}</option>
                             </select>
                           </div>
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Edition</div>
+                        <div class="formTitle">Edition</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <input #editEditionInput class="form-control" id="editEditionInput" required
                                     placeholder="Edition" formControlName="edition">
                             </div>
@@ -128,7 +119,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" rol="alert" style="margin-left: 10px; margin-right: 10px;">
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show messageSpacer" rol="alert">
                     {{ successMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
                       <span aria-hidden="true">&times;</span>
@@ -152,24 +143,18 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word;">
-                            Theme</div>
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <select class="form-control" id="themes"  
-                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="theme">
+                    <div class="row centerRow">
+                        <div class="formTitle">Theme</div>
+                        <div class="row centerRow">
+                            <select class="form-control formList" id="themes" required formControlName="theme">
                               <option value="" disabled selected hidden>Theme</option>
                               <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN + ' - ' + theme.descriptionEN }}</option>
                             </select>
                           </div>
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                            Edition</div>
+                        <div class="formTitle">Edition</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <input #editEditionInput class="form-control" id="editEditionInput" required
                                     placeholder="Edition" formControlName="edition">
                             </div>
@@ -180,13 +165,13 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" rol="alert" style="margin-left: 10px; margin-right: 10px;">
+                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show messageSpacer" rol="alert">
                     {{ successMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
                       <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show messageSpacer" role="alert">
                     {{ errorMessage }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
                         <span aria-hidden="true">&times;</span>

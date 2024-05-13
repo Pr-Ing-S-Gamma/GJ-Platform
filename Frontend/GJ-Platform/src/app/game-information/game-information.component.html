@@ -1,69 +1,63 @@
-<div class="modal-content" style="background: #515151; border-radius: 35px; border: 1px black solid">
+<div class="modal-content cardBackground">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true" style="color: white; font-size: 50px;">&times;</span>
+            <span aria-hidden="true" class="MHText">&times;</span>
         </button>
     </div>
-    <div class="modal-body" style="display: flex; flex-direction: column;">
-        <div class="row" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; width: 100%;">
-            <div style="color: white; font-size: 80px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+    <div class="modal-body modalBodyFlex">
+        <div class="row w-100 cardRowFormat">
+            <div class="gameTitle">
                 {{ dataSource.name }} - {{ dataSource.team }}
             </div>
-            <div style="color: white; font-size: 15px; font-family: Inter; font-weight: 400; word-wrap: break-word; margin-bottom: 20px;">
+            <div class="gameDescription">
                 {{ dataSource.description }}
             </div>
         </div>
-        <div class="row" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap;">
-            <a [href]="dataSource.gameLink" target="_blank" style="color: white; font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+        <div class="row cardRowFormat">
+            <a [href]="dataSource.gameLink" target="_blank" class="gameLinks">
                 Game - {{ dataSource.gameLink }}
             </a>
-            <a [href]="dataSource.pitchLink" target="_blank" style="color: white; font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word">
+            <a [href]="dataSource.pitchLink" target="_blank" class="gameLinks">
                 Pitch - {{ dataSource.pitchLink }}
             </a>
         </div>
-        <div class="row" style="display: flex; justify-content: center; align-items: flex-start; flex-wrap: wrap;">
+        <div class="row cardRowFormat">
             <div class="col">
-                <div style="color: white; font-size: 50px; font-family: Inter; font-weight: 400; word-wrap: break-word; display: flex; justify-content: center;">
+                <div class="cardTitles">
                     Team members
                 </div>
                 <div *ngFor="let member of dataSource.teamMembers" class="row">
-                    <div class="col"
-                        style="color: white; font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; display: flex; justify-content: center;">
+                    <div class="col cardFields">
                         {{ member.name }}
                     </div>
-                    <div class="col"
-                        style="color: white; font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; display: flex; justify-content: center;">
+                    <div class="col cardFields">
                         {{ member.discordUsername }}
                     </div>
-                    <div class="col"
-                        style="color: white; font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; display: flex; justify-content: center;">
+                    <div class="col cardFields">
                         {{ member.email }}
                     </div>
                 </div>
             </div>
 
-            <div class="col" style="margin: 10px"> 
-                <div style="color: white; font-size: 50px; font-family: Inter; font-weight: 400; word-wrap: break-word; display: flex; justify-content: center;">
+            <div class="col my-custom-margin"> 
+                <div class="cardTitles">
                     Themes
                 </div>
-                <div *ngFor="let theme of dataSource.themes"
-                    style="color: white; font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; display: flex; justify-content: center;">
+                <div *ngFor="let theme of dataSource.themes" class="cardFields">
                     {{ theme }}
                 </div>
             </div>
 
-            <div class="col" style="margin: 10px">
-                <div style="color: white; font-size: 50px; font-family: Inter; font-weight: 400; word-wrap: break-word; display: flex; justify-content: center;">
+            <div class="col my-custom-margin">
+                <div class="cardTitles">
                     Categories
                 </div>
-                <div *ngFor="let category of dataSource.categories"
-                    style="color: white; font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; display: flex; justify-content: center;">
+                <div *ngFor="let category of dataSource.categories" class="cardFields">
                     {{ category }}
                 </div>
             </div>
         </div>
-        <div *ngIf="ActualUserIsJuez" class = "col btn btn-primary" (click)="evaluando = !evaluando"
-        style="display: flex; align-self: center; max-width: fit-content; justify-self: flex-end; margin: 2%;">
+        <div *ngIf="ActualUserIsJuez" class = "col btn btn-primary evaluationButton" (click)="evaluando = !evaluando">
             Show evaluation form
         </div>
 
