@@ -108,7 +108,7 @@
 </div>
 
 <!-- Edit Window -->
-<div #editModal class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+<div #editModal class="modal fade" id="editModal" role="dialog" aria-labelledby="editModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <form (submit)="editar()" [formGroup]="myForm">
@@ -143,23 +143,32 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <!-- Aquí van los mensajes de éxito y error -->
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ successMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ errorMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>  
             </div>
         </form>
     </div>
 </div>
+
+<!-- Fuera del modal principal -->
+<div *ngIf="successMessage || errorMessage" class="toast-overlay">
+    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3">
+      <!-- Mensaje de éxito -->
+      <div *ngIf="successMessage" class="toast custom-alert alert alert-success alert-dismissible fade show" role="alert">
+        <div class="toast-message">{{ successMessage }}</div>
+        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="successMessage=''">OK</button>
+      </div>
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="toast custom-alert alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="toast-message">{{ errorMessage }}</div>
+        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="errorMessage=''">OK</button>
+      </div>
+    </div>
+  </div>
+  
+
+
+
+
+
 
 
 <!-- Create Window -->
@@ -198,19 +207,6 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <!-- Aquí van los mensajes de éxito y error -->
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ successMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ errorMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>  
             </div>
         </form>
     </div>

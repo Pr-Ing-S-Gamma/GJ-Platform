@@ -4,7 +4,6 @@
     padding: 20px;
     border-radius: 5px;
     text-align: center;
-    z-index: 9999;
   }
   
   .message {
@@ -22,6 +21,6 @@
   }
   
   .ok-button:hover {
-    background-color:#086bdc5e;
+    background-color:#94b4d9e9;
   }
   

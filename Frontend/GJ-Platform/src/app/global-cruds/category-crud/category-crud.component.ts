@@ -9,6 +9,7 @@ import autoTable from 'jspdf-autotable';
 import { CustomAlertComponent } from '../../jammer-home/custom-alert/custom-alert.component';
 import { MatDialog } from '@angular/material/dialog';
 
+
 declare var $: any;
 
 @Component({
@@ -31,7 +32,7 @@ export class CategoryCrudComponent implements OnInit{
   selectedHeader: string | undefined;
   filterValue: string = '';
   constructor(private dialog: MatDialog, private fb: FormBuilder, private categoryService: CategoryService){}
-
+  
   ngOnInit(): void {
     this.myForm = this.fb.group({
       titleSP: ['', Validators.required],
@@ -66,18 +67,8 @@ export class CategoryCrudComponent implements OnInit{
       }
     );
   }
-  showAlert(message: string, callback: () => void): void {
-    const dialogRef = this.dialog.open(CustomAlertComponent, {
-      width: '400px',
-      data: { message: message }
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'ok') {
-        callback();
-      }
-    });
-  }
+
+
   
   selectedColumns: (keyof Category)[] = []; 
 
@@ -176,8 +167,9 @@ export class CategoryCrudComponent implements OnInit{
             manualSP: this.myForm.value['manualSP'],
             manualEN: this.myForm.value['manualEN'],
             manualPT: this.myForm.value['manualPT']
+            
           };
-          this.showAlert("Actualizado con éxito", () => {});
+          this.showSuccessMessage(data.msg);
         },
         error: (error) => {
           console.error('Error al actualizar la región:', error);
@@ -188,6 +180,7 @@ export class CategoryCrudComponent implements OnInit{
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
+  
   
   eliminar(elemento: any) {
     const id = elemento._id;
@@ -257,9 +250,6 @@ errorMessage: string = '';
 
 showSuccessMessage(message: string) {
   this.successMessage = message;
-  setTimeout(() => {
-    this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-  }, 5000); // Limpia el mensaje después de 5 segundos
 }
 
 showErrorMessage(message: string) {
