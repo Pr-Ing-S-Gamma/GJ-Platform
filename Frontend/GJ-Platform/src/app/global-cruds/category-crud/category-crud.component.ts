@@ -177,9 +177,7 @@ export class CategoryCrudComponent implements OnInit{
             manualEN: this.myForm.value['manualEN'],
             manualPT: this.myForm.value['manualPT']
           };
-          this.showAlert("Agregado con éxito", () => {
-            window.location.reload();
-          });
+          this.showAlert("Actualizado con éxito", () => {});
         },
         error: (error) => {
           console.error('Error al actualizar la región:', error);
