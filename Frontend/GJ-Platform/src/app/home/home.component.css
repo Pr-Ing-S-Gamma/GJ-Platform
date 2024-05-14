@@ -4,7 +4,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    position: fixed;
+    background-attachment: fixed;
 }
 
 .mainWindow {
@@ -12,12 +12,15 @@
     flex-direction: column;
     padding-left: 15%;
     padding-right: 15%;
+    overflow-y: auto;
 }
 
 .headerGradient {
-    padding: 1%;
+    padding: 0.75%;
     background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%);
+    width: 71.25%;
     position: fixed;
+    z-index: 1000;
 }
 
 .GJrol {
@@ -38,4 +41,5 @@
     align-items: flex-start;
     flex-grow: 1;
     background: white;
+    padding-top: 4.5rem;
 }

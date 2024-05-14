@@ -51,10 +51,10 @@ export class GlobalSitesComponent implements OnInit{
           this.router.navigate(['/Jammer']);
           return; 
         }
-      },
+      },/*
       error => {
         this.router.navigate(['/login']);
-      }
+      }*/
     );
     this.siteService.getSites('http://localhost:3000/api/site/get-sites')
       .subscribe(
