@@ -6,6 +6,13 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+
+.navBarStyle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .toast-overlay {
   position: fixed;
   top: 0;
@@ -14,12 +21,6 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
   z-index: 9998; /* Z-index menor que el del toast para que aparezca detrás */
-}
-
-.navBarStyle{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .custom-alert {

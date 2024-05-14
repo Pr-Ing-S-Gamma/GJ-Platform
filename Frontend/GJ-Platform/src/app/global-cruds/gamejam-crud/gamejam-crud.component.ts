@@ -204,16 +204,10 @@ export class GamejamCrudComponent implements OnInit{
     
     showSuccessMessage(message: string) {
       this.successMessage = message;
-      setTimeout(() => {
-        this.successMessage = ''; 
-      }, 5000); 
     }
     
     showErrorMessage(message: string) {
       this.errorMessage = message;
-      setTimeout(() => {
-        this.errorMessage = ''; 
-      }, 5000); 
     }
     
   get totalPaginas(): number {

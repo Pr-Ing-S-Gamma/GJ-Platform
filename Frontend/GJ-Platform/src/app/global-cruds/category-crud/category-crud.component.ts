@@ -254,9 +254,6 @@ showSuccessMessage(message: string) {
 
 showErrorMessage(message: string) {
   this.errorMessage = message;
-  setTimeout(() => {
-    this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-  }, 5000); // Limpia el mensaje después de 5 segundos
 }
   
   get totalPaginas(): number {
