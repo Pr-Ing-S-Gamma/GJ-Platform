@@ -7,7 +7,7 @@ const fs = require('fs');
 
 
 
-const createCategory = async (req, res, next) => {
+const createCategoryy = async (req, res, next) => {
 
         const { titleSP, titleEN, titlePT, descriptionSP, descriptionEN, descriptionPT} = req.body;
         const { manualSP, manualEN, manualPT } = req.files;
@@ -50,7 +50,7 @@ const createCategory = async (req, res, next) => {
 };
 
 
-const createCategoryy = async (req, res) => {
+const createCategory = async (req, res) => {
     handlePDFs(req, res, async (err) => {
         if (err) {
             return res.status(400).json({ success: false, msg: "error handle pdfsssss" });
