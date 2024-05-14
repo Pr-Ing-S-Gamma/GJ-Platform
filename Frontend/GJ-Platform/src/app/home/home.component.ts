@@ -33,12 +33,11 @@ export class HomeComponent {
         user => {
           this.userRole = user.rol
           this.username = user.name + "(" + user.discordUsername + ")";
-        },/*
+        },
         error => {
           this.router.navigate(['/login']);
-        }*/
+        }
       );
-      this.userRole = "GlobalOrganizer";
   }
 
   logOut(){
