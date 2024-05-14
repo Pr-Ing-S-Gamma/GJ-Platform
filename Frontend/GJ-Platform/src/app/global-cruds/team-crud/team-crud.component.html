@@ -29,7 +29,6 @@
                         <th scope="col">GameJam Edition</th>
                         <th scope="col">Region</th>
                         <th scope="col">Site</th>
-                        <th scope="col">Links</th>
                         <th scope="col">Jammers</th>
                         <th scope="col">Update</th>
                         <th scope="col">Delete</th>
@@ -42,13 +41,6 @@
                         <td>{{ row.gameJam.edition }}</td>
                         <td>{{ row.region.name }}</td>
                         <td>{{ row.site.name }}</td>
-                        <td>
-                            <ul>
-                                <li *ngFor="let link of row.linkTree">
-                                    <a [href]="link">{{ link }}</a>
-                                </li>
-                            </ul>
-                        </td>
                         <td>
                             <ul>
                                 <li *ngFor="let jammer of row.jammers">
@@ -183,24 +175,7 @@
                         <div class="col">
                         <button class="btn btn-danger" (click)="removeJammer(jammer)">Remove</button>
                         </div>
-                    </div>
-  
-                    <div class="formTitle">
-                        LinkTree
-                    </div>
-                    <div class="row centerRow">
-                        <input formControlName="linkTree" type="text" class="form-control formList" id="linkTree" placeholder="Enter link">
-                        <button type="button" (click)="addLinkTree()" class="btn btn-primary formButton">Add Link</button>
-                    </div>                        
-                    <div *ngFor="let linkTree of myForm.get('linkTrees')?.value" class="row formLinks">
-                        <div class="col">
-                          <label>Link:</label>
-                          <p>{{ linkTree }}</p>
-                        </div>
-                        <div class="col">
-                          <button class="btn btn-danger" (click)="removeLinkTree(linkTree)">Remove</button>
-                        </div>
-                      </div>                      
+                    </div>                                     
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
@@ -311,23 +286,7 @@
                         <div class="col">
                         <button class="btn btn-danger" (click)="removeJammer(jammer)">Remove</button>
                         </div>
-                    </div>
-                    <div class="formTitle">
-                        LinkTree
-                    </div>
-                    <div class="row centerRow">
-                        <input formControlName="linkTree" type="text" class="form-control formList" id="linkTree" placeholder="Enter link">
-                        <button type="button" (click)="addLinkTree()" class="btn btn-primary formButton">Add Link</button>
-                    </div>                        
-                    <div *ngFor="let linkTree of myForm.get('linkTrees')?.value" class="row formLinks">
-                        <div class="col">
-                          <label>Link:</label>
-                          <p>{{ linkTree }}</p>
-                        </div>
-                        <div class="col">
-                          <button class="btn btn-danger" (click)="removeLinkTree(linkTree)">Remove</button>
-                        </div>
-                      </div>                      
+                    </div>                
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>

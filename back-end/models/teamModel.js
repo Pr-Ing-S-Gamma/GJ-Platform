@@ -36,8 +36,7 @@ const teamSchema = mongoose.Schema({
         }
     },
     linkTree: [{
-        type:String,
-        required:true
+        type:String
     }],
     gameJam:  {
         _id: { 
