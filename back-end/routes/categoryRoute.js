@@ -6,11 +6,11 @@ category_route.use(bodyParser.json());
 category_route.use(bodyParser.urlencoded({ extended: true })); 
 const multer = require('multer');
 
-const upload = multer({ dest: "../routes/uploads/" });
+//const upload = multer({ dest: "../routes/uploads/" });
 
-//const storage = multer.memoryStorage();
+const storage = multer.memoryStorage();
 
-//const upload = multer({ storage: storage });
+const upload = multer({ storage: storage });
 
 const categoryController = require('../controllers/categoryController');
 
