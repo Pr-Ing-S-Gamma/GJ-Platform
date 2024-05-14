@@ -6,9 +6,11 @@ category_route.use(bodyParser.json());
 category_route.use(bodyParser.urlencoded({ extended: true })); 
 const multer = require('multer');
 
-const storage = multer.memoryStorage();
+const upload = multer({ dest: "../routes/uploads/" });
 
-const upload = multer({ storage: storage });
+//const storage = multer.memoryStorage();
+
+//const upload = multer({ storage: storage });
 
 const categoryController = require('../controllers/categoryController');
 
@@ -18,11 +20,8 @@ const categoryController = require('../controllers/categoryController');
     { name: 'manualPT', maxCount: 1 }
 ]);*/
 
-
-category_route.post('/create-category', 
-upload.fields([{ name: 'manualSP', maxCount: 1 },
-{ name: 'manualEN', maxCount: 1 },
-{ name: 'manualPT', maxCount: 1 }]), categoryController.createCategory);
+const cpUpload = upload.fields([{ name: 'manualSP', maxCount: 1 }, { name: 'manualEN', maxCount: 1 }, {name: 'manualPT', maxCount: 1 }]);
+category_route.post('/create-category', cpUpload, categoryController.createCategory);
 category_route.put('/update-category/:id', upload.none(), categoryController.updateCategory);
 category_route.get('/get-category/:id', categoryController.getCategory);
 category_route.get('/get-categories', categoryController.getCategories);

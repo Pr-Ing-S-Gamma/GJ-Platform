@@ -7,7 +7,7 @@ const fs = require('fs');
 
 
 
-const createCategory = async (req, res) => {
+const createCategory = async (req, res, next) => {
 
         const { titleSP, titleEN, titlePT, descriptionSP, descriptionEN, descriptionPT} = req.body;
         const { manualSP, manualEN, manualPT } = req.files;
