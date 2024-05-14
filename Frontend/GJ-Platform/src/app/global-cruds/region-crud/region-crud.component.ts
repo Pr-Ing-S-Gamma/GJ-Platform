@@ -170,16 +170,10 @@ export class RegionCRUDComponent implements OnInit{
 
   showSuccessMessage(message: string) {
     this.successMessage = message;
-    setTimeout(() => {
-      this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-    }, 5000); // Limpia el mensaje después de 5 segundos
   }
 
   showErrorMessage(message: string) {
     this.errorMessage = message;
-    setTimeout(() => {
-      this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-    }, 5000); // Limpia el mensaje después de 5 segundos
   }
 
   get totalPaginas(): number {
