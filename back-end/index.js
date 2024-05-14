@@ -6,7 +6,6 @@ const cookieParser = require("cookie-parser");
 const dotenv = require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
-const multer = require('./routes/multerConfig');
 
 // Crear una instancia de la aplicación Express
 const app = express();
