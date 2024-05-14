@@ -34,7 +34,9 @@ export class HomeComponent {
           this.userRole = user.rol
           this.username = user.name + "(" + user.discordUsername + ")";
         },
-        () => {}
+        error => {
+          this.router.navigate(['/login']);
+        }
       );
   }
 

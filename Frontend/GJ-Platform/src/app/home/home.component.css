@@ -4,6 +4,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
+    position: fixed;
 }
 
 .mainWindow {
@@ -16,6 +17,7 @@
 .headerGradient {
     padding: 1%;
     background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%);
+    position: fixed;
 }
 
 .GJrol {
