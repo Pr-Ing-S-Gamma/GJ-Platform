@@ -327,7 +327,16 @@ showErrorMessage(message: string) {
     for (let i = inicio; i <= fin; i++) {
       paginasMostradas.push(i);
     }
+  
+    if (currentPage - inicio > rango) {
+      paginasMostradas.unshift('...');
+    }
+    
+    if (fin < totalPaginas - 1) {
+      paginasMostradas.push('...');
+    }
 
+    /*
     if (inicio == 1){
       switch(fin - inicio){
         case 2:
@@ -351,6 +360,7 @@ showErrorMessage(message: string) {
         default: break;
       }
     }
+    */
     return paginasMostradas;
 }
 
