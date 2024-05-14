@@ -4,106 +4,56 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const Submission = require('../models/submissionModel')
 const fs = require('fs');
-
-
-
+ 
 const createCategory = async (req, res) => {
-
-        const { titleSP, titleEN, titlePT, descriptionSP, descriptionEN, descriptionPT} = req.body;
-        const { manualSP, manualEN, manualPT } = req.files;
-
-        try {
-            const existingCategory = await Category.findOne({ titleEN: titleEN });
-            const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-            const creatorUser = await User.findById(userId);
-            if (existingCategory) {
-                return res.status(409).json({ success: false, error: "Category already exists" });
-            }
-            
-
-            const category = new Category({
-                titleSP: titleSP,
-                titleEN: titleEN,
-                titlePT: titlePT,
-                descriptionSP: descriptionSP,
-                descriptionEN: descriptionEN,
-                descriptionPT: descriptionPT,
-                manualSP: manualSP,
-                manualEN: manualEN,
-                manualPT: manualPT,
-                creatorUser: {
-                    userId: creatorUser._id,
-                    name: creatorUser.name,
-                    email: creatorUser.email
-                },
-                creationDate: new Date()
-            });
-
-            console.log(category.manualEN.data);
-
-            await category.save();
-
-            res.status(200).json({ success: true, msg: 'Category created successfully', categoryId: category._id });
-        } catch (error) {
-            res.status(400).json({ success: false, error: error.message });
-        }
-};
-
-
-const createCategoryy = async (req, res) => {
-    handlePDFs(req, res, async (err) => {
-        if (err) {
-            return res.status(400).json({ success: false, msg: "error handle pdfsssss" });
-        }
-
-
+    try {
         const { titleSP, titleEN, titlePT, descriptionSP, descriptionEN, descriptionPT } = req.body;
         const { manualSP, manualEN, manualPT } = req.files;
-        
 
-        try {
-            const manualSPBuffer = manualSP[0].buffer;
-            const manualENBuffer = manualEN[0].buffer;
-            const manualPTBuffer = manualPT[0].buffer;
+        // Lee los datos binarios de los archivos PDF
+        const manualSPBuffer = manualSP[0].buffer;
+        const manualENBuffer = manualEN[0].buffer;
+        const manualPTBuffer = manualPT[0].buffer;
 
-        } catch (error) {
-            res.status(400).json({ success: false, msg: "error pdf" });
+        // Accede al ID del usuario creador
+        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        const creatorUser = await User.findById(userId);
+
+        // Verifica si la categoría ya existe
+        const existingCategory = await Category.findOne({ titleEN: titleEN });
+        if (existingCategory) {
+            return res.status(409).json({ success: false, error: "La categoría ya existe" });
         }
 
-        try {
-            const existingCategory = await Category.findOne({ titleEN: titleEN });
-            const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-            const creatorUser = await User.findById(userId);
-            if (existingCategory) {
-                return res.status(409).json({ success: false, error: "Category already exists" });
-            }
+        // Crea un nuevo documento de categoría con los datos binarios de los archivos PDF
+        const category = new Category({
+            titleSP: titleSP,
+            titleEN: titleEN,
+            titlePT: titlePT,
+            descriptionSP: descriptionSP,
+            descriptionEN: descriptionEN,
+            descriptionPT: descriptionPT,
+            manualSP: manualSPBuffer,
+            manualEN: manualENBuffer,
+            manualPT: manualPTBuffer,
+            creatorUser: {
+                userId: creatorUser._id,
+                name: creatorUser.name,
+                email: creatorUser.email
+            },
+            creationDate: new Date()
+        });
 
-            const category = new Category({
-                titleSP: titleSP,
-                titleEN: titleEN,
-                titlePT: titlePT,
-                descriptionSP: descriptionSP,
-                descriptionEN: descriptionEN,
-                descriptionPT: descriptionPT,
-                manualSP: manualSPBuffer,
-                manualEN: manualENBuffer,
-                manualPT: manualPTBuffer,
-                creatorUser: {
-                    userId: creatorUser._id,
-                    name: creatorUser.name,
-                    email: creatorUser.email
-                },
-                creationDate: new Date()
-            });
+        // Guarda el documento de categoría en la base de datos
+        await category.save();
 
-            await category.save();
-
-            res.status(200).json({ success: true, msg: 'Category created successfully', categoryId: category._id });
-        } catch (error) {
-            res.status(400).json({ success: false, error: error.message });
-        }
-    });
+        res.status(200).json({ success: true, msg: 'Categoría creada exitosamente', categoryId: category._id });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
 };
+
+
 const updateCategory = async (req, res) => {
     try {
         const id = req.params.id;
