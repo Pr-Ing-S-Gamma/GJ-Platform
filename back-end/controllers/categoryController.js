@@ -170,11 +170,11 @@ const getPDF = async (req, res) =>{
         const fileName = 'documento.pdf'; // Nombre del archivo
 
         // Opción 1: Enviar los datos binarios directamente al cliente
-        //res.contentType('application/pdf').send(pdfData);
+        res.contentType('application/pdf').send(pdfData);
 
         // Opción 2: Crear un enlace de descarga
-         fs.writeFileSync(fileName, pdfData); // Guarda el PDF localmente
-        res.download(fileName); // Descarga el PDF al cliente
+         //fs.writeFileSync(fileName, pdfData); // Guarda el PDF localmente
+        //res.download(fileName); // Descarga el PDF al cliente
 
     } catch (error) {
         console.error('Error al obtener el PDF:', error);

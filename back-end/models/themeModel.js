@@ -3,13 +3,13 @@ const { Schema } = mongoose;
 
 const themeSchema = mongoose.Schema({
     manualPT: {
-        type: String
+        type: Buffer
     },
     manualSP: {
-        type: String
+        type: Buffer
     },
     manualEN: {
-        type: String
+        type: Buffer
     },
     descriptionSP: {
         type: String

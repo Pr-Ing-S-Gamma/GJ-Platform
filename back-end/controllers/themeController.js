@@ -9,15 +9,20 @@
     try {
       const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
       let creatorUser = await User.findById(userId);
-      const { name } = req.body;
-      if (!Theme.findOne({ name: name })) {
+
+      if (!Theme.findOne({ titleEN: req.body.titleEN })) {
         return res.status(409).json({ success: false, error: 'Theme already exists' });
       }
+
+      const { manualSP, manualEN, manualPT } = req.files;
+      const manualSPBuffer = manualSP[0].buffer;
+      const manualENBuffer = manualEN[0].buffer;
+      const manualPTBuffer = manualPT[0].buffer;
   
       const theme = new Theme({
-        manualPT: req.body.manualPT,
-        manualSP: req.body.manualSP,
-        manualEN: req.body.manualEN,
+        manualPT: manualPTBuffer,
+        manualSP: manualSPBuffer,
+        manualEN: manualENBuffer,
         descriptionSP: req.body.descriptionSP,
         descriptionPT: req.body.descriptionPT,
         descriptionEN: req.body.descriptionEN,
@@ -155,11 +160,38 @@
       }
   }
 
+  const getPDF = async (req, res) =>{
+    try {
+        const themeId = req.params.id;
+        const theme = await Theme.findById(themeId);
+
+        if (!theme) {
+            return res.status(404).send('Categoría no encontrada');
+        }
+
+        const pdfData = theme.manualSP; // Suponiendo que manualSP contiene los datos binarios del PDF
+        const fileName = 'documento.pdf'; // Nombre del archivo
+
+        // Opción 1: Enviar los datos binarios directamente al cliente
+        res.contentType('application/pdf').send(pdfData);
+
+        // Opción 2: Crear un enlace de descarga
+         //fs.writeFileSync(fileName, pdfData); // Guarda el PDF localmente
+        //res.download(fileName); // Descarga el PDF al cliente
+
+    } catch (error) {
+        console.error('Error al obtener el PDF:', error);
+        res.status(500).send('Error interno del servidor');
+    }
+    
+};
+
   module.exports = {
     createTheme,
     deleteTheme,
     updateTheme,
     getTheme,
     getThemes,
-    getGamesPerTheme
+    getGamesPerTheme,
+    getPDF
   };
