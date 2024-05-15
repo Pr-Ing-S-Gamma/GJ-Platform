@@ -6,12 +6,14 @@ import { ActivatedRoute } from '@angular/router';
 import { SiteService } from '../services/site.service';
 import { Site, User } from '../../types';
 import { UserService } from '../services/user.service';
+import { GameInformationComponent } from '../game-information/game-information.component';
 
 @Component({
   selector: 'app-global-sites',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    GameInformationComponent
   ],
   templateUrl: './global-sites.component.html',
   styleUrl: './global-sites.component.css'
@@ -32,7 +34,10 @@ export class GlobalSitesComponent implements OnInit{
     this.inSite = false;
   }
 
-  moveToRegionSites(region: String){
+  moveToRegionSites(region: String | undefined){
+    if (region === undefined){
+      this.regionParameter = 'Regions';
+    }
     this.regionParameter = region;
     this.inSite = false;
   }
