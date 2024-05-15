@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { SiteService } from '../services/site.service';
-import { Site } from '../../types';
+import { Site, User } from '../../types';
 import { UserService } from '../services/user.service';
 
 @Component({
@@ -19,27 +19,40 @@ import { UserService } from '../services/user.service';
 
 export class GlobalSitesComponent implements OnInit{
   regionParameter: String | undefined;
+  siteParameter: String | undefined;
+  inSite: boolean = false;
   dataSource: Site[] = [];
   regions: any[] = []; 
+  staff: User[] = [];
+  games: any[] = []
   constructor(private router: Router, private route: ActivatedRoute, private siteService: SiteService, private userService: UserService) { }
 
-  moveToCruds() {
-    this.router.navigate(['/DataManagement']);
-  }
-
   moveToRegionsRoot(){
-    this.router.navigate(['/Sites']);
+    this.regionParameter = 'Regions';
+    this.inSite = false;
   }
 
   moveToRegionSites(region: String){
-    this.router.navigate(['/Sites', region]);
+    this.regionParameter = region;
+    this.inSite = false;
   }
 
   moveToSiteInformation(site: String){
-    this.router.navigate(['/Sites', this.regionParameter, 'Information', site]);
+    this.inSite = true;
+    this.siteParameter = site;
+    const url = `http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
+    this.userService.getUsers(url).subscribe(
+      (users: any[]) => {
+        this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins, discordUsername: user.discordUsername }));
+      },
+      error => {
+        console.error('Error al obtener usuarios:', error);
+      }
+    );
+    //this.siteService.getSubmissions('http://localhost:3000/api/site/get-submissions-site/' + site).subscribe()
   }
   
-  ngOnInit(): void {
+  ngOnInit(): void { /*
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
     .subscribe(
       user => {
@@ -54,8 +67,8 @@ export class GlobalSitesComponent implements OnInit{
       },/*
       error => {
         this.router.navigate(['/login']);
-      }*/
-    );
+      }
+    ); */
     this.siteService.getSites('http://localhost:3000/api/site/get-sites')
       .subscribe(
         sites => {
@@ -95,15 +108,4 @@ export class GlobalSitesComponent implements OnInit{
     }));
   }
 
-  logOut(): void {
-    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
-      .subscribe(
-        () => {
-          this.router.navigate(['/login']);
-        },
-        error => {
-          console.error('Error al cerrar sesión:', error);
-        }
-      );
-  }
 }
