@@ -6,7 +6,11 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
-
+.pdf {
+  color: blue; 
+  text-decoration: underline; 
+  cursor: pointer;
+}
 
 .navBarStyle{
     display: flex;
@@ -48,10 +52,6 @@
 .ok-button:hover {
   background-color: #94b4d9e9;
 }
-.ver-pdf {
-  color: blue;
-  text-decoration: underline;
-  cursor: pointer;
-}
+
 
   

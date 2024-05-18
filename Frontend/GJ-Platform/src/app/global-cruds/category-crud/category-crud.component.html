@@ -51,13 +51,13 @@
             <tr *ngFor="let row of obtenerDatosPagina()">
               <td>{{ row.titleSP }}</td>
               <td>{{ row.descriptionSP }}</td>
-              <td><a (click)="getPdf(row._id!, 'SP')" class="ver-pdf">Load PDF</a></td>
+              <td class="pdf"><a (click)="getPdf(row._id!, 'SP')" >Load PDF</a></td>
               <td>{{ row.titleEN }}</td>
               <td>{{ row.descriptionEN }}</td>
-              <td><a (click)="getPdf(row._id!, 'EN')" class="ver-pdf">Load PDF</a></td>
+              <td class="pdf"><a (click)="getPdf(row._id!, 'EN')">Load PDF</a></td>
               <td>{{ row.titlePT }}</td>
               <td>{{ row.descriptionPT }}</td>
-              <td><a (click)="getPdf(row._id!, 'PT')" class="ver-pdf">Load PDF</a></td>
+              <td class="pdf"><a (click)="getPdf(row._id!, 'PT')" >Load PDF</a></td>
               <td>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
               </td>
