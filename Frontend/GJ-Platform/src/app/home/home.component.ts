@@ -53,15 +53,7 @@ export class HomeComponent {
           this.region = user.region.name;
         },
         error => {
-          //this.router.navigate(['/login']);
-          this.userRole = "LocalOrganizer"
-          this.username = "David Pastor (Aldokler)";
-          this.name = "David Pastor";
-          this.discordName = "Aldokler";
-          this.email = "xdavidpastor@gmail.com";
-          this.site = "San José";
-          this.region = "LATAM";
-          this.localLogged = true;
+          this.router.navigate(['/login']);
         }
       );
   }
@@ -96,6 +88,9 @@ export class HomeComponent {
           this.name = "David Pastor";
           this.discordName = "Aldokler";
           this.email = "xdavidpastor@gmail.com";
+          this.site = "San José";
+          this.region = "LATAM";
+          this.localLogged = true;
   */ 
 
 }

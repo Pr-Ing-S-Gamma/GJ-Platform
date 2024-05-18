@@ -40,9 +40,6 @@ export class UserDashboardComponent implements OnInit {
     this.myForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', Validators.required],
-      rol: ['', Validators.required],
-      region: ['', Validators.required],
-      site: ['', Validators.required],
       discordUsername: ['', Validators.required]
     });
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user').subscribe(

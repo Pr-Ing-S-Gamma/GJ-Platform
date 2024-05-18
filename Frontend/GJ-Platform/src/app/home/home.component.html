@@ -18,7 +18,7 @@
 
         </div>
 
-        <div class="modal fade" id="userDashboard" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div #userDashboard class="modal fade" id="userDashboard" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     
@@ -37,7 +37,7 @@
                             {{ name }}
                         </div>
                         <div class="row">
-                            Discord Tag:
+                            Discord Username:
                         </div>
                         <div class="col">
                             {{ discordName }}
@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <div class="col btn btn-primary logOutButton" (click)="openEditUserInfoModal()">
+                        <div class="col btn btn-primary logOutButton" (click)="openEditUserInfoModal()" data-toggle="modal" data-target="#editUserInfo">
                             Update User Data
                         </div>
                         <div *ngIf="localLogged" class="col btn btn-primary logOutButton" (click)="changeWindow()" href="#" data-dismiss="modal">
