@@ -86,3 +86,13 @@
     font-weight: 400; 
     word-wrap: break-word;
 }
+
+.cardContent:hover{
+    background: black;
+    color: white;
+}
+
+.cardBackground:hover{
+    background: black;
+    color: white;
+}

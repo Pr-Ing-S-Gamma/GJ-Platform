@@ -17,7 +17,7 @@ export const routes: Routes = [
     {path: '',redirectTo: "login", pathMatch: "full"},
 
     {path: 'login',component: LoginComponent},
-    {path: 'register', component: RegisterComponent},
+    {path: 'register', component: RegisterComponent},/*
     {path: 'DataManagement', component: GlobalCRUDsComponent},
     {path: 'Sites', component: GlobalSitesComponent},
     {path: 'Sites/:region', component: GlobalSitesComponent},
@@ -28,6 +28,9 @@ export const routes: Routes = [
     {path: 'Jammer/Team', component: JammerTeamComponent},
     {path: 'Juez', component: JuezMainComponent},
     {path: 'Jammer/team/createTeam', component: JammerCreateTeamComponent},
-    {path: 'Jammer/team/submit', component: JammerSubmitComponent},
-    {path: 'home', component: HomeComponent}
+    {path: 'Jammer/team/submit', component: JammerSubmitComponent},*/
+    {path: 'home', component: HomeComponent},
+
+
+    
 ];

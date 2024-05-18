@@ -7,6 +7,7 @@ import { LocalHomeComponent } from '../local-home/local-home.component';
 import { JammerHomeComponent } from '../jammer-home/jammer-home.component';
 import { JuezMainComponent } from '../juez-main/juez-main.component';
 import { GlobalHomeComponent } from '../global-home/global-home.component';
+import { UserDashboardComponent } from '../user-dashboard/user-dashboard.component';
 
 @Component({
   selector: 'app-home',
@@ -16,28 +17,65 @@ import { GlobalHomeComponent } from '../global-home/global-home.component';
     LocalHomeComponent,
     JammerHomeComponent,
     JuezMainComponent,
-    GlobalHomeComponent
+    GlobalHomeComponent,
+    UserDashboardComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
   localLogged: boolean = false;
+  editing: boolean = false;
   username: string | undefined;
   userRole: string | undefined;
+  name: string | undefined;
+  discordName: string | undefined;
+  email: string | undefined;
+  site: string | undefined;
+  region: string | undefined;
   constructor(private router: Router, private userService: UserService, private siteService: SiteService){}
   
   ngOnInit(): void {
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
       .subscribe(
         user => {
-          this.userRole = user.rol
+          if (Array.isArray(user.rol)){
+            this.localLogged = true;
+            this.userRole = "LocalOrganizer"
+          } else {
+            this.userRole = user.rol
+          }
           this.username = user.name + "(" + user.discordUsername + ")";
+          this.name = user.name;
+          this.discordName = user.discordUsername;
+          this.email = user.email;
+          this.site = user.site.name;
+          this.region = user.region.name;
         },
         error => {
-          this.router.navigate(['/login']);
+          //this.router.navigate(['/login']);
+          this.userRole = "LocalOrganizer"
+          this.username = "David Pastor (Aldokler)";
+          this.name = "David Pastor";
+          this.discordName = "Aldokler";
+          this.email = "xdavidpastor@gmail.com";
+          this.site = "San José";
+          this.region = "LATAM";
+          this.localLogged = true;
         }
       );
+  }
+
+  changeWindow(){
+    if (this.userRole == "LocalOrganizer"){
+      this.userRole = "Judge";
+    } else {
+      this.userRole = "LocalOrganizer";
+    }
+  }
+
+  openEditUserInfoModal() {
+    this.editing = true;
   }
 
   logOut(){
@@ -51,5 +89,13 @@ export class HomeComponent {
         }
       );
   }
+
+  /*
+          this.userRole = "LocalOrganizer"
+          this.username = "David Pastor (Aldokler)";
+          this.name = "David Pastor";
+          this.discordName = "Aldokler";
+          this.email = "xdavidpastor@gmail.com";
+  */ 
 
 }

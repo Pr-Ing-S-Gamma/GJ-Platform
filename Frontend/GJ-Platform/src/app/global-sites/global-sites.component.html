@@ -1,7 +1,8 @@
 <div *ngIf="!inSite">
     <div class="Card-heading flexToStart">
         <div class="regionName">
-            <img class="btn btn-default" (click)="moveToRegionsRoot()" *ngIf="regionParameter != 'Regions'" src="/assets/Images/back_arrow.png" alt="Lights"><!--style="max-width: 65px;"-->
+            <img class="btn btn-default" (click)="moveToRegionsRoot()" *ngIf="regionParameter != 'Regions'"
+            src="/assets/Images/back_arrow.png" alt="Lights" width="64" height="56"><!--style="max-width: 65px;"-->
             {{ regionParameter }}
         </div>
     </div>
@@ -33,7 +34,7 @@
     <div class="Card-heading flexToStart">
         <div class="regionName">
             <img class="btn btn-default" (click)="moveToRegionSites(regionParameter)" *ngIf="regionParameter != 'Regions'"
-                src="/assets/Images/back_arrow.png" alt="Lights">
+                src="/assets/Images/back_arrow.png" alt="Lights" width="64" height="56">
             {{ regionParameter }} - {{ siteParameter }}
         </div>
     </div>
