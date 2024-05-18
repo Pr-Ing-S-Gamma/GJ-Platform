@@ -42,6 +42,9 @@ const submissionSchema = mongoose.Schema({
         ref: 'Theme',
         required: false
     },
+    numberEvaluations: {
+        type: Number
+    },
     creatorUser:  {
         userId: {
             type: Schema.Types.ObjectId, 
@@ -101,4 +104,5 @@ const submissionSchema = mongoose.Schema({
     }
 });
 
+submissionSchema.index({numberEvaluations: 1});
 module.exports = mongoose.model("Submission", submissionSchema);

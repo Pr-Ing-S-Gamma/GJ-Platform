@@ -8,7 +8,7 @@ const userSchema = mongoose.Schema({
     },
     discordUsername: {
         type: String,
-        required: true
+        required: false
     },
     name:{
         type:String,
@@ -49,6 +49,10 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    roles: [{
+        type: String,
+        required: false
+    }],
     coins: { 
         type: Number, 
         required: false

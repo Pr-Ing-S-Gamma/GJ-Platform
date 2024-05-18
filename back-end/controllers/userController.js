@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const csv = require('csv-parser');
 const fs = require('fs');
+const { deepEqual } = require('assert');
 
 const registerUser = async (req, res) => {
     const { name, email, region, site, team, rol, coins, discordUsername } = req.body;
@@ -76,23 +77,23 @@ const updateUser = async (req, res) => {
         if (rol) existingUser.rol = rol;
         if (coins) existingUser.coins = coins;
         if (discordUsername) existingUser.discordUsername = discordUsername;
-        if(rol === 'Jammer') {
+        if (rol === 'Jammer') {
             const query = { 'jammers._id': id };
 
-            const updateFieldsQuery = { 
-                $set: { 
+            const updateFieldsQuery = {
+                $set: {
                     'jammers.$.name': name,
                     'jammers.$.email': email
                 }
             };
 
             Team.updateMany(query, updateFieldsQuery)
-            .then(result => {
-                console.log("Jammer fields updated successfully:", result);
-            })
-            .catch(error => {
-                console.error('Error updating Jammer fields:', error);
-            });
+                .then(result => {
+                    console.log("Jammer fields updated successfully:", result);
+                })
+                .catch(error => {
+                    console.error('Error updating Jammer fields:', error);
+                });
         }
         existingUser.lastUpdateDate = new Date();
 
@@ -114,10 +115,10 @@ const loginUser = async (req, res) => {
         const subject = 'Login in GameJam Platform';
         const message = `Hi, click on this link to create an account:`;
         const link = registerLink;
-        await sendEmail(email, subject, message, link);        
+        await sendEmail(email, subject, message, link);
         res.status(200).json({ success: true, msg: 'Se envió el registro al usuario.', email, registerLink });
     }
-    
+
     rol = existingUser.rol;
     userId = existingUser._id;
 
@@ -126,7 +127,7 @@ const loginUser = async (req, res) => {
     const subject = 'Login in GameJam Platform';
     const message = `Hi, click on this link to continue to the app:`;
     const link = magicLink;
-    await sendEmail(email, subject, message, link);    
+    await sendEmail(email, subject, message, link);
     res.status(200).json({ success: true, msg: 'Se envió el magic link al usuario.', email, magicLink });
 };
 
@@ -144,7 +145,7 @@ const magicLink = async (req, res) => {
         });
         let redirectUrl
         redirectUrl = `http://${process.env.PORT}:3000/Home`;
-        if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer' && rol !== 'Jammer' && rol !== 'Judge') {
+        if (rol !== 'LocalOrganizer' && rol !== 'GlobalOrganizer' && rol !== 'Jammer' && rol !== 'Judge') {
             return res.clearCookie('token').redirect(`http://${process.env.PORT}:3000/login`);
         }
         return res.redirect(redirectUrl);
@@ -165,7 +166,7 @@ const logOutUser = async (req, res) => {
 const getCurrentUser = async (req, res) => {
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const user = await User.findById(userId); 
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ success: false, error: 'User Not Found' });
         }
@@ -176,19 +177,19 @@ const getCurrentUser = async (req, res) => {
     }
 };
 
-const getLocalOrganizersPerSite = async (req, res)=>{
+const getLocalOrganizersPerSite = async (req, res) => {
     try {
         const siteID = req.params.site;
-        var organizers = await LocalOrganizer.find({site : siteID});
-        return res.status(200).send({success: true, msg: "Organizadores econtrados para site ", data: organizers});
+        var organizers = await LocalOrganizer.find({ site: siteID });
+        return res.status(200).send({ success: true, msg: "Organizadores econtrados para site ", data: organizers });
     } catch (error) {
-        return res.status(400).send({success: false, msg: error.message});
+        return res.status(400).send({ success: false, msg: error.message });
     }
 };
 
 const updateSite = async (req, res) => {
-    const { id } = req.params; 
-    const { siteId } = req.body; 
+    const { id } = req.params;
+    const { siteId } = req.body;
     try {
         const user = await User.findByIdAndUpdate(id, { site: siteId }, { new: true });
 
@@ -205,28 +206,28 @@ const updateSite = async (req, res) => {
 const getStaffPerSite = async (req, res) => {
     const { region, site } = req.params;
     try {
-        const staff = await User.find({"region.name":region, "site.name": site})
+        const staff = await User.find({ "region.name": region, "site.name": site })
         res.status(200).send({ success: true, msg: 'Staff have been found in the system.', data: staff });
-    } catch(error) {
+    } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
 
-const getUsers = async(req,res)=>{
-    try{
+const getUsers = async (req, res) => {
+    try {
         const allUsers = await User.find({});
-        res.status(200).send({ success:true, msg:'Se han encontrado usuarios en el sistema', data: allUsers });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+        res.status(200).send({ success: true, msg: 'Se han encontrado usuarios en el sistema', data: allUsers });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
 const getJammersPerSite = async (req, res) => {
     const { siteId } = req.params;
     try {
-        const jammers = await User.find({ "site._id": siteId, rol: 'Jammer'})
+        const jammers = await User.find({ "site._id": siteId, rol: 'Jammer' })
         res.status(200).send({ success: true, msg: 'Users with the role "Jammer" have been found in the system.', data: jammers });
-    } catch(error) {
+    } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
@@ -236,23 +237,23 @@ const getJammersNotInTeamPerSite = async (req, res) => {
     try {
         const jammersNotInTeam = await User.find({ "site._id": siteId, team: null, rol: 'Jammer' });
         res.status(200).send({ success: true, msg: 'Users with the role "Jammer" who are not in any team have been found in the system.', data: jammersNotInTeam });
-    } catch(error) {
+    } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
 
-const deleteUser = async(req,res)=>{
-    try{
+const deleteUser = async (req, res) => {
+    try {
         const id = req.params.id;
         const deletedUser = await User.findOneAndDelete({ _id: id });
         const query = { 'jammers._id': id };
 
-        const updateFieldsQuery = { 
-            $pull: { 
+        const updateFieldsQuery = {
+            $pull: {
                 'jammers': { '_id': id }
             }
         };
-        
+
         Team.updateMany(query, updateFieldsQuery)
             .then(result => {
                 console.log("Jammer removed successfully:", result);
@@ -260,10 +261,10 @@ const deleteUser = async(req,res)=>{
             .catch(error => {
                 console.error('Error removing Jammer:', error);
             });
-        
-        res.status(200).send({ success:true, msg:'Usuario eliminado correctamente', data: deletedUser });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+
+        res.status(200).send({ success: true, msg: 'Usuario eliminado correctamente', data: deletedUser });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
@@ -299,18 +300,18 @@ const registerUsersFromCSV = async (req, res) => {
             errorLog.push('No active game jam found');
             return res.status(200).json({ success: false, errorLog });
         }
-        
+
         const site = await Site.findById(creatorUser.site._id);
         if (site.open === 1) {
             errorLog.push('Site is currently closed');
             return res.status(200).json({ success: false, errorLog });
         }
-        
+
         for (const userData of users) {
             const { name, email, rol, discordUsername, studioName } = userData;
             const region = creatorUser.region;
             const site = creatorUser.site;
-            
+
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 errorLog.push(`Invalid email address for user: ${name} (${email}, ${discordUsername})`);
                 continue;
@@ -327,7 +328,7 @@ const registerUsersFromCSV = async (req, res) => {
                 errorLog.push(`The Discord Username is already in use for user: ${name} (${email}, ${discordUsername})`);
                 continue;
             }
-            
+
             let team = await Team.findOne({ studioName });
             if (!team) {
                 team = new Team({
@@ -335,8 +336,8 @@ const registerUsersFromCSV = async (req, res) => {
                     description: 'Description...',
                     region: { _id: region._id, name: region.name },
                     site: { _id: site._id, name: site.name },
-                    linkTree: [], 
-                    gameJam: { _id: currentGameJam._id, edition: currentGameJam.edition }, 
+                    linkTree: [],
+                    gameJam: { _id: currentGameJam._id, edition: currentGameJam.edition },
                     creatorUser: {
                         userId: creatorUser._id,
                         name: creatorUser.name,
@@ -350,7 +351,7 @@ const registerUsersFromCSV = async (req, res) => {
                 errorLog.push(`The team is in a different site for user: ${name} (${email}, ${discordUsername})`);
                 continue;
             }
-            
+
             const jammer = await User.create({
                 name,
                 email,
@@ -361,7 +362,7 @@ const registerUsersFromCSV = async (req, res) => {
                 discordUsername,
                 creationDate: new Date()
             });
-            
+
             if (team.region._id.toString() === region._id.toString()) {
                 team.jammers.push({ _id: jammer._id, name, email, discordUsername });
                 await team.save();
@@ -374,6 +375,49 @@ const registerUsersFromCSV = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
+
+const addRol = async (req, res) => {
+    const userId = req.params.id;
+    const {rol} = req.body;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Usuario no existe' });
+        }
+        if (user.roles.includes(rol)) {
+            return res.status(400).json({ message: 'El usuario ya tiene este rol' });
+        }
+        user.roles.push(rol)
+        await user.save();
+        return res.status(200).json({ success: true, message: "Rol agregado" })
+    }
+    catch(error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+const deleteRol = async (req, res) => {
+    const userId = req.params.id;
+    const {rol} = req.body;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Usuario no existe' });
+        }
+        if (!user.roles.includes(rol)) {
+            return res.status(400).json({ message: 'El usuario no tiene este rol' });
+        }
+        user.roles = user.roles.filter(r => r !== rol);
+            await user.save();
+            return res.status(200).json({ success: true, message: "Rol eliminado" })
+    }
+    catch(error){
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+
 
 
 module.exports = {
@@ -390,5 +434,7 @@ module.exports = {
     getJammersPerSite,
     getJammersNotInTeamPerSite,
     getStaffPerSite,
-    registerUsersFromCSV
+    registerUsersFromCSV,
+    addRol,
+    deleteRol
 };
