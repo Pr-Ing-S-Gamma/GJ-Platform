@@ -6,7 +6,11 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
-
+.pdf {
+  color: blue; 
+  text-decoration: underline; 
+  cursor: pointer;
+}
 .navBarStyle{
     display: flex;
     justify-content: space-between;

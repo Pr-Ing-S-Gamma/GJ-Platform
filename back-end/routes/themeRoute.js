@@ -23,6 +23,6 @@ theme_route.get('/get-games-per-theme/:id', themeController.getGamesPerTheme);
 theme_route.post('/create-theme', load, themeController.createTheme)
 theme_route.put('/update-theme/:id',themeController.updateTheme)
 theme_route.delete('/delete-theme/:id', themeController.deleteTheme);
-theme_route.get('/pdf/:id', themeController.getPDF);
+theme_route.get('/pdf/:id/:language', themeController.getPDF);
 
 module.exports = theme_route;  

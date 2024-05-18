@@ -129,6 +129,17 @@ export class ThemeCrudComponent implements OnInit{
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
+  getPdf(themeId: string, language: string): void {
+    this.themeService.getPdf(themeId!, language!).subscribe(
+        (pdfBlob: Blob) => {
+            const url = window.URL.createObjectURL(pdfBlob);
+            window.open(url);
+        },
+        (error) => {
+            console.error('Error fetching PDF:', error);
+        }
+    );
+  }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////Lógica de Interfaz///////////////////////////////////////////////////////  
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  

@@ -35,4 +35,9 @@ export class ThemeService {
   deleteTheme(url: string): Observable<any> {
     return this.http.delete(url);
   }
+  private baseUrl = 'http://localhost:3000/api/theme';
+  getPdf(themeId: string, language: string): Observable<Blob> {
+    const url = `${this.baseUrl}/pdf/${themeId}/${language}`;
+    return this.http.get(url, { responseType: 'blob' });
+  }
 }

@@ -46,23 +46,23 @@
             </thead>
             <tbody>
                 <tr *ngFor="let row of obtenerDatosPagina()">
-                    <td>{{ row.titleSP }}</td>
-                    <td>{{ row.descriptionSP }}</td>
-                    <td>{{ row.manualSP }}</td>
-                    <td>{{ row.titleEN }}</td>
-                    <td>{{ row.descriptionEN }}</td>
-                    <td>{{ row.manualEN }}</td>
-                    <td>{{ row.titlePT }}</td>
-                    <td>{{ row.descriptionPT }}</td>
-                    <td>{{ row.manualPT }}</td>
-                    <td>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
-                    </td>
-                    <td>
-                        <button class="btn btn-danger" (click)="eliminar(row)">Delete</button>
-                    </td>
+                  <td>{{ row.titleSP }}</td>
+                  <td>{{ row.descriptionSP }}</td>
+                  <td class="pdf"><a (click)="getPdf(row._id!, 'SP')" >Load PDF</a></td>
+                  <td>{{ row.titleEN }}</td>
+                  <td>{{ row.descriptionEN }}</td>
+                  <td class="pdf"><a (click)="getPdf(row._id!, 'EN')">Load PDF</a></td>
+                  <td>{{ row.titlePT }}</td>
+                  <td>{{ row.descriptionPT }}</td>
+                  <td class="pdf"><a (click)="getPdf(row._id!, 'PT')" >Load PDF</a></td>
+                  <td>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-danger" (click)="eliminar(row)">Delete</button>
+                  </td>
                 </tr>
-            </tbody>
+              </tbody>
         </table>
     </div>
     <div class="navBarStyle">
