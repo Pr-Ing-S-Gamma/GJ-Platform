@@ -6,7 +6,6 @@ import { CategoryService } from '../../services/category.service';
 import { Category } from '../../../types';
 import { jsPDF }  from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { CustomAlertComponent } from '../../jammer-home/custom-alert/custom-alert.component';
 import { MatDialog } from '@angular/material/dialog';
 
 
@@ -239,6 +238,18 @@ export class CategoryCrudComponent implements OnInit{
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
+  getPdf(categoryId: string, language: string): void {
+    this.categoryService.getPdf(categoryId!, language!).subscribe(
+        (pdfBlob: Blob) => {
+            const url = window.URL.createObjectURL(pdfBlob);
+            window.open(url);
+        },
+        (error) => {
+            console.error('Error fetching PDF:', error);
+        }
+    );
+}
+
   
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

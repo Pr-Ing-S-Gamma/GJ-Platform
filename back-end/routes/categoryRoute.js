@@ -22,6 +22,6 @@ category_route.get('/get-category/:id', categoryController.getCategory);
 category_route.get('/get-categories', categoryController.getCategories);
 category_route.delete('/delete-category/:id', categoryController.deleteCategory);
 category_route.get('/get-games-per-category/:id', categoryController.getGamesbyCategory);
-category_route.get('/pdf/:id', categoryController.getPDF);
+category_route.get('/pdf/:id/:language', categoryController.getPDF);
 
 module.exports = category_route;

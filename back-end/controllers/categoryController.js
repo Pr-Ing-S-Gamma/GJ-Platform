@@ -157,31 +157,54 @@ const getGamesbyCategory = async (req, res) => {
     }
 }
 
-const getPDF = async (req, res) =>{
+const getPDF = async (req, res) => {
     try {
         const categoryId = req.params.id;
+        const language = req.params.language;
         const category = await Category.findById(categoryId);
 
         if (!category) {
             return res.status(404).send('Categoría no encontrada');
         }
 
-        const pdfData = category.manualSP; // Suponiendo que manualSP contiene los datos binarios del PDF
-        const fileName = 'documento.pdf'; // Nombre del archivo
+        let pdfData;
+        let fileName;
+
+        // Seleccionar el PDF según el idioma proporcionado
+        switch (language) {
+            case 'SP':
+                pdfData = category.manualSP;
+                fileName = 'manualSP.pdf';
+                break;
+            case 'EN':
+                pdfData = category.manualEN;
+                fileName = 'manualEN.pdf';
+                break;
+            case 'PT':
+                pdfData = category.manualPT;
+                fileName = 'manualPT.pdf';
+                break;
+            default:
+                return res.status(400).send('Idioma no soportado');
+        }
+
+        if (!pdfData) {
+            return res.status(404).send('Manual no encontrado para el idioma especificado');
+        }
 
         // Opción 1: Enviar los datos binarios directamente al cliente
         res.contentType('application/pdf').send(pdfData);
 
-        // Opción 2: Crear un enlace de descarga
-         //fs.writeFileSync(fileName, pdfData); // Guarda el PDF localmente
-        //res.download(fileName); // Descarga el PDF al cliente
+        // Opción 2: Crear un enlace de descarga (comentado)
+        // fs.writeFileSync(fileName, pdfData); // Guarda el PDF localmente
+        // res.download(fileName); // Descarga el PDF al cliente
 
     } catch (error) {
         console.error('Error al obtener el PDF:', error);
         res.status(500).send('Error interno del servidor');
     }
-    
 };
+
 
 module.exports = {
     createCategory,

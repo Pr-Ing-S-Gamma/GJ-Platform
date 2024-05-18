@@ -48,5 +48,10 @@
 .ok-button:hover {
   background-color: #94b4d9e9;
 }
+.ver-pdf {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
 
   

@@ -32,42 +32,43 @@
 
     <div class="table-responsive">
         <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Title (ESP)</th>
-                    <th scope="col">Description (ESP)</th>
-                    <th scope="col">Manual (ESP)</th>
-                    <th scope="col">Title (EN)</th>
-                    <th scope="col">Description (EN)</th>
-                    <th scope="col">Manual (EN)</th>
-                    <th scope="col">Title (PT-BR)</th>
-                    <th scope="col">Description (PT-BR)</th>
-                    <th scope="col">Manual (PT-BR)</th>
-                    <th scope="col">Update</th>
-                    <th scope="col">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of obtenerDatosPagina()">
-                    <td>{{ row.titleSP }}</td>
-                    <td>{{ row.descriptionSP }}</td>
-                    <td>{{ row.manualSP }}</td>
-                    <td>{{ row.titleEN }}</td>
-                    <td>{{ row.descriptionEN }}</td>
-                    <td>{{ row.manualEN }}</td>
-                    <td>{{ row.titlePT }}</td>
-                    <td>{{ row.descriptionPT }}</td>
-                    <td>{{ row.manualPT }}</td>
-                    <td>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
-                    </td>
-                    <td>
-                        <button class="btn btn-danger" (click)="eliminar(row)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
+          <thead>
+            <tr>
+              <th scope="col">Title (ESP)</th>
+              <th scope="col">Description (ESP)</th>
+              <th scope="col">Manual (ESP)</th>
+              <th scope="col">Title (EN)</th>
+              <th scope="col">Description (EN)</th>
+              <th scope="col">Manual (EN)</th>
+              <th scope="col">Title (PT-BR)</th>
+              <th scope="col">Description (PT-BR)</th>
+              <th scope="col">Manual (PT-BR)</th>
+              <th scope="col">Update</th>
+              <th scope="col">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of obtenerDatosPagina()">
+              <td>{{ row.titleSP }}</td>
+              <td>{{ row.descriptionSP }}</td>
+              <td><a (click)="getPdf(row._id!, 'SP')" class="ver-pdf">Load PDF</a></td>
+              <td>{{ row.titleEN }}</td>
+              <td>{{ row.descriptionEN }}</td>
+              <td><a (click)="getPdf(row._id!, 'EN')" class="ver-pdf">Load PDF</a></td>
+              <td>{{ row.titlePT }}</td>
+              <td>{{ row.descriptionPT }}</td>
+              <td><a (click)="getPdf(row._id!, 'PT')" class="ver-pdf">Load PDF</a></td>
+              <td>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
+              </td>
+              <td>
+                <button class="btn btn-danger" (click)="eliminar(row)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
         </table>
-    </div>
+      </div>
+      
 </div>
 
     <div class="navBarStyle">

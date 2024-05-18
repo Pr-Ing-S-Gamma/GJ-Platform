@@ -34,4 +34,9 @@ export class CategoryService {
   deleteCategory(url: string): Observable<any> {
     return this.http.delete(url);
   }
+  private baseUrl = 'http://localhost:3000/api/category';
+  getPdf(categoryId: string, language: string): Observable<Blob> {
+    const url = `${this.baseUrl}/pdf/${categoryId}/${language}`;
+    return this.http.get(url, { responseType: 'blob' });
+  }
 }
