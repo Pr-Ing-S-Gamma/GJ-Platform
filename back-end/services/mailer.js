@@ -45,7 +45,7 @@ const sendEmail = async (email, subject, message, link) => {
     }
 }
 
-const sendScore = async (email, subject, pitchScore, pitchFeedback, gameDesignScore, gameDesignFeedback, artScore, artFeedback, buildScore, buildFeedback, audioScore, audioFeedback, generalFeedback) => {
+const sendScore = async (email, subject, continuityPotential, audienceCompetitorAwarenessValue, marketPositioningValue, gameDesignCoreLoopValue, gameDesignHookValue, gameDesignBalanceValue, artVisualsCoherenceQualityValue, audioDesignCoherenceQualityValue, buildQualityValue, UIUXQualityValue, narrativeWorldBuildingValue, pitchFeedback, gameDesignFeedback, artVisualsFeedback, audioDesignFeedback, buildFeedback, personalFeedback) => {
     try {
 
         let transporter = nodemailer.createTransport({
@@ -62,17 +62,23 @@ const sendScore = async (email, subject, pitchScore, pitchFeedback, gameDesignSc
         const htmlTemplate = await fs.promises.readFile('services/score_template.html', 'utf-8');
 
         const htmlContent = replaceTokens(htmlTemplate, {
-            pitchScore,
+            continuityPotential,
+            audienceCompetitorAwarenessValue,
+            marketPositioningValue,
+            gameDesignCoreLoopValue,
+            gameDesignHookValue,
+            gameDesignBalanceValue,
+            artVisualsCoherenceQualityValue,
+            audioDesignCoherenceQualityValue,
+            buildQualityValue,
+            UIUXQualityValue,
+            narrativeWorldBuildingValue,
             pitchFeedback,
-            gameDesignScore,
             gameDesignFeedback,
-            artScore,
-            artFeedback,
-            buildScore,
+            artVisualsFeedback,
+            audioDesignFeedback,
             buildFeedback,
-            audioScore,
-            audioFeedback,
-            generalFeedback
+            personalFeedback
         });
 
         const mailOptions = {
