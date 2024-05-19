@@ -304,12 +304,24 @@ const giveRating = async (req, res) => {
             return res.status(401).json({ success: false, msg: 'Unauthorized' });
         }
 
-        const { submissionId, generalFeedback,
-            pitchScore, pitchFeedback,
-            gameDesignScore, gameDesignFeedback,
-            artScore, artFeedback,
-            buildScore, buildFeedback,
-            audioScore, audioFeedback,
+        const { submissionId,
+            continuityPotential,
+            audienceCompetitorAwarenessValue,
+            marketPositioningValue,
+            gameDesignCoreLoopValue,
+            gameDesignHookValue,
+            gameDesignBalanceValue,
+            artVisualsCoherenceQualityValue,
+            audioDesignCoherenceQualityValue,
+            buildQualityValue,
+            UIUXQualityValue,
+            narrativeWorldBuildingValue,
+            pitchFeedback,
+            gameDesignFeedback,
+            artVisualsFeedback,
+            audioDesignFeedback,
+            buildFeedback,
+            personalFeedback
         } = req.body;
 
         const submission = await Submission.findById(submissionId);
@@ -333,21 +345,45 @@ const giveRating = async (req, res) => {
             }
         }
 
-        if (evaluator == null) {
+        if (!evaluator) {
             return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
         }
-
-        evaluator.pitchScore = pitchScore;
+        console.log("Continuity Potential:", continuityPotential);
+        console.log("Audience Competitor Awareness Value:", audienceCompetitorAwarenessValue);
+        console.log("Market Positioning Value:", marketPositioningValue);
+        console.log("Game Design Core Loop Value:", gameDesignCoreLoopValue);
+        console.log("Game Design Hook Value:", gameDesignHookValue);
+        console.log("Game Design Balance Value:", gameDesignBalanceValue);
+        console.log("Art Visuals Coherence Quality Value:", artVisualsCoherenceQualityValue);
+        console.log("Audio Design Coherence Quality Value:", audioDesignCoherenceQualityValue);
+        console.log("Build Quality Value:", buildQualityValue);
+        console.log("UIUX Quality Value:", UIUXQualityValue);
+        console.log("Narrative World Building Value:", narrativeWorldBuildingValue);
+        console.log("Pitch Feedback:", pitchFeedback);
+        console.log("Game Design Feedback:", gameDesignFeedback);
+        console.log("Art Visuals Feedback:", artVisualsFeedback);
+        console.log("Audio Design Feedback:", audioDesignFeedback);
+        console.log("Build Feedback:", buildFeedback);
+        console.log("Personal Feedback:", personalFeedback);
+        
+        evaluator.continuityPotential = continuityPotential;
+        evaluator.audienceCompetitorAwarenessValue = audienceCompetitorAwarenessValue;
+        evaluator.marketPositioningValue = marketPositioningValue;
+        evaluator.gameDesignCoreLoopValue = gameDesignCoreLoopValue;
+        evaluator.gameDesignHookValue = gameDesignHookValue;
+        evaluator.gameDesignBalanceValue = gameDesignBalanceValue;
+        evaluator.artVisualsCoherenceQualityValue = artVisualsCoherenceQualityValue;
+        evaluator.audioDesignCoherenceQualityValue = audioDesignCoherenceQualityValue;
+        evaluator.buildQualityValue = buildQualityValue;
+        evaluator.UIUXQualityValue = UIUXQualityValue;
+        evaluator.narrativeWorldBuildingValue = narrativeWorldBuildingValue;
         evaluator.pitchFeedback = pitchFeedback;
-        evaluator.gameDesignScore = gameDesignScore;
         evaluator.gameDesignFeedback = gameDesignFeedback;
-        evaluator.artScore = artScore;
-        evaluator.artFeedback = artFeedback;
-        evaluator.buildScore = buildScore;
+        evaluator.artVisualsFeedback = artVisualsFeedback;
+        evaluator.audioDesignFeedback = audioDesignFeedback;
         evaluator.buildFeedback = buildFeedback;
-        evaluator.audioScore = audioScore;
-        evaluator.audioFeedback = audioFeedback;
-        evaluator.generalFeedback = generalFeedback;
+        evaluator.personalFeedback = personalFeedback;
+
         await submission.save();
 
         const promises = [];
@@ -358,17 +394,23 @@ const giveRating = async (req, res) => {
             const emailPromise = sendScore(
                 jammer.email,
                 subject,
-                pitchScore,
+                continuityPotential,
+                audienceCompetitorAwarenessValue,
+                marketPositioningValue,
+                gameDesignCoreLoopValue,
+                gameDesignHookValue,
+                gameDesignBalanceValue,
+                artVisualsCoherenceQualityValue,
+                audioDesignCoherenceQualityValue,
+                buildQualityValue,
+                UIUXQualityValue,
+                narrativeWorldBuildingValue,
                 pitchFeedback,
-                gameDesignScore,
                 gameDesignFeedback,
-                artScore,
-                artFeedback,
-                buildScore,
+                artVisualsFeedback,
+                audioDesignFeedback,
                 buildFeedback,
-                audioScore,
-                audioFeedback,
-                generalFeedback
+                personalFeedback
             );
             promises.push(emailPromise);
         }        
@@ -382,6 +424,7 @@ const giveRating = async (req, res) => {
     }
 }
 
+
 const getRating = async (req, res) => {
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
@@ -394,40 +437,48 @@ const getRating = async (req, res) => {
 
         const submission = await Submission.findById(submissionId);
         if (!submission) {
-            return res.status(404).json({ message: 'El submission no fue encontrado.' });
+            return res.status(404).json({ message: 'The submission was not found.' });
         }
 
         let evaluator = null;
-        const evaluatorss = submission.evaluators;
-        for (const e of evaluatorss) {
+        const evaluators = submission.evaluators;
+        for (const e of evaluators) {
             if (e.userId == userId) {
                 evaluator = e;
                 break; 
             }
         }
         if (!evaluator) {
-            return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
+            return res.status(404).json({ message: 'This game is not assigned to the current judge user.' });
         }
 
         const response = {
-            pitchScore: evaluator.pitchScore,
+            continuityPotential: evaluator.continuityPotential,
+            audienceCompetitorAwarenessValue: evaluator.audienceCompetitorAwarenessValue,
+            marketPositioningValue: evaluator.marketPositioningValue,
+            gameDesignCoreLoopValue: evaluator.gameDesignCoreLoopValue,
+            gameDesignHookValue: evaluator.gameDesignHookValue,
+            gameDesignBalanceValue: evaluator.gameDesignBalanceValue,
+            artVisualsCoherenceQualityValue: evaluator.artVisualsCoherenceQualityValue,
+            audioDesignCoherenceQualityValue: evaluator.audioDesignCoherenceQualityValue,
+            buildQualityValue: evaluator.buildQualityValue,
+            UIUXQualityValue: evaluator.UIUXQualityValue,
+            narrativeWorldBuildingValue: evaluator.narrativeWorldBuildingValue,
             pitchFeedback: evaluator.pitchFeedback,
-            gameDesignScore: evaluator.gameDesignScore,
             gameDesignFeedback: evaluator.gameDesignFeedback,
-            artScore: evaluator.artScore,
-            artFeedback: evaluator.artFeedback,
-            buildScore: evaluator.buildScore,
+            artVisualsFeedback: evaluator.artVisualsFeedback,
+            audioDesignFeedback: evaluator.audioDesignFeedback,
             buildFeedback: evaluator.buildFeedback,
-            audioScore: evaluator.audioScore,
-            audioFeedback: evaluator.audioFeedback,
-            generalFeedback: evaluator.generalFeedback
-        }
+            personalFeedback: evaluator.personalFeedback
+        };
 
-        res.status(200).send({ success: true, msg: 'Rating encontrado correctamente', data: response });
+        res.status(200).send({ success: true, msg: 'Rating found successfully', data: response });
     } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
+
+
 
 const setEvaluatorToSubmission = async (req, res) => {
     try {
@@ -507,27 +558,20 @@ const getSubmissionsEvaluator = async (req, res) => {
         const evaluatorID = req.params.id;
         const Submissions = await Submission.find({
             'evaluators.userId': evaluatorID,
-            $and: [
+            $or: [
                 { "evaluators.pitchScore": null },
-                { "evaluators.pitchFeedback": null },
                 { "evaluators.gameDesignScore": null },
-                { "evaluators.gameDesignFeedback": null },
                 { "evaluators.artScore": null },
-                { "evaluators.artFeedback": null },
                 { "evaluators.buildScore": null },
-                { "evaluators.buildFeedback": null },
-                { "evaluators.audioScore": null },
-                { "evaluators.audioFeedback": null },
-                { "evaluators.generalFeedback": null }
+                { "evaluators.audioScore": null }
             ]
         });
 
-        res.status(200).send({ success: true, msg: 'Se han encontrado entregas en el sistema', data: Submissions });
+        res.status(200).send({ success: true, msg: 'There are submissions in the system', data: Submissions });
     } catch (error) {
         res.status(400).json({ success: false, error: 'Error while processing the request.' });
     }
 };
-
 
 
 const getRatingsEvaluator = async (req, res) => {
@@ -537,24 +581,19 @@ const getRatingsEvaluator = async (req, res) => {
             'evaluators.userId': evaluatorID,
             $and: [
                 { "evaluators.pitchScore": { $exists: true, $ne: null } },
-                { "evaluators.pitchFeedback": { $exists: true, $ne: null } },
                 { "evaluators.gameDesignScore": { $exists: true, $ne: null } },
-                { "evaluators.gameDesignFeedback": { $exists: true, $ne: null } },
                 { "evaluators.artScore": { $exists: true, $ne: null } },
-                { "evaluators.artFeedback": { $exists: true, $ne: null } },
                 { "evaluators.buildScore": { $exists: true, $ne: null } },
-                { "evaluators.buildFeedback": { $exists: true, $ne: null } },
-                { "evaluators.audioScore": { $exists: true, $ne: null } },
-                { "evaluators.audioFeedback": { $exists: true, $ne: null } },
-                { "evaluators.generalFeedback": { $exists: true, $ne: null } }
+                { "evaluators.audioScore": { $exists: true, $ne: null } }
             ]
         });
-        res.status(200).send({ success: true, msg: 'Se han encontrado entregas en el sistema', data: Submissions });
+        res.status(200).send({ success: true, msg: 'There are ratings in the system', data: Submissions });
     }
     catch {
         res.status(400).json({ success: false, error: 'Error processing the request.' });
     }
 };
+
 
 
 module.exports = {

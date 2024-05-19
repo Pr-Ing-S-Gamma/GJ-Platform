@@ -97,7 +97,18 @@ const submissionSchema = mongoose.Schema({
         buildFeedback: { type: String },
         audioScore: { type: Number },
         audioFeedback: { type: String },
-        generalFeedback: { type: String }
+        continuityPotential: { type: Number },
+        audienceCompetitorAwarenessValue: { type: Number },
+        marketPositioningValue: { type: Number },
+        gameDesignCoreLoopValue: { type: Number },
+        gameDesignHookValue: { type: Number },
+        gameDesignBalanceValue: { type: Number },
+        artVisualsCoherenceQualityValue: { type: Number },
+        audioDesignCoherenceQualityValue: { type: Number },
+        buildQualityValue: { type: Number },
+        UIUXQualityValue: { type: Number },
+        narrativeWorldBuildingValue: { type: Number },
+        personalFeedback: { type: String }             
     }],
     lastUpdateDate: {
         type: Date

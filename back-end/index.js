@@ -33,8 +33,8 @@ const corsOptions = {
     credentials: true, // Permite enviar cookies de forma segura
 };
 
-app.use(cors(corsOptions)); // Usar el middleware CORS
-*/
+app.use(cors(corsOptions)); // Usar el middleware CORS*/
+
 
 
 // Middleware para analizar solicitudes JSON y cookies

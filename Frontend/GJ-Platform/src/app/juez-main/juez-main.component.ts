@@ -4,18 +4,22 @@ import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { SubmissionService } from '../services/submission.service';
 import { GameInformationComponent } from '../game-information/game-information.component';
-import { Site, Submission, Team, User } from '../../types';
+import { Category, Site, Submission, Team, Theme, User } from '../../types';
 import { SiteService } from '../services/site.service';
 import { forkJoin } from 'rxjs';
 import { TeamService } from '../services/team.service';
 import { GamejamService } from '../services/gamejam.service';
+import { CategoryService } from '../services/category.service';
+import { ThemeService } from '../services/theme.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-juez-main',
   standalone: true,
   imports: [
     CommonModule,
-    GameInformationComponent
+    GameInformationComponent,
+    FormsModule
   ],
   templateUrl: './juez-main.component.html',
   styleUrl: './juez-main.component.css'
@@ -29,8 +33,35 @@ export class JuezMainComponent implements OnInit {
   isHovered: boolean = false;
   targetTime: Date | undefined;
   timeRemaining: string | undefined;
-
-  constructor(private router: Router, private userService: UserService, private SubmissionService: SubmissionService, private TeamService: TeamService, private GameJamService: GamejamService){}
+  gameParameter!: string;
+  evaluando: Boolean = false;
+  dataSource: any = null;
+  gameTitle: string = '';
+  teamName: string = '';
+  gameDescription: string = '';
+  teamMembers: { name: string; discordUsername: string; email: string; }[] = [];
+  themes: string[] = [];
+  categories: string[] = [];
+  gameLink: string = '';
+  pitchLink: string = '';
+  continuityPotential: number = 1;
+  audienceCompetitorAwarenessValue: number = 1;
+  marketPositioningValue: number = 1;
+  gameDesignCoreLoopValue: number = 1;
+  gameDesignHookValue: number = 1;
+  gameDesignBalanceValue: number = 1;
+  artVisualsCoherenceQualityValue: number = 1;
+  audioDesignCoherenceQualityValue: number = 1;
+  buildQualityValue: number = 1;
+  UIUXQualityValue: number = 1;
+  narrativeWorldBuildingValue: number = 1;
+  pitchFeedback: string = "";
+  gameDesignFeedback: string = "";
+  artVisualsFeedback: string = "";
+  audioDesignFeedback: string = "";
+  buildFeedback: string = "";
+  personalFeedback: string = "";
+  constructor(private router: Router, private userService: UserService, private SubmissionService: SubmissionService, private TeamService: TeamService, private GameJamService: GamejamService, private CategoryService: CategoryService, private ThemeService: ThemeService){}
 
   ngOnInit(): void {
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
@@ -133,10 +164,6 @@ export class JuezMainComponent implements OnInit {
       );
   }
 
-  selectGame(id: string){
-    this.selectedGame = id
-  }
-
   getNewEvaluation() {
     this.SubmissionService.getCurrentTeamSubmission(`http://localhost:3000/api/submission/get-new-evaluation`).subscribe(
       (juego: Submission) => {
@@ -201,5 +228,168 @@ export class JuezMainComponent implements OnInit {
       this.timeRemaining = '0d 0h 0m 0s';
     }
   }
+
+  selectGame(id: string) {
+    this.gameParameter = id;
+    this.loadData();
+  }
+
+
+  submitEvaluation(): void {
+    const rating = {
+      submissionId: this.gameParameter,
+      continuityPotential: this.continuityPotential,
+      audienceCompetitorAwarenessValue: this.audienceCompetitorAwarenessValue,
+      marketPositioningValue: this.marketPositioningValue,
+      gameDesignCoreLoopValue: this.gameDesignCoreLoopValue,
+      gameDesignHookValue: this.gameDesignHookValue,
+      gameDesignBalanceValue: this.gameDesignBalanceValue,
+      artVisualsCoherenceQualityValue: this.artVisualsCoherenceQualityValue,
+      audioDesignCoherenceQualityValue: this.audioDesignCoherenceQualityValue,
+      buildQualityValue: this.buildQualityValue,
+      UIUXQualityValue: this.UIUXQualityValue,
+      narrativeWorldBuildingValue: this.narrativeWorldBuildingValue,
+      pitchFeedback: this.pitchFeedback,
+      gameDesignFeedback: this.gameDesignFeedback,
+      artVisualsFeedback: this.artVisualsFeedback,
+      audioDesignFeedback: this.audioDesignFeedback,
+      buildFeedback: this.buildFeedback,
+      personalFeedback: this.personalFeedback
+  };  
+    this.SubmissionService.giveRating("http://localhost:3000/api/submission/give-rating", rating).subscribe({
+      next: (data) => {
+        console.log(data);
+        if (data.success) {
+          //window.location.reload();
+        } else {
+        }
+      },
+      error: (error) => {
+      },
+    });
+  }
+  
+  private loadData() {
+    var url = 'http://localhost:3000/api/submission/get-submission/' + this.gameParameter;
+    this.SubmissionService.getSubmission(url).subscribe(
+      (game: any) => {
+        this.gameLink = game.game;
+        this.pitchLink = game.pitch;
+        this.gameTitle = game.title;
+        
+        const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId;
+        this.TeamService.getTeamById(urlj).subscribe(
+          (team: Team) => {
+            this.teamName = team.studioName;
+            this.gameDescription = game.description;
+            this.teamMembers = team.jammers.map(jammer => ({
+              name: jammer.name,
+              discordUsername: jammer.discordUsername,
+              email: jammer.email
+            }));
+  
+            const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId;
+            this.CategoryService.getCategory(urlc).subscribe(
+              (categories: Category) => {
+                this.categories = [categories.titleEN];
+                const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId;
+                this.ThemeService.getTheme(urlt).subscribe(
+                  (theme: Theme) => {
+                    this.themes = theme.titleEN !== undefined ? [theme.titleEN] : [];
+                    
+                    const ratingUrl = 'http://localhost:3000/api/submission/get-rating/' + game._id;
+                    this.SubmissionService.getRating(ratingUrl).subscribe(
+                      (rating: any) => {
+
+                        this.dataSource = {
+                          name: this.gameTitle,
+                          team: this.teamName,
+                          description: this.gameDescription,
+                          teamMembers: this.teamMembers,
+                          themes: this.themes,
+                          categories: this.categories,
+                          gameLink: this.gameLink,
+                          pitchLink: this.pitchLink
+                        };
+
+                        if (rating.continuityPotential !== undefined) {
+                          this.continuityPotential = rating.continuityPotential;
+                        }
+                        if (rating.audienceCompetitorAwarenessValue !== undefined) {
+                            this.audienceCompetitorAwarenessValue = rating.audienceCompetitorAwarenessValue;
+                        }
+                        if (rating.marketPositioningValue !== undefined) {
+                            this.marketPositioningValue = rating.marketPositioningValue;
+                        }
+                        if (rating.gameDesignCoreLoopValue !== undefined) {
+                            this.gameDesignCoreLoopValue = rating.gameDesignCoreLoopValue;
+                        }
+                        if (rating.gameDesignHookValue !== undefined) {
+                            this.gameDesignHookValue = rating.gameDesignHookValue;
+                        }
+                        if (rating.gameDesignBalanceValue !== undefined) {
+                            this.gameDesignBalanceValue = rating.gameDesignBalanceValue;
+                        }
+                        if (rating.artVisualsCoherenceQualityValue !== undefined) {
+                            this.artVisualsCoherenceQualityValue = rating.artVisualsCoherenceQualityValue;
+                        }
+                        if (rating.audioDesignCoherenceQualityValue !== undefined) {
+                            this.audioDesignCoherenceQualityValue = rating.audioDesignCoherenceQualityValue;
+                        }
+                        if (rating.buildQualityValue !== undefined) {
+                            this.buildQualityValue = rating.buildQualityValue;
+                        }
+                        if (rating.UIUXQualityValue !== undefined) {
+                            this.UIUXQualityValue = rating.UIUXQualityValue;
+                        }
+                        if (rating.narrativeWorldBuildingValue !== undefined) {
+                            this.narrativeWorldBuildingValue = rating.narrativeWorldBuildingValue;
+                        }
+                        if (rating.pitchFeedback !== undefined) {
+                            this.pitchFeedback = rating.pitchFeedback;
+                        }
+                        if (rating.gameDesignFeedback !== undefined) {
+                            this.gameDesignFeedback = rating.gameDesignFeedback;
+                        }
+                        if (rating.artVisualsFeedback !== undefined) {
+                            this.artVisualsFeedback = rating.artVisualsFeedback;
+                        }
+                        if (rating.audioDesignFeedback !== undefined) {
+                            this.audioDesignFeedback = rating.audioDesignFeedback;
+                        }
+                        if (rating.buildFeedback !== undefined) {
+                            this.buildFeedback = rating.buildFeedback;
+                        }
+                        if (rating.personalFeedback !== undefined) {
+                            this.personalFeedback = rating.personalFeedback;
+                        }
+                      
+                      },
+                      error => {
+                        console.error('Error al obtener la puntuación del juego:', error);
+                      }
+                    );
+                  },
+                  error => {
+                    console.error('Error al obtener el tema:', error);
+                  }
+                );
+              },
+              error => {
+                console.error('Error al obtener la categoría:', error);
+              }
+            );
+          },
+          error => {
+            console.error('Error al obtener el equipo:', error);
+          }
+        );
+      },
+      error => {
+        console.error('Error al obtener el juego:', error);
+      }
+    );
+  }
+   
   
 }

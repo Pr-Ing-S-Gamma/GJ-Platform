@@ -83,11 +83,10 @@ const sendScore = async (email, subject, pitchScore, pitchFeedback, gameDesignSc
         };
 
         await transporter.sendMail(mailOptions);
-        console.log("¡Correo electrónico enviado correctamente!");
+        console.log("Email sent successfully!");
     } catch (error) {
-        console.log("Error al enviar el correo electrónico:", error);
+        console.log("Error sending email:", error);
     }
 }
-
 
 module.exports = { sendEmail, sendScore };
