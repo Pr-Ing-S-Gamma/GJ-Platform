@@ -1,38 +1,89 @@
-        <div class="row" style="justify-content: flex-start; align-items: flex-start; background: white; height: 100%;">
-            <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
-                <div style="text-align: center; font-size: 32px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
-                    Site status: <span [style.color]="currentStatus === 'Open' ? 'green' : 'red'">{{ currentStatus }}</span>
-                </div>                        
-            </div>
-            <div class="row" style="justify-content: center; align-items: center; margin-top: 3%;">
-                <div class="col text-center">
-                    <app-upload-csv></app-upload-csv>
-                </div>
-            </div>            
-            <div class="row" style="display: flex; flex-wrap: wrap; justify-content: center;">
-                <div style="text-align: center; color: black; font-size: 32px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
-                     Games of {{ site?.name }}:
-                </div>
-            </div>
+<div class="row siteName">
+    {{ site.name }}
+</div>
 
-            <div class="col" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start;">
-                <div *ngFor="let game of games" style="background: #515151; border-radius: 35px; border: 1px black solid;
-                padding-top: 20px; padding-bottom: 20px; padding-left: 40px; padding-right: 40px; margin: 15px;"
-                class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id">
-                    <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        {{ game.name }}
-                    </div>
-                    <div style="color: white; font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                        {{ game.team }}
-                    </div>
-                </div>
-            </div>
+<div class="row optionNavBar">
+    <div class="optionBackground" [style.background]="inSubmissions ? '#3D3D3D' : '#D9D9D9'">
+        <div class="optionFont" [style.color]="inSubmissions ? 'white' : 'black'" (click)="moveToSubmissions()">
+          <span>Submissions</span>
+        </div>
+    </div>
     
-            <div *ngFor="let game of games">
-                <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
-                    <div class="modal-dialog" role="document" style="max-width: 85%;">
-                        <app-game-information [game]="game.id"></app-game-information>
-                    </div>
+    <div class="optionBackground" [style.background]="inTeams ? '#3D3D3D' : '#D9D9D9'">
+        <div class="optionFont" [style.color]="inTeams ? 'white' : 'black'" (click)="moveToTeams()">
+          <span>Teams</span>
+        </div>
+    </div>
+    
+    <div class="optionBackground" [style.background]="inJammers ? '#3D3D3D' : '#D9D9D9'">
+        <div class="optionFont" [style.color]="inJammers ? 'white' : 'black'" (click)="moveToJammers()">
+          <span>Jammers</span>
+        </div>
+    </div>
+
+    <div class="optionBackground" [style.background]="inStaff ? '#3D3D3D' : '#D9D9D9'">
+        <div class="optionFont" [style.color]="inStaff ? 'white' : 'black'" (click)="moveToStaff()">
+          <span>Staff</span>
+        </div>
+    </div>
+
+    <div class="optionBackground" [style.background]="inManagement ? '#3D3D3D' : '#D9D9D9'">
+        <div class="optionFont" [style.color]="inManagement ? 'white' : 'black'" (click)="moveToManagement()">
+          <span>Manage Site</span>
+        </div>
+    </div>
+</div>
+
+<hr class="linea-negra">
+        
+<div class="row mainWindow">
+
+    <div *ngIf="inSubmissions">      
+        <div class="row title">
+             Submissions of {{ site.name }}:
+        </div>
+    
+        <div class="col cardContainer">
+            <div *ngFor="let game of games" class="btn btn-primary card" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id">
+                <div class="cardText">
+                    {{ game.name }}
+                </div>
+                <div class="cardText">
+                    {{ game.team }}
                 </div>
             </div>
         </div>
+    
+        <div *ngFor="let game of games">
+            <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
+                <div class="modal-dialog" role="document" style="max-width: 85%;">
+                    <app-game-information [game]="game.id"></app-game-information>
+                </div>
+            </div>
+        </div>
+    </div>
+            
+    <div *ngIf="inTeams">
+    
+    </div>
+    
+    <div *ngIf="inJammers">
+    
+    </div>
+    
+    <div *ngIf="inStaff">
+    
+    </div>
+    
+    <div *ngIf="inManagement">
+        <div class="row title">
+            Site status: <span [style.color]="currentStatus === 'Open' ? 'green' : 'red'">{{ currentStatus }}</span>
+        </div>   
+        <div class="row someButtons">
+            <div class="col text-center">
+                <app-upload-csv></app-upload-csv>
+            </div>
+        </div>
+    </div>
+
+</div>

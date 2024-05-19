@@ -27,7 +27,7 @@
 
 .GJrol {
     color: white;
-    font-size: 28px;
+    font-size: 1.7vi;
     font-family: K2D;
     font-weight: 400;
     word-wrap: break-word
@@ -40,6 +40,12 @@
     align-items: flex-end;
 }
 
+img {
+    width: 3.7vi; /* Ancho del 50% del contenedor */
+    height: auto; /* Mantiene la proporción de la imagen */
+    max-width: 100%; /* Asegura que la imagen no se expanda más allá de su tamaño natural */
+}
+
 .logOutButton {
     align-self: center;
     max-width: fit-content;
@@ -50,7 +56,7 @@
     align-items: flex-start;
     flex-grow: 1;
     background: white;
-    padding-top: 4.5rem;
+    padding-top: 6rem;
 }
 
 

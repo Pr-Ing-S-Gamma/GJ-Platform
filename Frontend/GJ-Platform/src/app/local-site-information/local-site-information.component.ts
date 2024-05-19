@@ -21,9 +21,25 @@ import { UploadCsvComponent } from '../upload-csv/upload-csv.component';
 })
 export class LocalSiteInformationComponent implements OnInit{
   constructor(private router: Router, private userService: UserService, private siteService: SiteService){}
-  site: Site | undefined;
+  site: Site = {
+    name: 'Zapotillo',
+    region: {
+      _id: '',
+      name: ''
+    },
+    country: {
+      name: '',
+      code: ''
+    }
+  }; 
   currentStatus: string = "";
   games: any[] = [];
+  inSubmissions: boolean = true; //0
+  inTeams: boolean = false;      //1
+  inJammers: boolean = false;    //2
+  inStaff: boolean = false;      //3
+  inManagement: boolean = false; //4
+  actualWindow: number = 0;
 
   ngOnInit(): void {
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
@@ -71,5 +87,110 @@ export class LocalSiteInformationComponent implements OnInit{
           console.error('Error al cerrar sesión:', error);
         }
       );
+  }
+
+  moveToSubmissions(){
+    if (!this.inSubmissions && this.actualWindow != 0){
+      this.inSubmissions = !this.inSubmissions;
+      switch (this.actualWindow){
+        case 1:
+          this.inTeams = !this.inTeams;
+          break;
+        case 2:
+          this.inJammers = !this.inJammers;
+          break;
+        case 3:
+          this.inStaff = !this.inStaff;
+          break;
+        case 4:
+          this.inManagement = !this.inManagement;
+          break;
+      }
+      this.actualWindow = 0;
+    }
+  }
+
+  moveToTeams(){
+    if (!this.inTeams && this.actualWindow != 1){
+      this.inTeams = !this.inTeams;
+      switch (this.actualWindow){
+        case 0:
+          this.inSubmissions = !this.inSubmissions;
+          break;
+        case 2:
+          this.inJammers = !this.inJammers;
+          break;
+        case 3:
+          this.inStaff = !this.inStaff;
+          break;
+        case 4:
+          this.inManagement = !this.inManagement;
+          break;
+      }
+      this.actualWindow = 1;
+    }
+  }
+
+  moveToJammers(){
+    if (!this.inJammers && this.actualWindow != 2){
+      this.inJammers = !this.inJammers;
+      switch (this.actualWindow){
+        case 0:
+          this.inSubmissions = !this.inSubmissions;
+          break;
+        case 1:
+          this.inTeams = !this.inTeams;
+          break;
+        case 3:
+          this.inStaff = !this.inStaff;
+          break;
+        case 4:
+          this.inManagement = !this.inManagement;
+          break;
+      }
+      this.actualWindow = 2;
+    }
+  }
+
+  moveToStaff(){
+    if (!this.inStaff && this.actualWindow != 3){
+      this.inStaff = !this.inStaff;
+      switch (this.actualWindow){
+        case 0:
+          this.inSubmissions = !this.inSubmissions;
+          break;
+        case 1:
+          this.inTeams = !this.inTeams;
+          break;
+        case 2:
+          this.inJammers = !this.inJammers;
+          break;
+        case 4:
+          this.inManagement = !this.inManagement;
+          break;
+      }
+      this.actualWindow = 3;
+    }
+  }
+
+  moveToManagement(){
+    if (!this.inManagement && this.actualWindow != 4){
+      this.inManagement = !this.inManagement;
+      switch (this.actualWindow){
+        case 0:
+          this.inSubmissions = !this.inSubmissions;
+          break;
+        case 1:
+          this.inTeams = !this.inTeams;
+          break;
+        case 2:
+          this.inJammers = !this.inJammers;
+          break;
+        case 3:
+          this.inStaff = !this.inStaff;
+          break;
+      }
+      this.actualWindow = 4;
+    }
   }
 }
