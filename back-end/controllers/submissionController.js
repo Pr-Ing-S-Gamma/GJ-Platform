@@ -348,24 +348,7 @@ const giveRating = async (req, res) => {
         if (!evaluator) {
             return res.status(404).json({ message: 'Este juego no está asignado al usuario juez actual.' });
         }
-        console.log("Continuity Potential:", continuityPotential);
-        console.log("Audience Competitor Awareness Value:", audienceCompetitorAwarenessValue);
-        console.log("Market Positioning Value:", marketPositioningValue);
-        console.log("Game Design Core Loop Value:", gameDesignCoreLoopValue);
-        console.log("Game Design Hook Value:", gameDesignHookValue);
-        console.log("Game Design Balance Value:", gameDesignBalanceValue);
-        console.log("Art Visuals Coherence Quality Value:", artVisualsCoherenceQualityValue);
-        console.log("Audio Design Coherence Quality Value:", audioDesignCoherenceQualityValue);
-        console.log("Build Quality Value:", buildQualityValue);
-        console.log("UIUX Quality Value:", UIUXQualityValue);
-        console.log("Narrative World Building Value:", narrativeWorldBuildingValue);
-        console.log("Pitch Feedback:", pitchFeedback);
-        console.log("Game Design Feedback:", gameDesignFeedback);
-        console.log("Art Visuals Feedback:", artVisualsFeedback);
-        console.log("Audio Design Feedback:", audioDesignFeedback);
-        console.log("Build Feedback:", buildFeedback);
-        console.log("Personal Feedback:", personalFeedback);
-        
+
         evaluator.continuityPotential = continuityPotential;
         evaluator.audienceCompetitorAwarenessValue = audienceCompetitorAwarenessValue;
         evaluator.marketPositioningValue = marketPositioningValue;
@@ -559,11 +542,7 @@ const getSubmissionsEvaluator = async (req, res) => {
         const Submissions = await Submission.find({
             'evaluators.userId': evaluatorID,
             $or: [
-                { "evaluators.pitchScore": null },
-                { "evaluators.gameDesignScore": null },
-                { "evaluators.artScore": null },
-                { "evaluators.buildScore": null },
-                { "evaluators.audioScore": null }
+                { "evaluators.UIUXQualityValue": null },
             ]
         });
 
@@ -580,11 +559,7 @@ const getRatingsEvaluator = async (req, res) => {
         const Submissions = await Submission.find({
             'evaluators.userId': evaluatorID,
             $and: [
-                { "evaluators.pitchScore": { $exists: true, $ne: null } },
-                { "evaluators.gameDesignScore": { $exists: true, $ne: null } },
-                { "evaluators.artScore": { $exists: true, $ne: null } },
-                { "evaluators.buildScore": { $exists: true, $ne: null } },
-                { "evaluators.audioScore": { $exists: true, $ne: null } }
+                { "evaluators.UIUXQualityValue": { $exists: true, $ne: null } }
             ]
         });
         res.status(200).send({ success: true, msg: 'There are ratings in the system', data: Submissions });

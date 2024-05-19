@@ -108,7 +108,9 @@ const submissionSchema = mongoose.Schema({
         buildQualityValue: { type: Number },
         UIUXQualityValue: { type: Number },
         narrativeWorldBuildingValue: { type: Number },
-        personalFeedback: { type: String }             
+        artVisualsFeedback: { type: String },
+        audioDesignFeedback: { type: String },    
+        personalFeedback: { type: String }         
     }],
     lastUpdateDate: {
         type: Date
