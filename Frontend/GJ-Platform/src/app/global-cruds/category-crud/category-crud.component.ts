@@ -31,7 +31,18 @@ export class CategoryCrudComponent implements OnInit{
   selectedHeader: string | undefined;
   filterValue: string = '';
   constructor(private dialog: MatDialog, private fb: FormBuilder, private categoryService: CategoryService){}
-  
+  columnOptions = [
+    { label: 'Title (ESP)', value: 'titleSP' as keyof Category, checked: false },
+    { label: 'Title (EN)', value: 'titleEN' as keyof Category, checked: false },
+    { label: 'Title (PT-BR)', value: 'titlePT' as keyof Category, checked: false },
+    { label: 'Description (ESP)', value: 'descriptionSP' as keyof Category, checked: false },
+    { label: 'Description (EN)', value: 'descriptionEN' as keyof Category, checked: false },
+    { label: 'Description (PT-BR)', value: 'descriptionPT' as keyof Category, checked: false },
+    { label: 'Manual (ESP)', value: 'manualSP' as keyof Category, checked: false },
+    { label: 'Manual (EN)', value: 'manualEN' as keyof Category, checked: false },
+    { label: 'Manual (PT-BR)', value: 'manualPT' as keyof Category, checked: false }
+  ];
+
   ngOnInit(): void {
     this.myForm = this.fb.group({
       titleSP: ['', Validators.required],
@@ -44,6 +55,7 @@ export class CategoryCrudComponent implements OnInit{
       manualEN: ['', Validators.required],
       manualPT: ['', Validators.required]
     });
+
   
     const url = 'http://localhost:3000/api/category/get-categories';
     this.categoryService.getCategories(url).subscribe(
@@ -71,12 +83,19 @@ export class CategoryCrudComponent implements OnInit{
   
   selectedColumns: (keyof Category)[] = []; 
 
+  toggleColumn(column: keyof Category, event: any) {
+    if (event.target.checked) {
+      this.selectedColumns.push(column);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+    }
+  }
+
   exportToPDF() {
     const doc = new jsPDF();
-  
     const url = 'http://localhost:3000/api/category/get-categories';
     this.categoryService.getCategories(url).subscribe(
-      (categories: any[]) => {
+      (categories: Category[]) => {
         const data = categories.map(category => ({
           _id: category._id,
           titleSP: category.titleSP,
@@ -89,28 +108,22 @@ export class CategoryCrudComponent implements OnInit{
           manualEN: category.manualEN,
           manualPT: category.manualPT
         }));
-  
+
         const selectedData = data.map(row => {
           const rowData: any[] = [];
           this.selectedColumns.forEach(column => {
-            if (column === '_id') {
-              rowData.push(row[column] || ''); 
-            } else {
-              rowData.push(row[column] || ''); 
-            }
+            rowData.push(row[column] || '');
           });
           return rowData;
         });
-  
-        const headers = this.selectedColumns.map(column => {
-            return column.replace(/[A-Z]/g, ' $&').toUpperCase();
-        });
-  
+
+        const headers = this.selectedColumns.map(column => column.replace(/[A-Z]/g, ' $&').toUpperCase());
+
         autoTable(doc, {
           head: [headers],
           body: selectedData
         });
-  
+
         doc.save('categories.pdf');
       },
       error => {

@@ -22,7 +22,9 @@ import autoTable from 'jspdf-autotable';
 export class RegionCRUDComponent implements OnInit{
   myForm!: FormGroup;
   dataSource: Region[] = [];
-  
+  columnOptions = [
+    { label: 'name', value: 'name' as keyof Region, checked: false },
+  ];
   regionToEdit: any;
   indexRegion = 0;
   selectedHeader: string | undefined;
@@ -96,44 +98,38 @@ export class RegionCRUDComponent implements OnInit{
         }
     });
   }
-
+  toggleColumn(column: keyof Region, event: any) {
+    if (event.target.checked) {
+      this.selectedColumns.push(column);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+    }
+  }
   exportToPDF() {
     const doc = new jsPDF();
-  
-    const url = 'http://localhost:3000/api/region/get-regions';
-    this.regionService.getRegions(url).subscribe(
-      (regions: Region[]) => {
-        const data = regions.map(region => ({
-          _id: region._id || '',
-          name: region.name || '',
-        }));
-  
-        const selectedData = data.map(row => {
-          const rowData: any[] = [];
-          this.selectedColumns.forEach(column => {
-            rowData.push(row[column] || '');
-          });
-          return rowData;
-        });
-  
-        const headers = this.selectedColumns.map((column: string) => {
-          if (column === '_id') return 'ID';
-          if (column === 'name') return 'Name';
-          return column.replace(/[A-Z]/g, ' $&').toUpperCase();
-        });
-  
-        autoTable(doc, {
-          head: [headers],
-          body: selectedData
-        });
-  
-        doc.save('categories.pdf');
-      },
-      error => {
-        console.error('Error al obtener categorías:', error);
-      }
-    );
+
+    const selectedData = this.dataSource.map(row => {
+      const rowData: any[] = [];
+      this.selectedColumns.forEach(column => {
+        rowData.push(row[column] || '');
+      });
+      return rowData;
+    });
+
+    const headers = this.selectedColumns.map((column: string) => {
+      if (column === '_id') return 'ID';
+      if (column === 'name') return 'Name';
+      return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+    });
+
+    autoTable(doc, {
+      head: [headers],
+      body: selectedData
+    });
+
+    doc.save('regions.pdf');
   }
+
   
   agregar() {
     if (this.myForm.valid) {

@@ -24,7 +24,13 @@ export class GamejamCrudComponent implements OnInit{
   myForm!: FormGroup;
   dataSource: GameJam[] = [];
   themes: Theme[] = [];
-  
+  columnOptions = [
+    { label: 'Edition', value: 'Edition' as keyof GameJam, checked: false },
+    { label: 'TTheme Name (EN)', value: 'Theme Name(EN)' as keyof GameJam, checked: false },
+    { label: 'Theme Description(EN', value: 'Theme Description(EN)' as keyof GameJam, checked: false },
+    { label: 'Theme Manual(EN)', value: 'Theme Manual(EN)' as keyof GameJam, checked: false }
+  ];
+
   userToEdit : any;
   indexUser = 0
   selectedHeader: string | undefined;
@@ -55,57 +61,46 @@ export class GamejamCrudComponent implements OnInit{
     );
   }
   selectedColumns: (keyof GameJam)[] = []; 
+  toggleColumn(column: keyof GameJam, event: any) {
+    if (event.target.checked) {
+      this.selectedColumns.push(column);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+    }
+  }
+
   exportToPDF() {
     const doc = new jsPDF();
-  
-    const url = 'http://localhost:3000/api/game-jam/get-game-jams';
-    this.gamejamService.getGameJams(url).subscribe(
-      (gameJams: GameJam[]) => {
-        const data = gameJams.map(gameJam => ({
-          _id: gameJam._id || '',
-          edition: gameJam.edition,
-          theme: {
-            _id: gameJam.theme._id, 
-            titleEN: gameJam.theme.titleEN, 
-            descriptionEN: gameJam.theme.descriptionEN, 
-            manualEN: gameJam.theme.manualEN 
-          }
-        }));
-  
-        const selectedData = data.map(row => {
-          const rowData: any[] = [];
-          this.selectedColumns.forEach(column => {
-            if (column.startsWith('theme.')) {
-              const themeProperty = column.split('.')[1];
-              rowData.push((row.theme as {[key: string]: string})[themeProperty]);
-            } else {
-              rowData.push(row[column]);
-            }
-          });
-          return rowData;
-        });
-        
-        const headers = this.selectedColumns.map((column: string) => {
-          if (column === '_id') return 'ID';
-          if (column === 'edition') return 'Edition';
-          if (column === 'theme._id') return 'Theme ID';
-          if (column === 'theme.titleEN') return 'Theme Title';
-          if (column === 'theme.descriptionEN') return 'Theme Description';
-          if (column === 'theme.manualEN') return 'Theme Manual';
-          return column.replace(/[A-Z]/g, ' $&').toUpperCase();
-        });
-  
-        autoTable(doc, {
-          head: [headers],
-          body: selectedData
-        });
-  
-        doc.save('gameJams.pdf');
-      },
-      error => {
-        console.error('Error al obtener las Game Jams:', error);
-      }
-    );
+
+    const selectedData = this.obtenerDatosPagina().map(row => {
+      const rowData: any[] = [];
+      this.selectedColumns.forEach(column => {
+        if (column.startsWith('theme.')) {
+          const themeProperty = column.split('.')[1];
+          rowData.push((row.theme as {[key: string]: string})[themeProperty]);
+        } else {
+          rowData.push(row[column]);
+        }
+      });
+      return rowData;
+    });
+
+    const headers = this.selectedColumns.map((column: string) => {
+      if (column === '_id') return 'ID';
+      if (column === 'edition') return 'Edition';
+      if (column === 'theme._id') return 'Theme ID';
+      if (column === 'theme.titleEN') return 'Theme Title';
+      if (column === 'theme.descriptionEN') return 'Theme Description';
+      if (column === 'theme.manualEN') return 'Theme Manual';
+      return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+    });
+
+    autoTable(doc, {
+      head: [headers],
+      body: selectedData
+    });
+
+    doc.save('gameJams.pdf');
   }
   
 

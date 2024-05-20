@@ -11,6 +11,17 @@
   text-decoration: underline; 
   cursor: pointer;
 }
+.filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Añade espacio entre los elementos */
+}
+
+.filters select, .filters input, .filters button {
+  margin: 5px;
+}
+
 
 .navBarStyle{
     display: flex;

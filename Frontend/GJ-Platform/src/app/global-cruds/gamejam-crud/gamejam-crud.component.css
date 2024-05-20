@@ -1,4 +1,15 @@
-.cardBackground{
+.filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Añade espacio entre los elementos */
+  }
+  
+  .filters select, .filters input, .filters button {
+    margin: 5px;
+  }
+  
+  .cardBackground{
     background: white;
     border-radius: 35px;
     border: 1px black solid;
