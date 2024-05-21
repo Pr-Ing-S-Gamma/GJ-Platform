@@ -59,6 +59,11 @@
     word-wrap: break-word;
 }
 
+.btn-default:hover + .btnText{
+    background: white;
+    color: #3EB9FF;
+}
+
 .popUp{
     position: fixed;
     top: 50%;

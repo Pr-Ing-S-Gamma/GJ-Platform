@@ -34,6 +34,9 @@ export class LocalSiteInformationComponent implements OnInit{
   }; 
   currentStatus: string = "";
   games: any[] = [];
+  teams: any[] = [];
+  jammers: any[] = [];
+  staff: any[] = [];
   inSubmissions: boolean = true; //0
   inTeams: boolean = false;      //1
   inJammers: boolean = false;    //2

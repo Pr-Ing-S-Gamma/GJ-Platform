@@ -87,12 +87,12 @@
     word-wrap: break-word;
 }
 
-.cardContent:hover{
+.cardContent:hover + .cardText{
     background: black;
     color: white;
 }
 
-.cardBackground:hover{
+.cardBackground:hover + .cardTextSite{
     background: black;
     color: white;
 }

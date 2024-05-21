@@ -64,14 +64,67 @@
     </div>
             
     <div *ngIf="inTeams">
+        <div class="row title">
+             Teams of {{ site.name }}:
+        </div>
     
+        <div class="col cardContainer">
+            <div *ngFor="let team of teams" class="cardBackground">
+                <div class="cardText">
+                    {{ team.name }}
+                </div>
+                <div *ngFor="let member of team.members" class="row">
+                    <div class="col cardText">
+                        {{ member.name }}
+                    </div>
+                    <div class="col cardText">
+                        {{ member.discordUsername }}
+                    </div>
+                    <div class="col cardText">
+                        {{ member.email }}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <div *ngIf="inJammers">
-    
+        <div class="row title">
+             Jammers of {{ site.name }}:
+        </div>
+        
+        <div *ngFor="let jammer of jammers" class="cardBackground">
+            <div class="cardText">
+                {{ jammer.name }}
+            </div>
+            <div class="cardText">
+                {{ jammer.discordUsername }}
+            </div>
+            <div class="cardText">
+                {{ jammer.email }}
+            </div>
+        </div>
     </div>
     
     <div *ngIf="inStaff">
+        <div class="row title">
+             Members of {{ site.name }}:
+        </div>
+        
+        <div *ngFor="let member of staff" class="cardBackground">
+            <div class="cardText">
+                {{ member.rol }}
+            </div>
+            <div class="cardText">
+                {{ member.name }}
+            </div>
+            <div class="cardText">
+                {{ member.discordUsername }}
+            </div>
+            <div class="cardText">
+                {{ member.email }}
+            </div>
+        </div>
     
     </div>
     

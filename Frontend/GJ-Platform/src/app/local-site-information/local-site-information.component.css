@@ -95,3 +95,14 @@
     align-items: center;
     margin-top: 3%;
 }
+
+.cardBackground{
+    background: #515151;
+    border-radius: 35px;
+    border: 1px black solid;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    margin: 15px;
+}
