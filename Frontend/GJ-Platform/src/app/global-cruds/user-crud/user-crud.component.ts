@@ -33,6 +33,15 @@ export class UserCrudComponent implements OnInit{
   selectedHeader: string | undefined;
   filterValue: string = '';
   selectedColumns: (keyof User)[] = []; 
+  columnOptions = [
+    { label: 'Name', value: 'name' as keyof User, checked: false },
+    { label: 'Email', value: 'email' as keyof User, checked: false },
+    { label: 'Discord', value: 'discordUsername' as keyof User, checked: false },
+    { label: 'Region', value: 'region.name' as keyof User, checked: false },
+    { label: 'Site', value: 'site.name' as keyof User, checked: false },
+    { label: 'Team Name', value: 'team.name' as keyof User, checked: false },
+    { label: 'Role', value: 'rol' as keyof User, checked: false }
+  ];
   constructor(private fb: FormBuilder, private userService: UserService, private siteService: SiteService, private regionService: RegionService){}
   ngOnInit(): void {
     this.myForm = this.fb.group({
@@ -271,7 +280,13 @@ getPropertyValue(obj: any, key: string) {
   }
   return Array.isArray(value) ? value.join(', ') : value;
 }
-
+toggleColumn(column: keyof User, event: any) {
+  if (event.target.checked) {
+    this.selectedColumns.push(column);
+  } else {
+    this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+  }
+}
 exportToPDF() {
     const doc = new jsPDF();
 

@@ -25,6 +25,12 @@ export class SiteCrudComponent implements OnInit {
   dataSource: Site[] = [];
   regions: Region[] = [];
   countries: Country[] = [];
+  columnOptions = [
+    { label: 'Name', value: 'name' as keyof Site, checked: false },
+    { label: 'Modality', value: 'modality' as keyof Site, checked: false },
+    { label: 'Region Name', value: 'region.name' as keyof Site, checked: false },
+    { label: 'Country Name', value: 'country.name' as keyof Site, checked: false },
+  ];
 
   siteToEdit: any;
   indexSite = 0;
@@ -224,7 +230,13 @@ showErrorMessage(message: string) {
     }
     return value;
   }
-
+  toggleColumn(column: keyof Site, event: any) {
+    if (event.target.checked) {
+      this.selectedColumns.push(column);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+    }
+  }
   exportToPDF() {
     const doc = new jsPDF();
   

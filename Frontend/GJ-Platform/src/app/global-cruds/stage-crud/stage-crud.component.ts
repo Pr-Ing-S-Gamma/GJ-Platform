@@ -31,6 +31,14 @@ export class StageCrudComponent implements OnInit{
   selectedHeader: string | undefined;
   filterValue: string = '';
   selectedColumns: (keyof Stage)[] = []; 
+  columnOptions = [
+    { label: 'Name', value: 'name' as keyof Stage, checked: false },
+    { label: 'Start Date', value: 'startDate' as keyof Stage, checked: false },
+    { label: 'End Date', value: 'endDate' as keyof Stage, checked: false },
+    { label: 'Start Date Evaluation', value: 'startDateEvaluation' as keyof Stage, checked: false },
+    { label: 'End Date Evaluation', value: 'endDateEvaluation' as keyof Stage, checked: false },
+    { label: 'Game Jam Edition', value: 'gameJam.edition' as keyof Stage, checked: false },
+  ];
   constructor(private fb: FormBuilder, private stageService: StageService, private gamejamService: GamejamService){
   }
   ngOnInit(): void {
@@ -253,7 +261,13 @@ showErrorMessage(message: string) {
     }
     return value;
   }
-  
+  toggleColumn(column: keyof Stage, event: any) {
+    if (event.target.checked) {
+      this.selectedColumns.push(column);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+    }
+  }
   exportToPDF() {
     const doc = new jsPDF();
   

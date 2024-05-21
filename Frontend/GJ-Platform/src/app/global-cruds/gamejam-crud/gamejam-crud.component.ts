@@ -25,10 +25,10 @@ export class GamejamCrudComponent implements OnInit{
   dataSource: GameJam[] = [];
   themes: Theme[] = [];
   columnOptions = [
-    { label: 'Edition', value: 'Edition' as keyof GameJam, checked: false },
-    { label: 'TTheme Name (EN)', value: 'Theme Name(EN)' as keyof GameJam, checked: false },
-    { label: 'Theme Description(EN', value: 'Theme Description(EN)' as keyof GameJam, checked: false },
-    { label: 'Theme Manual(EN)', value: 'Theme Manual(EN)' as keyof GameJam, checked: false }
+    { label: 'Edition', value: 'edition' as keyof GameJam, checked: false },
+    { label: 'TTheme Name (EN)', value: 'theme.titleEN' as keyof GameJam, checked: false },
+    { label: 'Theme Description(EN', value: 'theme.descriptionEN' as keyof GameJam, checked: false },
+    { label: 'Theme Manual(EN)', value: 'theme.manualEN' as keyof GameJam, checked: false }
   ];
 
   userToEdit : any;

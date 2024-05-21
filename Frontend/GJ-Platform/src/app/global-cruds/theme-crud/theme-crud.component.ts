@@ -29,6 +29,17 @@ export class ThemeCrudComponent implements OnInit{
   selectedHeader: string | undefined;
   filterValue: string = '';
   selectedColumns: (keyof Theme)[] = []; 
+  columnOptions = [
+    { label: 'Title (ESP)', value: 'titleSP' as keyof Theme, checked: false },
+    { label: 'Title (EN)', value: 'titleEN' as keyof Theme, checked: false },
+    { label: 'Title (PT-BR)', value: 'titlePT' as keyof Theme, checked: false },
+    { label: 'Description (ESP)', value: 'descriptionSP' as keyof Theme, checked: false },
+    { label: 'Description (EN)', value: 'descriptionEN' as keyof Theme, checked: false },
+    { label: 'Description (PT-BR)', value: 'descriptionPT' as keyof Theme, checked: false },
+    { label: 'Manual (ESP)', value: 'manualSP' as keyof Theme, checked: false },
+    { label: 'Manual (EN)', value: 'manualEN' as keyof Theme, checked: false },
+    { label: 'Manual (PT-BR)', value: 'manualPT' as keyof Theme, checked: false }
+  ];
 
   constructor(private fb: FormBuilder, private themeService: ThemeService){}
 
@@ -127,6 +138,13 @@ export class ThemeCrudComponent implements OnInit{
         });
     } else {
       this.showErrorMessage('Please fill in all fields of the form');
+    }
+  }
+  toggleColumn(column: keyof Theme, event: any) {
+    if (event.target.checked) {
+      this.selectedColumns.push(column);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== column);
     }
   }
   getPdf(themeId: string, language: string): void {

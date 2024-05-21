@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CategoryService } from '../../services/category.service';
-import { Category } from '../../../types';
+import { Category, Theme } from '../../../types';
 import { jsPDF }  from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { MatDialog } from '@angular/material/dialog';

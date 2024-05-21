@@ -34,7 +34,14 @@ export class TeamCrudComponent implements OnInit {
   indexTeam = 0;
   selectedHeader: string | undefined;
   filterValue: string = '';
-  selectedColumns: (keyof Team)[] = []; 
+  selectedColumns: (keyof Team)[] = [];
+  columnOptions = [
+    { label: 'Name', value: 'studioName' as keyof Team, checked: false },
+    { label: 'Description', value: 'description' as keyof Team, checked: false },
+    { label: 'Region Name', value: 'region.name' as keyof Team, checked: false },
+    { label: 'Site Name', value: 'site.name' as keyof Team, checked: false },
+    { label: 'Edition', value: 'gameJam.edition' as keyof Team, checked: false }
+  ]; 
   constructor(private fb: FormBuilder, private teamService: TeamService, private userService: UserService, private regionService: RegionService, private siteService: SiteService, private gamejamService: GamejamService){
   }
 
@@ -400,7 +407,13 @@ removeLinkTree(link: string) {
       }
       return Array.isArray(value) ? value.join(', ') : value;
   }
-
+  toggleColumn(column: keyof Team, event: any) {
+    if (event.target.checked) {
+      this.selectedColumns.push(column);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+    }
+  }
   exportToPDF() {
     const doc = new jsPDF();
   
