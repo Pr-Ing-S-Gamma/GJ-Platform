@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { GameInformationComponent } from '../game-information/game-information.component';
 import { UserService } from '../services/user.service';
+import { TeamService} from '../services/team.service';
 import { Site, User } from '../../types';
 import { SiteService } from '../services/site.service';
 import { UploadCsvComponent } from '../upload-csv/upload-csv.component';
@@ -20,7 +21,7 @@ import { UploadCsvComponent } from '../upload-csv/upload-csv.component';
   styleUrl: './local-site-information.component.css'
 })
 export class LocalSiteInformationComponent implements OnInit{
-  constructor(private router: Router, private userService: UserService, private siteService: SiteService){}
+  constructor(private router: Router, private userService: UserService, private siteService: SiteService, private teamService: TeamService){}
   site: Site = {
     name: 'Zapotillo',
     region: {
@@ -72,6 +73,24 @@ export class LocalSiteInformationComponent implements OnInit{
                 console.error('Error al obtener las entregas:', error);
               }
             );
+
+          this.userService.getJammersSite('http://localhost:3000/api/user/get-jammers-per-site/' + user.site._id).subscribe(
+            jammers => {
+              this.jammers = jammers;
+            }
+          )
+
+          this.userService.getLocalsSite('http://localhost:3000/api/user/get-localPerSite/' + user.site._id).subscribe(
+            staff => {
+              this.staff = staff;
+            }
+          )
+
+          this.teamService.getTeamsSite('http://localhost:3000/api/team/get-teams/' + user.site._id).subscribe(
+            teams => {
+              this.teams = teams;
+            }
+          )
         },
         error => {
           console.error('Error al obtener usuario actual:', error);

@@ -178,9 +178,9 @@ const getCurrentUser = async (req, res) => {
 };
 
 const getLocalOrganizersPerSite = async (req, res) => {
+    const { siteId } = req.params;
     try {
-        const siteID = req.params.site;
-        var organizers = await LocalOrganizer.find({ site: siteID });
+        var organizers = await User.find({ "site._id": siteId, rol: 'LocalOrganizer' });
         return res.status(200).send({ success: true, msg: "Organizadores econtrados para site ", data: organizers });
     } catch (error) {
         return res.status(400).send({ success: false, msg: error.message });
@@ -375,7 +375,6 @@ const registerUsersFromCSV = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
-
 
 const addRol = async (req, res) => {
     const userId = req.params.id;

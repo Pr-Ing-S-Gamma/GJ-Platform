@@ -41,4 +41,16 @@ export class UserService {
   deleteUser(url: string): Observable<any> {
     return this.http.delete(url);
   }
+
+  getLocalsSite(url: string): Observable<User[]> { 
+    return this.http.get<any>(url).pipe( 
+      map(response => response.data)
+    );
+  }
+
+  getJammersSite(url: string): Observable<User[]> { 
+    return this.http.get<any>(url).pipe( 
+      map(response => response.data)
+    );
+  }
 }

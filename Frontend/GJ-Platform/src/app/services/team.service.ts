@@ -42,4 +42,10 @@ export class TeamService {
   deleteTeam(url: string): Observable<any> {
     return this.http.delete(url);
   }
+  
+  getTeamsSite(url: string): Observable<Team[]> { 
+    return this.http.get<any>(url).pipe( 
+      map(response => response.data)
+    );
+  }
 }

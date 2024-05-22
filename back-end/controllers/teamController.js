@@ -268,7 +268,6 @@ const deleteTeam = async (req, res) => {
 const getTeamSite = async (req, res) => {
     try {
         const siteName = req.params.site;
-        console.log(siteName);
         const teams = await Team.find({ site: siteName });
         return res.status(200).send({ success: true, msg: "Teams found for site " + siteName, data: teams });
     } catch (error) {
