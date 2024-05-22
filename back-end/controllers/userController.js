@@ -144,7 +144,7 @@ const magicLink = async (req, res) => {
             httpOnly: false
         });
         let redirectUrl
-        redirectUrl = `http://${process.env.PORT}:3000/Home`;
+        redirectUrl = `http://${process.env.PORT}:3000/home`;
         if (rol !== 'LocalOrganizer' && rol !== 'GlobalOrganizer' && rol !== 'Jammer' && rol !== 'Judge') {
             return res.clearCookie('token').redirect(`http://${process.env.PORT}:3000/login`);
         }
