@@ -37,14 +37,14 @@ export class UserDashboardComponent implements OnInit {
   
   constructor(private fb: FormBuilder, private userService: UserService, private siteService: SiteService, private regionService: RegionService){}
   ngOnInit(): void {
-    this.myForm = this.fb.group({
-      name: ['', Validators.required],
-      email: ['', Validators.required],
-      discordUsername: ['', Validators.required]
-    });
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user').subscribe(
       user => {
         this.dataSource = user;
+        this.myForm = this.fb.group({
+          name: [user.name, Validators.required],
+          email: [user.email, Validators.required],
+          discordUsername: [user.discordUsername, Validators.required]
+        });
       },
       error => {
         console.error('Error al obtener usuarios:', error);

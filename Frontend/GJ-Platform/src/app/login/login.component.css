@@ -59,8 +59,12 @@
     word-wrap: break-word;
 }
 
-.btn-default:hover + .btnText{
+.btn-default:hover{
     background: white;
+    border-color: #3EB9FF;
+}
+
+.btn-default:hover .btnText{
     color: #3EB9FF;
 }
 
