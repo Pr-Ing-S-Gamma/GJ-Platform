@@ -57,10 +57,14 @@ const createCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
     try {
         const id = req.params.id;
-        const { titleSP, titleEN, titlePT, descriptionSP, descriptionEN, descriptionPT, manualSP, manualEN, manualPT } = req.body;
+        const { titleSP, titleEN, titlePT, descriptionSP, descriptionEN, descriptionPT } = req.body;
+        const { manualSP, manualEN, manualPT } = req.files;
         const updateFields = {};
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const lastUpdateUser = await User.findById(userId);
+        const manualSPBuffer = manualSP[0].buffer;
+        const manualENBuffer = manualEN[0].buffer;
+        const manualPTBuffer = manualPT[0].buffer;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'Provided category ID is not valid.' });
         } else {
@@ -81,9 +85,9 @@ const updateCategory = async (req, res) => {
             updateFields.descriptionSP = descriptionSP;
             updateFields.descriptionEN = descriptionEN;
             updateFields.descriptionPT = descriptionPT;
-            updateFields.manualSP = manualSP;
-            updateFields.manualEN = manualEN;
-            updateFields.manualPT = manualPT;
+            updateFields.manualSP = manualSPBuffer;
+            updateFields.manualEN = manualENBuffer;
+            updateFields.manualPT = manualPTBuffer;
             updateFields.lastUpdateUser = {
                 userId: lastUpdateUser._id,
                 name: lastUpdateUser.name,

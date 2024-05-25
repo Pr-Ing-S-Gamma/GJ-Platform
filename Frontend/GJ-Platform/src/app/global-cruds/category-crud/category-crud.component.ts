@@ -152,9 +152,6 @@
         descriptionEN: elemento.descriptionEN,
         descriptionSP: elemento.descriptionSP,
         descriptionPT: elemento.descriptionPT,
-        manualEN: elemento.manualEN,
-        manualSP: elemento.manualSP,
-        manualPT: elemento.manualPT
       });
     }
     
@@ -162,37 +159,47 @@
       if (this.myForm.valid) {
         const categoryId = this.CategoryToEdit['_id'];
         const url = `http://localhost:3000/api/category/update-category/${categoryId}`;
+        const updatedCategory: Category = {
+          titleSP: this.myForm.get('titleSP')?.value,
+          titleEN: this.myForm.get('titleEN')?.value,
+          titlePT: this.myForm.get('titlePT')?.value,
+          descriptionSP: this.myForm.get('descriptionSP')?.value,
+          descriptionEN: this.myForm.get('descriptionEN')?.value,
+          descriptionPT: this.myForm.get('descriptionPT')?.value,
+          manualSP: this.fileMap.get('SP') || null,
+          manualEN: this.fileMap.get('EN') || null,
+          manualPT: this.fileMap.get('PT') || null,
+        };
     
-        this.categoryService.updateCategory(url, {
-          titleSP: this.myForm.value['titleSP'],
-          titleEN: this.myForm.value['titleEN'],
-          titlePT: this.myForm.value['titlePT'],
-          descriptionSP: this.myForm.value['descriptionSP'],
-          descriptionEN: this.myForm.value['descriptionEN'],
-          descriptionPT: this.myForm.value['descriptionPT'],
-          manualSP: this.myForm.value['manualSP'],
-          manualEN: this.myForm.value['manualEN'],
-          manualPT: this.myForm.value['manualPT']
-        }).subscribe({
+        const formData = new FormData();
+        formData.append('titleSP', updatedCategory.titleSP);
+        formData.append('titleEN', updatedCategory.titleEN);
+        formData.append('titlePT', updatedCategory.titlePT);
+        formData.append('descriptionSP', updatedCategory.descriptionSP);
+        formData.append('descriptionEN', updatedCategory.descriptionEN);
+        formData.append('descriptionPT', updatedCategory.descriptionPT);
+    
+        if (updatedCategory.manualSP) {
+          formData.append('manualSP', updatedCategory.manualSP, updatedCategory.manualSP.name);
+        }
+        if (updatedCategory.manualEN) {
+          formData.append('manualEN', updatedCategory.manualEN, updatedCategory.manualEN.name);
+        }
+        if (updatedCategory.manualPT) {
+          formData.append('manualPT', updatedCategory.manualPT, updatedCategory.manualPT.name);
+        }
+    
+        this.categoryService.updateCategory(url, formData).subscribe({
           next: (data) => {
             console.log('Respuesta del servidor:', data);
             this.dataSource[this.indexCategory] = {
               _id: categoryId,
-              titleSP: this.myForm.value['titleSP'],
-              titleEN: this.myForm.value['titleEN'],
-              titlePT: this.myForm.value['titlePT'],
-              descriptionSP: this.myForm.value['descriptionSP'],
-              descriptionEN: this.myForm.value['descriptionEN'],
-              descriptionPT: this.myForm.value['descriptionPT'],
-              manualSP: this.myForm.value['manualSP'],
-              manualEN: this.myForm.value['manualEN'],
-              manualPT: this.myForm.value['manualPT']
-              
+              ...updatedCategory,
             };
             this.showSuccessMessage(data.msg);
           },
           error: (error) => {
-            console.error('Error al actualizar la región:', error);
+            console.error('Error al actualizar la categoría:', error);
             this.showErrorMessage(error.error.error);
           }
         });
@@ -200,8 +207,6 @@
         this.showErrorMessage('Please fill in all fields of the form');
       }
     }
-    
-    
     eliminar(elemento: any) {
       const id = elemento._id;
     
