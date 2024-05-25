@@ -12,12 +12,12 @@ export class ThemeService {
 
   constructor(private http: HttpClient) { }
 
-  createTheme(url: string, theme: Theme): Observable<any> {
-    return this.http.post(url, theme, { withCredentials: true });
+  createTheme(url: string, formData: FormData): Observable<any> {
+    return this.http.post(url, formData, { withCredentials: true });
   }
 
-  updateTheme(url: string, theme: Theme): Observable<any> {
-    return this.http.put(url, theme, { withCredentials: true });
+  updateTheme(url: string, formData: FormData): Observable<any> {
+    return this.http.put(url, formData, { withCredentials: true });
   }
   
   getThemes(url: string): Observable<Theme[]> { 

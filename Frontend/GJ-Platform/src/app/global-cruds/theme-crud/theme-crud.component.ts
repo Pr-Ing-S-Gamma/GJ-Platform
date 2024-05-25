@@ -51,9 +51,9 @@ export class ThemeCrudComponent implements OnInit{
       descriptionEN: ['', Validators.required],
       descriptionSP: ['', Validators.required],
       descriptionPT: ['', Validators.required],
-      manualEN: ['', Validators.required],
-      manualSP: ['', Validators.required],
-      manualPT: ['', Validators.required]
+      manualSP: [null, Validators.required],
+      manualEN: [null, Validators.required],
+      manualPT: [null, Validators.required]
     });
     this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
       .subscribe(
@@ -83,27 +83,66 @@ export class ThemeCrudComponent implements OnInit{
   }
 
   editar() {
-    const themeId = this.ThemeToEdit['_id'];
     if (this.myForm.valid) {
-      this.themeService.updateTheme(`http://localhost:3000/api/theme/update-theme/${themeId}`, this.myForm.value)
-        .subscribe({
-          next: (data) => {
-            if (data.success) {
-              this.dataSource[this.dataSource.findIndex(theme => theme._id === data.theme._id)] = data.theme;
-              this.showSuccessMessage(data.msg);
-            } else {
-              this.showErrorMessage(data.error);
-            }
-          },
-          error: (error) => {
-            this.showErrorMessage(error.error.error);
-          },
-        });
+      const themeId = this.ThemeToEdit['_id'];
+      const url = `http://localhost:3000/api/theme/update-theme/${themeId}`;
+      const updatedTheme: Theme = {
+        titleSP: this.myForm.get('titleSP')?.value,
+        titleEN: this.myForm.get('titleEN')?.value,
+        titlePT: this.myForm.get('titlePT')?.value,
+        descriptionSP: this.myForm.get('descriptionSP')?.value,
+        descriptionEN: this.myForm.get('descriptionEN')?.value,
+        descriptionPT: this.myForm.get('descriptionPT')?.value,
+        manualSP: this.fileMap.get('SP') || null,
+        manualEN: this.fileMap.get('EN') || null,
+        manualPT: this.fileMap.get('PT') || null,
+      };
+  
+      const formData = new FormData();
+      formData.append('titleSP', updatedTheme.titleSP);
+      formData.append('titleEN', updatedTheme.titleEN);
+      formData.append('titlePT', updatedTheme.titlePT);
+      formData.append('descriptionSP', updatedTheme.descriptionSP);
+      formData.append('descriptionEN', updatedTheme.descriptionEN);
+      formData.append('descriptionPT', updatedTheme.descriptionPT);
+  
+      if (updatedTheme.manualSP) {
+        formData.append('manualSP', updatedTheme.manualSP, updatedTheme.manualSP.name);
+      }
+      if (updatedTheme.manualEN) {
+        formData.append('manualEN', updatedTheme.manualEN, updatedTheme.manualEN.name);
+      }
+      if (updatedTheme.manualPT) {
+        formData.append('manualPT', updatedTheme.manualPT, updatedTheme.manualPT.name);
+      }
+  
+      this.themeService.updateTheme(url, formData).subscribe({
+        next: (data) => {
+          console.log('Respuesta del servidor:', data);
+          this.dataSource[this.indexTheme] = {
+            _id: themeId,
+            ...updatedTheme,
+          };
+          this.showSuccessMessage(data.msg);
+        },
+        error: (error) => {
+          console.error('Error al actualizar el tema:', error);
+          this.showErrorMessage(error.error.error);
+        }
+      });
     } else {
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
-
+  fileMap: Map<string, File> = new Map();
+  onFileChange(event: Event, language: string) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.fileMap.set(language, file);
+      this.myForm.patchValue({ [`manual${language}`]: file });
+    }
+  }
   eliminar(elemento: any) {
     const id = elemento._id;
     const url = `http://localhost:3000/api/theme/delete-theme/${id}`;
@@ -122,21 +161,58 @@ export class ThemeCrudComponent implements OnInit{
 
   agregar() {
     if (this.myForm.valid) {
-      this.themeService.createTheme(`http://localhost:3000/api/theme/create-theme`, this.myForm.value)
+      const newTheme: Theme = {
+        titleSP: this.myForm.get('titleSP')?.value,
+        titleEN: this.myForm.get('titleEN')?.value,
+        titlePT: this.myForm.get('titlePT')?.value,
+        descriptionSP: this.myForm.get('descriptionSP')?.value,
+        descriptionEN: this.myForm.get('descriptionEN')?.value,
+        descriptionPT: this.myForm.get('descriptionPT')?.value,
+        manualSP: this.fileMap.get('SP') || null,
+        manualEN: this.fileMap.get('EN') || null,
+        manualPT: this.fileMap.get('PT') || null,
+      };
+
+      const formData = new FormData();
+      formData.append('titleSP', newTheme.titleSP);
+      formData.append('titleEN', newTheme.titleEN);
+      formData.append('titlePT', newTheme.titlePT);
+      formData.append('descriptionSP', newTheme.descriptionSP);
+      formData.append('descriptionEN', newTheme.descriptionEN);
+      formData.append('descriptionPT', newTheme.descriptionPT);
+
+      if (newTheme.manualSP) {
+        formData.append('manualSP', newTheme.manualSP, newTheme.manualSP.name);
+      }
+      if (newTheme.manualEN) {
+        formData.append('manualEN', newTheme.manualEN, newTheme.manualEN.name);
+      }
+      if (newTheme.manualPT) {
+        formData.append('manualPT', newTheme.manualPT, newTheme.manualPT.name);
+      }
+
+      this.themeService.createTheme(`http://localhost:3000/api/theme/create-theme`, formData)
         .subscribe({
           next: (data) => {
+            console.log(data);
             if (data.success) {
-              this.dataSource.push(data.theme);
+              const newThemeWithId: Theme = {
+                ...newTheme,
+                _id: data.themeId 
+              };
+              this.dataSource.push(newThemeWithId);
               this.showSuccessMessage(data.msg);
             } else {
               this.showErrorMessage(data.error);
             }
           },
           error: (error) => {
+            console.error(error);
             this.showErrorMessage(error.error.error);
           },
         });
     } else {
+      console.error('Formulario enviado:', this.myForm.value);
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
@@ -192,20 +268,24 @@ showErrorMessage(message: string) {
     if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
       const filterText = this.filterValue.trim().toLowerCase();
       filteredData = filteredData.filter(item => {
-        switch (this.selectedHeader) {
+        const header = this.selectedHeader as keyof Theme;
+        const value = item[header];
+  
+        switch (header) {
           case '_id':
-            return item._id && item._id.toLowerCase().startsWith(filterText);
+            return typeof value === 'string' && value.toLowerCase().startsWith(filterText);
           case 'titleSP':
           case 'titleEN':
           case 'titlePT':
           case 'descriptionSP':
           case 'descriptionEN':
           case 'descriptionPT':
+            return typeof value === 'string' && value.toLowerCase().startsWith(filterText);
           case 'manualSP':
           case 'manualEN':
           case 'manualPT':
-            if (item[this.selectedHeader]) {
-              return item[this.selectedHeader].toLowerCase().startsWith(filterText);
+            if (typeof value === 'string') {
+              return value.toLowerCase().startsWith(filterText);
             }
             return false;
           default:

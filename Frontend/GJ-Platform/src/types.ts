@@ -138,9 +138,9 @@ export interface Team {
 
 export interface Theme {
   _id?: string;
-  manualPT: string;
-  manualSP: string;
-  manualEN: string;
+  manualSP: File | null;
+  manualEN: File | null;
+  manualPT: File | null;
   descriptionSP: string;
   descriptionPT: string;
   descriptionEN: string;

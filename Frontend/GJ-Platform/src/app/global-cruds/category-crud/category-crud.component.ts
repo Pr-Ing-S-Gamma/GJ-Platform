@@ -152,6 +152,9 @@
         descriptionEN: elemento.descriptionEN,
         descriptionSP: elemento.descriptionSP,
         descriptionPT: elemento.descriptionPT,
+        manualEN: elemento.manualEN,
+        manualSP: elemento.manualSP,
+        manualPT: elemento.manualPT
       });
     }
     
