@@ -76,9 +76,9 @@ export interface Category {
   descriptionSP: string;
   descriptionEN: string;
   descriptionPT: string;
-  manualSP: string;
-  manualEN: string;
-  manualPT: string;
+  manualSP: File | null;
+  manualEN: File | null;
+  manualPT: File | null;
 }
 
 

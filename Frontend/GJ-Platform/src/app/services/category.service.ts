@@ -11,8 +11,8 @@ export class CategoryService {
 
   constructor(private http: HttpClient) { }
 
-  createCategory(url: string, category: Category): Observable<any> {
-    return this.http.post(url, category, { withCredentials: true });
+  createCategory(url: string, formData: FormData): Observable<any> {
+    return this.http.post(url, formData, { withCredentials: true });
   }
 
   updateCategory(url: string, category: Category): Observable<any> {
