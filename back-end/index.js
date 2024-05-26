@@ -6,6 +6,8 @@ const cookieParser = require("cookie-parser");
 const dotenv = require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
+const cron = require('node-cron');
+const {getCurrentStage} = require("./controllers/stageController");
 
 // Crear una instancia de la aplicación Express
 const app = express();
@@ -105,3 +107,15 @@ app.get('*', function(req, res) {
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);
 });
+
+const User = require('./models/userModel');
+
+async function sendEvaluations(region, site){
+    const staff = await User.find({ "region.name": region, "site.name": site })
+    console.log(staff)
+};
+
+cron.schedule('*/10 * * * * *', () => {
+    sendEvaluations("LATAM", "ZAPOTE");
+});
+

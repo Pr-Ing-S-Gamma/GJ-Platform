@@ -189,6 +189,7 @@ const getCurrentStage = async (req, res) => {
         for (const gameJam of allGameJams) {
             for (const stage of gameJam.stages) {
                 if (currentDate >= stage.startDate && currentDate <= stage.endDate) {
+                    
                     res.status(200).send({ success: true, msg: 'Current Stage found', data: stage });
                     return;
                 }
