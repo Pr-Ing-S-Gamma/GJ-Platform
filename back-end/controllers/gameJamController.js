@@ -7,26 +7,28 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 const createGameJam = async (req, res) => {
-    const { edition, theme } = req.body;
+    const { edition, themes } = req.body;
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
 
-        if (!mongoose.Types.ObjectId.isValid(theme._id)) {
-            return res.status(400).json({ success: false, error: 'The provided theme ID is not valid.' });
-        }
+        for (const theme of themes) {
+            if (!mongoose.Types.ObjectId.isValid(theme._id)) {
+                return res.status(400).json({ success: false, error: 'The provided theme ID is not valid.' });
+            }
 
-        const existingTheme = await Theme.findById(theme._id);
-        if (!existingTheme) {
-            return res.status(404).json({ success: false, error: "That theme does not exist." });
+            const existingTheme = await Theme.findById(theme._id);
+            if (!existingTheme) {
+                return res.status(404).json({ success: false, error: "That theme does not exist." });
+            }
         }
 
         const gameJam = new GameJam({
             edition: edition,
-            theme: {
-                _id: existingTheme._id,
-                titleEN: existingTheme.titleEN,
-            },
+            themes: themes.map(theme => ({
+                _id: theme._id,
+                titleEN: theme.titleEN,
+            })),
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,
@@ -43,17 +45,16 @@ const createGameJam = async (req, res) => {
     }
 };
 
-
 const updateGameJam = async (req, res) => {
     const { id } = req.params;
-    const { edition, theme } = req.body;
+    const { edition, themes } = req.body;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'The provided ID is not valid.' });
         }
 
         let gameJam = await GameJam.findById(id);
-        
+
         if (!gameJam) {
             return res.status(404).json({ success: false, error: 'GameJam not found.' });
         }
@@ -70,7 +71,7 @@ const updateGameJam = async (req, res) => {
               Stage.updateMany(query, updateFieldsQuery),
               Team.updateMany(query, updateFieldsQuery)
             );
-            
+
             Promise.all(updatePromises)
             .then(results => {
               results.forEach((result, index) => {
@@ -83,19 +84,21 @@ const updateGameJam = async (req, res) => {
             });
         }
 
-        if (theme) {
-            if (theme._id && mongoose.Types.ObjectId.isValid(theme._id)) {
-                const existingTheme = await Theme.findById(theme._id);
-                if (!existingTheme) {
-                    return res.status(404).json({ success: false, error: "That theme does not exist." });
+        if (themes) {
+            for (const theme of themes) {
+                if (theme._id && mongoose.Types.ObjectId.isValid(theme._id)) {
+                    const existingTheme = await Theme.findById(theme._id);
+                    if (!existingTheme) {
+                        return res.status(404).json({ success: false, error: "That theme does not exist." });
+                    }
+                } else {
+                    return res.status(400).json({ success: false, error: 'Invalid theme ID provided.' });
                 }
-                gameJam.theme = {
-                    _id: theme._id,
-                    titleEN: theme.titleEN,
-                };
-            } else {
-                return res.status(400).json({ success: false, error: 'Invalid theme ID provided.' });
             }
+            gameJam.themes = themes.map(theme => ({
+                _id: theme._id,
+                titleEN: theme.titleEN,
+            }));
         }
 
         await gameJam.save();
@@ -105,8 +108,8 @@ const updateGameJam = async (req, res) => {
     }
 };
 
-const getGameJam = async(req,res)=>{
-    try{
+const getGameJam = async (req, res) => {
+    try {
         const id = req.params.id;
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'El ID de GameJam proporcionado no es válido.' });
@@ -117,9 +120,9 @@ const getGameJam = async(req,res)=>{
             }
         }
         const selectedGameJam = await GameJam.findById(id);
-        res.status(200).send({ success:true, msg:'GameJam encontrada correctamente', data: selectedGameJam });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+        res.status(200).send({ success: true, msg: 'GameJam encontrada correctamente', data: selectedGameJam });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
@@ -167,28 +170,28 @@ const getGameJamToEvaluate = async (req, res) => {
     }
 };
 
-const getGameJams = async(req,res)=>{
-    try{
+const getGameJams = async (req, res) => {
+    try {
         const allGameJams = await GameJam.find({});
-        res.status(200).send({ success:true, msg:'Se han encontrado GameJams en el sistema', data: allGameJams });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+        res.status(200).send({ success: true, msg: 'Se han encontrado GameJams en el sistema', data: allGameJams });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
-const deleteGameJam = async(req,res)=>{
-    try{
+const deleteGameJam = async (req, res) => {
+    try {
         const id = req.params.id;
         const deletedGameJam = await GameJam.findOneAndDelete({ _id: id });
         const query = { 'gameJam._id': id };
 
         const deletePromises = [];
-        
+
         deletePromises.push(
             Stage.deleteMany(query),
             Team.deleteMany(query)
         );
-        
+
         Promise.all(deletePromises)
             .then(results => {
                 results.forEach((result, index) => {
@@ -198,10 +201,10 @@ const deleteGameJam = async(req,res)=>{
             })
             .catch(error => {
                 console.error('Error deleting documents:', error);
-            });        
-        res.status(200).send({ success:true, msg:'GameJam deleted successfully', data: deletedGameJam });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+            });
+        res.status(200).send({ success: true, msg: 'GameJam deleted successfully', data: deletedGameJam });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
@@ -340,7 +343,7 @@ const getTimeRemainingEvaluation = async (req, res) => {
                     const minutes = Math.floor((timeInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((timeInMilliseconds % (1000 * 60)) / 1000);
                     const timeRemaining = `${days}:${hours}:${minutes}:${seconds}`;
-                    return res.status(200).json({ success: true, msg: 'The stage is in progress', timeRemaining });
+                    return res.status200().json({ success: true, msg: 'The stage is in progress', timeRemaining });
                 }
             }
 
