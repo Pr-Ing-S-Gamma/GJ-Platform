@@ -33,15 +33,7 @@ const gameJamSchema = mongoose.Schema({
         titleEN: { 
             type: String, 
             required: true 
-        },
-        descriptionEN: { 
-            type: String, 
-            required: true 
-        },
-        manualEN: { 
-            type: String, 
-            required: true 
-        } 
+        }
     },
     creatorUser:  {
         userId: {

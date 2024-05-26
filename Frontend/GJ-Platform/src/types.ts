@@ -93,8 +93,6 @@ export interface GameJam {
   theme: {
     _id: string;
     titleEN: string;
-    descriptionEN: string;
-    manualEN: string;
   };
 }
 

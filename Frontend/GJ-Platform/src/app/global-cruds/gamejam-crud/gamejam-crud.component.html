@@ -3,8 +3,6 @@
             <select [(ngModel)]="selectedHeader">
                 <option value="edition">Edition</option>
                 <option value="theme.titleEN">Theme Name (EN)</option>
-                <option value="theme.descriptionEN">Theme Description (EN)</option>
-                <option value="theme.manualEN">Theme Manual (EN)</option>
             </select>
         
             <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
@@ -42,8 +40,6 @@
                 <tr>
                     <th scope="col">Edition</th>
                     <th scope="col">Theme Name</th>
-                    <th scope="col">Theme Description</th>
-                    <th scope="col">Theme Manual</th>
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
                 </tr>
@@ -52,8 +48,6 @@
                 <tr *ngFor="let row of obtenerDatosPagina()">
                     <td>{{ row.edition }}</td>
                     <td>{{ row.theme.titleEN }}</td>
-                    <td>{{ row.theme.descriptionEN }}</td>
-                    <td>{{ row.theme.manualEN }}</td>
                     <td>
                         <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
                     </td>

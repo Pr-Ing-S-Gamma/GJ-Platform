@@ -26,9 +26,7 @@ export class GamejamCrudComponent implements OnInit{
   themes: Theme[] = [];
   columnOptions = [
     { label: 'Edition', value: 'edition' as keyof GameJam, checked: false },
-    { label: 'TTheme Name (EN)', value: 'theme.titleEN' as keyof GameJam, checked: false },
-    { label: 'Theme Description(EN', value: 'theme.descriptionEN' as keyof GameJam, checked: false },
-    { label: 'Theme Manual(EN)', value: 'theme.manualEN' as keyof GameJam, checked: false }
+    { label: 'Theme Name (EN)', value: 'theme.titleEN' as keyof GameJam, checked: false },
   ];
 
   userToEdit : any;
@@ -90,8 +88,6 @@ export class GamejamCrudComponent implements OnInit{
       if (column === 'edition') return 'Edition';
       if (column === 'theme._id') return 'Theme ID';
       if (column === 'theme.titleEN') return 'Theme Title';
-      if (column === 'theme.descriptionEN') return 'Theme Description';
-      if (column === 'theme.manualEN') return 'Theme Manual';
       return column.replace(/[A-Z]/g, ' $&').toUpperCase();
     });
 
@@ -124,9 +120,7 @@ export class GamejamCrudComponent implements OnInit{
         edition: edition,
         theme: {
           _id: theme._id,
-          titleEN: theme.titleEN,
-          descriptionEN: theme.descriptionEN,
-          manualEN: theme.manualEN
+          titleEN: theme.titleEN
         }
       }).subscribe({
         next: (data) => {
@@ -172,8 +166,6 @@ export class GamejamCrudComponent implements OnInit{
           theme: {
             _id: theme._id,
             titleEN: theme.titleEN,
-            descriptionEN: theme.descriptionEN,
-            manualEN: theme.manualEN
           }
         }).subscribe({
           next: (data) => {
@@ -228,8 +220,6 @@ export class GamejamCrudComponent implements OnInit{
           case 'edition':
           case 'theme.titleEN':
           case 'theme._id':
-          case 'theme.descriptionEN':
-          case 'theme.manualEN':
             return (item[this.selectedHeader as keyof GameJam] as string).toLowerCase().startsWith(filterText);
           default:
             return false;

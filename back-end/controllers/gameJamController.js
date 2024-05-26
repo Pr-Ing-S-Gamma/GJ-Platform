@@ -14,20 +14,18 @@ const createGameJam = async (req, res) => {
 
         if (!mongoose.Types.ObjectId.isValid(theme._id)) {
             return res.status(400).json({ success: false, error: 'The provided theme ID is not valid.' });
-        } else {
-            const existingTheme = await Theme.findById(theme._id);
-            if (!existingTheme) {
-                return res.status(404).json({ success: false, error: "That theme does not exist." });
-            }
+        }
+
+        const existingTheme = await Theme.findById(theme._id);
+        if (!existingTheme) {
+            return res.status(404).json({ success: false, error: "That theme does not exist." });
         }
 
         const gameJam = new GameJam({
             edition: edition,
             theme: {
-                _id: theme._id,
-                titleEN: theme.titleEN,
-                descriptionEN: theme.descriptionEN,
-                manualEN: theme.manualEN
+                _id: existingTheme._id,
+                titleEN: existingTheme.titleEN,
             },
             creatorUser: {
                 userId: creatorUser._id,
@@ -39,11 +37,12 @@ const createGameJam = async (req, res) => {
 
         await gameJam.save();
 
-        res.status(200).json({ success: true, msg: 'GameJam created successfully.', gameJamId: gameJam._id});
+        res.status(200).json({ success: true, msg: 'GameJam created successfully.', gameJamId: gameJam._id });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
+
 
 const updateGameJam = async (req, res) => {
     const { id } = req.params;
@@ -93,8 +92,6 @@ const updateGameJam = async (req, res) => {
                 gameJam.theme = {
                     _id: theme._id,
                     titleEN: theme.titleEN,
-                    descriptionEN: theme.descriptionEN,
-                    manualEN: theme.manualEN
                 };
             } else {
                 return res.status(400).json({ success: false, error: 'Invalid theme ID provided.' });
