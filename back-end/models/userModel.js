@@ -47,7 +47,7 @@ const userSchema = mongoose.Schema({
     },
     rol: {
         type: String,
-        required: true
+        required: false
     },
     roles: [{
         type: String,

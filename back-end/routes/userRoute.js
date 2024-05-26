@@ -26,7 +26,7 @@ user_route.get('/get-site-staff/:region/:site', userController.getStaffPerSite);
 user_route.put('/update-user/:id', upload.none(), userController.updateUser);
 user_route.put('/update-user-site/:id', userController.updateSite);
 user_route.delete('/delete-user/:id', userController.deleteUser);
-user_route.get('/get-localPerSite/:site', userController.getLocalOrganizersPerSite);
+user_route.get('/get-localPerSite/:siteId', userController.getLocalOrganizersPerSite);
 user_route.get('/addRol/:id', userController.addRol);
 user_route.get('/deleteRol/:id', userController.deleteRol);
 module.exports = user_route;
