@@ -37,10 +37,10 @@ export class RegisterComponent implements OnInit {
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
     .subscribe(
       user => {
-        if (user.rol === 'LocalOrganizer') {
+        if (user.roles.includes('LocalOrganizer')) {
           this.router.navigate(['/Games']);
         }
-        if (user.rol === 'GlobalOrganizer') {
+        if (user.roles.includes('GlobalOrganizer')) {
           this.router.navigate(['/DataManagement']);
         }
       },
@@ -94,7 +94,7 @@ export class RegisterComponent implements OnInit {
           _id: site._id,
           name: site.name
         },
-        rol: 'Jammer',
+        roles: ['Jammer'],
         coins: 0,
         discordUsername: discordUsername
       }).subscribe({

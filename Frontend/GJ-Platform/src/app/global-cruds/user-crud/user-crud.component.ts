@@ -26,7 +26,7 @@ export class UserCrudComponent implements OnInit{
   dataSource: User[] = [];
   regions: Region[] = [];
   sites: Site[] = [];
-  rols = ['GlobalOrganizer', 'LocalOrganizer', 'Judge', 'Jammer']
+  roles = ['GlobalOrganizer', 'LocalOrganizer', 'Judge', 'Jammer', ['LocalOrganizer','Judge']]
   
   userToEdit : any;
   indexUser = 0;
@@ -55,7 +55,7 @@ export class UserCrudComponent implements OnInit{
     const url = 'http://localhost:3000/api/user/get-users';
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
-        this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins, discordUsername: user.discordUsername }));
+        this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername }));
       },
       error => {
         console.error('Error al obtener usuarios:', error);
@@ -97,34 +97,32 @@ export class UserCrudComponent implements OnInit{
     this.indexUser = this.dataSource.indexOf(elemento);
     const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
     const selectedSite = this.sites.find(site => site._id === elemento.site._id);
-    this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region/${elemento.region._id}`)
-    .subscribe(
-      sites => {
-        this.sites = sites;
-
-        if (this.sites.length > 0) {
-          this.myForm.get('site')?.setValue(this.sites[0]);
-        }
-      },
-      error => {
-        console.error('Error al obtener sitios:', error);
-      }
-    );
     this.myForm.patchValue({
       name: elemento.name,
       region: selectedRegion, 
-      site: selectedSite, 
-      rol: elemento.rol,
       email: elemento.email,
       discordUsername: elemento.discordUsername
     });
+
+    if (selectedSite) {
+      this.myForm.patchValue({
+        site: selectedSite 
+      });
+    }
+    if (elemento.roles && elemento.roles.length > 0) {
+      const rolesString = elemento.roles.join(',');
+      this.myForm.patchValue({
+        rol: rolesString
+      });
+    }
   }
+  
 
   editar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
       const userId = this.userToEdit['_id'];
-      const { email, name, region, site, rol, discordUsername} = this.myForm.value;
+      const { email, name, region, site, roles, discordUsername} = this.myForm.value;
   
       this.userService.updateUser(`http://localhost:3000/api/user/update-user/${userId}`, {
         name: name,
@@ -137,13 +135,13 @@ export class UserCrudComponent implements OnInit{
           _id: site._id,
           name: site.name
         },
-        rol: rol,
+        roles: roles,
         coins: 0,
         discordUsername: discordUsername,
       }).subscribe({
         next: (data) => {
           if (data.success) {
-            this.dataSource[this.indexUser]={ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0, discordUsername: discordUsername};
+            this.dataSource[this.indexUser]={ _id: userId, name: name, email: email, region: region, site: site, roles: roles, coins: 0, discordUsername: discordUsername};
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -181,8 +179,10 @@ export class UserCrudComponent implements OnInit{
       if (this.myForm.valid) {
         console.log('Formulario válido');
         
-        const { email, name, region, site, rol, discordUsername} = this.myForm.value;
-  
+        const { email, name, region, site, discordUsername} = this.myForm.value;
+        const rolesString = this.myForm.get('rol')?.value; // Obtiene la cadena de roles
+        const roles = rolesString.split(','); // Divide la cadena en una lista de roles
+        
         this.userService.registerUser(`http://localhost:3000/api/user/register-user`, {
           name: name,
           email: email,
@@ -194,14 +194,14 @@ export class UserCrudComponent implements OnInit{
             _id: site._id,
             name: site.name
           },
-          rol: rol,
+          roles: roles, // Envía la lista de roles al backend
           coins: 0,
           discordUsername: discordUsername,
         }).subscribe({
           next: (data) => {
             if (data.success) {
               const userId = data.userId;
-              this.dataSource.push({ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0, discordUsername: discordUsername});
+              this.dataSource.push({ _id: userId, name: name, email: email, region: region, site: site, roles: roles, coins: 0, discordUsername: discordUsername});
               this.showSuccessMessage(data.msg);
             } else {
               this.showErrorMessage(data.error);
@@ -215,6 +215,8 @@ export class UserCrudComponent implements OnInit{
         this.showErrorMessage('Please fill in all fields of the form');
       }
     }
+    
+    
 
     successMessage: string = '';
     errorMessage: string = '';
@@ -254,7 +256,7 @@ export class UserCrudComponent implements OnInit{
                 case 'region.name':
                 case 'site.name':
                 case 'team.name':
-                case 'rol':
+                case 'roles':
                     return this.getPropertyValue(item, this.selectedHeader).toLowerCase().startsWith(filterText);
                 default:
                     return false;
@@ -310,7 +312,7 @@ exportToPDF() {
                     _id: user.team?._id || '',
                     name: user.team?.name || ''
                 },
-                rol: user.rol || ''
+                roles: user.roles || ['']
             }));
 
             const selectedData = data.map(row => {

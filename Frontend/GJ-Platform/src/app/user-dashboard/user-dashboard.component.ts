@@ -31,7 +31,7 @@ export class UserDashboardComponent implements OnInit {
       _id: '',
       name: ''
     },
-    rol: '',
+    roles: [''],
     coins: 0
   };
   
@@ -63,7 +63,7 @@ export class UserDashboardComponent implements OnInit {
         email: email,
         region: this.dataSource.region,
         site: this.dataSource.site,
-        rol: this.dataSource.rol,
+        roles: this.dataSource.roles,
         coins: 0,
         discordUsername: discordUsername,
       }).subscribe({

@@ -11,40 +11,46 @@ const { deepEqual } = require('assert');
 
 const registerUser = async (req, res) => {
     const { name, email, region, site, team, roles, coins, discordUsername } = req.body;
+
     try {
+        // Validar email
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             return res.status(403).json({ success: false, error: 'Invalid email address.' });
         }
-        const existingEmail = await User.findOne({ email });
 
+        // Verificar si el email ya está registrado
+        const existingEmail = await User.findOne({ email });
         if (existingEmail) {
             return res.status(409).json({ success: false, error: "The email is already in use." });
         }
 
+        // Verificar si el nombre de usuario de Discord ya está registrado
         const existingDiscordUsername = await User.findOne({ discordUsername });
-
         if (existingDiscordUsername) {
             return res.status(409).json({ success: false, error: "The Discord Username is already in use." });
         }
 
+        // Crear nuevo usuario
         const user = new User({
             name: name,
             email: email,
-            region: { _id: region._id, name: region.name },
-            site: { _id: site._id, name: site.name },
-            team: team ? { _id: team._id, name: team.name } : null,
+            region: region ? { _id: region._id, name: region.name } : undefined,
+            site: site ? { _id: site._id, name: site.name } : undefined,
+            team: team ? { _id: team._id, name: team.name } : undefined,
             roles: roles,
             coins: coins,
             discordUsername: discordUsername,
             creationDate: new Date()
         });
 
+        // Guardar usuario en la base de datos
         await user.save();
         res.status(200).json({ success: true, msg: 'Registered successfully', userId: user._id });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
+
 
 const updateUser = async (req, res) => {
     const { id } = req.params;

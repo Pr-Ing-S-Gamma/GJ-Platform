@@ -44,7 +44,7 @@ export interface User {
     _id: string;
     name: string;
   };
-  rol: string;
+  roles: string[];
   coins: number;
 }
 

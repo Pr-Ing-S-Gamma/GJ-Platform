@@ -1,20 +1,20 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const userSchema = mongoose.Schema({
+const userSchema = new Schema({
     email: {
-        type:String,
-        required:true
+        type: String,
+        required: true
     },
     discordUsername: {
         type: String,
         required: false
     },
-    name:{
-        type:String,
-        required:true
+    name: {
+        type: String,
+        required: true
     },
-    region:  {
+    region: {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Region',
@@ -25,7 +25,7 @@ const userSchema = mongoose.Schema({
             required: false 
         }
     },
-    site:  {
+    site: {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Site',
@@ -36,18 +36,16 @@ const userSchema = mongoose.Schema({
             required: false 
         }
     },
-    team:  {
+    team: {
         _id: { 
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Team'
+            ref: 'Team',
+            required: false
         },
         name: { 
-            type: String
+            type: String,
+            required: false
         }
-    },
-    rol: {
-        type: String,
-        required: false
     },
     roles: [{
         type: String,
@@ -62,7 +60,8 @@ const userSchema = mongoose.Schema({
         required: true
     },
     lastUpdateDate: {
-        type: Date
+        type: Date,
+        required: false
     }
 });
 

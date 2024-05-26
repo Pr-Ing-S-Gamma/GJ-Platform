@@ -58,7 +58,7 @@
                     <td>{{ row.name }}</td>
                     <td>{{ row.discordUsername }}</td>
                     <td>{{ row.email }}</td>
-                    <td>{{ row.rol }}</td>
+                    <td>{{ row.roles }}</td>
                     <td>{{ row.region.name }}</td>
                     <td>{{ row.site.name }}</td>
                     <td>
@@ -130,7 +130,7 @@
                         <div class="row centerRow">
                             <select class="form-control formList" id="editRegionInput" required formControlName="rol">
                             <option value="" disabled selected hidden>Role</option>
-                            <option *ngFor="let rol of rols" [value]="rol">{{ rol }}</option>
+                            <option *ngFor="let rol of roles" [value]="rol">{{ rol }}</option>
                             </select>
                         </div>
                         <div class="formTitle">
@@ -227,7 +227,7 @@
                         <div class="row centerRow">
                             <select class="form-control formList" id="editRegionInput" required formControlName="rol">
                             <option value="" disabled selected hidden>Role</option>
-                            <option *ngFor="let rol of rols" [value]="rol">{{ rol }}</option>
+                            <option *ngFor="let rol of roles" [value]="rol">{{ rol }}</option>
                             </select>
                         </div>
                         <div class="formTitle">

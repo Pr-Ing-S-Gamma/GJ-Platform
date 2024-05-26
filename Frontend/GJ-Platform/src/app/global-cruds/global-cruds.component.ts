@@ -45,10 +45,10 @@ export class GlobalCRUDsComponent implements OnInit{
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
     .subscribe(
       user => {
-        if (user.rol === 'LocalOrganizer') {
+        if (user.roles.includes('LocalOrganizer')) {
           this.router.navigate(['/Games']);
         }
-        if (user.rol === 'Jammer') {
+        if (user.roles.includes('Jammer')) {
           this.router.navigate(['/Jammer']);
         }
       },

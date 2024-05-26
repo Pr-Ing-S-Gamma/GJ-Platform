@@ -55,7 +55,7 @@ export class GameInformationComponent implements OnInit {
       this.UserService.getCurrentUser('http://localhost:3000/api/user/get-user')
       .subscribe(
         user => {
-          if (user.rol === 'Judge') {
+          if (user.roles.includes('Judge')) {
             this.ActualUserIsJuez = true;
           }
         },

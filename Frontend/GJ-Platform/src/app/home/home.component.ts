@@ -8,7 +8,7 @@ import { JammerHomeComponent } from '../jammer-home/jammer-home.component';
 import { JuezMainComponent } from '../juez-main/juez-main.component';
 import { GlobalHomeComponent } from '../global-home/global-home.component';
 import { UserDashboardComponent } from '../user-dashboard/user-dashboard.component';
-
+import { User } from '../../types';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -21,7 +21,7 @@ import { UserDashboardComponent } from '../user-dashboard/user-dashboard.compone
     UserDashboardComponent
   ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
   localLogged: boolean = false;
@@ -33,19 +33,20 @@ export class HomeComponent {
   email: string | undefined;
   site: string | undefined;
   region: string | undefined;
-  constructor(private router: Router, private userService: UserService, private siteService: SiteService){}
-  
+
+  constructor(private router: Router, private userService: UserService, private siteService: SiteService) {}
+
   ngOnInit(): void {
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
       .subscribe(
-        user => {
-          if (Array.isArray(user.rol)){
+        (user: User) => {
+          if (user.roles.includes("LocalOrganizer")) {
             this.localLogged = true;
-            this.userRole = "LocalOrganizer"
+            this.userRole = "LocalOrganizer";
           } else {
-            this.userRole = user.rol
+            this.userRole = user.roles[0]; // Asignar el primer rol como userRole
           }
-          this.username = user.name + "(" + user.discordUsername + ")";
+          this.username = `${user.name} (${user.discordUsername})`;
           this.name = user.name;
           this.discordName = user.discordUsername;
           this.email = user.email;
@@ -58,19 +59,19 @@ export class HomeComponent {
       );
   }
 
-  changeWindow(){
-    if (this.userRole == "LocalOrganizer"){
+  changeWindow(): void {
+    if (this.userRole === "LocalOrganizer") {
       this.userRole = "Judge";
     } else {
       this.userRole = "LocalOrganizer";
     }
   }
 
-  openEditUserInfoModal() {
+  openEditUserInfoModal(): void {
     this.editing = true;
   }
 
-  logOut(){
+  logOut(): void {
     this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
       .subscribe(
         () => {
@@ -81,16 +82,4 @@ export class HomeComponent {
         }
       );
   }
-
-  /*
-          this.userRole = "LocalOrganizer"
-          this.username = "David Pastor (Aldokler)";
-          this.name = "David Pastor";
-          this.discordName = "Aldokler";
-          this.email = "xdavidpastor@gmail.com";
-          this.site = "San José";
-          this.region = "LATAM";
-          this.localLogged = true;
-  */ 
-
 }
