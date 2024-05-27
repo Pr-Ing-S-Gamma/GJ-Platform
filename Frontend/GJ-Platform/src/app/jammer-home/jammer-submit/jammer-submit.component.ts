@@ -79,7 +79,7 @@ ngOnInit(): void {
           this.teamName = user.team?.name;
           this.teamId = user.team?._id;
           if (!user.team?.name) {
-            this.router.navigate(['/Jammer']).then(() => {
+            this.router.navigate(['/home']).then(() => {
               window.location.reload();
             });
             return;
@@ -130,7 +130,7 @@ ngOnInit(): void {
                     this.updateTimer();
                   }, 1000);
                   if (this.timeRemaining === '0d 0h 0m 0s') {
-                    this.router.navigate(['/Jammer']).then(() => {
+                    this.router.navigate(['/home']).then(() => {
                       window.location.reload();
                     });
                     return;
@@ -239,7 +239,7 @@ ngOnInit(): void {
               }).subscribe({
                 next: (data) => {
                   this.showAlert("Agregado con éxito", () => {
-                    this.router.navigate(['/Jammer']).then(() => {
+                    this.router.navigate(['/home']).then(() => {
                       window.location.reload();
                     });
                   });
@@ -305,7 +305,7 @@ ngOnInit(): void {
                 score: 0
               }).subscribe({
                 next: (data) => {
-                  this.router.navigate(['/Jammer']).then(() => {
+                  this.router.navigate(['/home']).then(() => {
                     window.location.reload();
                   });
                 },

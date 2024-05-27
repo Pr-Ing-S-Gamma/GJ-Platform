@@ -1,52 +1,55 @@
-
-<div class="d2">   
-  <!-- Paneles laterales -->
-  <div class="d3">
-    <div class="d4">
-      <!-- Componente de actualización del equipo -->
-      <div *ngIf="showUpdateTeam" class="actuEquipo">
-        <app-jammer-team></app-jammer-team>
-      </div>
-      
-      <!-- Nombre del equipo y tiempo restante -->
-      <div class="nomEquipo">
-        <div *ngIf="teamName" class="teamName1">
-          Time Remaining To Submit:
-        </div>
-        <div *ngIf="teamName" class="contador">
-          {{timeRemaining}}
-        </div>
-      </div>
-      
-      <!-- Componente de creación del equipo -->
-      <div *ngIf="showCreateTeam" class="showCreateTeam">
-        <app-jammer-create-team></app-jammer-create-team>
-      </div>
-    
-    </div>
+<div class="d2">
+  <!-- Contador -->
+  <div *ngIf="teamName" class="teamName1">
+    Time Remaining To Submit:
   </div>
-  <div class="createTeam">
-    <div *ngIf="!teamName" [style.color]="isHovered ? 'darkgray' : 'white'" class="notTeamName" (click)="toggleCreateTeam()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
-      <span>Create Team</span>
-    </div>
-    <div *ngIf="teamName" class="yesTeamName" (click)="toggleUpdateTeam()" (mouseenter)="isHoveredSub = true" (mouseleave)="isHoveredSub = false">
-      <span [style.textDecoration]="isHoveredSub ? 'darkgray' : 'none'">{{teamName}}</span>
-    </div>
+  <div *ngIf="teamName" class="contador">
+    {{timeRemaining}}
   </div>
 
-  <!-- Botón de envío -->
-  <div *ngIf="teamName">
-    <div *ngIf="showSubmitButton">
-      <button class="submitButton">
-        <div class="divsubmitButton" (click)="toggleSubmit()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div *ngIf="teamName">
+      <div *ngIf="showSubmitButton">
+        <div class="btn btn-outline-secondary" (click)="toggleSubmit()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
           <span [style.textDecoration]="isHovered ? 'underline' : 'none'">Submit!</span>
         </div>
-      </button>
+      </div>
+    </div>
+    <div>
+      <div *ngIf="!teamName" [style.color]="isHovered ? 'darkgray' : 'white'" class="notTeamName" (click)="toggleCreateTeam()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
+        <span>Create Team</span>
+      </div>
+      <div *ngIf="teamName" class="btn btn-outline-secondary" (click)="toggleUpdateTeam()" (mouseenter)="isHoveredSub = true" (mouseleave)="isHoveredSub = false">
+        <span [style.textDecoration]="isHoveredSub ? 'darkgray' : 'none'">{{teamName}}</span>
+      </div>
+    </div>
+    <div>
+      <div *ngIf="teamName" class="btn btn-outline-secondary" (click)="toggleGames()" (mouseenter)="isHoveredSub = true" (mouseleave)="isHoveredSub = false">
+        <span [style.textDecoration]="isHoveredSub ? 'darkgray' : 'none'">Toggle Games</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Lista de juegos -->
+  <div *ngIf="showGames">
+    <div *ngFor="let game of games">
+      {{game.title}}
     </div>
   </div>
-  <div>
-    <div *ngIf="showSubmit" class="showSubmit">
-      <app-jammer-submit></app-jammer-submit>
-    </div>        
-  </div>
+
+  <!-- Componentes de actualización y creación del equipo -->
+  <div class="d4">
+    <div *ngIf="showUpdateTeam" class="actuEquipo">
+      <app-jammer-team></app-jammer-team>
+    </div>
+    <div *ngIf="showCreateTeam" class="showCreateTeam">
+      <app-jammer-create-team></app-jammer-create-team>
+    </div>
+  </div>  
+</div>
+
+<!-- Componente de submit -->
+<div *ngIf="showSubmit" class="showSubmit">
+  <app-jammer-submit></app-jammer-submit>
 </div>

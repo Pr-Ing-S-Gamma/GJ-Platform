@@ -39,7 +39,7 @@ export class JammerCreateTeamComponent implements OnInit{
             this.router.navigate(['/DataManagement']);
           }
           if(user.team?.name) {
-            this.router.navigate(['/Jammer']);
+            this.router.navigate(['/Home']);
           }
           this.username = user.name + "(" + user.discordUsername + ")";
           this.myForm.get('site')?.setValue(user.site);
