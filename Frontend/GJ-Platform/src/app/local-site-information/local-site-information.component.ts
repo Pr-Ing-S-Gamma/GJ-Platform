@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
 import { GameInformationComponent } from '../game-information/game-information.component';
 import { UserService } from '../services/user.service';
 import { TeamService} from '../services/team.service';
 import { Site, User } from '../../types';
 import { SiteService } from '../services/site.service';
 import { UploadCsvComponent } from '../upload-csv/upload-csv.component';
+import { ChatWindowComponent } from '../chat-window/chat-window.component';
 
 @Component({
   selector: 'app-local-site-information',
@@ -15,6 +15,7 @@ import { UploadCsvComponent } from '../upload-csv/upload-csv.component';
   imports: [
     CommonModule,
     GameInformationComponent,
+    ChatWindowComponent,
     UploadCsvComponent
   ],
   templateUrl: './local-site-information.component.html',
@@ -96,6 +97,33 @@ export class LocalSiteInformationComponent implements OnInit{
           console.error('Error al obtener usuario actual:', error);
         }
       );
+
+    //COMMENT THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    this.teams = [{
+      id: 0,
+      name: "Outlander Studio",
+      members: [{
+        name: "David",
+        discordUsername: "Aldokler",
+        email: "Eso ya no..."
+      },{
+        name:"Atlas",
+        discordUsername: "Atlas09",
+        email: "ese no me lo sé..."
+      },]
+    },{
+      id: 1,
+      name: "Otro Studio",
+      members: [{
+        name: "David",
+        discordUsername: "Aldokler",
+        email: "Eso ya no..."
+      },{
+        name:"Atlas",
+        discordUsername: "Atlas09",
+        email: "ese no me lo sé..."
+      },]
+    }];
   }
 
 
