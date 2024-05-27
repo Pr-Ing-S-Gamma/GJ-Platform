@@ -8,21 +8,22 @@ import { Router } from '@angular/router';
 import { JammerCreateTeamComponent } from './jammer-create-team/jammer-create-team.component';
 import { JammerTeamComponent } from './jammer-team/jammer-team.component';
 import { JammerSubmitComponent } from './jammer-submit/jammer-submit.component';
-import { Submission } from '../../types';
 import { ChatWindowComponent } from '../chat-window/chat-window.component';
+import { GameInformationComponent } from "../game-information/game-information.component";
 
 @Component({
-  selector: 'app-jammer-home',
-  standalone: true,
-  imports: [
-    JammerCreateTeamComponent,
-    CommonModule,
-    JammerTeamComponent,
-    ChatWindowComponent,
-    JammerSubmitComponent
-  ],
-  templateUrl: './jammer-home.component.html',
-  styleUrls: ['./jammer-home.component.css']
+    selector: 'app-jammer-home',
+    standalone: true,
+    templateUrl: './jammer-home.component.html',
+    styleUrls: ['./jammer-home.component.css'],
+    imports: [
+        JammerCreateTeamComponent,
+        CommonModule,
+        JammerTeamComponent,
+        ChatWindowComponent,
+        JammerSubmitComponent,
+        GameInformationComponent
+    ]
 })
 export class JammerHomeComponent implements OnInit {
   targetTime: Date | undefined;
