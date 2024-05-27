@@ -1,0 +1,23 @@
+<div class="modal-content cardBackground">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" class="MHText">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body modalBodyFlex">
+        <div *ngFor="let msg of chat" class="chatWindow">
+            <div class="row msgHeader" [style.color]="msg.rol == 'Jammer' ? '#6a87fb' : '#ff66a8'">
+                {{msg.name}} - {{msg.time}}
+            </div>
+            <div class="row cardText">
+                {{msg.msg}}
+            </div>
+        </div>
+    <div class="modal-footer">
+        <form (submit)="sendMSG()" [formGroup]="myForm">
+            <textarea class="col" id="msg" name="msg" formControlName="msg" required></textarea>
+            <button class="btn col" type="submit">Enviar</button>
+        </form>
+    </div>
+    </div>
+</div>

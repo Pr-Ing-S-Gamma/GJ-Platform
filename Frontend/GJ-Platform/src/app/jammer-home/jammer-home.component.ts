@@ -9,6 +9,7 @@ import { JammerCreateTeamComponent } from './jammer-create-team/jammer-create-te
 import { JammerTeamComponent } from './jammer-team/jammer-team.component';
 import { JammerSubmitComponent } from './jammer-submit/jammer-submit.component';
 import { Submission } from '../../types';
+import { ChatWindowComponent } from '../chat-window/chat-window.component';
 
 @Component({
   selector: 'app-jammer-home',
@@ -17,6 +18,7 @@ import { Submission } from '../../types';
     JammerCreateTeamComponent,
     CommonModule,
     JammerTeamComponent,
+    ChatWindowComponent,
     JammerSubmitComponent
   ],
   templateUrl: './jammer-home.component.html',
