@@ -119,9 +119,10 @@ async function sendEvaluations() {
 
     for (const gameJam of allGameJams) {
         for (const stage of gameJam.stages) {
-            if (currentDate >= stage.startDate && currentDate <= stage.endDate) {
+            if (currentDate >= stage.startDateEvaluation && currentDate <= stage.endDateEvaluation) {
 
                 currentStage = stage;
+                
                 break;
             }
         }
