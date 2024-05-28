@@ -140,10 +140,11 @@ async function sendEvaluations() {
         for(const evaluator of sub.evaluators){
       
             Object.keys(evaluator).forEach(key => {
+                console.log("Criterio:", key);
+                    console.log("Valor:", evaluator[key]);
                 if (typeof evaluator[key] === 'number') {
 
-                    console.log("Criterio:", key);
-                    console.log("Valor:", evaluator[key]);
+                    
                 }
             });
         }
