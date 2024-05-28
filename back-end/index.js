@@ -141,17 +141,19 @@ async function sendEvaluations() {
         var criteriaAverages = {};
         var criteriaCount = {};
         sub.evaluators.forEach(evaluator => {
+            console.log(evaluator)
             Object.keys(evaluator).forEach(key => {
+                console.log(key.toString)
                 if (typeof evaluator[key] === 'number') {
                     //criteriaAverages[key] = (criteriaAverages[key] || 0) + evaluator[key];
                     //criteriaCount[key] = (criteriaCount[key] || 0) + 1;
-                    console.log(key)
-                    console.log(evaluator[key])
+                    //console.log(key)
+                    //console.log(evaluator[key])
                 }
             });
         });
-        console.log(criteriaAverages)
-        console.log(criteriaCount)
+        //console.log(criteriaAverages)
+        //console.log(criteriaCount)
     }
     
 };
