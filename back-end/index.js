@@ -175,5 +175,5 @@ async function sendEvaluations() {
 };
 
 cron.schedule('*/30 * * * *', () => {
-    //sendEvaluations();
+    sendEvaluations();
 });
