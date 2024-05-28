@@ -137,10 +137,9 @@ async function sendEvaluations() {
 
     const submissions = await Submission.find({"stageId": currentStage._id});
     for(const sub of submissions){
+        const criteriaAverages = {};
+        const criteriaCount  = {};
         for(const evaluator of sub.evaluators){
-            const criteriaAverages = {};
-            const criteriaCount  = {};
-      
             Object.keys(evaluator._doc).forEach(key => {
                 if (typeof evaluator[key] === 'number') {
                     criteriaAverages[key] = (criteriaAverages[key] || 0) + (evaluator[key] || 0);
@@ -148,10 +147,14 @@ async function sendEvaluations() {
                     
                 }
             });
-            console.log(criteriaAverages)
-            console.log(criteriaCount)
+            
         }
+
+        console.log(criteriaAverages)
+        console.log(criteriaCount)
     }
+
+
     
 };
 
