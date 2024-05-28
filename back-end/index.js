@@ -7,7 +7,7 @@ const dotenv = require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
 const cron = require('node-cron');
-const {getCurrentStage} = require("./controllers/stageController");
+
 
 // Crear una instancia de la aplicación Express
 const app = express();
@@ -93,8 +93,8 @@ const root = path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/brow
 app.use(express.static(root));
 
 // Manejar todas las rutas
-app.get('*', function(req, res) {
-    fs.stat(path.join(root, req.path), function(err) {
+app.get('*', function (req, res) {
+    fs.stat(path.join(root, req.path), function (err) {
         if (err) {
             res.sendFile('index.html', { root });
         } else {
@@ -108,14 +108,29 @@ app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);
 });
 
-const User = require('./models/userModel');
+const Stage = require('./models/stageModel');
+const GameJam = require('./models/gameJamEventModel');
 
-async function sendEvaluations(region, site){
-    const staff = await User.find({ "region.name": region, "site.name": site })
-    console.log(staff)
+async function sendEvaluations() {
+    var currentStage;
+    const currentDate = new Date();
+
+    const allGameJams = await GameJam.find({});
+
+    for (const gameJam of allGameJams) {
+        for (const stage of gameJam.stages) {
+            if (currentDate >= stage.startDate && currentDate <= stage.endDate) {
+
+                currentStage = stage;
+                break;
+            }
+        }
+    }
+
+    console.log(currentStage)
 };
 
 cron.schedule('*/10 * * * * *', () => {
-    sendEvaluations("LATAM", "ZAPOTE");
+    sendEvaluations();
 });
 
