@@ -150,7 +150,7 @@ async function sendEvaluations() {
             
         }
 
-        for(const key of criteriaAverages){
+        for(const key in criteriaAverages){
             criteriaAverages[key] = criteriaAverages[key] / criteriaCount[key];
         }
 
