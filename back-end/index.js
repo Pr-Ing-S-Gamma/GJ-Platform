@@ -150,8 +150,12 @@ async function sendEvaluations() {
             
         }
 
-        console.log(criteriaAverages)
-        console.log(criteriaCount)
+        for(const key of criteriaAverages){
+            criteriaAverages[key] = criteriaAverages[key] / criteriaCount[key];
+        }
+
+        const finalScore = Object.values(criteriaAverages).reduce((acc, average) => acc + average, 0) / Object.values(criteriaAverages).length;
+        console.log(finalScore)
     }
 
 
