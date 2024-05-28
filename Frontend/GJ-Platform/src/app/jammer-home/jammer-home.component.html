@@ -45,32 +45,33 @@
     </div>
     </div>
   </nav>
+<!-- Lista de juegos -->
+<div *ngIf="showGames">
+  <div class="row title">
+    <h1>Site Submissions</h1>
+  </div>
 
-  <!-- Lista de juegos -->
-  <div *ngIf="showGames">      
-    <div class="row title">
-         <h1>Site Submissions</h1>
-    </div>
-
-    <div >
-        <div *ngFor="let game of games" class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id">
-            <div class="cardText">
-                {{ game.name }}
-            </div>
-            <div class="cardText">
-                {{ game.team }}
-            </div>
+  <div class="row">
+    <div class="col-sm-6" *ngFor="let game of games">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ game.name }}</h5>
+          <p class="card-text">Team: {{ game.team }}</p>
+          <button type="button" class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id">More Info</button>
         </div>
+      </div>
     </div>
+  </div>
 
-    <div *ngFor="let game of games">
-        <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
-            <div class="modal-dialog" role="document" style="max-width: 85%;">
-                <app-game-information [game]="game.id"></app-game-information>
-            </div>
-        </div>
+  <div *ngFor="let game of games">
+    <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
+      <div class="modal-dialog" role="document" style="max-width: 85%;">
+        <app-game-information [game]="game.id"></app-game-information>
+      </div>
     </div>
+  </div>
 </div>
+
 
   <!-- Componentes de actualización y creación del equipo -->
   <div >
