@@ -143,7 +143,7 @@ async function sendEvaluations() {
                 console.log("Criterio:", key);
                 
                 if (typeof evaluator[key] === 'number') {
-
+                    console.log("Criterio:", key);
                     
                 }
             });
