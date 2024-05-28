@@ -153,6 +153,7 @@ async function sendEvaluations() {
         
         const score = Object.values(criteriaAverages).reduce((acc, average) => acc + average, 0) / Object.values(criteriaAverages).length;
         sub.evaluationScore = score;
+        console.log(sub)
         /*const promises = [];
 
         const team = await Team.findById(sub.teamId);
