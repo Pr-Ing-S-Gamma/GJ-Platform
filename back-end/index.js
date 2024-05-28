@@ -135,11 +135,10 @@ async function sendEvaluations() {
 
     
 
-    const submissions = await Submission.find({"stage": currentStage._id});
+    const submissions = await Submission.find({"stageId": currentStage._id});
     console.log(submissions)
 };
 
 cron.schedule('*/10 * * * * *', () => {
     sendEvaluations();
 });
-
