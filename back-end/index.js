@@ -136,7 +136,22 @@ async function sendEvaluations() {
     
 
     const submissions = await Submission.find({"stageId": currentStage._id});
-    console.log(submissions)
+    for(const sub of submissions){
+        var sum = 0;
+        var criteriaAverages = {};
+        var criteriaCount = {};
+        sub.evaluators.forEach(evaluator => {
+            Object.keys(evaluator).forEach(key => {
+                if (typeof evaluator[key] === 'number') {
+                    criteriaAverages[key] = (criteriaAverages[key] || 0) + evaluator[key];
+                    criteriaCount[key] = (criteriaCount[key] || 0) + 1;
+                }
+            });
+        });
+        console.log(criteriaAverages)
+        console.log(criteriaCount)
+    }
+    
 };
 
 cron.schedule('*/10 * * * * *', () => {

@@ -76,6 +76,10 @@ const submissionSchema = mongoose.Schema({
             type: String
         }
     },
+    evaluation:{
+        type: Number,
+        required: false
+    },
     evaluators: [{
         userId: {
             type: Schema.Types.ObjectId, 
