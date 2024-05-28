@@ -110,12 +110,17 @@ app.listen(port, () => {
 
 const Stage = require('./models/stageModel');
 const GameJam = require('./models/gameJamEventModel');
+const Submission = require('./models/submissionModel');
 
 async function sendEvaluations() {
     var currentStage;
     const currentDate = new Date();
+    
 
     const allGameJams = await GameJam.find({});
+
+
+
 
     for (const gameJam of allGameJams) {
         for (const stage of gameJam.stages) {
@@ -128,7 +133,10 @@ async function sendEvaluations() {
         }
     }
 
-    console.log(currentStage)
+    
+
+    const submissions = await Submission.find({"stage": currentStage._id});
+    console.log(submissions)
 };
 
 cron.schedule('*/10 * * * * *', () => {
