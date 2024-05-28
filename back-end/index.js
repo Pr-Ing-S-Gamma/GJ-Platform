@@ -112,7 +112,7 @@ const Stage = require('./models/stageModel');
 const GameJam = require('./models/gameJamEventModel');
 const Submission = require('./models/submissionModel');
 const Team = require('./models/teamModel');
-const { sendScore } = require('../services/mailer');
+const { sendScore } = require('./services/mailer');
 
 async function sendEvaluations() {
     var currentStage;
