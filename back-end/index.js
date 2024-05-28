@@ -144,7 +144,7 @@ async function sendEvaluations() {
             Object.keys(evaluator._doc).forEach(key => {
                 if (typeof evaluator[key] === 'number') {
                     criteriaAverages[key] = (criteriaAverages[key] || 0) + (evaluator[key] || 0);
-                    criteriaCount[key] = (criteriaCount[key || 0]) + 1;
+                    criteriaCount[key] = (criteriaCount[key] || 0) + 1;
                     
                 }
             });
