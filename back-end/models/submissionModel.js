@@ -76,7 +76,7 @@ const submissionSchema = mongoose.Schema({
             type: String
         }
     },
-    evaluation:{
+    evaluationScore:{
         type: Number,
         required: false
     },

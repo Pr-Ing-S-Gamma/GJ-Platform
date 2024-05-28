@@ -152,8 +152,8 @@ async function sendEvaluations() {
 
         
         const score = Object.values(criteriaAverages).reduce((acc, average) => acc + average, 0) / Object.values(criteriaAverages).length;
-        
-        const promises = [];
+        sub.evaluationScore = score;
+        /*const promises = [];
 
         const team = await Team.findById(sub.teamId);
         for (const jammer of team.jammers) {
@@ -167,13 +167,13 @@ async function sendEvaluations() {
             promises.push(emailPromise);
         }        
 
-        await Promise.all(promises);
+        await Promise.all(promises);*/
     }
 
 
     
 };
 
-cron.schedule('*/1 * * * *', () => {
+cron.schedule('*/30 * * * *', () => {
     //sendEvaluations();
 });
