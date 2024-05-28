@@ -36,7 +36,7 @@ export class JammerHomeComponent implements OnInit {
   showUpdateTeam :boolean = false;
   showSubmit : boolean = false;
   showSubmitButton: boolean = true;
-  showGames : boolean = true;
+  showGames : boolean = false;
   games: any[] = [];
 
   constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService, private gamejamService: GamejamService) {}
@@ -100,19 +100,29 @@ export class JammerHomeComponent implements OnInit {
       );
   }
 
+  hideAll(){
+    this.showGames = false;
+    this.showSubmit = false;
+    this.showUpdateTeam = false;
+    this.showCreateTeam = false;
+  }
   toggleSubmit() {
+    this.hideAll();
     this.showSubmit = !this.showSubmit;
   }
 
   toggleCreateTeam() {
+    this.hideAll();
     this.showCreateTeam = !this.showCreateTeam;
   }
 
   toggleUpdateTeam() {
+    this.hideAll();
     this.showUpdateTeam = !this.showUpdateTeam;
   }
 
   toggleGames() {
+    this.hideAll();
     this.showGames = !this.showGames;
   }
 
