@@ -141,10 +141,10 @@ async function sendEvaluations() {
         var criteriaAverages = {};
         var criteriaCount = {};
         sub.evaluators.forEach(evaluator => {
-            console.log(evaluator)
             Object.keys(evaluator).forEach(key => {
-                console.log(key.toString)
-                if (typeof evaluator[key] === 'number') {
+                console.log(key)
+                if (typeof evaluator[key] === 'Number') {
+                    console.log("key")
                     //criteriaAverages[key] = (criteriaAverages[key] || 0) + evaluator[key];
                     //criteriaCount[key] = (criteriaCount[key] || 0) + 1;
                     //console.log(key)
