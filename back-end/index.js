@@ -111,16 +111,14 @@ app.listen(port, () => {
 const Stage = require('./models/stageModel');
 const GameJam = require('./models/gameJamEventModel');
 const Submission = require('./models/submissionModel');
+const Team = require('./models/teamModel');
+const { sendScore } = require('../services/mailer');
 
 async function sendEvaluations() {
     var currentStage;
     const currentDate = new Date();
-    
 
     const allGameJams = await GameJam.find({});
-
-
-
 
     for (const gameJam of allGameJams) {
         for (const stage of gameJam.stages) {
@@ -132,8 +130,6 @@ async function sendEvaluations() {
             }
         }
     }
-
-    
 
     const submissions = await Submission.find({"stageId": currentStage._id});
     for(const sub of submissions){
@@ -154,14 +150,30 @@ async function sendEvaluations() {
             criteriaAverages[key] = criteriaAverages[key] / criteriaCount[key];
         }
 
-        const finalScore = Object.values(criteriaAverages).reduce((acc, average) => acc + average, 0) / Object.values(criteriaAverages).length;
-        console.log(finalScore)
+        
+        const score = Object.values(criteriaAverages).reduce((acc, average) => acc + average, 0) / Object.values(criteriaAverages).length;
+        
+        const promises = [];
+
+        const team = await Team.findById(sub.teamId);
+        for (const jammer of team.jammers) {
+            const subject = 'Score Stage on GameJam Platform';
+            
+            const emailPromise = sendScore(
+                jammer.email,
+                subject,
+                score
+            );
+            promises.push(emailPromise);
+        }        
+
+        await Promise.all(promises);
     }
 
 
     
 };
 
-cron.schedule('*/10 * * * * *', () => {
+cron.schedule('*/30 * * * * *', () => {
     sendEvaluations();
 });

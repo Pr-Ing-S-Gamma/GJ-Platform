@@ -369,7 +369,7 @@ const giveRating = async (req, res) => {
 
         await submission.save();
 
-        const promises = [];
+        /*const promises = [];
 
         for (const jammer of team.jammers) {
             const subject = 'Score Update on GameJam Platform';
@@ -398,7 +398,7 @@ const giveRating = async (req, res) => {
             promises.push(emailPromise);
         }        
 
-        await Promise.all(promises);
+        await Promise.all(promises);*/
 
         res.status(200).json({ success: true, msg: 'Juego calificado' });
     } catch (error) {
