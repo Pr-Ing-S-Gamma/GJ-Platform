@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { SiteService } from '../services/site.service';
-import { Site, User } from '../../types';
+import { RegionService } from '../services/region.service';
+import { Site, User, Region } from '../../types';
 import { UserService } from '../services/user.service';
 import { GameInformationComponent } from '../game-information/game-information.component';
 
@@ -27,7 +28,7 @@ export class GlobalSitesComponent implements OnInit{
   regions: any[] = []; 
   staff: User[] = [];
   games: any[] = []
-  constructor(private router: Router, private route: ActivatedRoute, private siteService: SiteService, private userService: UserService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private siteService: SiteService, private userService: UserService, private regionService: RegionService) { }
 
   moveToRegionsRoot(){
     this.regionParameter = 'Regions';
@@ -46,6 +47,7 @@ export class GlobalSitesComponent implements OnInit{
     this.inSite = true;
     this.siteParameter = site;
     const url = `http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
+
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
         this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername }));
@@ -107,10 +109,19 @@ export class GlobalSitesComponent implements OnInit{
       groupedSites[regionName].push({ country: country.name, name });
     });
 
-    this.regions = Object.keys(groupedSites).map(regionName => ({
+    /*this.regions = Object.keys(groupedSites).map(regionName => ({
       name: regionName,
       sites: groupedSites[regionName]
-    }));
+    }));*/
+
+    this.regionService.getRegions('http://localhost:3000/api/region/get-regions').subscribe(
+      (regionss: Region[]) => {
+        this.regions = regionss; 
+      },
+      error => {
+        console.error('Error al obtener regiones:', error);
+      }
+    );
   }
 
 }
