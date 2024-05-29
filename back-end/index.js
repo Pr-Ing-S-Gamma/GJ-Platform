@@ -180,6 +180,6 @@ async function sendEvaluations() {
 
 };
 
-cron.schedule(' 23 22 * * *', () => {
+cron.schedule('30 22 * * *', () => {
     sendEvaluations();
 });
