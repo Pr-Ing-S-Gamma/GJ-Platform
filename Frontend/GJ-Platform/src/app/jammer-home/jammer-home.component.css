@@ -1,63 +1,4 @@
 
-.d3{
-    width: 80%; 
-    height: 0px; 
-    display: flex; 
-    top: 13.8%; 
-    border: 1px black solid;
-}
-.d4{
-    position: relative; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    width: 80%;
-}
-.actuEquipo{
-    position: relative; 
-    width: 100%; 
-    left: 13%; 
-    z-index: 2;
-}
-.nomEquipo{
-    position: relative; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    left: 16%;
-}
-.showSubmit{
-    width: 70%; 
-    top: 300px; 
-    right :80%;
-}
-.showCreateTeam {
-    width: 100%; 
-  }  
-.submitButton {
-    left: 38%; 
-    display:flex;
-    width: 25%; 
-    height: 5%; 
-    top: 45%; 
-    background: #3EB9FF; 
-     border-radius: 20px; 
-    text-align: center; 
-    z-index: 5
-  }
-.divsubmitButton{
-    left: 30%; 
-    color: black; 
-    top: 18%; 
-    position: absolute;
-    text-align: center; 
-    font-size: 25px; 
-    font-family: Inter; 
-    font-weight: 400;
-    word-wrap: break-word; 
-    cursor: pointer; 
-    z-index: 6
-}
 .contador{
     text-align: center; 
     color: #FF0000; 
@@ -65,27 +6,22 @@
     font-family: Kanit; 
     font-weight: 400; 
     word-wrap: break-word; 
-    text-align: center;
+    display: flex;
+    position: relative;
+    
 }
 .teamName1{
-    text-align: center; 
+    text-align: center;
+    position: relative;
+    display:flex;
     color: black; 
     font-size: 40px; 
     font-family: Kanit; 
     font-weight: 400; 
     word-wrap: break-word;
-    display: flex
+    
 }
-.createTeam{
-    width: 25%; 
-    height: 42px; 
-    top: 9.6%; 
-    background: #515151; 
-    border-top-left-radius: 20px; 
-    border-top-right-radius: 20px; 
-    text-align: center; 
-    z-index: 2
-}
+
 .notTeamName{
     font-size: 20px; 
     font-family: Inter; 
@@ -93,30 +29,33 @@
     word-wrap: break-word; 
     cursor: pointer;
 }
-.yesTeamName{
-    color: white; 
-    font-size: 20px; 
-    font-family: Inter; 
-    font-weight: 400; 
-    word-wrap: break-word; 
-    cursor: pointer;
-}
-
-.chatButton{
-    background: #515151;
+.chatButton {
+    background: white;
+    color: rgb(8, 138, 225);
     border-radius: 35px;
-    border: 1px black solid;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    padding-left: 40px;
-    padding-right: 40px;
-    margin: 15px;
-    color: white;
-    font-size: 16px;
-    font-family: Inter;
+    font-size: 18px;
     font-weight: 400;
     word-wrap: break-word;
+    padding: 10px 25px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-left: auto;
+    
 }
+.chatButton:hover {
+    background: rgb(8, 138, 225);
+    color: white;
+}
+.crudButton:hover {
+    background: black;
+    color: white;
+}
+
+.active {
+    background: black;
+    color: rgb(0, 0, 0);
+}
+
 .tabButton {
     display: flex;
     flex-wrap: wrap;
