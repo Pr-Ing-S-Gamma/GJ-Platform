@@ -125,54 +125,59 @@ async function sendEvaluations() {
             if (currentDate >= stage.startDateEvaluation && currentDate <= stage.endDateEvaluation) {
 
                 currentStage = stage;
-                
+
                 break;
             }
         }
     }
 
-    const submissions = await Submission.find({"stageId": currentStage._id});
-    for(const sub of submissions){
-        const criteriaAverages = {};
-        const criteriaCount  = {};
-        for(const evaluator of sub.evaluators){
-            Object.keys(evaluator._doc).forEach(key => {
-                if (typeof evaluator[key] === 'number') {
-                    criteriaAverages[key] = (criteriaAverages[key] || 0) + (evaluator[key] || 0);
-                    criteriaCount[key] = (criteriaCount[key] || 0) + 1;
-                    
-                }
-            });
-            
+
+    if (currentStage) {
+        const submissions = await Submission.find({ "stageId": currentStage._id });
+        for (const sub of submissions) {
+            const criteriaAverages = {};
+            const criteriaCount = {};
+            for (const evaluator of sub.evaluators) {
+                Object.keys(evaluator._doc).forEach(key => {
+                    if (typeof evaluator[key] === 'number') {
+                        criteriaAverages[key] = (criteriaAverages[key] || 0) + (evaluator[key] || 0);
+                        criteriaCount[key] = (criteriaCount[key] || 0) + 1;
+
+                    }
+                });
+
+            }
+
+            for (const key in criteriaAverages) {
+                criteriaAverages[key] = criteriaAverages[key] / criteriaCount[key];
+            }
+
+
+            const score = Object.values(criteriaAverages).reduce((acc, average) => acc + average, 0) / Object.values(criteriaAverages).length;
+            sub.evaluationScore = score;
+            await sub.save();
+            /*const promises = [];
+    
+            const team = await Team.findById(sub.teamId);
+            for (const jammer of team.jammers) {
+                const subject = 'Score Stage on GameJam Platform';
+                
+                const emailPromise = sendScore(
+                    jammer.email,
+                    subject,
+                    score
+                );
+                promises.push(emailPromise);
+            }        
+    
+            await Promise.all(promises);*/
         }
-
-        for(const key in criteriaAverages){
-            criteriaAverages[key] = criteriaAverages[key] / criteriaCount[key];
-        }
-
-        
-        const score = Object.values(criteriaAverages).reduce((acc, average) => acc + average, 0) / Object.values(criteriaAverages).length;
-        sub.evaluationScore = score;
-        await sub.save();
-        /*const promises = [];
-
-        const team = await Team.findById(sub.teamId);
-        for (const jammer of team.jammers) {
-            const subject = 'Score Stage on GameJam Platform';
-            
-            const emailPromise = sendScore(
-                jammer.email,
-                subject,
-                score
-            );
-            promises.push(emailPromise);
-        }        
-
-        await Promise.all(promises);*/
     }
 
 
-    
+
+
+
 };
 
 cron.schedule('*/30 * * * * *', () => {
