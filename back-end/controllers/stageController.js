@@ -23,6 +23,8 @@ const createStage = async (req, res) => {
         const endDateObj = new Date(endDate);
         const startDateEvaluationObj = new Date(startDateEvaluation);
         const endDateEvaluationObj = new Date(endDateEvaluation);
+        console.log(endDateEvaluation)
+        console.log(endDateEvaluationObj)
 
         if (startDateObj >= endDateObj) {
             return res.status(400).json({ error: "Start date must be before end date." });
