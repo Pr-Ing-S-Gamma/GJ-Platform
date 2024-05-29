@@ -40,7 +40,7 @@ export class HomeComponent {
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
       .subscribe(
         (user: User) => {
-          if (user.roles.includes("LocalOrganizer")) {
+          if (user.roles.includes("LocalOrganizer") && user.roles.includes("Judge")) {
             this.localLogged = true;
             this.userRole = "LocalOrganizer";
           } else {
@@ -54,7 +54,16 @@ export class HomeComponent {
           this.region = user.region.name;
         },
         error => {
-          this.router.navigate(['/login']);
+          //this.router.navigate(['/login']);
+          
+          this.userRole = "LocalOrganizer";
+          this.username = "yo";
+          this.name = "prueba";
+          this.discordName = "discodo";
+          this.email = "email";
+          this.site = "Fuyuki";
+          this.region = "Japan";
+          
         }
       );
   }

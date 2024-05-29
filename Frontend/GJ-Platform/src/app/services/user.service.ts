@@ -53,4 +53,8 @@ export class UserService {
       map(response => response.data)
     );
   }
+
+  updateUserSite(url: string, siteId: string): Observable<any> {
+    return this.http.put(url, siteId);
+  }
 }

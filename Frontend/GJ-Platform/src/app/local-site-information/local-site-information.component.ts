@@ -4,10 +4,12 @@ import { Router } from '@angular/router';
 import { GameInformationComponent } from '../game-information/game-information.component';
 import { UserService } from '../services/user.service';
 import { TeamService} from '../services/team.service';
-import { Site, User } from '../../types';
+import { Country, Region, Site, User } from '../../types';
 import { SiteService } from '../services/site.service';
 import { UploadCsvComponent } from '../upload-csv/upload-csv.component';
 import { ChatWindowComponent } from '../chat-window/chat-window.component';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RegionService } from '../services/region.service';
 
 @Component({
   selector: 'app-local-site-information',
@@ -16,15 +18,31 @@ import { ChatWindowComponent } from '../chat-window/chat-window.component';
     CommonModule,
     GameInformationComponent,
     ChatWindowComponent,
-    UploadCsvComponent
+    UploadCsvComponent,
+    FormsModule,
+    CommonModule,
+    ReactiveFormsModule
   ],
   templateUrl: './local-site-information.component.html',
   styleUrl: './local-site-information.component.css'
 })
 export class LocalSiteInformationComponent implements OnInit{
-  constructor(private router: Router, private userService: UserService, private siteService: SiteService, private teamService: TeamService){}
+  myForm!: FormGroup;
+  joinForm!: FormGroup;
+  sites: Site[] = [];
+  regions: Region[] = [];
+  countries: Country[] = [];
+  userId: string = "";
+  columnOptions = [
+    { label: 'Name', value: 'name' as keyof Site, checked: false },
+    { label: 'Modality', value: 'modality' as keyof Site, checked: false },
+    { label: 'Region Name', value: 'region.name' as keyof Site, checked: false },
+    { label: 'Country Name', value: 'country.name' as keyof Site, checked: false },
+  ];
+  
+  constructor(private fb: FormBuilder, private router: Router, private userService: UserService, private siteService: SiteService, private regionService: RegionService, private teamService: TeamService){}
   site: Site = {
-    name: 'Zapotillo',
+    name: '',
     region: {
       _id: '',
       name: ''
@@ -47,6 +65,42 @@ export class LocalSiteInformationComponent implements OnInit{
   actualWindow: number = 0;
 
   ngOnInit(): void {
+    this.myForm = this.fb.group({
+      name: ['', Validators.required],
+      modality: ['', Validators.required], 
+      country: ['', Validators.required],
+      region: ['', Validators.required]
+    });
+    this.joinForm = this.fb.group({
+      site: ['', Validators.required]
+    });
+    this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
+    .subscribe(
+      regions => {
+        this.regions = regions;
+      },
+      error => {
+        console.error('Error al obtener regiones:', error);
+      }
+    );
+    this.siteService.getCountries('http://localhost:3000/api/site/get-countries')
+    .subscribe(
+      countries => {
+        this.countries = countries;
+      },
+      error => {
+        console.error('Error al obtener países:', error);
+      }
+    );
+    this.siteService.getSites('http://localhost:3000/api/site/get-sites')
+    .subscribe(
+      sites => {
+        this.sites = sites;
+      },
+      error => {
+        console.error('Error al obtener sitios:', error);
+      }
+    );
     this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
       .subscribe(
         user => {
@@ -97,46 +151,78 @@ export class LocalSiteInformationComponent implements OnInit{
           console.error('Error al obtener usuario actual:', error);
         }
       );
-
-    //COMMENT THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    this.teams = [{
-      id: 0,
-      name: "Outlander Studio",
-      members: [{
-        name: "David",
-        discordUsername: "Aldokler",
-        email: "Eso ya no..."
-      },{
-        name:"Atlas",
-        discordUsername: "Atlas09",
-        email: "ese no me lo sé..."
-      },]
-    },{
-      id: 1,
-      name: "Otro Studio",
-      members: [{
-        name: "David",
-        discordUsername: "Aldokler",
-        email: "Eso ya no..."
-      },{
-        name:"Atlas",
-        discordUsername: "Atlas09",
-        email: "ese no me lo sé..."
-      },]
-    }];
   }
 
+  agregar() {
+    if (this.myForm.valid) {
+      this.siteService.createSite(`http://localhost:3000/api/site/create-site`, {
+        name: this.myForm.value["name"],
+        modality: this.myForm.value["modality"], 
+        region: this.myForm.value["region"],
+        country: this.myForm.value["country"].name
+      }).subscribe({
+        next: (data) => {
+          if (data.success) {
+            const siteId = data.siteId;
+            this.site = { _id: siteId, name: this.myForm.value["name"], modality: this.myForm.value["modality"], region: this.myForm.value["region"], country: this.myForm.value["country"]}
+            this.sites.push(this.site);
 
-  logOut(): void {
-    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
-      .subscribe(
-        () => {
-          this.router.navigate(['/login']);
+            this.userService.updateUserSite(`http://localhost:3000/api/user/update-user-site/${this.userId}`, siteId).subscribe({
+              next: (data) => {
+                if (data.success) {
+                  this.showSuccessMessage(data.msg);
+                } else {
+                  this.showErrorMessage(data.error);
+                }
+              },
+              error: (error) => {
+                this.showErrorMessage(error.error.error);
+              },
+            });
+
+            this.showSuccessMessage(data.msg);
+          } else {
+            this.showErrorMessage(data.error);
+          }
         },
-        error => {
-          console.error('Error al cerrar sesión:', error);
-        }
-      );
+        error: (error) => {
+          this.showErrorMessage(error.error.error);
+        },
+      });
+    } else {
+      this.showErrorMessage('Please fill in all fields of the form');
+    }
+  }
+
+  unirse() {
+    if (this.joinForm.valid) {
+      //Do something
+      this.userService.updateUserSite(`http://localhost:3000/api/user/update-user-site/${this.userId}`, this.joinForm.value["site"]._id).subscribe({
+        next: (data) => {
+          if (data.success) {
+            /*
+            this.siteService.getSite('http://localhost:3000/api/site/get-site/' + this.joinForm.value["site"]._id).subscribe(
+              site => {
+                
+              },
+              error => {
+                console.error('Error al obtener su site, por favor recargue:', error);
+              }
+            );
+            */
+            this.site = this.joinForm.value["site"];
+            this.showSuccessMessage(data.msg);
+          } else {
+            this.showErrorMessage(data.error);
+          }
+        },
+        error: (error) => {
+          this.showErrorMessage(error.error.error);
+        },
+      });
+    } else {
+      this.showErrorMessage('Please fill in all fields of the form');
+    }
   }
 
   moveToSubmissions(){
@@ -243,4 +329,16 @@ export class LocalSiteInformationComponent implements OnInit{
       this.actualWindow = 4;
     }
   }
+  
+  successMessage: string = '';
+  errorMessage: string = '';
+  
+  showSuccessMessage(message: string) {
+    this.successMessage = message;
+  }
+  
+  showErrorMessage(message: string) {
+    this.errorMessage = message;
+  }
+    
 }
