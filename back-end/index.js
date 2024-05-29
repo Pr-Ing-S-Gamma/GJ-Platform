@@ -181,7 +181,7 @@ async function sendEvaluations() {
 
 };
 
-cron.schedule('* * * * * *', () => {
+cron.schedule('* * * * *', () => {
     sendEvaluations();
     console.log("aa")
 }, {
