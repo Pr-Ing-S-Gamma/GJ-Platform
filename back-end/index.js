@@ -116,18 +116,19 @@ const { sendScore } = require('./services/mailer');
 
 async function sendEvaluations() {
     var currentStage;
-    const currentDate = new Date();
-    
+    const currentDatee = new Date();
+   //const currentDatee = new Date(Date.UTC(2024, 4, 31, 0, 0, 1, 0));
+   const currentDate = currentDatee.toISOString().slice(0, 10);
+   
+
 
     const allGameJams = await GameJam.find({});
 
     for (const gameJam of allGameJams) {
         for (const stage of gameJam.stages) {
             console.log(currentDate)
-            console.log(currentDate.toDateString())
-            console.log(stage.endDateEvaluation.toDateString())
-            console.log(stage.endDateEvaluation)
-            if (currentDate.toDateString() === stage.endDateEvaluation.toDateString()) {
+            console.log(stage.endDateEvaluation.toISOString().slice(0, 10));
+            if (currentDate === stage.endDateEvaluation.toISOString().slice(0, 10)) {
                 currentStage = stage;
                 break;
             }
@@ -182,7 +183,7 @@ async function sendEvaluations() {
 
 };
 
-cron.schedule('*/30 * * * * *', () => {
+cron.schedule('*/5 * * * * *', () => {
     sendEvaluations();
     console.log("aa")
 }, {
