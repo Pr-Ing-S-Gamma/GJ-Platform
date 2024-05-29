@@ -117,13 +117,16 @@ const { sendScore } = require('./services/mailer');
 async function sendEvaluations() {
     var currentStage;
     const currentDate = new Date();
+    console.log(currentDate)
+    
 
     const allGameJams = await GameJam.find({});
 
     for (const gameJam of allGameJams) {
         for (const stage of gameJam.stages) {
-            if (currentDate >= stage.startDateEvaluation && currentDate <= stage.endDateEvaluation) {
-
+            console.log(stage.endDateEvaluation)
+            if (currentDate <= stage.endDateEvaluation) {
+                
                 currentStage = stage;
 
                 break;
