@@ -13,6 +13,12 @@
   <!-- Navbar -->
   <nav class="navbar">
     <div class="tabButton">
+      <div (click)="toggleCategories">
+        <span>Site Categories Info</span>
+      </div>
+      <div (click)="toggleThemes">
+        <span>Site Themes Info</span>
+      </div>
       <div *ngIf="teamName">
         <div *ngIf="showSubmitButton">
           <div class="btn btn-default crudButton" (click)="toggleSubmit()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">

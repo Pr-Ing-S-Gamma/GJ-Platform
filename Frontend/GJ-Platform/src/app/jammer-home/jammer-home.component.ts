@@ -10,6 +10,8 @@ import { JammerTeamComponent } from './jammer-team/jammer-team.component';
 import { JammerSubmitComponent } from './jammer-submit/jammer-submit.component';
 import { ChatWindowComponent } from '../chat-window/chat-window.component';
 import { GameInformationComponent } from "../game-information/game-information.component";
+import { JammerCategoriesComponent } from './jammer-categories/jammer-categories.component';
+import { JammerThemesComponent } from './jammer-themes/jammer-themes.component';
 
 @Component({
     selector: 'app-jammer-home',
@@ -17,6 +19,8 @@ import { GameInformationComponent } from "../game-information/game-information.c
     templateUrl: './jammer-home.component.html',
     styleUrls: ['./jammer-home.component.css'],
     imports: [
+        JammerCategoriesComponent,
+        JammerThemesComponent,
         JammerCreateTeamComponent,
         CommonModule,
         JammerTeamComponent,
@@ -38,6 +42,8 @@ export class JammerHomeComponent implements OnInit {
   showSubmitButton: boolean = true;
   showGames : boolean = false;
   games: any[] = [];
+  showCategories : boolean =false;
+  showThemes : boolean =false;
 
   constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService, private gamejamService: GamejamService) {}
 
@@ -105,6 +111,8 @@ export class JammerHomeComponent implements OnInit {
     this.showSubmit = false;
     this.showUpdateTeam = false;
     this.showCreateTeam = false;
+    this.showCategories = false;
+    this.showThemes = false;
   }
   toggleSubmit() {
     this.hideAll();
@@ -124,6 +132,14 @@ export class JammerHomeComponent implements OnInit {
   toggleGames() {
     this.hideAll();
     this.showGames = !this.showGames;
+  }
+  toggleCategories(){
+    this.hideAll();
+    this.showCategories = !this.showCategories;
+  }
+  toggleThemes(){
+    this.hideAll();
+    this.showThemes = !this.showThemes;
   }
 
   updateTimer() {
