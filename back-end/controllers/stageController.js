@@ -23,6 +23,7 @@ const createStage = async (req, res) => {
         const endDateObj = new Date(endDate);
         const startDateEvaluationObj = new Date(startDateEvaluation);
         const endDateEvaluationObj = new Date(endDateEvaluation);
+        console.log("....")
         console.log(endDateEvaluation)
         console.log(endDateEvaluationObj)
 
