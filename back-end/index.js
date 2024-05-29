@@ -157,19 +157,19 @@ async function sendEvaluations() {
             sub.evaluationScore = score;
             await sub.save();
             const promises = [];
-    
+
             const team = await Team.findById(sub.teamId);
             for (const jammer of team.jammers) {
                 const subject = 'Score Stage on GameJam Platform';
-                
+
                 const emailPromise = sendScore(
                     jammer.email,
                     subject,
                     score
                 );
                 promises.push(emailPromise);
-            }        
-    
+            }
+
             await Promise.all(promises);
         }
     }
@@ -180,6 +180,8 @@ async function sendEvaluations() {
 
 };
 
-cron.schedule('30 22 * * *', () => {
+cron.schedule('45 22 * * *', () => {
     sendEvaluations();
+}, {
+    timezone: "America/Costa_Rica"
 });
