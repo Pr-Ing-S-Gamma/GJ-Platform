@@ -182,6 +182,7 @@ async function sendEvaluations() {
 
 cron.schedule('* * * * *', () => {
     sendEvaluations();
+    console.log("aa")
 }, {
     timezone: "America/Costa_Rica"
 });
