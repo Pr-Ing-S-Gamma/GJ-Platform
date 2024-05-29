@@ -180,7 +180,7 @@ async function sendEvaluations() {
 
 };
 
-cron.schedule('45 22 * * *', () => {
+cron.schedule('* * * * *', () => {
     sendEvaluations();
 }, {
     timezone: "America/Costa_Rica"
