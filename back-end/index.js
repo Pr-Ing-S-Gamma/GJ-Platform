@@ -126,15 +126,11 @@ async function sendEvaluations() {
             console.log(currentDate.toDateString())
             console.log(stage.endDateEvaluation.toDateString())
             if (currentDate.toDateString() === stage.endDateEvaluation.toDateString()) {
-                
                 currentStage = stage;
-
                 break;
             }
         }
     }
-
-
     if (currentStage) {
         console.log("hoyyyy")
         const submissions = await Submission.find({ "stageId": currentStage._id });
