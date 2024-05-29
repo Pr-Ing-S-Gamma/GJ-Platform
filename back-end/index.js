@@ -124,7 +124,7 @@ async function sendEvaluations() {
     for (const gameJam of allGameJams) {
         for (const stage of gameJam.stages) {
             if (currentDate.toDateString() === stage.endDateEvaluation.toDateString()) {
-                
+                console.log("hoy")
                 currentStage = stage;
 
                 break;
@@ -134,6 +134,7 @@ async function sendEvaluations() {
 
 
     if (currentStage) {
+        console.log("hoyyyy")
         const submissions = await Submission.find({ "stageId": currentStage._id });
         for (const sub of submissions) {
             const criteriaAverages = {};
@@ -157,7 +158,7 @@ async function sendEvaluations() {
             const score = Object.values(criteriaAverages).reduce((acc, average) => acc + average, 0) / Object.values(criteriaAverages).length;
             sub.evaluationScore = score;
             await sub.save();
-            const promises = [];
+            /*const promises = [];
 
             const team = await Team.findById(sub.teamId);
             for (const jammer of team.jammers) {
@@ -171,7 +172,7 @@ async function sendEvaluations() {
                 promises.push(emailPromise);
             }
 
-            await Promise.all(promises);
+            await Promise.all(promises);*/
         }
     }
 
@@ -181,7 +182,7 @@ async function sendEvaluations() {
 
 };
 
-cron.schedule('* * * * *', () => {
+cron.schedule('* * * * * *', () => {
     sendEvaluations();
     console.log("aa")
 }, {
