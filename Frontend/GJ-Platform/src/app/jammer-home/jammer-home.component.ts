@@ -12,6 +12,7 @@ import { ChatWindowComponent } from '../chat-window/chat-window.component';
 import { GameInformationComponent } from "../game-information/game-information.component";
 import { JammerCategoriesComponent } from './jammer-categories/jammer-categories.component';
 import { JammerThemesComponent } from './jammer-themes/jammer-themes.component';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
     selector: 'app-jammer-home',
@@ -48,7 +49,7 @@ export class JammerHomeComponent implements OnInit {
   constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService, private gamejamService: GamejamService) {}
 
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
           if (user.roles.includes('LocalOrganizer')) {
@@ -60,7 +61,7 @@ export class JammerHomeComponent implements OnInit {
           this.teamName = user.team?.name;
           console.log(user)
           
-          this.gamejamService.getTimeRemainingData('http://localhost:3000/api/game-jam/get-time-left')
+          this.gamejamService.getTimeRemainingData(`http://${environment.apiUrl}:3000/api/game-jam/get-time-left`)
             .subscribe(
               timeLeft => {
                 const timeParts = timeLeft.split(':').map((part: string) => parseInt(part, 10));
@@ -86,7 +87,7 @@ export class JammerHomeComponent implements OnInit {
             );
           if (user.site && user.site._id) {
             
-            this.siteService.getSubmissions(`http://localhost:3000/api/submission/get-submissions-site/${user.site._id}`)
+            this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${user.site._id}`)
               .subscribe(
                 submissions => {
                   this.games = submissions;
@@ -178,16 +179,8 @@ export class JammerHomeComponent implements OnInit {
     }
   }
 
-  redirectToTeamPage(): void {
-    this.router.navigate(['/Jammer/Team']);
-  }
-
-  redirectToSubmitPage(): void {
-    this.router.navigate(['/Jammer/Team']);
-  }
-
   logOut(): void {
-    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+    this.userService.logOutUser(`http://${environment.apiUrl}:3000/api/user/log-out-user`)
       .subscribe(
         () => {
           this.router.navigate(['/login']);

@@ -23,11 +23,20 @@
 }
 
 .notTeamName{
-    font-size: 20px; 
-    font-family: Inter; 
-    font-weight: 400; 
-    word-wrap: break-word; 
+    background: white;  
+    color: black;
+    border-radius: 35px;
+    font-size: 18px;
+    font-weight: 400;
+    word-wrap: break-word;
+    text-align: left;
+    padding: 10px 25px;
     cursor: pointer;
+    transition: 0.3s;
+}
+.notTeamName:hover {
+    background: black;
+    color: white;
 }
 .chatButton {
     background: white;

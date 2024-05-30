@@ -10,6 +10,7 @@ import { UploadCsvComponent } from '../upload-csv/upload-csv.component';
 import { ChatWindowComponent } from '../chat-window/chat-window.component';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RegionService } from '../services/region.service';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-local-site-information',
@@ -74,7 +75,7 @@ export class LocalSiteInformationComponent implements OnInit{
     this.joinForm = this.fb.group({
       site: ['', Validators.required]
     });
-    this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
+    this.regionService.getRegions(`http://${environment.apiUrl}:3000/api/region/get-regions`)
     .subscribe(
       regions => {
         this.regions = regions;
@@ -83,7 +84,7 @@ export class LocalSiteInformationComponent implements OnInit{
         console.error('Error al obtener regiones:', error);
       }
     );
-    this.siteService.getCountries('http://localhost:3000/api/site/get-countries')
+    this.siteService.getCountries(`http://${environment.apiUrl}:3000/api/site/get-countries`)
     .subscribe(
       countries => {
         this.countries = countries;
@@ -92,7 +93,7 @@ export class LocalSiteInformationComponent implements OnInit{
         console.error('Error al obtener países:', error);
       }
     );
-    this.siteService.getSites('http://localhost:3000/api/site/get-sites')
+    this.siteService.getSites(`http://${environment.apiUrl}:3000/api/site/get-sites`)
     .subscribe(
       sites => {
         this.sites = sites;
@@ -101,10 +102,10 @@ export class LocalSiteInformationComponent implements OnInit{
         console.error('Error al obtener sitios:', error);
       }
     );
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
-          this.siteService.getSite(`http://localhost:3000/api/site/get-site/${user.site._id}`)
+          this.siteService.getSite(`http://${environment.apiUrl}:3000/api/site/get-site/${user.site._id}`)
             .subscribe(
               site => {
                 this.site = site;
@@ -119,7 +120,7 @@ export class LocalSiteInformationComponent implements OnInit{
               }
             );
 
-          this.siteService.getSubmissions(`http://localhost:3000/api/submission/get-submissions-site/${user.site._id}`)
+          this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${user.site._id}`)
             .subscribe(
               submissions  => {
                 this.games = submissions;
@@ -129,19 +130,19 @@ export class LocalSiteInformationComponent implements OnInit{
               }
             );
 
-          this.userService.getJammersSite('http://localhost:3000/api/user/get-jammers-per-site/' + user.site._id).subscribe(
+          this.userService.getJammersSite(`http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/` + user.site._id).subscribe(
             jammers => {
               this.jammers = jammers;
             }
           )
 
-          this.userService.getLocalsSite('http://localhost:3000/api/user/get-localPerSite/' + user.site._id).subscribe(
+          this.userService.getLocalsSite(`http://${environment.apiUrl}:3000/api/user/get-localPerSite/` + user.site._id).subscribe(
             staff => {
               this.staff = staff;
             }
           )
 
-          this.teamService.getTeamsSite('http://localhost:3000/api/team/get-teams/' + user.site._id).subscribe(
+          this.teamService.getTeamsSite(`http://${environment.apiUrl}:3000/api/team/get-teams/` + user.site._id).subscribe(
             teams => {
               this.teams = teams;
             }
@@ -155,7 +156,7 @@ export class LocalSiteInformationComponent implements OnInit{
 
   agregar() {
     if (this.myForm.valid) {
-      this.siteService.createSite(`http://localhost:3000/api/site/create-site`, {
+      this.siteService.createSite(`http://${environment.apiUrl}:3000/api/site/create-site`, {
         name: this.myForm.value["name"],
         modality: this.myForm.value["modality"], 
         region: this.myForm.value["region"],
@@ -167,7 +168,7 @@ export class LocalSiteInformationComponent implements OnInit{
             this.site = { _id: siteId, name: this.myForm.value["name"], modality: this.myForm.value["modality"], region: this.myForm.value["region"], country: this.myForm.value["country"]}
             this.sites.push(this.site);
 
-            this.userService.updateUserSite(`http://localhost:3000/api/user/update-user-site/${this.userId}`, siteId).subscribe({
+            this.userService.updateUserSite(`http://${environment.apiUrl}:3000/api/user/update-user-site/${this.userId}`, siteId).subscribe({
               next: (data) => {
                 if (data.success) {
                   this.showSuccessMessage(data.msg);
@@ -197,11 +198,11 @@ export class LocalSiteInformationComponent implements OnInit{
   unirse() {
     if (this.joinForm.valid) {
       //Do something
-      this.userService.updateUserSite(`http://localhost:3000/api/user/update-user-site/${this.userId}`, this.joinForm.value["site"]._id).subscribe({
+      this.userService.updateUserSite(`http://${environment.apiUrl}:3000/api/user/update-user-site/${this.userId}`, this.joinForm.value["site"]._id).subscribe({
         next: (data) => {
           if (data.success) {
             /*
-            this.siteService.getSite('http://localhost:3000/api/site/get-site/' + this.joinForm.value["site"]._id).subscribe(
+            this.siteService.getSite('http://${environment.apiUrl}:3000/api/site/get-site/' + this.joinForm.value["site"]._id).subscribe(
               site => {
                 
               },

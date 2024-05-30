@@ -8,6 +8,7 @@ import { GamejamService } from '../../services/gamejam.service';
 import { Router } from '@angular/router';
 import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-jammer-create-team',
@@ -29,22 +30,16 @@ export class JammerCreateTeamComponent implements OnInit{
       site: ['', Validators.required],
       region: ['', Validators.required]
     });
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
-          if (user.roles.includes('LocalOrganizer')) {
-            this.router.navigate(['/Games']);
-          }
-          if (user.roles.includes('GlobalOrganizer')) {
-            this.router.navigate(['/DataManagement']);
-          }
           if(user.team?.name) {
-            this.router.navigate(['/Home']);
+            this.router.navigate(['/home']);
           }
           this.username = user.name + "(" + user.discordUsername + ")";
           this.myForm.get('site')?.setValue(user.site);
           this.myForm.get('region')?.setValue(user.region);
-          this.gamejamService.getCurrentGameJam('http://localhost:3000/api/game-jam/get-current-game-jam')
+          this.gamejamService.getCurrentGameJam(`http://${environment.apiUrl}:3000/api/game-jam/get-current-game-jam`)
             .subscribe(
               gameJam => {
                 this.myForm.get('gameJam')?.setValue(gameJam);
@@ -57,7 +52,7 @@ export class JammerCreateTeamComponent implements OnInit{
   }
 
   logOut(){
-    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+    this.userService.logOutUser(`http://${environment.apiUrl}:3000/api/user/log-out-user`)
       .subscribe(
         () => {
           this.router.navigate(['/login']);
@@ -88,7 +83,7 @@ export class JammerCreateTeamComponent implements OnInit{
   createTeam() {
     if (this.myForm.valid) {
       const { studioName, description, gameJam, site, region } = this.myForm.value;
-      this.userService.getCurrentUser('http://localhost:3000/api/user/get-user').subscribe(
+      this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`).subscribe(
         user => {
           const currentUser = {
             _id: user._id || '',
@@ -97,7 +92,7 @@ export class JammerCreateTeamComponent implements OnInit{
             discordUsername: user.discordUsername
           };
   
-          this.teamService.createTeam(`http://localhost:3000/api/team/create-team`, {
+          this.teamService.createTeam(`http://${environment.apiUrl}:3000/api/team/create-team`, {
             studioName: studioName,
             description: description,
             gameJam: {
@@ -117,7 +112,7 @@ export class JammerCreateTeamComponent implements OnInit{
           }).subscribe({
             next: (data) => {
               this.showAlert("Agregado con éxito", () => {
-                this.router.navigate(['/Jammer']).then(() => {
+                this.router.navigate(['/home']).then(() => {
                   window.location.reload();
                 });
               });

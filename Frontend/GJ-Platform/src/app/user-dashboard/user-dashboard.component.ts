@@ -5,6 +5,7 @@ import { User } from '../../types';
 import { UserService } from '../services/user.service';
 import { SiteService } from '../services/site.service';
 import { RegionService } from '../services/region.service';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -37,7 +38,7 @@ export class UserDashboardComponent implements OnInit {
   
   constructor(private fb: FormBuilder, private userService: UserService, private siteService: SiteService, private regionService: RegionService){}
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user').subscribe(
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`).subscribe(
       user => {
         this.dataSource = user;
         this.myForm = this.fb.group({
@@ -58,7 +59,7 @@ export class UserDashboardComponent implements OnInit {
       const userId = this.dataSource._id;
       const { email, name, discordUsername} = this.myForm.value;
   
-      this.userService.updateUser(`http://localhost:3000/api/user/update-user/${userId}`, {
+      this.userService.updateUser(`http://${environment.apiUrl}:3000/api/user/update-user/${userId}`, {
         name: name,
         email: email,
         region: this.dataSource.region,

@@ -12,6 +12,7 @@ import { GamejamService } from '../services/gamejam.service';
 import { CategoryService } from '../services/category.service';
 import { ThemeService } from '../services/theme.service';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-juez-main',
@@ -64,12 +65,12 @@ export class JuezMainComponent implements OnInit {
   constructor(private router: Router, private userService: UserService, private SubmissionService: SubmissionService, private TeamService: TeamService, private GameJamService: GamejamService, private CategoryService: CategoryService, private ThemeService: ThemeService){}
 
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
     .subscribe(
       user => {
         this.userId = user._id;
-        const url = `http://localhost:3000/api/submission/get-submissions-evaluator/${this.userId}`;
-        this.GameJamService.getTimeRemainingData('http://localhost:3000/api/game-jam/get-time-left-evaluator')
+        const url = `http://${environment.apiUrl}:3000/api/submission/get-submissions-evaluator/${this.userId}`;
+        this.GameJamService.getTimeRemainingData(`http://${environment.apiUrl}:3000/api/game-jam/get-time-left-evaluator`)
         .subscribe(
           timeLeft => {
             const timeParts = timeLeft.split(':').map((part: string) => parseInt(part, 10));
@@ -99,7 +100,7 @@ export class JuezMainComponent implements OnInit {
         this.SubmissionService.getSubmissionsEvaluator(url).subscribe(
           (juegos: Submission[]) => {
             for (const juego of juegos){
-              const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
+              const urlj = `http://${environment.apiUrl}:3000/api/team/get-team/` + juego.teamId
               this.TeamService.getTeamById(urlj).subscribe(
                 (team: Team) => {
                   this.games.push(
@@ -120,11 +121,11 @@ export class JuezMainComponent implements OnInit {
             console.error('Error al obtener juegos:', error);
           }
         );
-        const url1 = `http://localhost:3000/api/submission/get-ratings-evaluator/${this.userId}`;
+        const url1 = `http://${environment.apiUrl}:3000/api/submission/get-ratings-evaluator/${this.userId}`;
         this.SubmissionService.getSubmissionsEvaluator(url1).subscribe(
           (juegos: Submission[]) => {
             for (const juego of juegos){
-              const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
+              const urlj = `http://${environment.apiUrl}:3000/api/team/get-team/` + juego.teamId
               this.TeamService.getTeamById(urlj).subscribe(
                 (team: Team) => {
                   this.evaluations.push(
@@ -153,7 +154,7 @@ export class JuezMainComponent implements OnInit {
   }
 
   logOut(){
-    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+    this.userService.logOutUser(`http://${environment.apiUrl}:3000/api/user/log-out-user`)
       .subscribe(
         () => {
           this.router.navigate(['/login']);
@@ -165,14 +166,14 @@ export class JuezMainComponent implements OnInit {
   }
 
   getNewEvaluation() {
-    this.SubmissionService.getCurrentTeamSubmission(`http://localhost:3000/api/submission/get-new-evaluation`).subscribe(
+    this.SubmissionService.getCurrentTeamSubmission(`http://${environment.apiUrl}:3000/api/submission/get-new-evaluation`).subscribe(
       (juego: Submission) => {
         const existingGame = this.games.find(game => game.id === juego._id);
         if (existingGame) {
           return; 
         }
   
-        const urlj = 'http://localhost:3000/api/team/get-team/' + juego.teamId
+        const urlj = `http://${environment.apiUrl}:3000/api/team/get-team/` + juego.teamId
         this.TeamService.getTeamById(urlj).subscribe(
           (team: Team) => {
             this.games.push(
@@ -256,7 +257,7 @@ export class JuezMainComponent implements OnInit {
       buildFeedback: this.buildFeedback,
       personalFeedback: this.personalFeedback
   };  
-    this.SubmissionService.giveRating("http://localhost:3000/api/submission/give-rating", rating).subscribe({
+    this.SubmissionService.giveRating(`http://${environment.apiUrl}:3000/api/submission/give-rating`, rating).subscribe({
       next: (data) => {
         console.log(data);
         if (data.success) {
@@ -270,14 +271,14 @@ export class JuezMainComponent implements OnInit {
   }
   
   private loadData() {
-    var url = 'http://localhost:3000/api/submission/get-submission/' + this.gameParameter;
+    var url = `http://${environment.apiUrl}:3000/api/submission/get-submission/` + this.gameParameter;
     this.SubmissionService.getSubmission(url).subscribe(
       (game: any) => {
         this.gameLink = game.game;
         this.pitchLink = game.pitch;
         this.gameTitle = game.title;
         
-        const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId;
+        const urlj = `http://${environment.apiUrl}:3000/api/team/get-team/` + game.teamId;
         this.TeamService.getTeamById(urlj).subscribe(
           (team: Team) => {
             this.teamName = team.studioName;
@@ -288,16 +289,16 @@ export class JuezMainComponent implements OnInit {
               email: jammer.email
             }));
   
-            const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId;
+            const urlc = `http://${environment.apiUrl}:3000/api/category/get-category/` + game.categoryId;
             this.CategoryService.getCategory(urlc).subscribe(
               (categories: Category) => {
                 this.categories = [categories.titleEN];
-                const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId;
+                const urlt = `http://${environment.apiUrl}:3000/api/theme/get-theme/` + game.themeId;
                 this.ThemeService.getTheme(urlt).subscribe(
                   (theme: Theme) => {
                     this.themes = theme.titleEN !== undefined ? [theme.titleEN] : [];
                     
-                    const ratingUrl = 'http://localhost:3000/api/submission/get-rating/' + game._id;
+                    const ratingUrl = `http://${environment.apiUrl}:3000/api/submission/get-rating/` + game._id;
                     this.SubmissionService.getRating(ratingUrl).subscribe(
                       (rating: any) => {
 

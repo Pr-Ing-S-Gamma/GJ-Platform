@@ -35,7 +35,7 @@ export class JammerThemesComponent implements OnInit{
       manualEN: [null, Validators.required],
       manualPT: [null, Validators.required]
     });
-    this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
+    this.themeService.getThemes('http://${environment.apiUrl}:3000/api/theme/get-themes')
       .subscribe(
         themes => {
           this.dataSource = themes;

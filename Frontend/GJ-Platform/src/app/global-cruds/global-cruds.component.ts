@@ -11,6 +11,7 @@ import { UserCrudComponent } from './user-crud/user-crud.component';
 import { ThemeCrudComponent } from './theme-crud/theme-crud.component';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-global-cruds',
@@ -42,7 +43,7 @@ export class GlobalCRUDsComponent implements OnInit{
   showJam  : boolean = false;
   constructor(private router: Router, private userService: UserService) { }
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
     .subscribe(
       user => {
         if (user.roles.includes('LocalOrganizer')) {
@@ -111,7 +112,7 @@ toggleJam() {
 }
 
 logOut(): void {
-  this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+  this.userService.logOutUser(`http://${environment.apiUrl}:3000/api/user/log-out-user`)
     .subscribe(
       () => {
         this.router.navigate(['/login']);

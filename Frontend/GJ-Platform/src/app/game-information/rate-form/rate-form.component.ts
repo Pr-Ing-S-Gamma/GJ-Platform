@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { Category } from '../../../types';
 import { SubmissionService } from '../../services/submission.service';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-rate-form',
@@ -41,7 +42,7 @@ export class RateFormComponent {
   }
   
   ngOnInit(): void {
-    this.SubmissionService.getRating("http://localhost:3000/api/submission/get-rating/" + this.game).subscribe({
+    this.SubmissionService.getRating(`http://${environment.apiUrl}:3000/api/submission/get-rating/` + this.game).subscribe({
       next: (data) => {
         this.pitchScore = data.pitchScore !== undefined ? data.pitchScore: 0;
         this.pitchRating(this.pitchScore.valueOf());
@@ -96,7 +97,7 @@ export class RateFormComponent {
         audioScore: this.audioScore,
         audioFeedback: this.myForm.value["audioFeedback"],
       };
-      this.SubmissionService.giveRating("http://localhost:3000/api/submission/give-rating", 
+      this.SubmissionService.giveRating(`http://${environment.apiUrl}:3000/api/submission/give-rating`, 
         rating,
       ).subscribe({
         next: (data) => {

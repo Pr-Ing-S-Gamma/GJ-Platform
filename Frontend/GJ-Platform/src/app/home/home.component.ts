@@ -9,6 +9,7 @@ import { JuezMainComponent } from '../juez-main/juez-main.component';
 import { GlobalHomeComponent } from '../global-home/global-home.component';
 import { UserDashboardComponent } from '../user-dashboard/user-dashboard.component';
 import { User } from '../../types';
+import { environment } from '../../environments/environment.prod';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -37,7 +38,7 @@ export class HomeComponent {
   constructor(private router: Router, private userService: UserService, private siteService: SiteService) {}
 
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         (user: User) => {
           if (user.roles.includes("LocalOrganizer") && user.roles.includes("Judge")) {
@@ -54,15 +55,7 @@ export class HomeComponent {
           this.region = user.region.name;
         },
         error => {
-          //this.router.navigate(['/login']);
-          
-          this.userRole = "LocalOrganizer";
-          this.username = "yo";
-          this.name = "prueba";
-          this.discordName = "discodo";
-          this.email = "email";
-          this.site = "Fuyuki";
-          this.region = "Japan";
+          this.router.navigate(['/login']);
           
         }
       );
@@ -81,7 +74,7 @@ export class HomeComponent {
   }
 
   logOut(): void {
-    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+    this.userService.logOutUser(`http://${environment.apiUrl}:3000/api/user/log-out-user`)
       .subscribe(
         () => {
           this.router.navigate(['/login']);

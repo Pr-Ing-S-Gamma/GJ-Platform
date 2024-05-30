@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Category } from '../../../types';
 import { CategoryService } from '../../services/category.service';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-jammer-categories',
@@ -35,7 +36,7 @@ export class JammerCategoriesComponent implements OnInit{
     });
 
   
-    const url = 'http://localhost:3000/api/category/get-categories';
+    const url = `http://${environment.apiUrl}:3000/api/category/get-categories`;
     this.categoryService.getCategories(url).subscribe(
       (categories: any[]) => {
         this.dataSource = categories.map(category => ({

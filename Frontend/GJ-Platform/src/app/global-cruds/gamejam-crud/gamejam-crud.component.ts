@@ -8,6 +8,7 @@ import { GamejamService } from '../../services/gamejam.service';
 declare var $: any;
 import { jsPDF }  from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-gamejam-crud',
@@ -39,7 +40,7 @@ export class GamejamCrudComponent implements OnInit{
       edition: ['', Validators.required],
       theme: ['', Validators.required],
     });
-    const url = 'http://localhost:3000/api/game-jam/get-game-jams';
+    const url = `http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`;
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
         this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, theme: gamejam.theme}));
@@ -48,7 +49,7 @@ export class GamejamCrudComponent implements OnInit{
         console.error('Error al obtener las GameJams:', error);
       }
     );
-    this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
+    this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`)
     .subscribe(
       themes => {
         this.themes = themes;
@@ -116,7 +117,7 @@ export class GamejamCrudComponent implements OnInit{
       const gamejamId = this.userToEdit['_id'];
       const { edition, theme} = this.myForm.value;
   
-      this.gamejamService.updateGameJam(`http://localhost:3000/api/game-jam/update-game-jam/${gamejamId}`, {
+      this.gamejamService.updateGameJam(`http://${environment.apiUrl}:3000/api/game-jam/update-game-jam/${gamejamId}`, {
         edition: edition,
         theme: {
           _id: theme._id,
@@ -142,7 +143,7 @@ export class GamejamCrudComponent implements OnInit{
   eliminar(elemento: any) {
     const id = elemento._id;
 
-    const url = `http://localhost:3000/api/game-jam/delete-game-jam/${id}`;
+    const url = `http://${environment.apiUrl}:3000/api/game-jam/delete-game-jam/${id}`;
 
     this.gamejamService.deleteGameJam(url).subscribe({
         next: (data) => {
@@ -161,7 +162,7 @@ export class GamejamCrudComponent implements OnInit{
         console.log('Formulario válido');
         
         const { edition, theme} = this.myForm.value;;
-        this.gamejamService.createGameJam(`http://localhost:3000/api/game-jam/create-game-jam`, {
+        this.gamejamService.createGameJam(`http://${environment.apiUrl}:3000/api/game-jam/create-game-jam`, {
           edition: edition,
           theme: {
             _id: theme._id,

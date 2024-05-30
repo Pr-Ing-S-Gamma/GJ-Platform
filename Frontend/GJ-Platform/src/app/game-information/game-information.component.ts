@@ -11,6 +11,7 @@ import { TeamService } from '../services/team.service';
 import { ThemeService } from '../services/theme.service';
 import { CategoryService } from '../services/category.service';
 import { UserService } from '../services/user.service';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-game-information',
@@ -52,7 +53,7 @@ export class GameInformationComponent implements OnInit {
   
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.UserService.getCurrentUser('http://localhost:3000/api/user/get-user')
+      this.UserService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
           if (user.roles.includes('Judge')) {
@@ -63,14 +64,14 @@ export class GameInformationComponent implements OnInit {
         }
       );
       this.gameParameter = this.game;
-      var url = 'http://localhost:3000/api/submission/get-submission/' + this.game;
+      var url = `http://${environment.apiUrl}:3000/api/submission/get-submission/` + this.game;
       this.SubmissionService.getSubmission(url).subscribe(
         (game: Submission) => {
           this.gameLink = game.game;
           this.pitchLink = game.pitch;
           this.gameTitle = game.title;
           this.gameDescription = game.description;
-          const urlj = 'http://localhost:3000/api/team/get-team/' + game.teamId
+          const urlj = `http://${environment.apiUrl}:3000/api/team/get-team/` + game.teamId
           this.TeamService.getTeamById(urlj).subscribe(
             (team: Team) => {
               this.teamName = team.studioName;
@@ -80,11 +81,11 @@ export class GameInformationComponent implements OnInit {
                 discordUsername: jammer.discordUsername,
                 email: jammer.email
             }));
-              const urlc = 'http://localhost:3000/api/category/get-category/' + game.categoryId
+              const urlc = `http://${environment.apiUrl}:3000/api/category/get-category/` + game.categoryId
               this.CategoryService.getCategory(urlc).subscribe(
                 (categories: Category) => {
                   this.categories = [categories.titleEN];
-                  const urlt = 'http://localhost:3000/api/theme/get-theme/' + game.themeId
+                  const urlt = `http://${environment.apiUrl}:3000/api/theme/get-theme/` + game.themeId
                   this.ThemeService.getTheme(urlt).subscribe(
                     (theme: Theme) => { 
                       this.themes = theme.titleEN !== undefined ? [theme.titleEN] : [];

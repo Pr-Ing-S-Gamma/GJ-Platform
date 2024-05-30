@@ -8,6 +8,7 @@ import { GamejamService } from '../../services/gamejam.service';
 declare var $: any;
 import { jsPDF }  from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-stage-crud',
@@ -51,16 +52,16 @@ export class StageCrudComponent implements OnInit{
       gameJam : ['', Validators.required]
     });
 
-    const url = 'http://localhost:3000/api/game-jam/get-game-jams';
+    const url = `http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`;
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
         this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, theme: gamejam.theme}));
       },
       error => {
-        console.error('Error al obtener GameJams:', error);
+        console.error(`Error al obtener GameJams:`, error);
       }
     );
-    this.stageService.getStages('http://localhost:3000/api/stage/get-stages')
+    this.stageService.getStages(`http://${environment.apiUrl}:3000/api/stage/get-stages`)
     .subscribe(
       stages => {
         this.dataSource = stages;
@@ -102,7 +103,7 @@ export class StageCrudComponent implements OnInit{
   eliminar(elemento: any) {
     const id = elemento._id;
 
-    const url = `http://localhost:3000/api/stage/delete-stage/${id}`;
+    const url = `http://${environment.apiUrl}:3000/api/stage/delete-stage/${id}`;
 
     this.stageService.deleteStage(url).subscribe({
         next: (data) => {
@@ -122,7 +123,7 @@ export class StageCrudComponent implements OnInit{
       console.log('Formulario válido');
       const stageId = this.stageToEdit['_id'];
       const { name, startDate, endDate, gameJam, startDateEvaluation, endDateEvaluation} = this.myForm.value;
-      this.stageService.updateStage(`http://localhost:3000/api/stage/update-stage/${stageId}`, {
+      this.stageService.updateStage(`http://${environment.apiUrl}:3000/api/stage/update-stage/${stageId}`, {
         name: name,
         startDate: startDate,
         endDate: endDate,
@@ -162,7 +163,7 @@ export class StageCrudComponent implements OnInit{
       console.log('Formulario válido');
       
       const { name, startDate, endDate, gameJam, startDateEvaluation, endDateEvaluation} = this.myForm.value;
-      this.stageService.createStage(`http://localhost:3000/api/stage/create-stage`, {
+      this.stageService.createStage(`http://${environment.apiUrl}:3000/api/stage/create-stage`, {
         name: name,
         startDate: startDate,
         endDate: endDate,
@@ -271,7 +272,7 @@ showErrorMessage(message: string) {
   exportToPDF() {
     const doc = new jsPDF();
   
-    const url = 'http://localhost:3000/api/stage/get-stages';
+    const url = 'http://${environment.apiUrl}:3000/api/stage/get-stages';
     this.stageService.getStages(url).subscribe(
       (stages: Stage[]) => {
         const data = stages.map(stage => ({

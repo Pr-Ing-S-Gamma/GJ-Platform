@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GameInformationComponent } from '../game-information/game-information.component';
 import { User } from '../../types';
 import { UserService } from '../services/user.service';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-global-site-information',
@@ -36,7 +37,7 @@ export class GlobalSiteInformationComponent {
       this.regionParameter = params['region'];
       this.siteParameter = params['site'];
     });
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
     .subscribe(
       user => {
         if (user.roles.includes('LocalOrganizer')) {
@@ -50,7 +51,7 @@ export class GlobalSiteInformationComponent {
         this.router.navigate(['/login']);
       }
     );
-    const url = `http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
+    const url = `http://${environment.apiUrl}:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
         this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername }));

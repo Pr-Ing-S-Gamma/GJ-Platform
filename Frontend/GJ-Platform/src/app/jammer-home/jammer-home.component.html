@@ -28,14 +28,13 @@
       <div>
         <div 
           *ngIf="!teamName" 
-          [style.color]="isHovered ? 'darkgray' : 'white'" 
-          class="notTeamName" 
+          class="btn btn-default notTeamName" 
           (click)="toggleCreateTeam()" 
           (mouseenter)="isHovered = true" 
           (mouseleave)="isHovered = false" 
           [ngClass]="{'active': showCreateTeam}"
         >
-          <span>Create Team</span>
+          <span [style.textDecoration]="isHovered ? 'darkgray' : 'none'" >Create Team</span>
         </div>
         <div 
           *ngIf="teamName" 

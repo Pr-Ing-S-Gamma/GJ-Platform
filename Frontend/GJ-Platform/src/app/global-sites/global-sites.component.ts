@@ -8,6 +8,7 @@ import { RegionService } from '../services/region.service';
 import { Site, User, Region } from '../../types';
 import { UserService } from '../services/user.service';
 import { GameInformationComponent } from '../game-information/game-information.component';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-global-sites',
@@ -46,7 +47,7 @@ export class GlobalSitesComponent implements OnInit{
   moveToSiteInformation(site: String){
     this.inSite = true;
     this.siteParameter = site;
-    const url = `http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
+    const url = `http://${environment.apiUrl}:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
 
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
@@ -56,11 +57,11 @@ export class GlobalSitesComponent implements OnInit{
         console.error('Error al obtener usuarios:', error);
       }
     );
-    //this.siteService.getSubmissions('http://localhost:3000/api/site/get-submissions-site/' + site).subscribe()
+    //this.siteService.getSubmissions('http://${environment.apiUrl}:3000/api/site/get-submissions-site/' + site).subscribe()
   }
   
   ngOnInit(): void { /*
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser('http://${environment.apiUrl}:3000/api/user/get-user')
     .subscribe(
       user => {
         if (user.rol === 'LocalOrganizer') {
@@ -76,7 +77,7 @@ export class GlobalSitesComponent implements OnInit{
         this.router.navigate(['/login']);
       }
     ); */
-    this.siteService.getSites('http://localhost:3000/api/site/get-sites')
+    this.siteService.getSites(`http://${environment.apiUrl}:3000/api/site/get-sites`)
       .subscribe(
         sites => {
           this.dataSource = sites;
@@ -114,7 +115,7 @@ export class GlobalSitesComponent implements OnInit{
       sites: groupedSites[regionName]
     }));
 
-   /* this.regionService.getRegions('http://localhost:3000/api/region/get-regions').subscribe(
+   /* this.regionService.getRegions('http://${environment.apiUrl}:3000/api/region/get-regions').subscribe(
       (regionss: Region[]) => {
         this.regions = regionss; 
       },

@@ -7,6 +7,7 @@ import { Theme } from '../../../types';
 declare var $: any;
 import { jsPDF }  from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-theme-crud',
@@ -55,7 +56,7 @@ export class ThemeCrudComponent implements OnInit{
       manualEN: [null, Validators.required],
       manualPT: [null, Validators.required]
     });
-    this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
+    this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`)
       .subscribe(
         themes => {
           this.dataSource = themes;
@@ -85,7 +86,7 @@ export class ThemeCrudComponent implements OnInit{
   editar() {
     if (this.myForm.valid) {
       const themeId = this.ThemeToEdit['_id'];
-      const url = `http://localhost:3000/api/theme/update-theme/${themeId}`;
+      const url = `http://${environment.apiUrl}:3000/api/theme/update-theme/${themeId}`;
       const updatedTheme: Theme = {
         titleSP: this.myForm.get('titleSP')?.value,
         titleEN: this.myForm.get('titleEN')?.value,
@@ -145,7 +146,7 @@ export class ThemeCrudComponent implements OnInit{
   }
   eliminar(elemento: any) {
     const id = elemento._id;
-    const url = `http://localhost:3000/api/theme/delete-theme/${id}`;
+    const url = `http://${environment.apiUrl}:3000/api/theme/delete-theme/${id}`;
     this.themeService.deleteTheme(url).subscribe({
       next: (data) => {
         console.log('Tema eliminado correctamente:', data);
@@ -191,7 +192,7 @@ export class ThemeCrudComponent implements OnInit{
         formData.append('manualPT', newTheme.manualPT, newTheme.manualPT.name);
       }
 
-      this.themeService.createTheme(`http://localhost:3000/api/theme/create-theme`, formData)
+      this.themeService.createTheme(`http://${environment.apiUrl}:3000/api/theme/create-theme`, formData)
         .subscribe({
           next: (data) => {
             console.log(data);
@@ -302,7 +303,7 @@ showErrorMessage(message: string) {
   exportToPDF() {
     const doc = new jsPDF();
   
-    const url = 'http://localhost:3000/api/theme/get-themes';
+    const url = 'http://${environment.apiUrl}:3000/api/theme/get-themes';
     this.themeService.getThemes(url).subscribe(
       (themes: any[]) => {
         const data = themes.map(theme => ({

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-upload-csv',
@@ -22,7 +23,7 @@ export class UploadCsvComponent {
   }
 
   changeStatus() {
-    this.http.get<any>('http://localhost:3000/api/site/change-status', { withCredentials: true })
+    this.http.get<any>(`http://${environment.apiUrl}:3000/api/site/change-status`, { withCredentials: true })
       .subscribe(
         response => {
           if (response && response.success) {
@@ -48,7 +49,7 @@ export class UploadCsvComponent {
     const formData = new FormData();
     formData.append('csvFile', this.file);
   
-    this.http.post<any>('http://localhost:3000/api/user/register-users-from-csv', formData, { withCredentials: true })
+    this.http.post<any>(`http://${environment.apiUrl}:3000/api/user/register-users-from-csv`, formData, { withCredentials: true })
       .subscribe(
         response => {
           this.registrationResults = response.registrationResults;

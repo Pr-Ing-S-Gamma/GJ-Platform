@@ -6,6 +6,7 @@ import { UserService } from '../../services/user.service';
 import { SiteService } from '../../services/site.service';
 import { Router } from '@angular/router';
 import { Member, Team, User } from '../../../types';
+import { environment } from '../../../environments/environment.prod';
 @Component({
   selector: 'app-jammer-team',
   templateUrl: './jammer-team.component.html',
@@ -30,7 +31,7 @@ export class JammerTeamComponent implements OnInit {
   possibleMembers: User[] = [];
   
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
           if (user.roles.includes('LocalOrganizer')) {
@@ -40,7 +41,7 @@ export class JammerTeamComponent implements OnInit {
             this.router.navigate(['/DataManagement']);
           }
           this.siteId= user.site._id;
-          this.userService.getUsers('http://localhost:3000/api/user/get-free-jammers-per-site/' + user.site._id)
+          this.userService.getUsers(`http://${environment.apiUrl}:3000/api/user/get-free-jammers-per-site/` + user.site._id)
             .subscribe(
               (users: User[]) => {
                 this.possibleMembers = users;
@@ -49,7 +50,7 @@ export class JammerTeamComponent implements OnInit {
             );
 
           if (user.team && user.team._id) {
-            this.teamService.getTeamById('http://localhost:3000/api/team/get-team/' + user.team._id)
+            this.teamService.getTeamById(`http://${environment.apiUrl}:3000/api/team/get-team/` + user.team._id)
               .subscribe(
                 team => {
                   this.dataSource.push(team);
@@ -128,11 +129,11 @@ clearInputOnBackspace(event: KeyboardEvent) {
       const newMemberCopy = { ...this.newMember };
       this.members.push(newMemberCopy);
       this.memberNameSuggestions.push(newMemberCopy.name);
-      this.teamService.addJammerToTeam('http://localhost:3000/api/team/add-jammer/' + this.dataSource[0]._id +'/'+newMemberCopy._id)
+      this.teamService.addJammerToTeam(`http://${environment.apiUrl}:3000/api/team/add-jammer/` + this.dataSource[0]._id +'/'+newMemberCopy._id)
       .subscribe(
         team => {
           this.possibleMembers = [];
-          this.userService.getUsers('http://localhost:3000/api/user/get-free-jammers-per-site/' + this.siteId)
+          this.userService.getUsers(`http://${environment.apiUrl}:3000/api/user/get-free-jammers-per-site/` + this.siteId)
           .subscribe(
             (users: User[]) => {
               this.possibleMembers = users;
@@ -152,22 +153,22 @@ clearInputOnBackspace(event: KeyboardEvent) {
   }
 
   leaveTeam() {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
           this.siteId= user.site._id;
           if (user.team && user.team._id) {
-            this.teamService.removeJammerFromTeam('http://localhost:3000/api/team/remove-jammer/' + this.dataSource[0]._id +'/'+user._id)
+            this.teamService.removeJammerFromTeam(`http://${environment.apiUrl}:3000/api/team/remove-jammer/` + this.dataSource[0]._id +'/'+user._id)
             .subscribe(
               () => {
-                this.router.navigate(['/Jammer']).then(() => {
+                this.router.navigate(['/home']).then(() => {
                   window.location.reload();
                 });
               },
               () => {}
             );
           } else {
-            this.router.navigate(['/Jammer']);
+            this.router.navigate(['/home']);
           }
         },
         () => {}

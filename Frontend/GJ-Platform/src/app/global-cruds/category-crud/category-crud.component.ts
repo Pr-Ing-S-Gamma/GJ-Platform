@@ -7,6 +7,7 @@
   import { jsPDF }  from 'jspdf';
   import autoTable from 'jspdf-autotable';
   import { MatDialog } from '@angular/material/dialog';
+import { environment } from '../../../environments/environment.prod';
 
 
   declare var $: any;
@@ -57,7 +58,7 @@
       });
 
     
-      const url = 'http://localhost:3000/api/category/get-categories';
+      const url = `http://${environment.apiUrl}:3000/api/category/get-categories`;
       this.categoryService.getCategories(url).subscribe(
         (categories: any[]) => {
           this.dataSource = categories.map(category => ({
@@ -101,7 +102,7 @@
 
     exportToPDF() {
       const doc = new jsPDF();
-      const url = 'http://localhost:3000/api/category/get-categories';
+      const url = `http://${environment.apiUrl}:3000/api/category/get-categories`;
       this.categoryService.getCategories(url).subscribe(
         (categories: Category[]) => {
           const data = categories.map(category => ({
@@ -161,7 +162,7 @@
     editar() {
       if (this.myForm.valid) {
         const categoryId = this.CategoryToEdit['_id'];
-        const url = `http://localhost:3000/api/category/update-category/${categoryId}`;
+        const url = `http://${environment.apiUrl}:3000/api/category/update-category/${categoryId}`;
         const updatedCategory: Category = {
           titleSP: this.myForm.get('titleSP')?.value,
           titleEN: this.myForm.get('titleEN')?.value,
@@ -213,7 +214,7 @@
     eliminar(elemento: any) {
       const id = elemento._id;
     
-      const url = `http://localhost:3000/api/category/delete-category/${id}`;
+      const url = `http://${environment.apiUrl}:3000/api/category/delete-category/${id}`;
     
       this.categoryService.deleteCategory(url).subscribe({
         next: (data) => {
@@ -260,7 +261,7 @@
           formData.append('manualPT', newCategory.manualPT, newCategory.manualPT.name);
         }
   
-        this.categoryService.createCategory(`http://localhost:3000/api/category/create-category`, formData)
+        this.categoryService.createCategory(`http://${environment.apiUrl}:3000/api/category/create-category`, formData)
           .subscribe({
             next: (data) => {
               console.log(data);
