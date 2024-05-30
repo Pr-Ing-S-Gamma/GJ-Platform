@@ -181,7 +181,8 @@ async function sendEvaluations() {
 
 };
 
-cron.schedule('1 0 * * *', () => {
+cron.schedule('0 0 * * *', () => {
     sendEvaluations();
-    console.log("Evaluations sent at 8:00 AM Costa Rica time");
+}, {
+    timezone: "America/Costa_Rica"
 });
