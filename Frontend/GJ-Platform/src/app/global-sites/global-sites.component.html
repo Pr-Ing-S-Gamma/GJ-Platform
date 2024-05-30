@@ -18,7 +18,7 @@
         <div *ngIf="regionParameter != 'Regions'">
             <div *ngFor="let region of regions">
                 <div *ngIf="region.name === regionParameter" class="flexWrap">
-                    <div *ngFor="let site of dataSource[region.name]" class="btn btn-default cardContent" (click)="moveToSiteInformation(site.name)">
+                    <div *ngFor="let site of region.sites" class="btn btn-default cardContent" (click)="moveToSiteInformation(site.name)">
                         <div class="cardText">{{ site.name }}</div>
                         <div class="cardText">-</div>
                         <div class="cardText">{{ site.country }}</div>

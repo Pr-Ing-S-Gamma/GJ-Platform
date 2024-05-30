@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
+import { NgClass, NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { SiteService } from '../services/site.service';
 import { RegionService } from '../services/region.service';
 import { Site, User, Region } from '../../types';
@@ -15,37 +17,75 @@ import { GameInformationComponent } from '../game-information/game-information.c
     GameInformationComponent
   ],
   templateUrl: './global-sites.component.html',
-  styleUrls: ['./global-sites.component.css']
+  styleUrl: './global-sites.component.css'
 })
 
-export class GlobalSitesComponent implements OnInit {
-  regionParameter: string | undefined;
-  siteParameter: string | undefined;
+export class GlobalSitesComponent implements OnInit{
+  regionParameter: String | undefined;
+  siteParameter: String | undefined;
   inSite: boolean = false;
-  dataSource: { [key: string]: any[] } = {};
-  regions: Region[] = [];
+  dataSource: Site[] = [];
+  regions: any[] = []; 
   staff: User[] = [];
-  games: any[] = [];
+  games: any[] = []
+  constructor(private router: Router, private route: ActivatedRoute, private siteService: SiteService, private userService: UserService, private regionService: RegionService) { }
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private siteService: SiteService,
-    private userService: UserService,
-    private regionService: RegionService
-  ) {}
+  moveToRegionsRoot(){
+    this.regionParameter = 'Regions';
+    this.inSite = false;
+  }
 
-  ngOnInit(): void {
-    this.regionService.getRegions('http://localhost:3000/api/region/get-regions').subscribe(
-      regions => {
-        this.regions = regions;
-        this.getSitesAndMergeData();
+  moveToRegionSites(region: String | undefined){
+    if (region === undefined){
+      this.regionParameter = 'Regions';
+    }
+    this.regionParameter = region;
+    this.inSite = false;
+  }
+
+  moveToSiteInformation(site: String){
+    this.inSite = true;
+    this.siteParameter = site;
+    const url = `http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
+
+    this.userService.getUsers(url).subscribe(
+      (users: any[]) => {
+        this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername }));
       },
       error => {
-        console.error('Error al obtener regiones:', error);
+        console.error('Error al obtener usuarios:', error);
       }
     );
-
+    //this.siteService.getSubmissions('http://localhost:3000/api/site/get-submissions-site/' + site).subscribe()
+  }
+  
+  ngOnInit(): void { /*
+    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    .subscribe(
+      user => {
+        if (user.rol === 'LocalOrganizer') {
+          this.router.navigate(['/Games']);
+          return; 
+        }
+        if (user.rol === 'Jammer') {
+          this.router.navigate(['/Jammer']);
+          return; 
+        }
+      },/*
+      error => {
+        this.router.navigate(['/login']);
+      }
+    ); */
+    this.siteService.getSites('http://localhost:3000/api/site/get-sites')
+      .subscribe(
+        sites => {
+          this.dataSource = sites;
+          this.transformSitesData();
+        },
+        error => {
+          console.error('Error al obtener paÃ­ses:', error);
+        }
+      );
     this.route.params.subscribe(params => {
       if (params['region']) {
         this.regionParameter = params['region'];
@@ -55,21 +95,10 @@ export class GlobalSitesComponent implements OnInit {
     });
   }
 
-  getSitesAndMergeData(): void {
-    this.siteService.getSites(`http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`).subscribe(
-      sites => {
-        this.dataSource = this.transformSitesData(sites);
-      },
-      error => {
-        console.error('Error al obtener sitios:', error);
-      }
-    );
-  }
-
-  transformSitesData(sites: Site[]): { [key: string]: any[] } {
+  transformSitesData(): void {
     const groupedSites: { [key: string]: any[] } = {};
 
-    sites.forEach(site => {
+    this.dataSource.forEach(site => {
       const { name, region, country } = site;
       const regionName = region.name;
 
@@ -80,49 +109,19 @@ export class GlobalSitesComponent implements OnInit {
       groupedSites[regionName].push({ country: country.name, name });
     });
 
-    this.regions.forEach(region => {
-      if (!groupedSites[region.name]) {
-        groupedSites[region.name] = [];
-      }
-    });
+    this.regions = Object.keys(groupedSites).map(regionName => ({
+      name: regionName,
+      sites: groupedSites[regionName]
+    }));
 
-    return groupedSites;
-  }
-
-  moveToRegionsRoot(): void {
-    this.regionParameter = 'Regions';
-    this.inSite = false;
-  }
-
-  moveToRegionSites(region: string | undefined): void {
-    if (region === undefined) {
-      this.regionParameter = 'Regions';
-    }
-    this.regionParameter = region;
-    this.inSite = false;
-  }
-
-  moveToSiteInformation(site: string): void {
-    this.inSite = true;
-    this.siteParameter = site;
-    const url = `http://localhost:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
-
-    this.userService.getUsers(url).subscribe(
-      (users: any[]) => {
-        this.staff = users.map(user => ({
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          region: user.region,
-          site: user.site,
-          roles: user.roles,
-          coins: user.coins,
-          discordUsername: user.discordUsername
-        }));
+   /* this.regionService.getRegions('http://localhost:3000/api/region/get-regions').subscribe(
+      (regionss: Region[]) => {
+        this.regions = regionss; 
       },
       error => {
-        console.error('Error al obtener usuarios:', error);
+        console.error('Error al obtener regiones:', error);
       }
-    );
+    );*/
   }
+
 }
