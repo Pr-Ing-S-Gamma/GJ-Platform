@@ -123,8 +123,10 @@ async function sendEvaluations() {
 
     for (const gameJam of allGameJams) {
         for (const stage of gameJam.stages) {
+            console.log(currentDat)
             console.log(currentDate.toDateString())
             console.log(stage.endDateEvaluation.toDateString())
+            console.log(stage.endDateEvaluation)
             if (currentDate.toDateString() === stage.endDateEvaluation.toDateString()) {
                 currentStage = stage;
                 break;
