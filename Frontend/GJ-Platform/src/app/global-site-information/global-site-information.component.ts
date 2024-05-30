@@ -6,6 +6,7 @@ import { GameInformationComponent } from '../game-information/game-information.c
 import { User } from '../../types';
 import { UserService } from '../services/user.service';
 import { environment } from '../../environments/environment.prod';
+import { SiteService } from '../services/site.service';
 
 @Component({
   selector: 'app-global-site-information',
@@ -21,8 +22,9 @@ import { environment } from '../../environments/environment.prod';
 export class GlobalSiteInformationComponent {
   regionParameter!: String;
   siteParameter!: String;
-  constructor(private router: Router, private route: ActivatedRoute, private userService: UserService) { }
+  constructor(private router: Router, private siteService: SiteService,private route: ActivatedRoute, private userService: UserService) { }
   staff: User[] = [];
+  games: any[] = [];
 
   moveToCruds() {
     this.router.navigate(['/DataManagement']);
@@ -46,6 +48,21 @@ export class GlobalSiteInformationComponent {
         if (user.roles.includes('GlobalOrganizer')) {
           this.router.navigate(['/DataManagement']);
         }
+        if (user.site && user.site._id) {
+            
+          this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${user.site._id}`)
+            .subscribe(
+              submissions => {
+                this.games = submissions;
+                console.log(this.games);
+              },
+              error => {
+                console.error('Error al obtener las entregas:', error);
+              }
+            );
+        } else {
+          console.error('Site or Site ID is not defined.');
+        }
       },
       error => {
         this.router.navigate(['/login']);
@@ -60,11 +77,7 @@ export class GlobalSiteInformationComponent {
         console.error('Error al obtener usuarios:', error);
       }
     );
+    
   }
-
-  games = [
-    {id:1, name: 'Bloom Tales', team: 'Outlander studio'},
-    {id:2, name: 'Space Pinbam', team: 'Flipper Studio'}
-  ]
-
+  
 }
