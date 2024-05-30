@@ -71,7 +71,7 @@ export class JammerCreateTeamComponent implements OnInit{
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'ok') {
         callback();
-        this.router.navigate(['/Jammer']).then(() => {
+        this.router.navigate(['/home']).then(() => {
           window.location.reload();
         });
       }
