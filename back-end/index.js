@@ -120,8 +120,6 @@ async function sendEvaluations() {
    //const currentDatee = new Date(Date.UTC(2024, 4, 31, 0, 0, 1, 0));
    const currentDate = currentDatee.toISOString().slice(0, 10);
    
-
-
     const allGameJams = await GameJam.find({});
 
     for (const gameJam of allGameJams) {
