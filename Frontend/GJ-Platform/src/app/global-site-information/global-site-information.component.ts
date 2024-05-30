@@ -48,9 +48,7 @@ export class GlobalSiteInformationComponent {
         if (user.roles.includes('GlobalOrganizer')) {
           this.router.navigate(['/DataManagement']);
         }
-        if (user.site && user.site._id) {
-            
-          this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${user.site._id}`)
+          this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${this.siteParameter}`)
             .subscribe(
               submissions => {
                 this.games = submissions;
@@ -60,9 +58,7 @@ export class GlobalSiteInformationComponent {
                 console.error('Error al obtener las entregas:', error);
               }
             );
-        } else {
-          console.error('Site or Site ID is not defined.');
-        }
+        
       },
       error => {
         this.router.navigate(['/login']);

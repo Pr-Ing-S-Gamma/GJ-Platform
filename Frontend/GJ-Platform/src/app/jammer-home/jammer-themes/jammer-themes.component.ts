@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Theme } from '../../../types';
 import { ThemeService } from '../../services/theme.service';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-jammer-themes',
@@ -35,7 +36,7 @@ export class JammerThemesComponent implements OnInit{
       manualEN: [null, Validators.required],
       manualPT: [null, Validators.required]
     });
-    this.themeService.getThemes('http://${environment.apiUrl}:3000/api/theme/get-themes')
+    this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`)
       .subscribe(
         themes => {
           this.dataSource = themes;
