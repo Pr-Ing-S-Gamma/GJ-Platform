@@ -110,7 +110,7 @@ export class GlobalSitesComponent implements OnInit{
     const groupedSites: { [key: string]: any[] } = {};
 
     this.dataSource.forEach(site => {
-      const { name, region, country , _id} = site;
+      const { name, region, country} = site;
       const regionName = region.name;
 
       if (!groupedSites[regionName]) {
