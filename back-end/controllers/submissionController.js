@@ -226,15 +226,15 @@ const getCurrentTeamSubmission = async (req, res) => {
         res.status(400).json({ success: false, error: 'Error processing the request.' });
     }
 };
-const getSubmissionName = async (req, res) => {
+const getSubmission = async (req, res) => {
     try {
-        const { name} = req.query;
+        const name = req.params.name;
 
         if (!name) {
-            return res.status(400).json({ success: false, error: 'Missing name' });
+            return res.status(400).json({ success: false, error: 'Se requiere el nombre del juego.' });
         }
 
-        const existingSubmission = await Submission.findOne({ name: name });
+        const existingSubmission = await Submission.findOne({ title: name });
         if (!existingSubmission) {
             return res.status(404).json({ success: false, error: "Esa entrega no existe" });
         }
@@ -244,6 +244,7 @@ const getSubmissionName = async (req, res) => {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
+
 
 const getSubmission = async (req, res) => {
     try {
