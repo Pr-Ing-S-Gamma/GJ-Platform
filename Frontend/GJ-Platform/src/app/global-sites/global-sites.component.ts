@@ -58,7 +58,9 @@ export class GlobalSitesComponent implements OnInit{
             this.games = submissions;
           },
           error => {
+
             console.error('Error al obtener las entregas:', error);
+            this.games = [];
           }
         );
       },

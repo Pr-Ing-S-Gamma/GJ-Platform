@@ -80,6 +80,21 @@
                     </div>
                 </div>
             </div>
-        </div>    
+            <div *ngIf="games && games.length > 0; else noGames">
+                <div *ngFor="let game of games">
+                    <div class="modal fade w-100" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog"
+                        aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static">
+                        <div class="modal-dialog w-85" role="document">
+                            <app-game-information [game]="game.name"></app-game-information>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template #noGames>
+                <p>No games available.</p>
+            </ng-template>
+        </div>
+
+    
     </div>
 </div>
