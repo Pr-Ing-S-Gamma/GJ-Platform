@@ -293,7 +293,7 @@ toggleColumn(column: keyof User, event: any) {
 exportToPDF() {
     const doc = new jsPDF();
 
-    const url = 'http://${environment.apiUrl}:3000/api/user/get-users';
+    const url = `http://${environment.apiUrl}:3000/api/user/get-users`;
     this.userService.getUsers(url).subscribe(
         (users: User[]) => {
             const data = users.map(user => ({

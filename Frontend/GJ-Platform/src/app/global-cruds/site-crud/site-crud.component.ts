@@ -241,7 +241,7 @@ showErrorMessage(message: string) {
   exportToPDF() {
     const doc = new jsPDF();
   
-    const url = 'http://${environment.apiUrl}:3000/api/site/get-sites';
+    const url = `http://${environment.apiUrl}:3000/api/site/get-sites`;
     this.siteService.getSites(url).subscribe(
       (sites: Site[]) => {
         const data = sites.map(site => ({
