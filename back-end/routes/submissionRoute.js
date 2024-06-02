@@ -16,7 +16,7 @@ submission_route.post('/create-submission', upload.none(), submissionController.
 submission_route.put('/update-submission/:id', upload.none(), submissionController.updateSubmission);
 submission_route.get('/get-current-submission/:teamId/:stageId', submissionController.getCurrentTeamSubmission);
 submission_route.get('/get-submission/:id', submissionController.getSubmission);
-submission_route.get('/get-submission-name/:name', submissionController.getSubmission);
+submission_route.get('/get-submission-name/:name', submissionController.getSubmissionName);
 submission_route.get('/get-submissions', submissionController.getSubmissions);
 submission_route.get('/get-submissions-site/:id', submissionController.getSubmissionsSite);
 submission_route.get('/get-submissions-site-name/:name', submissionController.getSubmissionsSiteName);

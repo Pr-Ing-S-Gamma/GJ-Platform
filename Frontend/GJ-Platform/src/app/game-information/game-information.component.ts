@@ -73,7 +73,7 @@ export class GameInformationComponent implements OnInit {
       );
       this.gameParameter = this.game;
       const url = `http://${environment.apiUrl}:3000/api/submission/get-submission-name/${this.game}`;
-      this.SubmissionService.getSubmission(url).subscribe(
+      this.SubmissionService.getSubmissionName(url).subscribe(
         (game: Submission) => {
           this.gameLink = game.game;
           this.pitchLink = game.pitch;
