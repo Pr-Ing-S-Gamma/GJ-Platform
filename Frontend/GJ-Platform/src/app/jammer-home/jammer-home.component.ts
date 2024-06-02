@@ -13,6 +13,7 @@ import { GameInformationComponent } from "../game-information/game-information.c
 import { JammerCategoriesComponent } from './jammer-categories/jammer-categories.component';
 import { JammerThemesComponent } from './jammer-themes/jammer-themes.component';
 import { environment } from '../../environments/environment.prod';
+import { GameInfoComponent } from './game-info/game-info.component';
 
 @Component({
     selector: 'app-jammer-home',
@@ -27,7 +28,8 @@ import { environment } from '../../environments/environment.prod';
         JammerTeamComponent,
         ChatWindowComponent,
         JammerSubmitComponent,
-        GameInformationComponent
+        GameInformationComponent,
+        GameInfoComponent
     ]
 })
 export class JammerHomeComponent implements OnInit {
