@@ -46,6 +46,7 @@ export class GlobalSitesComponent implements OnInit{
 
   moveToSiteInformation(site: String){
     this.inSite = true;
+    console.log(site);
     this.siteParameter = site;
     const url = `http://${environment.apiUrl}:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
 
