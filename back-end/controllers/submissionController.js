@@ -226,6 +226,24 @@ const getCurrentTeamSubmission = async (req, res) => {
         res.status(400).json({ success: false, error: 'Error processing the request.' });
     }
 };
+const getSubmissionName = async (req, res) => {
+    try {
+        const { name} = req.query;
+
+        if (!name) {
+            return res.status(400).json({ success: false, error: 'Missing name' });
+        }
+
+        const existingSubmission = await Submission.findOne({ name: name });
+        if (!existingSubmission) {
+            return res.status(404).json({ success: false, error: "Esa entrega no existe" });
+        }
+
+        res.status(200).send({ success: true, msg: 'Entrega encontrada correctamente', data: existingSubmission });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
 
 const getSubmission = async (req, res) => {
     try {
@@ -614,5 +632,6 @@ module.exports = {
     getRating,
     getSubmissionsEvaluator,
     getRatingsEvaluator,
-    getSubmissionsSiteName
+    getSubmissionsSiteName,
+    getSubmissionName
 };
