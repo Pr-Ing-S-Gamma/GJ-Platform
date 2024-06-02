@@ -226,7 +226,7 @@ const getCurrentTeamSubmission = async (req, res) => {
         res.status(400).json({ success: false, error: 'Error processing the request.' });
     }
 };
-const getSubmission = async (req, res) => {
+const getSubmissionName = async (req, res) => {
     try {
         const name = req.params.name;
 
