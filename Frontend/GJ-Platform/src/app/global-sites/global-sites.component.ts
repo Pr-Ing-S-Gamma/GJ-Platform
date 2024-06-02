@@ -117,7 +117,7 @@ export class GlobalSitesComponent implements OnInit{
         groupedSites[regionName] = [];
       }
 
-      groupedSites[regionName].push({ country: country.name, name , _id});
+      groupedSites[regionName].push({ country: country.name, name});
     });
 
     this.regions = Object.keys(groupedSites).map(regionName => ({
