@@ -52,23 +52,14 @@ export class GlobalSitesComponent implements OnInit{
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
         this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername }));
-        this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${this.siteParameter}`)
-        .subscribe(
-          submissions => {
-            this.games = submissions;
-            console.log(this.games);
-          },
-          error => {
-            console.error('Error al obtener las entregas:', error);
-          }
-        );
+      
       },
       
       error => {
         console.error('Error al obtener usuarios:', error);
       }
     );
-    //this.siteService.getSubmissions('http://${environment.apiUrl}:3000/api/site/get-submissions-site/' + site).subscribe()
+    this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/site/get-submissions-site/` + site).subscribe()
   }
   
   ngOnInit(): void { /*

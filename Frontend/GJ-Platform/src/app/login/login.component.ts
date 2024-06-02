@@ -15,23 +15,6 @@ export class LoginComponent implements OnInit{
   constructor(private router: Router, private userService: UserService) { }
 
   ngOnInit(): void {
-    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
-    .subscribe(
-      user => {
-        this.router.navigate(['/home'])
-        // if (user.rol === 'LocalOrganizer') {
-        //   this.router.navigate(['/Games']);
-        // }
-        // if (user.rol === 'GlobalOrganizer') {
-        //   this.router.navigate(['/DataManagement']);
-        // }
-        // if (user.rol === 'Judge') {
-        //   this.router.navigate(['/Juez']);
-        // }
-      },
-      () => {
-      }
-    );
   }
   showSuccessMessage: boolean = false;
   successMessage: string = '';
