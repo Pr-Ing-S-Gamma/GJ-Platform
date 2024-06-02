@@ -44,15 +44,23 @@ export class GlobalSitesComponent implements OnInit{
     this.inSite = false;
   }
 
-  moveToSiteInformation(site: String){
+  moveToSiteInformation(siteId: String){
     this.inSite = true;
-    this.siteParameter = site;
+    this.siteParameter = siteId;
     const url = `http://${environment.apiUrl}:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
 
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
         this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername }));
-      
+        this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${this.siteParameter}`)
+        .subscribe(
+          submissions => {
+            this.games = submissions;
+          },
+          error => {
+            console.error('Error al obtener las entregas:', error);
+          }
+        );
       },
       
       error => {
@@ -102,14 +110,14 @@ export class GlobalSitesComponent implements OnInit{
     const groupedSites: { [key: string]: any[] } = {};
 
     this.dataSource.forEach(site => {
-      const { name, region, country } = site;
+      const { name, region, country , _id} = site;
       const regionName = region.name;
 
       if (!groupedSites[regionName]) {
         groupedSites[regionName] = [];
       }
 
-      groupedSites[regionName].push({ country: country.name, name });
+      groupedSites[regionName].push({ country: country.name, name , _id});
     });
 
     this.regions = Object.keys(groupedSites).map(regionName => ({
