@@ -47,7 +47,6 @@ export class GlobalSitesComponent implements OnInit{
   moveToSiteInformation(siteName: String){
     this.inSite = true;
     this.siteParameter = siteName;
-    alert(this.siteParameter);
     const url = `http://${environment.apiUrl}:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
 
     this.userService.getUsers(url).subscribe(
@@ -71,33 +70,7 @@ export class GlobalSitesComponent implements OnInit{
     
   }
   
-  ngOnInit(): void { /*
-    this.userService.getCurrentUser('http://${environment.apiUrl}:3000/api/user/get-user')
-    .subscribe(
-      user => {
-        if (user.rol === 'LocalOrganizer') {
-          this.router.navigate(['/Games']);
-          return; 
-        }
-        if (user.rol === 'Jammer') {
-          this.router.navigate(['/Jammer']);
-          return; 
-        }
-      },/*
-      error => {
-        this.router.navigate(['/login']);
-      }
-    ); */
-    this.siteService.getSites(`http://${environment.apiUrl}:3000/api/site/get-sites`)
-      .subscribe(
-        sites => {
-          this.dataSource = sites;
-          this.transformSitesData();
-        },
-        error => {
-          console.error('Error al obtener paÃ­ses:', error);
-        }
-      );
+  ngOnInit(): void {
     this.route.params.subscribe(params => {
       if (params['region']) {
         this.regionParameter = params['region'];
@@ -105,7 +78,19 @@ export class GlobalSitesComponent implements OnInit{
         this.regionParameter = 'Regions';
       }
     });
+  
+    this.siteService.getSites(`http://${environment.apiUrl}:3000/api/site/get-sites`)
+      .subscribe(
+        sites => {
+          this.dataSource = sites;
+          this.transformSitesData();
+        },
+        error => {
+          console.error('Error al obtener países:', error);
+        }
+      );
   }
+  
 
   transformSitesData(): void {
     const groupedSites: { [key: string]: any[] } = {};
@@ -125,15 +110,6 @@ export class GlobalSitesComponent implements OnInit{
       name: regionName,
       sites: groupedSites[regionName]
     }));
-
-   /* this.regionService.getRegions('http://${environment.apiUrl}:3000/api/region/get-regions').subscribe(
-      (regionss: Region[]) => {
-        this.regions = regionss; 
-      },
-      error => {
-        console.error('Error al obtener regiones:', error);
-      }
-    );*/
   }
 
 }
