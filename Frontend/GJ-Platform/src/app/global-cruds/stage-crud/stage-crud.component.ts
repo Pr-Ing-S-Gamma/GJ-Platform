@@ -272,7 +272,7 @@ showErrorMessage(message: string) {
   exportToPDF() {
     const doc = new jsPDF();
   
-    const url = 'http://${environment.apiUrl}:3000/api/stage/get-stages';
+    const url = `http://${environment.apiUrl}:3000/api/stage/get-stages`;
     this.stageService.getStages(url).subscribe(
       (stages: Stage[]) => {
         const data = stages.map(stage => ({
@@ -350,32 +350,6 @@ showErrorMessage(message: string) {
     if (fin < totalPaginas - 1) {
       paginasMostradas.push('...');
     }
-
-    /*
-    if (inicio == 1){
-      switch(fin - inicio){
-        case 2:
-          paginasMostradas.push(4);
-          paginasMostradas.push(5);
-          break;
-        case 3:
-          paginasMostradas.push(5);
-          break;
-        default: break;
-      }
-    }
-    if (fin == totalPaginas){
-      switch(fin - inicio){
-        case 2:
-          paginasMostradas.unshift(totalPaginas-4, totalPaginas-3);
-          break;
-        case 3:
-          paginasMostradas.unshift(totalPaginas-4);
-          break;
-        default: break;
-      }
-    }
-    */
     return paginasMostradas;
 }
 
