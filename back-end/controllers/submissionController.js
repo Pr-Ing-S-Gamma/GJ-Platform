@@ -256,11 +256,22 @@ const getSubmissions = async (req, res) => {
 
 const getSubmissionsSite = async (req, res) => {
     try {
-        const siteId = req.params.id;
-        
-        const teams = await Team.find({ 'site._id': siteId });
+        const siteIdentifier = req.params.identifier;
+        let teams, teamIds;
 
-        const teamIds = teams.map(team => team._id);
+        // Intenta buscar por ID primero
+        teams = await Team.find({ 'site._id': siteIdentifier });
+        teamIds = teams.map(team => team._id);
+
+        // Si no se encontraron equipos por ID, intenta buscar por nombre
+        if (teamIds.length === 0) {
+            teams = await Team.find({ 'site.name': { $regex: new RegExp(siteIdentifier, "i") } });
+            teamIds = teams.map(team => team._id);
+        }
+
+        if (teamIds.length === 0) {
+            throw new Error('No teams found for the provided site identifier');
+        }
 
         const allSubmissions = await Submission.find({ teamId: { $in: teamIds } })
             .populate('teamId', 'studioName')
@@ -277,6 +288,7 @@ const getSubmissionsSite = async (req, res) => {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
+
 
 const deleteSubmission = async (req, res) => {
     try {
