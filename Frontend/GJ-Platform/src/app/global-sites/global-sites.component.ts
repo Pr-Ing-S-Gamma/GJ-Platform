@@ -29,7 +29,7 @@ export class GlobalSitesComponent implements OnInit{
   regions: any[] = []; 
   staff: User[] = [];
   games: any[] = []
-  constructor(private router: Router, private route: ActivatedRoute, private siteService: SiteService, private userService: UserService, private regionService: RegionService) { }
+  constructor(private route: ActivatedRoute, private siteService: SiteService, private userService: UserService, private regionService: RegionService) { }
 
   moveToRegionsRoot(){
     this.regionParameter = 'Regions';
@@ -46,7 +46,6 @@ export class GlobalSitesComponent implements OnInit{
 
   moveToSiteInformation(site: String){
     this.inSite = true;
-    console.log(site);
     this.siteParameter = site;
     const url = `http://${environment.apiUrl}:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
 
@@ -60,7 +59,7 @@ export class GlobalSitesComponent implements OnInit{
         console.error('Error al obtener usuarios:', error);
       }
     );
-    this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/site/get-submissions-site/` + site).subscribe()
+    
   }
   
   ngOnInit(): void { /*
