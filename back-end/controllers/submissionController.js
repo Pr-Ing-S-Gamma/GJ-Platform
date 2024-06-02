@@ -256,23 +256,41 @@ const getSubmissions = async (req, res) => {
 
 const getSubmissionsSite = async (req, res) => {
     try {
-        const siteIdentifier = req.params.identifier;
-        let teams, teamIds;
+        const siteId = req.params.id;
+        
+        const teams = await Team.find({ 'site._id': siteId });
 
-        // Intenta buscar por ID primero
-        teams = await Team.find({ 'site._id': siteIdentifier });
-        teamIds = teams.map(team => team._id);
+        const teamIds = teams.map(team => team._id);
 
-        // Si no se encontraron equipos por ID, intenta buscar por nombre
+        const allSubmissions = await Submission.find({ teamId: { $in: teamIds } })
+            .populate('teamId', 'studioName')
+            .select('title teamId');
+
+        const submissionsArray = allSubmissions.map(submission => ({
+            id: submission._id,
+            name: submission.title,
+            team: submission.teamId.studioName
+        }));
+
+        res.status(200).send({ success: true, msg: 'Submissions found in the system', data: submissionsArray });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+};
+const getSubmissionsSiteName = async (req, res) => {
+    try {
+        const siteName = req.params.name;
+
+        // Buscar equipos por nombre del sitio
+        const teams = await Team.find({ 'site.name': { $regex: new RegExp(siteName, "i") } });
+        const teamIds = teams.map(team => team._id);
+
+        // Si no se encontraron equipos, enviar un mensaje de error
         if (teamIds.length === 0) {
-            teams = await Team.find({ 'site.name': { $regex: new RegExp(siteIdentifier, "i") } });
-            teamIds = teams.map(team => team._id);
+            throw new Error('No teams found for the provided site name');
         }
 
-        if (teamIds.length === 0) {
-            throw new Error('No teams found for the provided site identifier');
-        }
-
+        // Buscar presentaciones por los IDs de los equipos encontrados
         const allSubmissions = await Submission.find({ teamId: { $in: teamIds } })
             .populate('teamId', 'studioName')
             .select('title teamId');
@@ -595,5 +613,6 @@ module.exports = {
     giveRating,
     getRating,
     getSubmissionsEvaluator,
-    getRatingsEvaluator
+    getRatingsEvaluator,
+    getSubmissionsSiteName
 };

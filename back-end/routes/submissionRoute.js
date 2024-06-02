@@ -18,6 +18,7 @@ submission_route.get('/get-current-submission/:teamId/:stageId', submissionContr
 submission_route.get('/get-submission/:id', submissionController.getSubmission);
 submission_route.get('/get-submissions', submissionController.getSubmissions);
 submission_route.get('/get-submissions-site/:id', submissionController.getSubmissionsSite);
+submission_route.get('/get-submissions-site-name/:name', submissionController.getSubmissionsSiteName);
 submission_route.get('/get-new-evaluation', submissionController.setEvaluatorToSubmission);
 submission_route.delete('/delete-submission/:id', submissionController.deleteSubmission);
 

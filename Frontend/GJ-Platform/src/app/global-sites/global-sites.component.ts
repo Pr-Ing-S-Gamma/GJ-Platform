@@ -44,15 +44,16 @@ export class GlobalSitesComponent implements OnInit{
     this.inSite = false;
   }
 
-  moveToSiteInformation(siteId: String){
+  moveToSiteInformation(siteName: String){
     this.inSite = true;
-    this.siteParameter = siteId;
+    this.siteParameter = siteName;
+    alert(this.siteParameter);
     const url = `http://${environment.apiUrl}:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
 
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
         this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername }));
-        this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${this.siteParameter}`)
+        this.siteService.getSubmissionsByName(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site-name/${this.siteParameter}`)
         .subscribe(
           submissions => {
             this.games = submissions;
