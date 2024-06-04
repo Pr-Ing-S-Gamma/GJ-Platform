@@ -23,9 +23,11 @@ export class UploadCsvComponent {
   onFileSelected(event: any): void {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-      if (selectedFile.type !== 'text/csv') {
-        // El tipo de archivo no es CSV
-        console.error('Error: El archivo seleccionado no es un archivo CSV.');
+      const fileNameParts = selectedFile.name.split('.');
+      const fileExtension = fileNameParts[fileNameParts.length - 1].toLowerCase();
+      if (fileExtension !== 'csv') {
+        // El archivo no tiene la extensión .csv
+        console.error('Error: El archivo seleccionado no tiene la extensión .csv.');
         this.file = null;
       } else {
         // El archivo es válido
@@ -33,6 +35,7 @@ export class UploadCsvComponent {
       }
     }
   }
+  
 
   changeStatus() {
     this.http.get<any>(`http://${environment.apiUrl}:3000/api/site/change-status`, { withCredentials: true })
