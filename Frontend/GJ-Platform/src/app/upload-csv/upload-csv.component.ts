@@ -21,7 +21,17 @@ export class UploadCsvComponent {
   constructor(private http: HttpClient, private UserService: UserService) {}
 
   onFileSelected(event: any): void {
-    this.file = event.target.files[0];
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      if (selectedFile.type !== 'text/csv') {
+        // El tipo de archivo no es CSV
+        console.error('Error: El archivo seleccionado no es un archivo CSV.');
+        this.file = null;
+      } else {
+        // El archivo es válido
+        this.file = selectedFile;
+      }
+    }
   }
 
   changeStatus() {
@@ -37,6 +47,7 @@ export class UploadCsvComponent {
         }
       );
   }
+
   uploadFile(): void {
     if (this.file) {
       this.UserService.uploadUsersFromCSV(this.file).subscribe(
@@ -54,8 +65,4 @@ export class UploadCsvComponent {
       );
     }
   }
-  
-
-  
-  
 }
