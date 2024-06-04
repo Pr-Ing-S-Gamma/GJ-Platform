@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../environments/environment.prod';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-upload-csv',
@@ -17,9 +18,9 @@ export class UploadCsvComponent {
   registrationResults: string[] = [];
   errorLog: string[] = [];  
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private UserService: UserService) {}
 
-  onFileSelected(event: any) {
+  onFileSelected(event: any): void {
     this.file = event.target.files[0];
   }
 
@@ -36,37 +37,25 @@ export class UploadCsvComponent {
         }
       );
   }
-  
-
-  uploadFile() {
-    if (!this.file) {
-      this.errorLog[0] = 'Please select a file.';
-      setTimeout(() => {
-        this.errorLog = [];
-      }, 5000); 
-      return;
-    }
-  
-    const formData = new FormData();
-    formData.append('csvFile', this.file);
-  
-    this.http.post<any>(`http://${environment.apiUrl}:3000/api/user/register-users-from-csv`, formData)
-      .subscribe(
-        response => {
-          this.registrationResults = response.registrationResults;
-          this.errorLog = response.errorLog;
-          setTimeout(() => {
-            this.registrationResults = [];
-            this.errorLog = [];
-          }, 5000);
+  uploadFile(): void {
+    if (this.file) {
+      this.UserService.uploadUsersFromCSV(this.file).subscribe(
+        (response) => {
+          if (response.success) {
+            this.registrationResults = response.registrationResults;
+            this.errorLog = response.errorLog;
+          } else {
+            console.error('Error:', response.error);
+          }
         },
-        error => {
-          this.errorLog[0] = 'Error uploading CSV file.';
-          setTimeout(() => {
-            this.errorLog = [];
-          }, 5000);
+        (error) => {
+          console.error('Error:', error);
         }
       );
+    }
   }
+  
+
+  
   
 }
