@@ -300,7 +300,7 @@ const deleteUser = async (req, res) => {
 
 const registerUsersFromCSV = async (req, res) => {
     try {
-        if (!req.file || req.file.mimetype !== 'text/csv') {
+        if (!req.file || !req.file.originalname.endsWith('.csv')) {
             return res.status(400).json({ success: false, error: 'Please upload a CSV file.' });
         }
 
