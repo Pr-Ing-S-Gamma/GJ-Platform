@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-upload-csv',
-  templateUrl: './upload-csv.component.html',
-  styleUrls: ['./upload-csv.component.css'] 
+  standalone: true,
+  imports: [
+    CommonModule
+  ],
+  templateUrl: './upload-csv.component.html'
 })
 export class UploadCsvComponent {
   file: File | null = null;
@@ -17,7 +20,6 @@ export class UploadCsvComponent {
 
   onFileSelected(event: any) {
     this.file = event.target.files[0];
-    console.log('Selected file:', this.file);
   }
 
   changeStatus() {
@@ -33,6 +35,7 @@ export class UploadCsvComponent {
         }
       );
   }
+  
 
   uploadFile() {
     if (!this.file) {
@@ -64,4 +67,5 @@ export class UploadCsvComponent {
         }
       );
   }
+  
 }
