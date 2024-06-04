@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { GameInformationComponent } from '../game-information/game-information.component';
 import { UserService } from '../services/user.service';
 import { TeamService} from '../services/team.service';
-import { Country, Region, Site, User } from '../../types';
+import { Country, Region, Site, Team, User } from '../../types';
 import { SiteService } from '../services/site.service';
 import { UploadCsvComponent } from '../upload-csv/upload-csv.component';
 import { ChatWindowComponent } from '../chat-window/chat-window.component';
@@ -55,7 +55,7 @@ export class LocalSiteInformationComponent implements OnInit{
   }; 
   currentStatus: string = "";
   games: any[] = [];
-  teams: any[] = [];
+  teams: Team[] = [];
   jammers: any[] = [];
   staff: any[] = [];
   inSubmissions: boolean = true; //0
