@@ -9,7 +9,8 @@ import { environment } from '../../environments/environment.prod';
   imports: [
     CommonModule
   ],
-  templateUrl: './upload-csv.component.html'
+  templateUrl: './upload-csv.component.html',
+  styleUrl : './upload-csv.component.css'
 })
 export class UploadCsvComponent {
   file: File | null = null;
@@ -49,7 +50,7 @@ export class UploadCsvComponent {
     const formData = new FormData();
     formData.append('csvFile', this.file);
   
-    this.http.post<any>(`http://${environment.apiUrl}:3000/api/user/register-users-from-csv`, formData, { withCredentials: true })
+    this.http.post<any>(`http://${environment.apiUrl}:3000/api/user/register-users-from-csv`, formData)
       .subscribe(
         response => {
           this.registrationResults = response.registrationResults;
