@@ -20,6 +20,20 @@ export class UploadCsvComponent {
     console.log('Selected file:', this.file);
   }
 
+  changeStatus() {
+    this.http.get<any>(`http://${environment.apiUrl}:3000/api/site/change-status`, { withCredentials: true })
+      .subscribe(
+        response => {
+          if (response && response.success) {
+            window.location.reload();
+          }
+        },
+        error => {
+          console.error('Error changing site status:', error);
+        }
+      );
+  }
+
   uploadFile() {
     if (!this.file) {
       this.errorLog[0] = 'Please select a file.';
@@ -32,7 +46,7 @@ export class UploadCsvComponent {
     const formData = new FormData();
     formData.append('csvFile', this.file);
   
-    this.http.post<any>(`http://${environment.apiUrl}:3000/api/upload-csv`, formData, { withCredentials: true })
+    this.http.post<any>(`http://${environment.apiUrl}:3000/api/user/register-users-from-csv`, formData, { withCredentials: true })
       .subscribe(
         response => {
           this.registrationResults = response.registrationResults;
