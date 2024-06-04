@@ -9,7 +9,8 @@ import { environment } from '../../environments/environment.prod';
   imports: [
     CommonModule
   ],
-  templateUrl: './upload-csv.component.html'
+  templateUrl: './upload-csv.component.html',
+  styleUrls: ['./upload-csv.component.css'] 
 })
 export class UploadCsvComponent {
   file: File | null = null;
@@ -20,6 +21,7 @@ export class UploadCsvComponent {
 
   onFileSelected(event: any) {
     this.file = event.target.files[0];
+    console.log('Selected file:', this.file); // Añade este registro de consola
   }
 
   changeStatus() {
