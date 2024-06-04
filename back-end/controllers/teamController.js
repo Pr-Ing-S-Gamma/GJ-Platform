@@ -268,12 +268,17 @@ const deleteTeam = async (req, res) => {
 const getTeamSite = async (req, res) => {
     try {
         const siteName = req.params.site;
-        const teams = await Team.find({ site: siteName });
-        return res.status(200).send({ success: true, msg: "Teams found for site " + siteName, data: teams });
+        if (!siteName) {
+            return res.status(400).send({ success: false, msg: "Site name is required" });
+        }
+
+        const teams = await Team.find({ 'site.name': siteName });
+        return res.status(200).send({ success: true, msg: `Teams found for site ${siteName}`, data: teams });
     } catch (error) {
-        return res.status(400).send({ success: false, msg: error.message });
+        return res.status(500).send({ success: false, msg: error.message });
     }
 };
+
 
 const addJammerToTeam = async (req, res) => {
     const teamId = req.params.teamId;
