@@ -142,7 +142,7 @@ export class LocalSiteInformationComponent implements OnInit{
             }
           )
 
-          this.teamService.getTeamsSite(`http://${environment.apiUrl}:3000/api/team/get-teams/` + user.site._id).subscribe(
+          this.teamService.getTeamsSite(`http://${environment.apiUrl}:3000/api/team/get-teams/` + user.site.name).subscribe(
             teams => {
               this.teams = teams;
             }
