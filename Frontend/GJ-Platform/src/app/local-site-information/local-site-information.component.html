@@ -70,46 +70,47 @@
             </div>
         
             <div class="col cardContainer">
-                <div *ngFor="let team of teams" class="btn btn-primary cardBackground">
-                    <div class="cardText">
-                        {{ team.studioName }}
+                <div *ngFor="let team of teams" class="card cardBackground">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ team.studioName }}</h5>
+                        <div *ngFor="let jammer of team.jammers" class="row">
+                            <div class="col cardText">
+                                {{ jammer.name }}
+                            </div>
+                            <div class="col cardText">
+                                {{ jammer.discordUsername }}
+                            </div>
+                            <div class="col cardText">
+                                {{ jammer.email }}
+                            </div>
+                        </div>
                     </div>
-                    <div *ngFor="let jammer of team.jammers" class="row">
-                        <div class="col cardText">
-                            {{ jammer.name }}
-                        </div>
-                        <div class="col cardText">
-                            {{ jammer.discordUsername }}
-                        </div>
-                        <div class="col cardText">
-                            {{ jammer.email }}
-                        </div>
-                    </div>
-                    <!-- Botón para abrir el chat -->
-                    <button type="button" class="btn btn-secondary mt-2" data-toggle="modal" [attr.data-target]="'#teamChat-' + team._id">
-                        Open Chat
-                    </button>
                 </div>
             </div>
         
-            <div *ngFor="let team of teams">
-                <div class="modal fade" [id]="'teamChat-' + team._id" tabindex="-1" role="dialog" aria-labelledby="teamChat" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
-                    <div class="modal-dialog" role="document" style="max-width: 85%;">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Chat for {{ team.studioName }}</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <app-chat-window></app-chat-window>
-                            </div>
+            <!-- Botón para abrir el chat general -->
+            <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#chatModal">
+                Open Chat
+            </button>
+        
+            <!-- Modal para el chat -->
+            <div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
+                <div class="modal-dialog" role="document" style="max-width: 85%;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Chat</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <app-chat-window></app-chat-window>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
         
         
         <div *ngIf="inJammers">
