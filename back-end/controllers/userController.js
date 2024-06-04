@@ -306,12 +306,17 @@ const registerUsersFromCSV = async (req, res) => {
 
         const evaluatorId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(evaluatorId);
-        const users = [];
+        if (!creatorUser) {
+            return res.status(401).json({ success: false, error: 'Invalid user' });
+        }
 
+        const users = [];
         const fileData = req.file.buffer.toString('utf8');
-        const lines = fileData.split('\n');
+        const lines = fileData.split('\n').filter(line => line.trim() !== ''); // Filtra líneas vacías
+
         lines.forEach(line => {
-            const [name, email, roles, discordUsername, studioName] = line.split(',');
+            const [name, email, role, discordUsername, studioName] = line.split(',');
+            const roles = role ? [role] : ['Jammer'];
             users.push({ name, email, roles, discordUsername, studioName });
         });
 
@@ -400,11 +405,13 @@ const registerUsersFromCSV = async (req, res) => {
 
             registrationResults.push(`Registered successfully for user: ${name} (${email}, ${discordUsername})`);
         }
+
         res.status(200).json({ success: true, msg: 'User registration completed.', registrationResults, errorLog });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
 
 const addRol = async (req, res) => {
     const userId = req.params.id;
