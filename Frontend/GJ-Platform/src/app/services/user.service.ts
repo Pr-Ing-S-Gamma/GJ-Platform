@@ -60,7 +60,7 @@ export class UserService {
   }
   uploadUsersFromCSV(file: File): Observable<any> {
     const formData: FormData = new FormData();
-    formData.append('file', file, file.name);
+    formData.append('csvFile', file, file.name);
     return this.http.post<any>(`http://${environment.apiUrl}:3000/api/user/register-users-from-csv`, formData);
   }
 }
