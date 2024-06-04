@@ -46,10 +46,9 @@ export class GameInformationComponent implements OnInit {
   categories: string[] = [];
   gameLink: string = '';
   pitchLink: string = '';
+  @Input()id : Boolean = false;
 
   constructor(
-    private fb: FormBuilder, 
-    private router: Router, 
     private route: ActivatedRoute,
     private SubmissionService: SubmissionService, 
     private TeamService: TeamService, 
@@ -71,8 +70,12 @@ export class GameInformationComponent implements OnInit {
           console.error('Error al obtener el usuario:', error);
         }
       );
+      let url = `http://${environment.apiUrl}:3000/api/submission/get-submission-name/${this.game}`;
       this.gameParameter = this.game;
-      const url = `http://${environment.apiUrl}:3000/api/submission/get-submission-name/${this.game}`;
+      if(this.id){
+        url = `http://${environment.apiUrl}:3000/api/submission/get-submission-site/${this.game}`;
+      }
+      
       this.SubmissionService.getSubmissionName(url).subscribe(
         (game: Submission) => {
           this.gameLink = game.game;
