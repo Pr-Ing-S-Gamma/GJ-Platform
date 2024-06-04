@@ -27,8 +27,8 @@ export class UserCrudComponent implements OnInit{
   dataSource: User[] = [];
   regions: Region[] = [];
   sites: Site[] = [];
-  roles = ['GlobalOrganizer', 'LocalOrganizer', 'Judge', 'Jammer', ['LocalOrganizer','Judge']]
-  
+  roles = ['GlobalOrganizer', 'LocalOrganizer', 'Judge', 'Jammer', ['LocalOrganizer', 'Judge']];
+
   userToEdit : any;
   indexUser = 0;
   selectedHeader: string | undefined;
@@ -123,8 +123,9 @@ export class UserCrudComponent implements OnInit{
     if (this.myForm.valid) {
       console.log('Formulario válido');
       const userId = this.userToEdit['_id'];
-      const { email, name, region, site, roles, discordUsername} = this.myForm.value;
-  
+      const { email, name, region, site, rol, discordUsername } = this.myForm.value;
+      const roles = rol.split(',');
+
       this.userService.updateUser(`http://${environment.apiUrl}:3000/api/user/update-user/${userId}`, {
         name: name,
         email: email,
@@ -142,7 +143,16 @@ export class UserCrudComponent implements OnInit{
       }).subscribe({
         next: (data) => {
           if (data.success) {
-            this.dataSource[this.indexUser]={ _id: userId, name: name, email: email, region: region, site: site, roles: roles, coins: 0, discordUsername: discordUsername};
+            this.dataSource[this.indexUser] = {
+              _id: userId,
+              name: name,
+              email: email,
+              region: region,
+              site: site,
+              roles: roles,
+              coins: 0,
+              discordUsername: discordUsername
+            };
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -343,7 +353,7 @@ exportToPDF() {
                 if (column === 'region.name') return 'Region';
                 if (column === 'site.name') return 'Site';
                 if (column === 'team.name') return 'Team';
-                if (column === 'rol') return 'Role';
+                if (column === 'roles') return 'Role';
                 return column.replace(/[A-Z]/g, ' $&').toUpperCase();
             });
 
@@ -382,32 +392,6 @@ exportToPDF() {
     if (fin < totalPaginas - 1) {
       paginasMostradas.push('...');
     }
-
-    /*
-    if (inicio == 1){
-      switch(fin - inicio){
-        case 2:
-          paginasMostradas.push(4);
-          paginasMostradas.push(5);
-          break;
-        case 3:
-          paginasMostradas.push(5);
-          break;
-        default: break;
-      }
-    }
-    if (fin == totalPaginas){
-      switch(fin - inicio){
-        case 2:
-          paginasMostradas.unshift(totalPaginas-4, totalPaginas-3);
-          break;
-        case 3:
-          paginasMostradas.unshift(totalPaginas-4);
-          break;
-        default: break;
-      }
-    }
-    */
     return paginasMostradas;
 }
 

@@ -418,7 +418,7 @@ removeLinkTree(link: string) {
   exportToPDF() {
     const doc = new jsPDF();
   
-    const url = 'http://${environment.apiUrl}:3000/api/team/get-teams';
+    const url = `http://${environment.apiUrl}:3000/api/team/get-teams`;
     this.teamService.getTeams(url).subscribe(
         (teams: Team[]) => {
             const data = teams.map(team => ({

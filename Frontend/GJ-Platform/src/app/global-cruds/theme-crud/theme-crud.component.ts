@@ -303,7 +303,7 @@ showErrorMessage(message: string) {
   exportToPDF() {
     const doc = new jsPDF();
   
-    const url = 'http://${environment.apiUrl}:3000/api/theme/get-themes';
+    const url = `http://${environment.apiUrl}:3000/api/theme/get-themes`;
     this.themeService.getThemes(url).subscribe(
       (themes: any[]) => {
         const data = themes.map(theme => ({
