@@ -41,7 +41,7 @@ export class UserCrudComponent implements OnInit{
     { label: 'Region', value: 'region.name' as keyof User, checked: false },
     { label: 'Site', value: 'site.name' as keyof User, checked: false },
     { label: 'Team Name', value: 'team.name' as keyof User, checked: false },
-    { label: 'Role', value: 'rol' as keyof User, checked: false }
+    { label: 'Role', value: 'roles' as keyof User, checked: false }
   ];
   constructor(private fb: FormBuilder, private userService: UserService, private siteService: SiteService, private regionService: RegionService){}
   ngOnInit(): void {
