@@ -58,6 +58,8 @@ export class UploadCsvComponent {
           if (response.success) {
             this.registrationResults = response.registrationResults;
             this.errorLog = response.errorLog;
+            alert("La carga del archivo CSV fue exitosa. Haz clic en OK para recargar la página.");
+            window.location.reload(); // Recargar la página
           } else {
             console.error('Error:', response.error);
           }
