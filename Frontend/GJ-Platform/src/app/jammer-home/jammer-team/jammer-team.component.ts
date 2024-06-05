@@ -7,6 +7,7 @@ import { SiteService } from '../../services/site.service';
 import { Router } from '@angular/router';
 import { Member, Team, User } from '../../../types';
 import { environment } from '../../../environments/environment.prod';
+
 @Component({
   selector: 'app-jammer-team',
   templateUrl: './jammer-team.component.html',
@@ -19,17 +20,22 @@ import { environment } from '../../../environments/environment.prod';
 })
 export class JammerTeamComponent implements OnInit {
 
-  constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService){
-  }
+  constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService) { }
 
   dataSource: Team[] = [];
-
   members: Member[] = [];
-
   siteId: string | undefined;
-  
   possibleMembers: User[] = [];
   
+  showAddMemberModal: boolean = false;
+  suggestionsVisible: boolean = false;
+  isTriangleUp: boolean = true;
+  newMember: any = {};
+  nameSuggestions: any[] = [];
+  memberNameSuggestions: any[] = [];
+  filteredSuggestions: any[] = [];
+  userId: string | undefined;
+
   ngOnInit(): void {
     this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
@@ -40,7 +46,7 @@ export class JammerTeamComponent implements OnInit {
           if (user.roles.includes('GlobalOrganizer')) {
             this.router.navigate(['/DataManagement']);
           }
-          this.siteId= user.site._id;
+          this.siteId = user.site._id;
           this.userService.getUsers(`http://${environment.apiUrl}:3000/api/user/get-free-jammers-per-site/` + user.site._id)
             .subscribe(
               (users: User[]) => {
@@ -64,15 +70,6 @@ export class JammerTeamComponent implements OnInit {
       );
   }
 
-  showAddMemberModal: boolean = false;
-  suggestionsVisible: boolean = false;
-  isTriangleUp: boolean = true; 
-  newMember: any = {};
-  nameSuggestions: any[] = [];
-  memberNameSuggestions: any[] = []; 
-  filteredSuggestions: any[] = [];
-  userId: string | undefined;
-  
   toggleSuggestionsVisibility() {
     this.suggestionsVisible = !this.suggestionsVisible;
     this.toggleTriangleDirection();
@@ -84,33 +81,35 @@ export class JammerTeamComponent implements OnInit {
 
   toggleAddMemberModal() {
     this.showAddMemberModal = !this.showAddMemberModal;
-    if (!this.showAddMemberModal) {
+    if (this.showAddMemberModal) {
+      this.suggestionsVisible = true;
+      this.filteredSuggestions = [...this.possibleMembers];
+    } else {
       this.clearForm();
     }
-    this.filteredSuggestions = [];
   }
 
   suggestNames(event: Event) {
     const searchTerm = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    this.suggestionsVisible = true; 
-  
+    this.suggestionsVisible = true;
+
     if (searchTerm === '') {
       this.filteredSuggestions = [...this.possibleMembers];
-      this.clearNewMember(); 
+      this.clearNewMember();
     } else {
       this.filteredSuggestions = this.possibleMembers.filter(member =>
         member.name.toLowerCase().startsWith(searchTerm)
       );
     }
   }
-  
-clearInputOnBackspace(event: KeyboardEvent) {
+
+  clearInputOnBackspace(event: KeyboardEvent) {
     if (event.key === 'Backspace' || event.key === 'Delete') {
       this.newMember.email = "";
       this.newMember.discordUsername = "";
     }
   }
-  
+
   clearNewMember() {
     this.newMember = {};
   }
@@ -122,51 +121,50 @@ clearInputOnBackspace(event: KeyboardEvent) {
     this.newMember._id = selectedMember._id;
     this.filteredSuggestions = [];
   }
-  
 
   addMember() {
     if (this.newMember.email && this.newMember.name && this.newMember.discordUsername) {
       const newMemberCopy = { ...this.newMember };
       this.members.push(newMemberCopy);
       this.memberNameSuggestions.push(newMemberCopy.name);
-      this.teamService.addJammerToTeam(`http://${environment.apiUrl}:3000/api/team/add-jammer/` + this.dataSource[0]._id +'/'+newMemberCopy._id)
-      .subscribe(
-        team => {
-          this.possibleMembers = [];
-          this.userService.getUsers(`http://${environment.apiUrl}:3000/api/user/get-free-jammers-per-site/` + this.siteId)
-          .subscribe(
-            (users: User[]) => {
-              this.possibleMembers = users;
-            },
-            () => {}
-          );
-        },
-        () => {}
-      );
+      this.teamService.addJammerToTeam(`http://${environment.apiUrl}:3000/api/team/add-jammer/` + this.dataSource[0]._id + '/' + newMemberCopy._id)
+        .subscribe(
+          team => {
+            this.possibleMembers = [];
+            this.userService.getUsers(`http://${environment.apiUrl}:3000/api/user/get-free-jammers-per-site/` + this.siteId)
+              .subscribe(
+                (users: User[]) => {
+                  this.possibleMembers = users;
+                },
+                () => {}
+              );
+          },
+          () => {}
+        );
       this.clearForm();
     }
   }
 
   clearForm() {
     this.newMember = {};
-    this.filteredSuggestions = []; 
+    this.filteredSuggestions = [];
   }
 
   leaveTeam() {
     this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
-          this.siteId= user.site._id;
+          this.siteId = user.site._id;
           if (user.team && user.team._id) {
-            this.teamService.removeJammerFromTeam(`http://${environment.apiUrl}:3000/api/team/remove-jammer/` + this.dataSource[0]._id +'/'+user._id)
-            .subscribe(
-              () => {
-                this.router.navigate(['/home']).then(() => {
-                  window.location.reload();
-                });
-              },
-              () => {}
-            );
+            this.teamService.removeJammerFromTeam(`http://${environment.apiUrl}:3000/api/team/remove-jammer/` + this.dataSource[0]._id + '/' + user._id)
+              .subscribe(
+                () => {
+                  this.router.navigate(['/home']).then(() => {
+                    window.location.reload();
+                  });
+                },
+                () => {}
+              );
           } else {
             this.router.navigate(['/home']);
           }
