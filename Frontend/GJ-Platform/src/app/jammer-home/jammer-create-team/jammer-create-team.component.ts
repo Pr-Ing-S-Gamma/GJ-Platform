@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, FormBuilder, FormGroup, Validators, ReactiveFormsModule  } from '@angular/forms';
+import { FormsModule, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TeamService } from '../../services/team.service';
 import { UserService } from '../../services/user.service';
@@ -17,11 +17,21 @@ import { environment } from '../../../environments/environment.prod';
   templateUrl: './jammer-create-team.component.html',
   styleUrls: ['./jammer-create-team.component.css']
 })
-export class JammerCreateTeamComponent implements OnInit{
+export class JammerCreateTeamComponent implements OnInit {
   myForm!: FormGroup;
-  constructor(private dialog: MatDialog,private fb: FormBuilder, private router: Router, private userService: UserService, private teamService: TeamService, private siteService: SiteService, private gamejamService: GamejamService){
-  }
   username: string | undefined;
+  gamejam: boolean = false;
+
+  constructor(
+    private dialog: MatDialog,
+    private fb: FormBuilder,
+    private router: Router,
+    private userService: UserService,
+    private teamService: TeamService,
+    private siteService: SiteService,
+    private gamejamService: GamejamService
+  ) {}
+
   ngOnInit(): void {
     this.myForm = this.fb.group({
       studioName: ['', Validators.required],
@@ -30,10 +40,11 @@ export class JammerCreateTeamComponent implements OnInit{
       site: ['', Validators.required],
       region: ['', Validators.required]
     });
+
     this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
-          if(user.team?.name) {
+          if (user.team?.name) {
             this.router.navigate(['/home']);
           }
           this.username = user.name + "(" + user.discordUsername + ")";
@@ -42,16 +53,21 @@ export class JammerCreateTeamComponent implements OnInit{
           this.gamejamService.getCurrentGameJam(`http://${environment.apiUrl}:3000/api/game-jam/get-current-game-jam`)
             .subscribe(
               gameJam => {
+                this.gamejam = true;
                 this.myForm.get('gameJam')?.setValue(gameJam);
               },
-              () => {}
+              () => {
+                this.showAlert('Gamejam Not Active', () => {
+                  this.router.navigate(['/home']);
+                });
+              }
             );
         },
         () => {}
       );
   }
 
-  logOut(){
+  logOut() {
     this.userService.logOutUser(`http://${environment.apiUrl}:3000/api/user/log-out-user`)
       .subscribe(
         () => {
@@ -62,12 +78,13 @@ export class JammerCreateTeamComponent implements OnInit{
         }
       );
   }
+
   showAlert(message: string, callback: () => void): void {
     const dialogRef = this.dialog.open(CustomAlertComponent, {
       width: '400px',
       data: { message: message }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'ok') {
         callback();
@@ -77,8 +94,6 @@ export class JammerCreateTeamComponent implements OnInit{
       }
     });
   }
-    
-  
 
   createTeam() {
     if (this.myForm.valid) {
@@ -91,7 +106,7 @@ export class JammerCreateTeamComponent implements OnInit{
             email: user.email,
             discordUsername: user.discordUsername
           };
-  
+
           this.teamService.createTeam(`http://${environment.apiUrl}:3000/api/team/create-team`, {
             studioName: studioName,
             description: description,
@@ -100,7 +115,7 @@ export class JammerCreateTeamComponent implements OnInit{
               edition: gameJam.edition
             },
             linkTree: [],
-            jammers: [currentUser], 
+            jammers: [currentUser],
             site: {
               _id: site._id,
               name: site.name
@@ -116,7 +131,7 @@ export class JammerCreateTeamComponent implements OnInit{
                   window.location.reload();
                 });
               });
-            },                        
+            },
             error: (error) => {
               console.error('Error creating team:', error);
             }
@@ -127,7 +142,7 @@ export class JammerCreateTeamComponent implements OnInit{
         }
       );
     } else {
+      console.log('Form is not valid');
     }
   }
 }
-
