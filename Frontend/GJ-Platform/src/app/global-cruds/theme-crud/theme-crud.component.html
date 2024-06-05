@@ -1,22 +1,23 @@
 <div class="card-body cardBackground">
+    <div class="table-container">
         <div class="filters">
             <select [(ngModel)]="selectedHeader">
-                <option value="titleSP">Title (Spanish)</option>
-                <option value="titlePT">Title (Portuguese)</option>
-                <option value="titleEN">Title (English)</option>
-                <option value="descriptionSP">Description (Spanish)</option>
-                <option value="descriptionPT">Description (Portuguese)</option>
-                <option value="descriptionEN">Description (English)</option>
-                <option value="manualSP">Manual (Spanish)</option>
-                <option value="manualPT">Manual (Portuguese)</option>
-                <option value="manualEN">Manual (English)</option>
+              <option value="titleSP">Title (ESP)</option>
+              <option value="titleEN">Title (EN)</option>
+              <option value="titlePT">Title (PT-BR)</option>
+              <option value="descriptionSP">Description (ESP)</option>
+              <option value="descriptionEN">Description (EN)</option>
+              <option value="descriptionPT">Description (PT-BR)</option>
+              <option value="manualSP">Manual (ESP)</option>
+              <option value="manualEN">Manual (EN)</option>
+              <option value="manualPT">Manual (PT-BR)</option>
             </select>
-        
+          
             <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
-            
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Export info to PDF
-              </button>
+              Export info to PDF
+            </button>
+            <div>
               <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -39,26 +40,28 @@
                   </div>
                 </div>
               </div>
-        
-            
-        </div>        
-        <table class="table">
-            <thead>
+            </div>
+          </div>
+          
+    
+        <div class="table-responsive">
+            <table class="table">
+              <thead>
                 <tr>
-                    <th scope="col">Title (SP)</th>
-                    <th scope="col">Description (SP)</th>
-                    <th scope="col">Manual (SP)</th>
-                    <th scope="col">Title (EN)</th>
-                    <th scope="col">Description (EN)</th>
-                    <th scope="col">Manual (EN)</th>
-                    <th scope="col">Title (PT)</th>
-                    <th scope="col">Description (PT)</th>
-                    <th scope="col">Manual (PT)</th>
-                    <th scope="col">Update</th>
-                    <th scope="col">Delete</th>
+                  <th scope="col">Title (ESP)</th>
+                  <th scope="col">Description (ESP)</th>
+                  <th scope="col">Manual (ESP)</th>
+                  <th scope="col">Title (EN)</th>
+                  <th scope="col">Description (EN)</th>
+                  <th scope="col">Manual (EN)</th>
+                  <th scope="col">Title (PT-BR)</th>
+                  <th scope="col">Description (PT-BR)</th>
+                  <th scope="col">Manual (PT-BR)</th>
+                  <th scope="col">Update</th>
+                  <th scope="col">Delete</th>
                 </tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
                 <tr *ngFor="let row of obtenerDatosPagina()">
                   <td>{{ row.titleSP }}</td>
                   <td>{{ row.descriptionSP }}</td>
@@ -77,7 +80,11 @@
                   </td>
                 </tr>
               </tbody>
-        </table>
+            </table>
+          </div>
+          
+    </div>
+    
         <div class="navBarStyle">
             <ul class="pagination">
                 <!-- Botón para ir a la primera página -->
@@ -115,93 +122,109 @@
         </div>
     </div>
     
-<!-- Fuera del modal principal -->
-<div *ngIf="successMessage || errorMessage" class="toast-overlay">
-    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3">
-      <!-- Mensaje de éxito -->
-      <div *ngIf="successMessage" class="toast custom-alert alert alert-success alert-dismissible fade show" role="alert">
-        <div class="toast-message">{{ successMessage }}</div>
-        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="successMessage=''">OK</button>
-      </div>
-      <!-- Mensaje de error -->
-      <div *ngIf="errorMessage" class="toast custom-alert alert alert-danger alert-dismissible fade show" role="alert">
-        <div class="toast-message">{{ errorMessage }}</div>
-        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="errorMessage=''">OK</button>
-      </div>
-    </div>
-  </div>
-
-<!-- Edit Window -->
-<div #editModal class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <form (submit)="editar()" [formGroup]="myForm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Update Theme</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row" *ngFor="let language of ['SP', 'EN', 'PT']">
-                        <div class="col-md-12">
-                            <label for="title{{language}}">Title ({{language}})</label>
-                            <input type="text" class="form-control" id="title{{language}}" placeholder="Enter title" formControlName="title{{language}}">
+    <!-- Edit Window -->
+    <div #editModal class="modal fade" id="editModal" role="dialog" aria-labelledby="editModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form (submit)="editar()" [formGroup]="myForm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Update Category</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                                <label for="title{{language}}">Title ({{language}})</label>
+                                <input type="text" class="form-control" id="title{{language}}" placeholder="Enter title" formControlName="title{{language}}">
+                            </div>
                         </div>
-                        <div class="col-md-12">
-                            <label for="description{{language}}">Description ({{language}})</label>
-                            <input type="text" class="form-control" id="description{{language}}" placeholder="Enter description" formControlName="description{{language}}">
+                        <div class="row">
+                            <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                                <label for="description{{language}}">Description ({{language}})</label>
+                                <input type="text" class="form-control" id="description{{language}}" placeholder="Enter description" formControlName="description{{language}}">
+                            </div>
                         </div>
-                        <div class="col-md-12">
-                            <label for="manual{{language}}">Manual ({{language}})</label>
-                            <input type="file" class="form-control" accept=".pdf" id="manual{{language}}" (change)="onFileChange($event, language)" placeholder="Upload .pdf">
+                        <div class="row">
+                            <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                                <label for="manual{{language}}">Manual ({{language}})</label>
+                                <input type="file" class="form-control" accept=".pdf" id="manual{{language}}" (change)="onFileChange($event, language)" placeholder="Upload .pdf">
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-                
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Create Window -->
-<div #createModal class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <form (submit)="agregar()" [formGroup]="myForm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createModalLabel">Add Theme</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row" *ngFor="let language of ['SP', 'EN', 'PT']">
-                        <div class="col-md-12">
-                            <label for="title{{language}}">Title ({{language}})</label>
-                            <input type="text" class="form-control" id="title{{language}}" placeholder="Enter title" formControlName="title{{language}}">
-                        </div>
-                        <div class="col-md-12">
-                            <label for="description{{language}}">Description ({{language}})</label>
-                            <input type="text" class="form-control" id="description{{language}}" placeholder="Enter description" formControlName="description{{language}}">
-                        </div>
-                        <div class="col-md-12">
-                            <label for="manual{{language}}">Manual ({{language}})</label>
-                            <input type="file" class="form-control" accept=".pdf" id="manual{{language}}" (change)="onFileChange($event, language)" placeholder="Upload .pdf">
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
+    
+    <!-- Fuera del modal principal -->
+    <div *ngIf="successMessage || errorMessage" class="toast-overlay">
+        <div class="toast-container position-fixed top-50 start-50 translate-middle p-3">
+          <!-- Mensaje de éxito -->
+          <div *ngIf="successMessage" class="toast custom-alert alert alert-success alert-dismissible fade show" role="alert">
+            <div class="toast-message">{{ successMessage }}</div>
+            <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="successMessage=''">OK</button>
+          </div>
+          <!-- Mensaje de error -->
+          <div *ngIf="errorMessage" class="toast custom-alert alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="toast-message">{{ errorMessage }}</div>
+            <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="errorMessage=''">OK</button>
+          </div>
+        </div>
+      </div>
+      
+    
+    
+    
+    
+    
+    
+    
+    <!-- Create Window -->
+    <div #createModal class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form (ngSubmit)="agregar()" [formGroup]="myForm" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createModalLabel">Add Category</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                                <label for="title{{language}}">Title ({{language}})</label>
+                                <input type="text" class="form-control" id="title{{language}}" placeholder="Enter title" formControlName="title{{language}}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                                <label for="description{{language}}">Description ({{language}})</label>
+                                <input type="text" class="form-control" id="description{{language}}" placeholder="Enter description" formControlName="description{{language}}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
+                                <label for="manual{{language}}">Manual ({{language}})</label>
+                                <input type="file" class="form-control" accept=".pdf" id="manual{{language}}" (change)="onFileChange($event, language)" placeholder="Upload .pdf">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>  
+     
+    

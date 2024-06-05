@@ -56,13 +56,24 @@ export class ThemeCrudComponent implements OnInit{
       manualEN: [null, Validators.required],
       manualPT: [null, Validators.required]
     });
-    this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`)
-      .subscribe(
-        themes => {
-          this.dataSource = themes;
+    const url = `http://${environment.apiUrl}:3000/api/theme/get-themes`;
+      this.themeService.getThemes(url).subscribe(
+        (categories: any[]) => {
+          this.dataSource = categories.map(theme => ({
+            _id: theme._id,
+            titleSP: theme.titleSP,
+            titleEN: theme.titleEN,
+            titlePT: theme.titlePT,
+            descriptionSP: theme.descriptionSP,
+            descriptionEN: theme.descriptionEN,
+            descriptionPT: theme.descriptionPT,
+            manualSP: theme.manualSP,
+            manualEN: theme.manualEN,
+            manualPT: theme.manualPT
+          }));
         },
         error => {
-          console.error('Error al obtener temas:', error);
+          console.error('Error al obtener categorías:', error);
         }
       );
   }
