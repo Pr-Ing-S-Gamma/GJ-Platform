@@ -1,4 +1,4 @@
-.card-body{
+.card-body {
     border-radius: 35px;
     border: 1px black solid;
     border-top: none;
@@ -7,7 +7,7 @@
     padding: 5px;
 }
 
-.title{
+.title {
     text-align: center;
     color: black;
     font-size: 20px;
@@ -19,25 +19,22 @@
     justify-content: center;
 }
 
-.cardContainer{
+.cardContainer {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
 }
 
-.cardBackground{
+.cardBackground {
     background: #515151;
     border-radius: 35px;
     border: 1px black solid;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    padding-left: 40px;
-    padding-right: 40px;
+    padding: 20px 40px;
     margin: 15px;
 }
 
-.cardText{
+.cardText {
     color: white;
     font-size: 12px;
     font-family: Inter;
@@ -45,90 +42,77 @@
     word-wrap: break-word;
 }
 
-.addMemberWindow{
+/* New and updated styles */
+.modal-overlay {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.addMemberWindow {
+    background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-    display: none;
+    z-index: 1001;
 }
 
 .modal-header {
     display: flex;
     justify-content: flex-end;
-  }
+}
 
-.close-btn{
+.close-btn {
     background: none;
     border: none;
     cursor: pointer;
     margin-right: 10px;
     position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
+    top: 10px;
+    right: 10px;
 }
+
 .close-btn1 {
     position: relative;
     width: 20px;
     height: 20px;
-  }
+}
 
 .close-btn11, .close-btn12 {
     position: absolute;
     width: 100%;
     height: 2px;
     background-color: black;
-  }
-
-  .close-btn11 {
-    transform: rotate(45deg);
-  }
-  
-  .close-btn12 {
-    transform: rotate(-45deg);
-  }
-
-.close-btn11{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(45deg);
-    width: 12px;
-    height: 2px;
-    background-color: black;
-    transform-origin: center;
 }
 
-.close-btn12{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-45deg);
-    width: 12px;
-    height: 2px;
-    background-color: black;
-    transform-origin: center;
+.close-btn11 {
+    transform: rotate(45deg);
+}
+
+.close-btn12 {
+    transform: rotate(-45deg);
 }
 
 .modal-body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-  }
+}
 
-  .modal-body-section {
+.modal-body-section {
     display: flex;
     align-items: center;
     gap: 10px;
-  }
+}
 
-#name{
+#name {
     width: calc(100% - 32px);
     padding-right: 30px;
     border: none;
@@ -143,9 +127,9 @@
     border-right: 6px solid transparent;
     border-top: 10px solid black;
     cursor: pointer;
-  }
+}
 
-.suggestion-ul{
+.suggestion-ul {
     position: absolute;
     top: calc(100% + 5px);
     left: 0;
@@ -159,6 +143,7 @@
     margin: 0;
     padding-inline-start: 0;
 }
+
 .name-suggestions {
     list-style: none;
     padding: 0;
@@ -166,25 +151,18 @@
     border: 1px solid #ccc;
     max-height: 150px;
     overflow-y: auto;
-  }
+}
 
 .suggestion-li {
-  padding: 10px;
-  cursor: pointer;
+    padding: 10px;
+    cursor: pointer;
 }
+
 .suggestion-li:hover {
     background-color: #eee;
-  }
-
-#email{
-    width: calc(100% - 20px);
-    padding-right: 30px;
-    border: none;
-    border-bottom: 1px solid black;
-    border-radius: 0;
 }
 
-#discordUsername{
+#email, #discordUsername {
     width: calc(100% - 20px);
     padding-right: 30px;
     border: none;
@@ -196,16 +174,16 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-  }
+}
 
-.addBTN-container{
+.addBTN-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
 }
 
-.addBTN{
+.addBTN {
     background: #3EB9FF;
     border-radius: 15px;
     color: white;
@@ -216,14 +194,14 @@
     max-width: fit-content;
 }
 
-.leaveBTN-container{
+.leaveBTN-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: right;
     align-items: flex-end;
 }
 
-.leaveBTN{
+.leaveBTN {
     background: #FF3E3E;
     border-radius: 15px;
     color: white;
