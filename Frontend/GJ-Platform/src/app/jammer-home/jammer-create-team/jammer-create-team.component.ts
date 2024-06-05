@@ -126,7 +126,7 @@ export class JammerCreateTeamComponent implements OnInit {
             }
           }).subscribe({
             next: (data) => {
-              this.showAlert("Agregado con éxito", () => {
+              this.showAlert("Team Registration Complete", () => {
                 this.router.navigate(['/home']).then(() => {
                   window.location.reload();
                 });

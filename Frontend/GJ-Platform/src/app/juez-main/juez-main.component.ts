@@ -62,6 +62,10 @@ export class JuezMainComponent implements OnInit {
   audioDesignFeedback: string = "";
   buildFeedback: string = "";
   personalFeedback: string = "";
+
+  successMessage: string = '';
+  errorMessage: string = '';
+
   constructor(private router: Router, private userService: UserService, private SubmissionService: SubmissionService, private TeamService: TeamService, private GameJamService: GamejamService, private CategoryService: CategoryService, private ThemeService: ThemeService){}
 
   ngOnInit(): void {
@@ -164,12 +168,15 @@ export class JuezMainComponent implements OnInit {
         }
       );
   }
+  loading: boolean = false;
 
   getNewEvaluation() {
+    this.loading = true;
     this.SubmissionService.getCurrentTeamSubmission(`http://${environment.apiUrl}:3000/api/submission/get-new-evaluation`).subscribe(
       (juego: Submission) => {
         const existingGame = this.games.find(game => game.id === juego._id);
         if (existingGame) {
+          this.loading = false;
           return; 
         }
   
@@ -183,16 +190,28 @@ export class JuezMainComponent implements OnInit {
                 team: team.studioName
               }
             );
+            this.loading = false;
           },
           error => {
-            console.error('Error al obtener juegos:', error);
+            if (error.status === 400) {
+              this.showErrorMessage(error);
+            }
+            this.loading = false; 
           }
         )
       },
       error => {
-        console.error('Error al obtener juegos:', error);
+        this.showErrorMessage(error);
+        this.loading = false;
       }
     );
+  }
+  showSuccessMessage(message: string) {
+    this.successMessage = message;
+  }
+
+  showErrorMessage(message: string) {
+    this.errorMessage = message;
   }
   
   updateTimer() {
