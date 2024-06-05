@@ -27,25 +27,6 @@
         </button>
     </div>
     <div *ngIf="timeRemaining !== '0d 0h 0m 0s'" class="row games-evaluations-container">
-        
-<!-- Fuera del modal principal -->
-<div *ngIf="successMessage || errorMessage" class="toast-overlay">
-    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3">
-      <!-- Mensaje de éxito -->
-      <div *ngIf="successMessage" class="toast custom-alert alert alert-success alert-dismissible fade show" role="alert">
-        <div class="toast-message">{{ successMessage }}</div>
-        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="successMessage=''">OK</button>
-      </div>
-      <!-- Mensaje de error -->
-      <div *ngIf="errorMessage" class="toast custom-alert alert alert-danger alert-dismissible fade show" role="alert">
-        <div class="toast-message">{{ errorMessage }}</div>
-        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="errorMessage=''">OK</button>
-      </div>
-    </div>
-  </div>
-  <div class="lds-dual-ring" bis_skin_checked="1" *nfIf="loading">
-    <p>Loading Evaluation</p>
-</div>
         <div class="evaluations-list">
             <div *ngFor="let game of evaluations" class="game-card" (click)="selectGame(game.id)">
                 <div class="game-info">
@@ -377,8 +358,18 @@
 </div>
 
 
-
-
-
-
-
+<!-- Fuera del modal principal -->
+<div *ngIf="successMessage || errorMessage" class="toast-overlay">
+    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3">
+      <!-- Mensaje de éxito -->
+      <div *ngIf="successMessage" class="toast custom-alert alert alert-success alert-dismissible fade show" role="alert">
+        <div class="toast-message">{{ successMessage }}</div>
+        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="successMessage=''">OK</button>
+      </div>
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="toast custom-alert alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="toast-message">{{ errorMessage }}</div>
+        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="errorMessage=''">OK</button>
+      </div>
+    </div>
+  </div>

@@ -168,15 +168,12 @@ export class JuezMainComponent implements OnInit {
         }
       );
   }
-  loading: boolean = false;
 
   getNewEvaluation() {
-    this.loading = true;
     this.SubmissionService.getCurrentTeamSubmission(`http://${environment.apiUrl}:3000/api/submission/get-new-evaluation`).subscribe(
       (juego: Submission) => {
         const existingGame = this.games.find(game => game.id === juego._id);
         if (existingGame) {
-          this.loading = false;
           return; 
         }
   
@@ -190,19 +187,16 @@ export class JuezMainComponent implements OnInit {
                 team: team.studioName
               }
             );
-            this.loading = false;
           },
           error => {
             if (error.status === 400) {
               this.showErrorMessage(error);
-            }
-            this.loading = false; 
+            } 
           }
         )
       },
       error => {
         this.showErrorMessage(error);
-        this.loading = false;
       }
     );
   }
@@ -251,9 +245,7 @@ export class JuezMainComponent implements OnInit {
 
   selectGame(id: string) {
     this.gameParameter = id;
-    this.loading = true;
     this.loadData();
-    this.loading = false;
   }
 
 
