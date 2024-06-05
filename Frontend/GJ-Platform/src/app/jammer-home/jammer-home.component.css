@@ -1,5 +1,4 @@
-
-.contador{
+.contador {
     text-align: center; 
     color: #FF0000; 
     font-size: 38px; 
@@ -8,21 +7,20 @@
     word-wrap: break-word; 
     display: flex;
     position: relative;
-    
 }
-.teamName1{
+
+.teamName1 {
     text-align: center;
     position: relative;
-    display:flex;
+    display: flex;
     color: black; 
     font-size: 40px; 
     font-family: Kanit; 
     font-weight: 400; 
     word-wrap: break-word;
-    
 }
 
-.notTeamName{
+.notTeamName {
     background: white;  
     color: rgb(0, 0, 0);
     border-radius: 35px;
@@ -34,10 +32,12 @@
     cursor: pointer;
     transition: 0.3s;
 }
+
 .notTeamName:hover {
     background: rgb(0, 0, 0);
     color: white;
 }
+
 .chatButton {
     background: white;
     color: rgb(8, 138, 225);
@@ -49,30 +49,13 @@
     cursor: pointer;
     transition: 0.3s;
     margin-left: auto;
-    
 }
+
 .chatButton:hover {
     background: rgb(8, 138, 225);
     color: white;
 }
-.crudButton:hover {
-    background: black;
-    color: white;
-}
 
-.active {
-    background: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
-}
-
-.tabButton {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 10px;
-    justify-content: start;
-    gap: 10px; /* Espacio entre los botones */
-    margin: auto;
-}
 .crudButton {
     background: white;  
     color: black;
@@ -85,6 +68,27 @@
     cursor: pointer;
     transition: 0.3s;
 }
+
+.crudButton:hover,
+.crudButton.active {
+    background: black;
+    color: white;
+}
+
+.active {
+    background: black;
+    color: white;
+}
+
+.tabButton {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    justify-content: start;
+    gap: 10px; /* Espacio entre los botones */
+    margin: auto;
+}
+
 .navbar {
     border-bottom: 1px solid #000000;
 }
