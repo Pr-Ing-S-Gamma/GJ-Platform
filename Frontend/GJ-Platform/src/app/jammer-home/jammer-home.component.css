@@ -24,7 +24,7 @@
 
 .notTeamName{
     background: white;  
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     border-radius: 35px;
     font-size: 18px;
     font-weight: 400;
@@ -35,7 +35,7 @@
     transition: 0.3s;
 }
 .notTeamName:hover {
-    background: rgb(255, 255, 255);
+    background: rgb(0, 0, 0);
     color: white;
 }
 .chatButton {
