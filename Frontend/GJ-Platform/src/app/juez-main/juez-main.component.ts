@@ -251,7 +251,9 @@ export class JuezMainComponent implements OnInit {
 
   selectGame(id: string) {
     this.gameParameter = id;
+    this.loading = true;
     this.loadData();
+    this.loading = false;
   }
 
 
