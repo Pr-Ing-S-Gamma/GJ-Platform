@@ -40,7 +40,7 @@ export class ChatJammerComponent implements OnInit{
 }
   sendMSG() {
     if (this.myForm.valid) {
-        const sender = { Id: this.team, Type: 'User' }; 
+        const sender = { Id: this.team, Type: 'Team' }; 
         const msg = this.myForm.get('message')!.value;
 
         this.chatService.sendMessage(this.chat!._id, sender, msg).subscribe(
