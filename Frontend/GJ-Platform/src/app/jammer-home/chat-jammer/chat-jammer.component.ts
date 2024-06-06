@@ -38,20 +38,21 @@ export class ChatJammerComponent implements OnInit{
     );
   }
 }
-  sendMSG() {
-    if (this.myForm.valid) {
-        const sender = { Id: this.team, Type: 'Team' }; 
-        const msg = this.myForm.get('message')!.value;
+sendMSG() {
+  if (this.myForm.valid) {
+      const sender = this.team; // Enviar el nombre del equipo como sender
+      const msg = this.myForm.get('message')!.value;
 
-        this.chatService.sendMessage(this.chat!._id, sender, msg).subscribe(
-            (response: any) => {
-                console.log('Mensaje enviado con éxito:', response);
-            },
-            (error: any) => {
-                console.error('Error al enviar el mensaje:', error);
-            }
-        );
-        this.myForm.reset();
-    }
+      this.chatService.sendMessage(this.chat!._id, sender, msg).subscribe(
+          (response: any) => {
+              console.log('Mensaje enviado con éxito:', response);
+          },
+          (error: any) => {
+              console.error('Error al enviar el mensaje:', error);
+          }
+      );
+      this.myForm.reset();
   }
+}
+
 }

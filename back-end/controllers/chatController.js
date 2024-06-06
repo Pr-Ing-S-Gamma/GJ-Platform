@@ -42,38 +42,28 @@ const getChat = async (req, res) => {
 
 const sendMessage = async (req, res) => {
   const { sender, msg } = req.body;
-  const teamIdentifier = req.params.id;
 
   try {
+      let team;
       let chat;
 
-      // Verificar si el identificador del equipo es un ID válido de MongoDB
-      if (mongoose.Types.ObjectId.isValid(teamIdentifier)) {
-          // Si es un ID válido, buscar el equipo por su ID
-          const team = await Team.findById(teamIdentifier);
-          if (!team) {
-              return res.status(400).json({ success: false, msg: 'No existe el equipo con el ID proporcionado.' });
-          }
-          // Obtener el primer chat asociado al equipo (asumiendo que solo hay uno)
-          chat = await Chat.findById(team.chatsIds[0]);
-      } else {
-          // Si no es un ID válido, tratarlo como nombre de equipo
-          // Buscar el equipo por su nombre
-          const team = await Team.findOne({ studioName: teamIdentifier });
-          if (!team) {
-              return res.status(400).json({ success: false, msg: 'No existe el equipo con el nombre proporcionado.' });
-          }
-          // Obtener el primer chat asociado al equipo (asumiendo que solo hay uno)
-          chat = await Chat.findById(team.chatsIds[0]);
+      // Buscar el equipo por su ID o nombre
+      team = await Team.findOne({ $or: [{ _id: sender }, { studioName: sender }] });
+
+      if (!team) {
+          return res.status(400).json({ success: false, msg: 'No se encontró el equipo.' });
       }
+
+      // Obtener el primer chat asociado al equipo (asumiendo que solo hay uno)
+      chat = await Chat.findById(team.chatsIds[0]);
 
       if (!chat) {
           return res.status(400).json({ success: false, msg: 'No se encontró el chat asociado al equipo.' });
       }
 
       chat.messagesList.push({
-          senderId: sender.Id,
-          senderType: sender.Type,
+          sender: sender,
+          senderType: 'Team',
           message: msg,
           sentDate: new Date()
       });
@@ -85,6 +75,7 @@ const sendMessage = async (req, res) => {
       return res.status(400).json({ success: false, msg: 'Error al enviar el mensaje', error });
   }
 };
+
 
 
 const getChatbyParticipants = async (req, res) => {
