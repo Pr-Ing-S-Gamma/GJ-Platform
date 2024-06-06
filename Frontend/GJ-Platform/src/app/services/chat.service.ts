@@ -14,9 +14,10 @@ export class ChatService {
 
   constructor(private http: HttpClient) {}
 
-  createChat(chat: Chat): Observable<any> {
-    return this.http.post(`${this.baseUrl}create-chat`, chat.participants, { withCredentials: true });
-  }
+createChat(chat: Chat): Observable<any> {
+  return this.http.post(`${this.baseUrl}create-chat`, { participants: chat.participants }, { withCredentials: true });
+}
+
 
   getChat(id: string): Observable<Chat> {
     return this.http.get<{ data: Chat }>(`${this.baseUrl}get-chat/${id}`, { withCredentials: true }).pipe(

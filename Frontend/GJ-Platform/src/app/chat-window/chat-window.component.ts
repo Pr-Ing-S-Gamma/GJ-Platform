@@ -28,8 +28,11 @@ export class ChatWindowComponent implements OnInit{
       msg: ['', Validators.required]
     });
   
+    console.log(this.team);
+    console.log(this.localOrg);
+  
     if (this.team !== undefined && this.localOrg !== undefined) {
-      this.chatService.getChatbyParticipants([this.localOrg , this.team]).subscribe(
+      this.chatService.getChatbyParticipants([this.localOrg, this.team]).subscribe(
         (chat: Chat) => {
           this.chat = chat;
         },
@@ -42,7 +45,7 @@ export class ChatWindowComponent implements OnInit{
             ],
             messagesList: []
           };
-          console.log(newChat.participants)
+  
           this.chatService.createChat(newChat).subscribe(
             (createdChat: Chat) => {
               this.chat = createdChat;
@@ -57,6 +60,7 @@ export class ChatWindowComponent implements OnInit{
       console.error('team or localOrg is undefined');
     }
   }
+  
 
   sendMSG() {
   if (this.myForm.valid) {

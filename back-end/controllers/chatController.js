@@ -5,29 +5,27 @@ const User = require('../models/userModel')
 
 const createChat = async (req, res) => {
     const { participants } = req.body;
-    var member;
-
+    
+    if (!participants) {
+      return res.status(400).json({ success: false, error: 'Participants are required.' });
+    }
+  
     try {
-        const chat = new Chat({
-            participants: participants.map(participant => ({
-                participantType: participant.participantType,
-                participantId: participant.participantId
-            }))
-        });
-        await chat.save();
-
-        for(const p of participants){
-            if(p.participantType == 'User'){
-
-            }
-        }
-        res.status(200).json({ success: true, msg: 'chat created', data: chat.participants });
+      const chat = new Chat({
+        participants: participants.map(participant => ({
+          participantType: participant.participantType,
+          participantId: participant.participantId
+        }))
+      });
+  
+      await chat.save();
+  
+      res.status(200).json({ success: true, msg: 'Chat created', data: chat });
+    } catch (error) {
+      res.status(400).json({ success: false, error: error.message });
     }
-    catch (error) {
-        res.status(400).json({ success: false, error: error.message });
-    }
-
-};
+  };
+  
 
 const getChat = async (req, res) => {
     const id = req.params.id;
