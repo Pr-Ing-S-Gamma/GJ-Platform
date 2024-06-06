@@ -42,6 +42,7 @@ export class ChatWindowComponent implements OnInit{
             ],
             messagesList: []
           };
+          console.log(newChat.participants)
           this.chatService.createChat(newChat).subscribe(
             (createdChat: Chat) => {
               this.chat = createdChat;
