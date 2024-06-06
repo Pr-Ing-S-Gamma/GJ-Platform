@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -18,8 +18,8 @@ import { ChatService } from '../services/chat.service';
 })
 export class ChatWindowComponent implements OnInit{
   myForm!: FormGroup;
-  team: string = "";
-  localOrg : string = "";
+  @Input() team: string | undefined;
+  @Input() localOrg : string | undefined;
   chat: Chat | undefined;
   constructor(private fb: FormBuilder, private chatService :ChatService){
   }
@@ -27,30 +27,34 @@ export class ChatWindowComponent implements OnInit{
     this.myForm = this.fb.group({
       msg: ['', Validators.required]
     });
-
-    this.chatService.getChatbyParticipants([this.localOrg, this.team]).subscribe(
-      (chat: Chat) => {
-        this.chat = chat;
-      },
-      (error: any) => {
-        const newChat: Chat = {
-          _id: '',
-          participants: [
-            { participantType: 'User', participantId: this.localOrg },
-            { participantType: 'Team', participantId: this.team }
-          ],
-          messagesList: []
-        };
-        this.chatService.createChat(newChat).subscribe(
-          (createdChat: Chat) => {
-            this.chat = createdChat;
-          },
-          (createError: any) => {
-            console.error('Error creating chat:', createError);
-          }
-        );
-      }
-    );
+  
+    if (this.team !== undefined && this.localOrg !== undefined) {
+      this.chatService.getChatbyParticipants([this.localOrg , this.team]).subscribe(
+        (chat: Chat) => {
+          this.chat = chat;
+        },
+        (error: any) => {
+          const newChat: Chat = {
+            _id: '',
+            participants: [
+              { participantType: 'User', participantId: this.localOrg! },
+              { participantType: 'Team', participantId: this.team! }
+            ],
+            messagesList: []
+          };
+          this.chatService.createChat(newChat).subscribe(
+            (createdChat: Chat) => {
+              this.chat = createdChat;
+            },
+            (createError: any) => {
+              console.error('Error creating chat:', createError);
+            }
+          );
+        }
+      );
+    } else {
+      console.error('team or localOrg is undefined');
+    }
   }
 
   sendMSG() {

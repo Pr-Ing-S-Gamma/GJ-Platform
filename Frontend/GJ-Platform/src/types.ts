@@ -158,7 +158,7 @@ export interface Chat {
   _id: string;
   participants: {
     participantType: 'User' | 'Team';
-    participantId: string;
+    participantId?: string;
   }[];
   messagesList: {
     sender: string;

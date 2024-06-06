@@ -192,4 +192,8 @@
   .ok-button:hover {
     background-color: #94b4d9e9;
   }
+
+  .modal-body{
+    width: 60%;
+  }
   
