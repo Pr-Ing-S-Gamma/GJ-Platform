@@ -118,7 +118,7 @@ export class RegisterComponent implements OnInit {
 
   redirectToLogin() {
     this.showModal = false;
-    this.router.navigate(['/login']);
+    this.router.navigate(['/home']);
   }
   errorMessage: string = '';
   
