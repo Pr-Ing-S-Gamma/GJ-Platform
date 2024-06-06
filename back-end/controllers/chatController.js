@@ -5,6 +5,7 @@ const User = require('../models/userModel')
 
 const createChat = async (req, res) => {
     const { participants } = req.body;
+    var member;
 
     try {
         const chat = new Chat({
@@ -15,6 +16,11 @@ const createChat = async (req, res) => {
         });
         await chat.save();
 
+        for(const p of participants){
+            if(p.participantType == 'User'){
+
+            }
+        }
         res.status(200).json({ success: true, msg: 'chat created', data: chat.participants });
     }
     catch (error) {
@@ -66,11 +72,28 @@ const sendMessage = async (req, res) => {
 
 };
 
+const getChatbyParticipants = async(req, res) =>{
+    const {participantIds} = req.body;
+
+    const chat = await Chat.find({
+        'participants.participantId': { $all: participantIds }
+    });
+
+    if(chat){
+        return res.status(200).json({ success: true, msg: 'chat', data: chat });
+    }
+
+    return res.status(400).json({ success: false, msg: 'error' });
+
+
+};
+
 
 module.exports = {
     createChat,
     getChat,
-    sendMessage
+    sendMessage,
+    getChatbyParticipants
 };
 
 /*const chat = new Chat({
