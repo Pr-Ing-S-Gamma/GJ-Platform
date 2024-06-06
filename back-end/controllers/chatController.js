@@ -44,54 +44,54 @@ const sendMessage = async (req, res) => {
     const { sender, msg } = req.body;
     const id = req.params.id;
 
-    // Verificar si el ID proporcionado es válido
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ success: false, error: 'El ID proporcionado no es válido.' });
-    }
-
     try {
         const chat = await Chat.findById(id);
-        if (!chat) {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, error: 'El ID proporcionado no es válido.' });
+        }
+        if(!chat){
             return res.status(400).json({ success: false, msg: 'No existe el chat' });
         }
-        
-        // Agregar el nuevo mensaje a la lista de mensajes del chat
         chat.messagesList.push({
             senderId: sender.Id,
-            senderType: sender.Type,
+            senderType:sender.Type,
             message: msg,
             sentDate: new Date()
-        });
+        })
 
-        // Guardar el chat modificado
         await chat.save();
-
-        return res.status(200).json({ success: true, msg: 'Mensaje enviado con éxito', data: chat.messagesList });
+        return res.status(200).json({ success: true, msg: 'chat', data: chat.messagesList });
         
     } catch (error) {
-        return res.status(400).json({ success: false, msg: 'Error al enviar el mensaje', error });
+        return res.status(400).json({ success: false, msg: 'error al enviar' });
     }
+
+
+
 };
 
-
 const getChatbyParticipants = async (req, res) => {
-    const { participantIds } = req.body;
-  
-    try {
+  const participantIds = req.query.participantIds;
+
+  if (!participantIds || !Array.isArray(participantIds)) {
+      return res.status(400).json({ success: false, msg: 'Se requieren IDs de participantes válidos.' });
+  }
+
+  try {
       const chat = await Chat.find({
-        'participants.participantId': { $all: participantIds }
+          'participants.participantId': { $all: participantIds }
       });
-  
+
       if (chat.length > 0) {
-        return res.status(200).json({ success: true, msg: 'chat found', data: chat});
+          return res.status(200).json({ success: true, msg: 'Chat encontrado', data: chat[0] });
       } else {
-        return res.status(404).json({ success: false, msg: 'chat not found' });
+          return res.status(404).json({ success: false, msg: 'Chat no encontrado' });
       }
-    } catch (error) {
-      return res.status(500).json({ success: false, msg: 'server error', error });
-    }
-  };
-  
+  } catch (error) {
+      return res.status(500).json({ success: false, msg: 'Error del servidor', error });
+  }
+};
+
 
 
 module.exports = {

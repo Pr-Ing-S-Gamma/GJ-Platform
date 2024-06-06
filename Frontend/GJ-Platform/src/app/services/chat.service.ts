@@ -28,13 +28,10 @@ createChat(chat: Chat): Observable<any> {
   getChatbyParticipants(participantIds: string[]): Observable<Chat> {
     const queryParams = participantIds.map(id => `participantIds=${encodeURIComponent(id)}`).join('&');
     return this.http.get<{ data: Chat }>(`${this.baseUrl}get-chat-by-participants?${queryParams}`, { withCredentials: true }).pipe(
-      map(response => response.data),
-      catchError((error: any) => {
-        console.error('Error fetching chat:', error);
-        return throwError(error);
-      })
+        map(response => response.data)
     );
-  }
+}
+
   
   sendMessage(chatId: string, sender: any, message: string): Observable<any> {
     const body = { sender, msg: message }; // Construir el cuerpo de la solicitud
