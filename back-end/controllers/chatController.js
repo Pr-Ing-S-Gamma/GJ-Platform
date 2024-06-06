@@ -83,7 +83,7 @@ const getChatbyParticipants = async (req, res) => {
       });
 
       if (chat.length > 0) {
-          return res.status(200).json({ success: true, msg: 'Chat encontrado', data: chat[0] });
+          return res.status(200).json({ success: true, msg: 'Chat encontrado', data: chat });
       } else {
           return res.status(404).json({ success: false, msg: 'Chat no encontrado' });
       }
