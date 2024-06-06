@@ -10,13 +10,13 @@
                 {{ msg.senderType }} - {{ msg.sentDate | date: 'shortTime' }}
             </div>
             <div class="row cardText">
-                {{msg.msg}}
+                {{ msg.message }}
             </div>
         </div>
     </div>
     <div class="modal-footer">
         <form (submit)="sendMSG()" [formGroup]="myForm">
-            <textarea class="col" id="msg" name="msg" formControlName="msg" required></textarea>
+            <textarea class="col" id="msg" name="msg" formControlName="message" required></textarea>
             <button class="btn col" type="submit">Send</button>
         </form>
     </div>
