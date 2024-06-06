@@ -7,10 +7,10 @@
     <div class="modal-body modalBodyFlex">
         <div *ngFor="let msg of chat?.messagesList" class="chatWindow">
             <div class="row msgHeader" [style.color]="msg.senderType == 'Team' ? '#6a87fb' : '#ff66a8'">
-                {{ msg.sender }} - {{ msg.sentDate | date: 'shortTime' }}
+                {{ msg.senderType }} - {{ msg.sentDate | date: 'shortTime' }}
             </div>
             <div class="row cardText">
-                {{ msg.msg }}
+                {{ msg.sender }}
             </div>
         </div>
     </div>
