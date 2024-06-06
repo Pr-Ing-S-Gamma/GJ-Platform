@@ -121,9 +121,9 @@ const getJammerChat = async (req, res) => {
   const jammerSendMessage = async (req, res) => {
     const { sender, msg } = req.body;
     const id = req.params.id;
-
+    console.log(sender)
     try {
-      const team = await Team.findOne({ studioName: teamName });
+      const team = await Team.findOne({ studioName: sender });
   
       if (!team) {
         return res.status(404).json({ success: false, msg: 'Equipo no encontrado' });
@@ -140,7 +140,7 @@ const getJammerChat = async (req, res) => {
         }
         chat.messagesList.push({
             senderId: teamId.Id,
-            senderType: sender,
+            senderType: "Team",
             message: msg,
             sentDate: new Date()
         })  

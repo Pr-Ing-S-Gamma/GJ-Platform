@@ -40,10 +40,9 @@ export class ChatJammerComponent implements OnInit{
 }
 sendMSG() {
   if (this.myForm.valid) {
-      const sender = this.team; // Enviar el nombre del equipo como sender
       const msg = this.myForm.get('message')!.value;
 
-      this.chatService.jammerSendMsg(this.chat!._id, sender, msg).subscribe(
+      this.chatService.jammerSendMsg  (this.chat!._id, this.team, msg).subscribe(
           (response: any) => {
               console.log('Mensaje enviado con éxito:', response);
           },
