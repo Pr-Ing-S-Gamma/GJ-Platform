@@ -50,6 +50,10 @@ app.use(cookieParser());
 const user_route = require('./routes/userRoute');
 app.use('/api/user', user_route);
 
+// Rutas de chat
+const chat_route = require('./routes/chatRoute')
+app.use('/api/chat', chat_route);
+
 // Rutas de regiones
 const region_route = require('./routes/regionRoute');
 app.use('/api/region', region_route);
