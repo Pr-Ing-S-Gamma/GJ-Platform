@@ -3,8 +3,6 @@
     border-radius: 35px;
     border: 1px black solid;
     width: 40%;
-    display: flex;
-    align-items: center;
 }
 
 .modalBodyFlex{
