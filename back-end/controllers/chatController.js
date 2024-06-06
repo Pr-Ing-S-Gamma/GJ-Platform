@@ -140,10 +140,10 @@ const getJammerChat = async (req, res) => {
         }
         chat.messagesList.push({
             senderId: teamId.Id,
-            senderType:sender.Type,
+            senderType: sender,
             message: msg,
             sentDate: new Date()
-        })
+        })  
 
         await chat.save();
         return res.status(200).json({ success: true, msg: 'chat', data: chat.messagesList });
