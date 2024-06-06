@@ -29,7 +29,7 @@
     font-family: Inter;
     font-weight: 400;
     word-wrap: break-word;
-    margin-left: 30%; /* Ajusta este valor según tu preferencia */
+    margin-left: 10%; /* Ajusta este valor según tu preferencia */
 }
 
 .cardText{
@@ -38,7 +38,7 @@
     font-family: Inter;
     font-weight: 400;
     word-wrap: break-word;
-    margin-left: 30%; /* Ajusta este valor según tu preferencia */
+    margin-left: 10%; /* Ajusta este valor según tu preferencia */
 }
 
 
@@ -62,7 +62,7 @@ textarea {
     margin-bottom: 6px;
     margin-right: 10px;
     font-size: 16px;
-    flex: 1; 
+    width: 100%; /* Hacer que el textarea abarque todo el ancho disponible */
 }
 
 .btn {
