@@ -79,6 +79,7 @@ export class ChatWindowComponent implements OnInit{
             }
         );
         this.myForm.reset();
+        this.ngOnInit();
     }
   }
 

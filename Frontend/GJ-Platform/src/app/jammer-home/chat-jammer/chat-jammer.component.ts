@@ -51,6 +51,7 @@ sendMSG() {
           }
       );
       this.myForm.reset();
+      this.ngOnInit();
   }
 }
 
