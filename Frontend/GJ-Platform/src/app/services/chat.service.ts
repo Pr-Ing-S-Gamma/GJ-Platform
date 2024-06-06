@@ -32,6 +32,13 @@ createChat(chat: Chat): Observable<any> {
     );
 }
 
+getJammerChat(teamName: string): Observable<Chat> {
+  const queryParams = `teamName=${encodeURIComponent(teamName)}`;
+  return this.http.get<{ data: Chat }>(`${this.baseUrl}get-jammer-chat?${queryParams}`, { withCredentials: true }).pipe(
+    map(response => response.data),
+  );
+}
+
   
   sendMessage(chatId: string, sender: any, message: string): Observable<any> {
     const body = { sender, msg: message }; // Construir el cuerpo de la solicitud

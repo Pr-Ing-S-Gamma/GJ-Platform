@@ -92,13 +92,41 @@ const getChatbyParticipants = async (req, res) => {
   }
 };
 
+const getJammerChat = async (req, res) => {
+    const teamName = req.query.teamName;
+  
+    try {
+      // Paso 1: Buscar el equipo por su nombre
+      const team = await Team.findOne({ studioName: teamName });
+  
+      if (!team) {
+        return res.status(404).json({ success: false, msg: 'Equipo no encontrado' });
+      }
+  
+      // Paso 2: Obtener el ID del equipo encontrado
+      const teamId = team._id;
+  
+      // Paso 3: Buscar el chat asociado al ID del equipo
+      const chat = await Chat.findOne({ 'participants.participantId': teamId });
+  
+      if (!chat) {
+        return res.status(404).json({ success: false, msg: 'Chat no encontrado para este equipo' });
+      }
+  
+      return res.status(200).json({ success: true, msg: 'Chat encontrado', data: chat });
+    } catch (error) {
+      return res.status(500).json({ success: false, msg: 'Error del servidor', error });
+    }
+  };
+
 
 
 module.exports = {
     createChat,
     getChat,
     sendMessage,
-    getChatbyParticipants
+    getChatbyParticipants,
+    getJammerChat
 };
 
 /*const chat = new Chat({

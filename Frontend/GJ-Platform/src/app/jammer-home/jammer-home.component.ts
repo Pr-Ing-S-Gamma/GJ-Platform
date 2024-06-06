@@ -8,12 +8,12 @@ import { Router } from '@angular/router';
 import { JammerCreateTeamComponent } from './jammer-create-team/jammer-create-team.component';
 import { JammerTeamComponent } from './jammer-team/jammer-team.component';
 import { JammerSubmitComponent } from './jammer-submit/jammer-submit.component';
-import { ChatWindowComponent } from '../chat-window/chat-window.component';
 import { GameInformationComponent } from "../game-information/game-information.component";
 import { JammerCategoriesComponent } from './jammer-categories/jammer-categories.component';
 import { JammerThemesComponent } from './jammer-themes/jammer-themes.component';
 import { environment } from '../../environments/environment.prod';
 import { GameInfoComponent } from './game-info/game-info.component';
+import { ChatJammerComponent } from "./chat-jammer/chat-jammer.component";
 
 @Component({
     selector: 'app-jammer-home',
@@ -26,10 +26,10 @@ import { GameInfoComponent } from './game-info/game-info.component';
         JammerCreateTeamComponent,
         CommonModule,
         JammerTeamComponent,
-        ChatWindowComponent,
         JammerSubmitComponent,
         GameInformationComponent,
-        GameInfoComponent
+        GameInfoComponent,
+        ChatJammerComponent
     ]
 })
 export class JammerHomeComponent implements OnInit {
@@ -54,11 +54,13 @@ export class JammerHomeComponent implements OnInit {
     this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
+          /*
           if (user.roles.includes('LocalOrganizer')) {
             this.router.navigate(['/Games']);
           } else if (user.roles.includes('GlobalOrganizer')) {
             this.router.navigate(['/DataManagement']);
           }
+            */
           this.username = user.name + "(" + user.discordUsername + ")";
           this.teamName = user.team?.name;
           console.log(user)
