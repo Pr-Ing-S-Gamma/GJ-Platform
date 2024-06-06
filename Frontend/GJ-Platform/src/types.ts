@@ -154,6 +154,20 @@ export interface Member {
     discordUsername: string;
 }
 
+export interface Chat {
+  _id: string;
+  participants: {
+    participantType: 'User' | 'Team';
+    participantId: string;
+  }[];
+  messagesList: {
+    senderId: string;
+    senderType: 'User' | 'Team';
+    message: string;
+    sentDate: Date;
+  }[];
+}
+
 export interface Submission {
   _id?: string;
   title: string;

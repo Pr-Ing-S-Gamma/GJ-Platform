@@ -16,6 +16,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class ChatWindowComponent implements OnInit{
   myForm!: FormGroup;
+  teamId: string | undefined;
+  localOrg : string | undefined;
   chat: any[] = [
     {
       name: "Rodolfo",
