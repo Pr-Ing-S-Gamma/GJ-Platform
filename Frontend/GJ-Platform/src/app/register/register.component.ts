@@ -35,19 +35,6 @@ export class RegisterComponent implements OnInit {
       site: ['', Validators.required],
       discordUsername: ['', Validators.required]
     });
-    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
-    .subscribe(
-      user => {
-        if (user.roles.includes('LocalOrganizer')) {
-          this.router.navigate(['/Games']);
-        }
-        if (user.roles.includes('GlobalOrganizer')) {
-          this.router.navigate(['/DataManagement']);
-        }
-      },
-      () => {
-      }
-    );
     this.regionService.getRegions(`http://${environment.apiUrl}:3000/api/region/get-regions`)
     .subscribe(
       regions => {
@@ -118,7 +105,7 @@ export class RegisterComponent implements OnInit {
 
   redirectToLogin() {
     this.showModal = false;
-    this.router.navigate(['/home']);
+    this.router.navigate(['/login']);
   }
   errorMessage: string = '';
   
