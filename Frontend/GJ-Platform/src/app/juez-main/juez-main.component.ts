@@ -274,7 +274,7 @@ export class JuezMainComponent implements OnInit {
       next: (data) => {
         console.log(data);
         if (data.success) {
-          //window.location.reload();
+          window.location.reload();
         } else {
         }
       },
