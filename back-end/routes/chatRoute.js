@@ -14,6 +14,7 @@ const upload = multer({ storage: storage });
 const chatController = require('../controllers/chatController');
 
 chat_route.post('/create-chat', upload.none(), chatController.createChat);
+chat_route.get('/get-chat/:id', chatController.getChat);
 
 
 module.exports = chat_route;

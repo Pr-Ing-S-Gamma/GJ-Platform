@@ -55,6 +55,10 @@ const userSchema = new Schema({
         type: Number, 
         required: false
     },
+    chatsIds: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Chat'
+    },
     creationDate: {
         type: Date,
         required: true
