@@ -73,6 +73,10 @@ const teamSchema = mongoose.Schema({
         ref: 'Submission',
         required: false
     }],
+    chatsIds: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Chat'
+    }],
     creatorUser:  {
         userId: {
             type: Schema.Types.ObjectId, 
