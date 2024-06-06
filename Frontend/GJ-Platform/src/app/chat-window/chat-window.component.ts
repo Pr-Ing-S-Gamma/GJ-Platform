@@ -31,35 +31,40 @@ export class ChatWindowComponent implements OnInit{
     console.log(this.team);
     console.log(this.localOrg);
   
-    if (this.team !== undefined && this.localOrg !== undefined) {
+    if (this.team && this.localOrg) {
       this.chatService.getChatbyParticipants([this.localOrg, this.team]).subscribe(
         (chat: Chat) => {
           this.chat = chat;
         },
         (error: any) => {
-          const newChat: Chat = {
-            _id: '',
-            participants: [
-              { participantType: 'User', participantId: this.localOrg! },
-              { participantType: 'Team', participantId: this.team! }
-            ],
-            messagesList: []
-          };
+          if (error.status === 404) {
+            const newChat: Chat = {
+              _id: '',
+              participants: [
+                { participantType: 'User', participantId: this.localOrg },
+                { participantType: 'Team', participantId: this.team }
+              ],
+              messagesList: []
+            };
   
-          this.chatService.createChat(newChat).subscribe(
-            (createdChat: Chat) => {
-              this.chat = createdChat;
-            },
-            (createError: any) => {
-              console.error('Error creating chat:', createError);
-            }
-          );
+            this.chatService.createChat(newChat).subscribe(
+              (createdChat: Chat) => {
+                this.chat = createdChat;
+              },
+              (createError: any) => {
+                console.error('Error creating chat:', createError);
+              }
+            );
+          } else {
+            console.error('Error fetching chat:', error);
+          }
         }
       );
     } else {
       console.error('team or localOrg is undefined');
     }
   }
+  
   
 
   sendMSG() {

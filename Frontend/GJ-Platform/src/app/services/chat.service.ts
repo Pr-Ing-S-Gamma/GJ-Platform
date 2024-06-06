@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Chat } from '../../types';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment.prod';
 
 @Injectable({
@@ -27,7 +27,11 @@ createChat(chat: Chat): Observable<any> {
 
   getChatbyParticipants(participantIds: string[]): Observable<Chat> {
     return this.http.post<{ data: Chat }>(`${this.baseUrl}get-chat-by-participants`, { participantIds }, { withCredentials: true }).pipe(
-      map(response => response.data)
+      map(response => response.data),
+      catchError((error: any) => {
+        console.error('Error fetching chat:', error);
+        return throwError(error);
+      })
     );
   }
 
