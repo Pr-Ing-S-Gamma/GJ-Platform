@@ -18,6 +18,6 @@ chat_route.get('/get-chat/:id', chatController.getChat);
 chat_route.get('/get-chat-by-participants', chatController.getChatbyParticipants);
 chat_route.post('/send-chat/:id', upload.none(), chatController.sendMessage);
 chat_route.get('/get-jammer-chat', chatController.getJammerChat);
-
+chat_route.post('/send-chat/:id', upload.none(), chatController.sendMessage);
 
 module.exports = chat_route;

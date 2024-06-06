@@ -42,37 +42,28 @@ const getChat = async (req, res) => {
 
 const sendMessage = async (req, res) => {
   const { sender, msg } = req.body;
+  const id = req.params.id;
 
   try {
-      let team;
-      let chat;
-
-      // Buscar el equipo por su ID o nombre
-      team = await Team.findOne({ $or: [{ _id: sender }, { studioName: sender }] });
-
-      if (!team) {
-          return res.status(400).json({ success: false, msg: 'No se encontró el equipo.' });
+      const chat = await Chat.findById(id);
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+          return res.status(400).json({ success: false, error: 'El ID proporcionado no es válido.' });
       }
-
-      // Obtener el primer chat asociado al equipo (asumiendo que solo hay uno)
-      chat = await Chat.findById(team.chatsIds[0]);
-
-      if (!chat) {
-          return res.status(400).json({ success: false, msg: 'No se encontró el chat asociado al equipo.' });
+      if(!chat){
+          return res.status(400).json({ success: false, msg: 'No existe el chat' });
       }
-
       chat.messagesList.push({
-          sender: sender,
-          senderType: 'Team',
+          senderId: sender.Id,
+          senderType:sender.Type,
           message: msg,
           sentDate: new Date()
-      });
+      })
 
       await chat.save();
-      return res.status(200).json({ success: true, msg: 'Mensaje enviado con éxito', data: chat.messagesList });
-
+      return res.status(200).json({ success: true, msg: 'chat', data: chat.messagesList });
+      
   } catch (error) {
-      return res.status(400).json({ success: false, msg: 'Error al enviar el mensaje', error });
+      return res.status(400).json({ success: false, msg: 'error al enviar' });
   }
 };
 
@@ -127,6 +118,41 @@ const getJammerChat = async (req, res) => {
     }
   };
 
+  const jammerSendMessage = async (req, res) => {
+    const { sender, msg } = req.body;
+    const id = req.params.id;
+
+    try {
+      const team = await Team.findOne({ studioName: teamName });
+  
+      if (!team) {
+        return res.status(404).json({ success: false, msg: 'Equipo no encontrado' });
+      }
+  
+      // Paso 2: Obtener el ID del equipo encontrado
+      const teamId = team._id;
+        const chat = await Chat.findById(id);
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, error: 'El ID proporcionado no es válido.' });
+        }
+        if(!chat){
+            return res.status(400).json({ success: false, msg: 'No existe el chat' });
+        }
+        chat.messagesList.push({
+            senderId: teamId.Id,
+            senderType:sender.Type,
+            message: msg,
+            sentDate: new Date()
+        })
+
+        await chat.save();
+        return res.status(200).json({ success: true, msg: 'chat', data: chat.messagesList });
+        
+    } catch (error) {
+        return res.status(400).json({ success: false, msg: 'error al enviar' });
+    }
+};
+
 
 
 module.exports = {
@@ -134,7 +160,8 @@ module.exports = {
     getChat,
     sendMessage,
     getChatbyParticipants,
-    getJammerChat
+    getJammerChat,
+    jammerSendMessage
 };
 
 /*const chat = new Chat({
