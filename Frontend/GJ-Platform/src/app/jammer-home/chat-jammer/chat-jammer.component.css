@@ -25,10 +25,8 @@
     font-family: Inter;
     font-weight: 400;
     word-wrap: break-word;
-    right: 30%;
-    
+    margin-left: 30%; /* Ajusta este valor según tu preferencia */
 }
-
 
 .cardText{
     color: black;
@@ -36,8 +34,9 @@
     font-family: Inter;
     font-weight: 400;
     word-wrap: break-word;
-    right: 30%;
+    margin-left: 30%; /* Ajusta este valor según tu preferencia */
 }
+
 
 .container{
     display: flex;

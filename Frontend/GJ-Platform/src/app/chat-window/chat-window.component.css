@@ -1,16 +1,20 @@
-.cardBackground{
+.modalBodyFlex {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente */
+    align-items: center; /* Centra horizontalmente */
+    flex: 1;
+    overflow-y: auto;
+}
+
+.cardBackground {
     background: #515151;
     border-radius: 35px;
     border: 1px black solid;
     width: 40%;
+    margin: 0 auto; /* Esto centra el componente horizontalmente */
 }
 
-.modalBodyFlex{
-    display: flex;
-    flex-direction: column;
-    flex: 1; /* Ocupa todo el espacio disponible dentro del modal */
-    overflow-y: auto;
-}
 
 .chatWindow{
     background-color: white;
@@ -25,9 +29,8 @@
     font-family: Inter;
     font-weight: 400;
     word-wrap: break-word;
-    right: 30%;
+    margin-left: 30%; /* Ajusta este valor según tu preferencia */
 }
-
 
 .cardText{
     color: black;
@@ -35,8 +38,9 @@
     font-family: Inter;
     font-weight: 400;
     word-wrap: break-word;
-    right: 30%;
+    margin-left: 30%; /* Ajusta este valor según tu preferencia */
 }
+
 
 .container{
     display: flex;
