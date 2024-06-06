@@ -22,9 +22,18 @@ export class ChatService {
       return this.http.post(this.baseUrl+'create-chat', chat, { withCredentials: true });
     }
 
-    getChat(chat: Chat, id: string): Observable<any> {
+    getChat(id: string): Observable<any> {
       return this.http.get<any>(this.baseUrl+`get-chat/:${id}`, { withCredentials: true }).pipe(
         map(response => response.data))
+    }
+
+    getChatbyParticipants(participantsIds: string[]): Observable<any> {
+      return this.http.get<any>(this.baseUrl+'get-chat-by-participants', { withCredentials: true }).pipe(
+        map(response => response.data))
+    }
+
+    sendMessage(chat: Chat, id: string): Observable<any> {
+      return this.http.post(this.baseUrl+`send-chat/:${id}`, chat, { withCredentials: true });
     }
   
 }
