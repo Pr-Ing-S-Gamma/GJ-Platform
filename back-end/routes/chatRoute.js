@@ -15,6 +15,7 @@ const chatController = require('../controllers/chatController');
 
 chat_route.post('/create-chat', upload.none(), chatController.createChat);
 chat_route.get('/get-chat/:id', chatController.getChat);
+chat_route.post('/send-chat/:id', upload.none(), chatController.sendMessage);
 
 
 module.exports = chat_route;
