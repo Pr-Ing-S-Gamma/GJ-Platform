@@ -1,34 +1,18 @@
 const mongoose = require('mongoose');
 const Chat = require('../models/chatModel')
-const Team = require('../models/teamModel');
+const Team = require('../models/teamModel')
 const User = require('../models/userModel')
 
 const createChat = async (req, res) => {
     const { participants } = req.body;
-    var user;
 
     try {
-        const chatParticipants = [];
-
-        for (const participant of participants) {
-            const chatParticipant = {
+        const chat = new Chat({
+            participants: participants.map(participant => ({
                 participantType: participant.participantType,
                 participantId: participant.participantId
-            };
-
-            chatParticipants.push(chatParticipant);
-
-            if(chatParticipant.participantType == "Team"){
-                user = await Team.findById(chatParticipant.participantId)
-            }
-            else{
-                user = await User.findById(chatParticipant.participantId)
-            }
-        }
-
-        const chat = new Chat({ participants: chatParticipants });
-        //const chatID = chat._id;
-        //user.chatsIds.push(chatID);
+            }))
+        });
         await chat.save();
 
         res.status(200).json({ success: true, msg: 'chat created', data: chat.participants });
