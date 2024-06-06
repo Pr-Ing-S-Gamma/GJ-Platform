@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Chat } from '../../types';
+import { ChatService } from '../services/chat.service';
 
 @Component({
   selector: 'app-chat-window',
@@ -16,38 +18,43 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class ChatWindowComponent implements OnInit{
   myForm!: FormGroup;
-  teamId: string | undefined;
-  localOrg : string | undefined;
-  chat: any[] = [
-    {
-      name: "Rodolfo",
-      rol: "LocalOrganizer",
-      time: "idk",
-      msg: "Suban el juego"
-    },{
-      name: "David",
-      rol: "Jammer",
-      time: "LAs 4 en punta",
-      msg: "Lorem ipsum sit dolor amet, lorem ipsum sit dolor amet, lorem ipsum sit dolor amet, lorem ipsum sit dolor aemt, lorem ipsum sit dolor amet, lorem ipsum sit dolor amet."
-    }
-  ];
-  constructor(private fb: FormBuilder){
+  team: string = "";
+  localOrg : string = "";
+  chat: Chat | undefined;
+  constructor(private fb: FormBuilder, private chatService :ChatService){
   }
   ngOnInit(): void {
     this.myForm = this.fb.group({
       msg: ['', Validators.required]
     });
+
+    this.chatService.getChatbyParticipants([this.localOrg, this.team]).subscribe(
+      (chat: Chat) => {
+        this.chat = chat;
+      },
+      (error: any) => {
+        const newChat: Chat = {
+          _id: '',
+          participants: [
+            { participantType: 'User', participantId: this.localOrg },
+            { participantType: 'Team', participantId: this.team }
+          ],
+          messagesList: []
+        };
+        this.chatService.createChat(newChat).subscribe(
+          (createdChat: Chat) => {
+            this.chat = createdChat;
+          },
+          (createError: any) => {
+            console.error('Error creating chat:', createError);
+          }
+        );
+      }
+    );
   }
 
   sendMSG(){
     if (this.myForm.valid) {
-      var msg = this.myForm.value["msg"];
-      this.chat.push({
-        name: "David",
-        rol: "Jammer",
-        time: "LAs 4 en punta",
-        msg: msg
-      })
       this.myForm.reset();
     }
   }

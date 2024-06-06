@@ -5,36 +5,32 @@ import { Chat } from '../../types';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment.prod';
 
-
-
-
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
 
+  private baseUrl = `http://${environment.apiUrl}:3000/api/chat/`;
+
   constructor(private http: HttpClient) {}
 
-    private baseUrl = `http://${environment.apiUrl}:3000/api/chat/`;
+  createChat(chat: Chat): Observable<any> {
+    return this.http.post(`${this.baseUrl}create-chat`, chat, { withCredentials: true });
+  }
 
+  getChat(id: string): Observable<Chat> {
+    return this.http.get<{ data: Chat }>(`${this.baseUrl}get-chat/${id}`, { withCredentials: true }).pipe(
+      map(response => response.data)
+    );
+  }
 
-    createChat(chat: Chat): Observable<any> {
-      return this.http.post(this.baseUrl+'create-chat', chat, { withCredentials: true });
-    }
+  getChatbyParticipants(participantIds: string[]): Observable<Chat> {
+    return this.http.post<{ data: Chat }>(`${this.baseUrl}get-chat-by-participants`, { participantIds }, { withCredentials: true }).pipe(
+      map(response => response.data)
+    );
+  }
 
-    getChat(id: string): Observable<any> {
-      return this.http.get<any>(this.baseUrl+`get-chat/:${id}`, { withCredentials: true }).pipe(
-        map(response => response.data))
-    }
-
-    getChatbyParticipants(participantIds: string[]): Observable<Chat> {
-      return this.http.post<{ data: Chat }>(`${this.baseUrl}get-chat-by-participants`, { participantIds }, { withCredentials: true }).pipe(
-        map(response => response.data)
-      );
-    }
-
-    sendMessage(chat: Chat, id: string): Observable<any> {
-      return this.http.post(this.baseUrl+`send-chat/:${id}`, chat, { withCredentials: true });
-    }
-  
+  sendMessage(chat: Chat, id: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}send-chat/${id}`, chat, { withCredentials: true });
+  }
 }
