@@ -66,7 +66,7 @@ export class ChatWindowComponent implements OnInit{
   }
   sendMSG() {
     if (this.myForm.valid) {
-        const sender = { Id: this.team, Type: 'User' }; // Suponiendo que el remitente es un usuario
+        const sender = { Id: this.team, Type: 'User' }; 
         const msg = this.myForm.get('msg')!.value; // Obtener el mensaje del formulario
 
         this.chatService.sendMessage(this.chat!._id, sender, msg).subscribe(
