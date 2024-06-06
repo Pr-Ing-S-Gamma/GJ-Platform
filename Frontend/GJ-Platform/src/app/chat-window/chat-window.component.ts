@@ -53,9 +53,21 @@ export class ChatWindowComponent implements OnInit{
     );
   }
 
-  sendMSG(){
-    if (this.myForm.valid) {
-      this.myForm.reset();
-    }
+  sendMSG() {
+  if (this.myForm.valid) {
+    const sender = { Id: this.team,  Type: 'User' }; // Suponiendo que el remitente es un usuario
+    const msg = this.myForm.get('msg')!.value; // Obtener el mensaje del formulario
+
+    this.chatService.sendMessage(this.chat!, this.chat!._id).subscribe(
+      (response: any) => {
+        console.log('Mensaje enviado con éxito:', response);
+      },
+      (error: any) => {
+        console.error('Error al enviar el mensaje:', error);
+      }
+    );
+    this.myForm.reset();
   }
+}
+
 }

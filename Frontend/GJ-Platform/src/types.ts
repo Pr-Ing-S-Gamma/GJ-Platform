@@ -161,9 +161,9 @@ export interface Chat {
     participantId: string;
   }[];
   messagesList: {
-    senderId: string;
+    sender: string;
     senderType: 'User' | 'Team';
-    message: string;
+    msg: string;
     sentDate: Date;
   }[];
 }

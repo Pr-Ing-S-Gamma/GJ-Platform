@@ -15,7 +15,7 @@ export class ChatService {
   constructor(private http: HttpClient) {}
 
   createChat(chat: Chat): Observable<any> {
-    return this.http.post(`${this.baseUrl}create-chat`, chat, { withCredentials: true });
+    return this.http.post(`${this.baseUrl}create-chat`, chat.participants, { withCredentials: true });
   }
 
   getChat(id: string): Observable<Chat> {
@@ -31,6 +31,6 @@ export class ChatService {
   }
 
   sendMessage(chat: Chat, id: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}send-chat/${id}`, chat, { withCredentials: true });
+    return this.http.post(`${this.baseUrl}send-chat/${id}`, chat.messagesList, { withCredentials: true });
   }
 }

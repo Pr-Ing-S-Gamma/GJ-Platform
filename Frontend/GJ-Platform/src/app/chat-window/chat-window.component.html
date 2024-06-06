@@ -5,19 +5,19 @@
         </button>
     </div>
     <div class="modal-body modalBodyFlex">
-        <div *ngFor="let msg of chat" class="chatWindow">
-            <div class="row msgHeader" [style.color]="msg.rol == 'Jammer' ? '#6a87fb' : '#ff66a8'">
-                {{msg.name}} - {{msg.time}}
+        <div *ngFor="let msg of chat?.messagesList" class="chatWindow">
+            <div class="row msgHeader" [style.color]="msg.senderType == 'Team' ? '#6a87fb' : '#ff66a8'">
+                {{ msg.sender }} - {{ msg.sentDate | date: 'shortTime' }}
             </div>
             <div class="row cardText">
-                {{msg.msg}}
+                {{ msg.msg }}
             </div>
         </div>
+    </div>
     <div class="modal-footer">
         <form (submit)="sendMSG()" [formGroup]="myForm">
             <textarea class="col" id="msg" name="msg" formControlName="msg" required></textarea>
-            <button class="btn col" type="submit">Enviar</button>
+            <button class="btn col" type="submit">Send</button>
         </form>
-    </div>
     </div>
 </div>
