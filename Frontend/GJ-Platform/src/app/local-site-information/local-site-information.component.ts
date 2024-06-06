@@ -64,7 +64,8 @@ export class LocalSiteInformationComponent implements OnInit{
   inStaff: boolean = false;      //3
   inManagement: boolean = false; //4
   actualWindow: number = 0;
-
+  showChat: boolean = false;
+  
   ngOnInit(): void {
     this.myForm = this.fb.group({
       name: ['', Validators.required],
