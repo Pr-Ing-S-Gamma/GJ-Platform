@@ -27,9 +27,10 @@ export class ChatService {
         map(response => response.data))
     }
 
-    getChatbyParticipants(participantsIds: string[]): Observable<any> {
-      return this.http.get<any>(this.baseUrl+'get-chat-by-participants', { withCredentials: true }).pipe(
-        map(response => response.data))
+    getChatbyParticipants(participantIds: string[]): Observable<Chat> {
+      return this.http.post<{ data: Chat }>(`${this.baseUrl}get-chat-by-participants`, { participantIds }, { withCredentials: true }).pipe(
+        map(response => response.data)
+      );
     }
 
     sendMessage(chat: Chat, id: string): Observable<any> {
