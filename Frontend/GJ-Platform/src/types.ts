@@ -163,7 +163,7 @@ export interface Chat {
   messagesList: {
     sender: string;
     senderType: 'User' | 'Team';
-    msg: string;
+    message: string;
     sentDate: Date;
   }[];
 }

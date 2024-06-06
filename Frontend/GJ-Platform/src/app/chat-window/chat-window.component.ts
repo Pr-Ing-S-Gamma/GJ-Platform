@@ -25,7 +25,7 @@ export class ChatWindowComponent implements OnInit{
   }
   ngOnInit(): void {
     this.myForm = this.fb.group({
-      msg: ['', Validators.required]
+      message: ['', Validators.required]
     });
   
     console.log(this.team);
