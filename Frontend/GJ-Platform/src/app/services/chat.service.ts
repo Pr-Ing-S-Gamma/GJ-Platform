@@ -26,7 +26,8 @@ createChat(chat: Chat): Observable<any> {
   }
 
   getChatbyParticipants(participantIds: string[]): Observable<Chat> {
-    return this.http.post<{ data: Chat }>(`${this.baseUrl}get-chat-by-participants`, { participantIds }, { withCredentials: true }).pipe(
+    const queryParams = participantIds.map(id => `participantIds=${encodeURIComponent(id)}`).join('&');
+    return this.http.get<{ data: Chat }>(`${this.baseUrl}get-chat-by-participants?${queryParams}`, { withCredentials: true }).pipe(
       map(response => response.data),
       catchError((error: any) => {
         console.error('Error fetching chat:', error);
@@ -34,6 +35,7 @@ createChat(chat: Chat): Observable<any> {
       })
     );
   }
+  
 
   sendMessage(chat: Chat, id: string): Observable<any> {
     return this.http.post(`${this.baseUrl}send-chat/${id}`, chat.messagesList, { withCredentials: true });
