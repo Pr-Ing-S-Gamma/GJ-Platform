@@ -44,4 +44,9 @@ getJammerChat(teamName: string): Observable<Chat> {
     return this.http.post(`${this.baseUrl}send-chat/${chatId}`, body, { withCredentials: true });
 }
 
+jammerSendMsg(chatId: string, sender: any, message: string): Observable<any> {
+  const body = { sender, msg: message }; // Construir el cuerpo de la solicitud
+  return this.http.post(`${this.baseUrl}jammer-sent/${chatId}`, body, { withCredentials: true });
+}
+
 }
