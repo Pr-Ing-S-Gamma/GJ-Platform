@@ -36,8 +36,9 @@ createChat(chat: Chat): Observable<any> {
     );
   }
   
+  sendMessage(chatId: string, sender: any, message: string): Observable<any> {
+    const body = { sender, msg: message }; // Construir el cuerpo de la solicitud
+    return this.http.post(`${this.baseUrl}send-chat/${chatId}`, body, { withCredentials: true });
+}
 
-  sendMessage(chat: Chat, id: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}send-chat/${id}`, chat.messagesList, { withCredentials: true });
-  }
 }

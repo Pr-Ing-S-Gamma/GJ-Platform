@@ -64,24 +64,22 @@ export class ChatWindowComponent implements OnInit{
       console.error('team or localOrg is undefined');
     }
   }
-  
-  
-
   sendMSG() {
-  if (this.myForm.valid) {
-    const sender = { Id: this.team,  Type: 'User' }; // Suponiendo que el remitente es un usuario
-    const msg = this.myForm.get('msg')!.value; // Obtener el mensaje del formulario
+    if (this.myForm.valid) {
+        const sender = { Id: this.team, Type: 'User' }; // Suponiendo que el remitente es un usuario
+        const msg = this.myForm.get('msg')!.value; // Obtener el mensaje del formulario
 
-    this.chatService.sendMessage(this.chat!, this.chat!._id).subscribe(
-      (response: any) => {
-        console.log('Mensaje enviado con éxito:', response);
-      },
-      (error: any) => {
-        console.error('Error al enviar el mensaje:', error);
-      }
-    );
-    this.myForm.reset();
+        this.chatService.sendMessage(this.chat!._id, sender, msg).subscribe(
+            (response: any) => {
+                console.log('Mensaje enviado con éxito:', response);
+                // Aquí puedes hacer algo después de enviar el mensaje, si es necesario
+            },
+            (error: any) => {
+                console.error('Error al enviar el mensaje:', error);
+            }
+        );
+        this.myForm.reset();
+    }
   }
-}
 
 }
