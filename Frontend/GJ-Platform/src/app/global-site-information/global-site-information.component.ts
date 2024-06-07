@@ -87,7 +87,7 @@ export class GlobalSiteInformationComponent implements OnInit {
     );
 
     const jammersUrl = `http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${this.siteParameter}`;
-    this.userService.getUsers(jammersUrl).subscribe(
+    this.userService.getJammersSite(jammersUrl).subscribe(
       (users: any[]) => {
         this.jammers = users?.map(user => ({
           _id: user._id, name: user.name, email: user.email, 
