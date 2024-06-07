@@ -27,21 +27,21 @@ const submissionSchema = mongoose.Schema({
         ref: 'Team',
         required: true
     },
-    categoryId: {
+    categoryId: [{
         type: Schema.Types.ObjectId, 
         ref: 'Category',
         required: false
-    },
+    }],
     stageId: {
         type: Schema.Types.ObjectId, 
         ref: 'Stage',
         required: true
     },
-    themeId: {
+    themeId: [{
         type: Schema.Types.ObjectId, 
         ref: 'Theme',
         required: false
-    },
+    }],
     numberEvaluations: {
         type: Number
     },
