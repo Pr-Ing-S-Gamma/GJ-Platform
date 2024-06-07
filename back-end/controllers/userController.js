@@ -236,7 +236,7 @@ const updateSite = async (req, res) => {
 const getStaffPerSite = async (req, res) => {
     const { region, site } = req.params;
     try {
-        const staff = await User.find({ "region.name": region, "site.name": site })
+        const staff = await User.find({ "region.name": region, "site.name": site , "roles": {$ne: "Jammer"}})
         res.status(200).send({ success: true, msg: 'Staff have been found in the system.', data: staff });
     } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
