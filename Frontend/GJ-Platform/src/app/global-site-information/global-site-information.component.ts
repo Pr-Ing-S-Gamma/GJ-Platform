@@ -62,7 +62,6 @@ export class GlobalSiteInformationComponent implements OnInit {
               this.games = submissions || [];
             },
             error => {
-              console.error('Error al obtener envíos:', error);
               this.games = [];
             }
           );
