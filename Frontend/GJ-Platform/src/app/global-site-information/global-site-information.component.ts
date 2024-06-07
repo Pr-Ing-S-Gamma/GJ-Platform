@@ -86,7 +86,7 @@ export class GlobalSiteInformationComponent implements OnInit {
       }
     );
 
-    const jammersUrl = `http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${this.siteParameter}`;
+    const jammersUrl = `http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${this.staff[0].site._id}`;
     this.userService.getJammersSite(jammersUrl).subscribe(
       (users: any[]) => {
         this.jammers = users?.map(user => ({
@@ -96,7 +96,6 @@ export class GlobalSiteInformationComponent implements OnInit {
         }));
       },
       error => {
-        console.error('Error al obtener jammers:', error);
         this.jammers = [];
       }
     );

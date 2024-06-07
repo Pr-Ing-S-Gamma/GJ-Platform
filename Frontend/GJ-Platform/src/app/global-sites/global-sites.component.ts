@@ -29,6 +29,7 @@ export class GlobalSitesComponent implements OnInit{
   regions: any[] = []; 
   staff: User[] = [];
   games: any[] = [];
+  siteId : String = "";
   jammers: User[]=[];
   constructor(private route: ActivatedRoute, private siteService: SiteService, private userService: UserService, private regionService: RegionService) { }
 
@@ -57,7 +58,7 @@ export class GlobalSitesComponent implements OnInit{
           region: user.region, site: user.site, roles: user.roles, 
           coins: user.coins, discordUsername: user.discordUsername
         }));
-        this.siteService.getSubmissionsByName(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site-name/${this.staff[0].site._id}`)
+        this.siteService.getSubmissionsByName(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site-name/${this.siteParameter}`)
           .subscribe(
             submissions => {
               this.games = submissions;
@@ -66,7 +67,7 @@ export class GlobalSitesComponent implements OnInit{
               this.games = [];
             }
           );
-        const jammersUrl = `http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${this.siteParameter}`;
+        const jammersUrl = `http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${this.staff[0].site._id}`;
         this.userService.getJammersSite(jammersUrl).subscribe(
           (users: any[]) => {
             this.jammers = users.map(user => ({
