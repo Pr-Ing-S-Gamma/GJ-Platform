@@ -78,7 +78,7 @@ export class GlobalSiteInformationComponent implements OnInit {
           _id: user._id, name: user.name, email: user.email, 
           region: user.region, site: user.site, roles: user.roles, 
           coins: user.coins, discordUsername: user.discordUsername 
-        })) || [];
+        }));
       },
       error => {
         console.error('Error al obtener usuarios del staff:', error);
@@ -93,7 +93,7 @@ export class GlobalSiteInformationComponent implements OnInit {
           _id: user._id, name: user.name, email: user.email, 
           region: user.region, site: user.site, roles: user.roles, 
           coins: user.coins, discordUsername: user.discordUsername 
-        })) || [];
+        }));
       },
       error => {
         console.error('Error al obtener jammers:', error);
