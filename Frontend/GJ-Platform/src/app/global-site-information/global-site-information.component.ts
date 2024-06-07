@@ -53,11 +53,7 @@ export class GlobalSiteInformationComponent {
             .subscribe(
               submissions => {
                 this.games = submissions;
-                console.log(this.games);
               },
-              error => {
-                console.error('Error al obtener las entregas:', error);
-              }
             );
         
       },

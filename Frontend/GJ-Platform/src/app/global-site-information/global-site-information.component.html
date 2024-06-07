@@ -37,6 +37,20 @@
         </div>
 
         <div class="col flexWrapCenter">
+            <div *ngFor="let member of jammers" class="cardBackground">
+                <div class="cardText">
+                    {{ member.roles }}
+                </div>
+                <div class="cardText">
+                    {{ member.name }}
+                </div>
+                <div class="cardText">
+                    {{ member.email }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col flexWrapCenter">
             <div *ngFor="let game of games" class="btn btn-primary cardBackground" data-toggle="modal"
                 [attr.data-target]="'#gameInfoModal-' + game.id">
                 <div class="cardText">
