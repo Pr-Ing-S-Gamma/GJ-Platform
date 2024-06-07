@@ -16,69 +16,90 @@ import { SiteService } from '../services/site.service';
     GameInformationComponent
   ],
   templateUrl: './global-site-information.component.html',
-  styleUrl: './global-site-information.component.css'
+  styleUrls: ['./global-site-information.component.css']
 })
 
-export class GlobalSiteInformationComponent {
-  regionParameter!: String;
-  siteParameter!: String;
-  constructor(private router: Router, private siteService: SiteService,private route: ActivatedRoute, private userService: UserService) { }
+export class GlobalSiteInformationComponent implements OnInit {
+  regionParameter!: string;
+  siteParameter!: string;
   staff: User[] = [];
   games: any[] = [];
   jammers: User[] =[];
+
+  constructor(
+    private router: Router, 
+    private siteService: SiteService,
+    private route: ActivatedRoute, 
+    private userService: UserService
+  ) { }
 
   moveToCruds() {
     this.router.navigate(['/DataManagement']);
   }
 
-  moveToRegionSites(region: String){
+  moveToRegionSites(region: string){
     this.router.navigate(['/Sites', region]);
   }
-  
+
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.regionParameter = params['region'];
       this.siteParameter = params['site'];
     });
+
     this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
     .subscribe(
       user => {
         if (user.roles.includes('LocalOrganizer')) {
           this.router.navigate(['/Games']);
-        }
-        if (user.roles.includes('GlobalOrganizer')) {
+        } else if (user.roles.includes('GlobalOrganizer')) {
           this.router.navigate(['/DataManagement']);
         }
-          this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${this.siteParameter}`)
-            .subscribe(
-              submissions => {
-                this.games = submissions;
-              },
-            );
-        
+
+        this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${this.siteParameter}`)
+          .subscribe(
+            submissions => {
+              this.games = submissions || [];
+            },
+            error => {
+              console.error('Error al obtener envíos:', error);
+              this.games = [];
+            }
+          );
       },
       error => {
         this.router.navigate(['/login']);
       }
     );
-    const url = `http://${environment.apiUrl}:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
-    this.userService.getUsers(url).subscribe(
+
+    const staffUrl = `http://${environment.apiUrl}:3000/api/user/get-site-staff/${this.regionParameter}/${this.siteParameter}`;
+    this.userService.getUsers(staffUrl).subscribe(
       (users: any[]) => {
-        this.staff = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername }));
+        this.staff = users?.map(user => ({
+          _id: user._id, name: user.name, email: user.email, 
+          region: user.region, site: user.site, roles: user.roles, 
+          coins: user.coins, discordUsername: user.discordUsername 
+        })) || [];
       },
       error => {
-        console.error('Error al obtener usuarios:', error);
+        console.error('Error al obtener usuarios del staff:', error);
+        this.staff = [];
       }
     );
-    this.userService.getUsers(`http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${this.siteParameter}`).subscribe(
-      (users: any[]) =>{
-        this.jammers =users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername })); 
+
+    const jammersUrl = `http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${this.siteParameter}`;
+    this.userService.getUsers(jammersUrl).subscribe(
+      (users: any[]) => {
+        this.jammers = users?.map(user => ({
+          _id: user._id, name: user.name, email: user.email, 
+          region: user.region, site: user.site, roles: user.roles, 
+          coins: user.coins, discordUsername: user.discordUsername 
+        })) || [];
       },
       error => {
-        console.error('Error al obtener usuarios:', error);
+        console.error('Error al obtener jammers:', error);
+        this.jammers = [];
       }
-    )
-    
+    );
   }
-  
 }
