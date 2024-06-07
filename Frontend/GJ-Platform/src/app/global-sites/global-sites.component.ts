@@ -58,7 +58,7 @@ export class GlobalSitesComponent implements OnInit{
           region: user.region, site: user.site, roles: user.roles, 
           coins: user.coins, discordUsername: user.discordUsername
         }));
-        this.siteService.getSubmissionsByName(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site-name/${this.siteParameter}`)
+        this.siteService.getSubmissionsByName(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${this.staff[0].site._id}`)
           .subscribe(
             submissions => {
               this.games = submissions;
@@ -74,7 +74,7 @@ export class GlobalSitesComponent implements OnInit{
               _id: user._id, name: user.name, email: user.email, 
               region: user.region, site: user.site, roles: user.roles, 
               coins: user.coins, discordUsername: user.discordUsername
-            }));
+            })); 
           },
           error => {
             this.jammers = [];
