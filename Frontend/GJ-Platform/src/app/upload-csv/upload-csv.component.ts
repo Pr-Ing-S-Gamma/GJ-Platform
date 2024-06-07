@@ -26,7 +26,6 @@ export class UploadCsvComponent {
       const fileNameParts = selectedFile.name.split('.');
       const fileExtension = fileNameParts[fileNameParts.length - 1].toLowerCase();
       if (fileExtension !== 'csv') {
-        // El archivo no tiene la extensión .csv
         console.error('Error: El archivo seleccionado no tiene la extensión .csv.');
         this.file = null;
       } else {
