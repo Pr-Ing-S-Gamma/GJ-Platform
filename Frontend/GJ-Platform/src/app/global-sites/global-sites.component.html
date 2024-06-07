@@ -49,6 +49,11 @@
             </div>
             <div class="col flexToCenter">
                 <div class="colTitles">
+                    Jammers
+                </div>
+            </div>
+            <div class="col flexToCenter">
+                <div class="colTitles">
                     Games
                 </div>
             </div>
@@ -65,6 +70,19 @@
                     </div>
                     <div class="cardTextSite">
                         {{ member.email }}
+                    </div>
+                </div>
+            </div>
+            <div class="col flexWrapCenter">
+                <div *ngFor="let jammer of jammers" class="cardBackground">
+                    <div class="cardText">
+                        {{ jammer.roles }}
+                    </div>
+                    <div class="cardText">
+                        {{ jammer.name }}
+                    </div>
+                    <div class="cardText">
+                        {{ jammer.email }}
                     </div>
                 </div>
             </div>

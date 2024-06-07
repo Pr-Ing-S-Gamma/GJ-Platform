@@ -29,6 +29,7 @@ export class GlobalSitesComponent implements OnInit{
   regions: any[] = []; 
   staff: User[] = [];
   games: any[] = []
+  jammers: User[]=[];
   constructor(private route: ActivatedRoute, private siteService: SiteService, private userService: UserService, private regionService: RegionService) { }
 
   moveToRegionsRoot(){
@@ -58,12 +59,25 @@ export class GlobalSitesComponent implements OnInit{
             this.games = submissions;
           },
           error => {
-
-            console.error('Error al obtener las entregas:', error);
             this.games = [];
           }
         );
+        const jammersUrl = `http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${this.siteParameter}`;
+        this.userService.getJammersSite(jammersUrl).subscribe(
+          (users: any[]) => {
+            this.jammers = users?.map(user => ({
+              _id: user._id, name: user.name, email: user.email, 
+              region: user.region, site: user.site, roles: user.roles, 
+              coins: user.coins, discordUsername: user.discordUsername 
+            }));
+          },
+          error => {
+            console.error('Error al obtener jammers:', error);
+            this.jammers = [];
+          }
+        );
       },
+      
       
       error => {
         console.error('Error al obtener usuarios:', error);
