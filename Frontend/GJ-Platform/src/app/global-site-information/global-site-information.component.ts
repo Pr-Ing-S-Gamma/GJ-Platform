@@ -25,6 +25,7 @@ export class GlobalSiteInformationComponent {
   constructor(private router: Router, private siteService: SiteService,private route: ActivatedRoute, private userService: UserService) { }
   staff: User[] = [];
   games: any[] = [];
+  jammers: User[] =[];
 
   moveToCruds() {
     this.router.navigate(['/DataManagement']);
@@ -73,6 +74,14 @@ export class GlobalSiteInformationComponent {
         console.error('Error al obtener usuarios:', error);
       }
     );
+    this.userService.getUsers(`http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${this.siteParameter}`).subscribe(
+      (users: any[]) =>{
+        this.jammers =users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername })); 
+      },
+      error => {
+        console.error('Error al obtener usuarios:', error);
+      }
+    )
     
   }
   

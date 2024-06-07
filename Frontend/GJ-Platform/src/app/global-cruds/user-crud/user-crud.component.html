@@ -233,7 +233,7 @@
                         <div class="formTitle">
                             Region</div>
                         <div class="row centerRow">
-                            <select class="form-control formList" id="regions" required formControlName="region" (change)="onRegionSelection()">
+                            <select class="form-control formList" id="regions" formControlName="region" (change)="onRegionSelection()">
                               <option value="" disabled selected hidden>Region</option>
                               <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
                             </select>
@@ -241,7 +241,7 @@
                           <div class="formTitle">
                              Site</div>
                           <div class="row centerRow">
-                            <select class="form-control formList" id="sites" required formControlName="site">
+                            <select class="form-control formList" id="sites" formControlName="site">
                               <option value="" disabled selected hidden>Site</option>
                               <option *ngFor="let site of sites" [ngValue]="site">{{ site.name }}</option>
                             </select>

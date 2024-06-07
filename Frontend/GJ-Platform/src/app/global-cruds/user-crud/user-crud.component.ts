@@ -191,8 +191,8 @@ export class UserCrudComponent implements OnInit{
         console.log('Formulario válido');
         
         const { email, name, region, site, discordUsername} = this.myForm.value;
-        const rolesString = this.myForm.get('rol')?.value; // Obtiene la cadena de roles
-        const roles = rolesString.split(','); // Divide la cadena en una lista de roles
+        const rolesString = this.myForm.get('rol')?.value; 
+        const roles = rolesString.split(','); 
         
         this.userService.registerUser(`http://${environment.apiUrl}:3000/api/user/register-user`, {
           name: name,
@@ -205,7 +205,7 @@ export class UserCrudComponent implements OnInit{
             _id: site._id,
             name: site.name
           },
-          roles: roles, // Envía la lista de roles al backend
+          roles: roles, 
           coins: 0,
           discordUsername: discordUsername,
         }).subscribe({
@@ -226,9 +226,6 @@ export class UserCrudComponent implements OnInit{
         this.showErrorMessage('Please fill in all fields of the form');
       }
     }
-    
-    
-
     successMessage: string = '';
     errorMessage: string = '';
     
