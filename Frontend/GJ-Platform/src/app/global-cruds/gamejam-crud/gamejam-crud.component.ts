@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef  } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { GameJam, Theme } from '../../../types';
@@ -21,33 +21,29 @@ import { environment } from '../../../environments/environment.prod';
   templateUrl: './gamejam-crud.component.html',
   styleUrl: './gamejam-crud.component.css'
 })
-export class GamejamCrudComponent implements OnInit {
+export class GamejamCrudComponent implements OnInit{
   myForm!: FormGroup;
   dataSource: GameJam[] = [];
-  themes: any[] = [];
+  themes: Theme[] = [];
   columnOptions = [
     { label: 'Edition', value: 'edition' as keyof GameJam, checked: false },
-    { label: 'Themes', value: 'theme.titleEN' as keyof GameJam, checked: false },
+    { label: 'Theme Name (EN)', value: 'theme.titleEN' as keyof GameJam, checked: false },
   ];
 
-  userToEdit: any;
-  indexUser = 0;
+  userToEdit : any;
+  indexUser = 0
   selectedHeader: string | undefined;
   filterValue: string = '';
-  
-  constructor(private fb: FormBuilder, private gamejamService: GamejamService, private themeService: ThemeService) {}
-  get themeFormArray(): FormArray {
-    return this.myForm.get('theme') as FormArray;
-  }
+  constructor(private fb: FormBuilder, private gamejamService: GamejamService, private themeService: ThemeService){}
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
-      theme: this.fb.array([], Validators.required), // Cambiado a un FormArray
+      theme: ['', Validators.required],
     });
     const url = `http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`;
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
-        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, theme: gamejam.theme }));
+        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, theme: gamejam.theme}));
       },
       error => {
         console.error('Error al obtener las GameJams:', error);
@@ -63,9 +59,7 @@ export class GamejamCrudComponent implements OnInit {
       }
     );
   }
-
   selectedColumns: (keyof GameJam)[] = []; 
-
   toggleColumn(column: keyof GameJam, event: any) {
     if (event.target.checked) {
       this.selectedColumns.push(column);
@@ -73,51 +67,36 @@ export class GamejamCrudComponent implements OnInit {
       this.selectedColumns = this.selectedColumns.filter(c => c !== column);
     }
   }
-  addTheme() {
-    (this.myForm.get('theme') as FormArray).push(this.fb.group({
-      titleEN: '',
-      descriptionEN: ''
-    }));
-  }
-  
-  removeTheme(index: number) {
-    (this.myForm.get('theme') as FormArray).removeAt(index);
-  }
-  
+
   exportToPDF() {
     const doc = new jsPDF();
-  
-    // Obtener datos filtrados
+
     const selectedData = this.obtenerDatosPagina().map(row => {
       const rowData: any[] = [];
       this.selectedColumns.forEach(column => {
         if (column.startsWith('theme.')) {
-          const themeProperty = column.split('.')[1]; // Remove the type assertion for now
-          const themeValue = row.theme.map((theme: any) => theme[themeProperty]).join(', '); // Adjust the type to 'any' temporarily
-          rowData.push(themeValue);
+          const themeProperty = column.split('.')[1];
+          rowData.push((row.theme as {[key: string]: string})[themeProperty]);
         } else {
-          rowData.push(row[column as keyof GameJam] !== undefined ? row[column as keyof GameJam] : '');
+          rowData.push(row[column]);
         }
       });
       return rowData;
     });
-  
-    // Crear encabezados
+
     const headers = this.selectedColumns.map((column: string) => {
       if (column === '_id') return 'ID';
       if (column === 'edition') return 'Edition';
       if (column === 'theme._id') return 'Theme ID';
       if (column === 'theme.titleEN') return 'Theme Title';
-      return column.replace(/\b\w/g, char => char.toUpperCase()).replace(/[A-Z]/g, ' $&').trim();
+      return column.replace(/[A-Z]/g, ' $&').toUpperCase();
     });
-  
-    // Generar tabla en el PDF
+
     autoTable(doc, {
       head: [headers],
       body: selectedData
     });
-  
-    // Guardar el PDF
+
     doc.save('gameJams.pdf');
   }
   
@@ -125,25 +104,29 @@ export class GamejamCrudComponent implements OnInit {
   seleccionarElemento(elemento: any) {
     this.userToEdit = elemento;
     this.indexUser = this.dataSource.indexOf(elemento);
+    const selectedTheme = this.themes.find(theme => theme._id === elemento.theme._id);
     this.myForm.patchValue({
       edition: elemento.edition,
-      theme: elemento.theme.map((t: any) => this.themes.find(theme => theme._id === t._id))
+      theme: selectedTheme
     });
   }
-
+  
   editar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
       const gamejamId = this.userToEdit['_id'];
-      const { edition, theme } = this.myForm.value;
+      const { edition, theme} = this.myForm.value;
   
       this.gamejamService.updateGameJam(`http://${environment.apiUrl}:3000/api/game-jam/update-game-jam/${gamejamId}`, {
         edition: edition,
-        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN, descriptionEN: t.descriptionEN }))
+        theme: {
+          _id: theme._id,
+          titleEN: theme.titleEN
+        }
       }).subscribe({
         next: (data) => {
           if (data.success) {
-            this.dataSource[this.indexUser] = { _id: gamejamId, edition: edition, theme: theme };
+            this.dataSource[this.indexUser]={ _id: gamejamId, edition: edition, theme: theme};
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -157,62 +140,64 @@ export class GamejamCrudComponent implements OnInit {
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
-
   eliminar(elemento: any) {
     const id = elemento._id;
+
     const url = `http://${environment.apiUrl}:3000/api/game-jam/delete-game-jam/${id}`;
 
     this.gamejamService.deleteGameJam(url).subscribe({
-      next: (data) => {
-        console.log('GameJam eliminada correctamente:', data);
-        this.dataSource = this.dataSource.filter(item => item !== elemento);
-        this.showSuccessMessage(data.msg);
-      },
-      error: (error) => {
-        console.error('Error al eliminar la GameJam:', error);
-        this.showErrorMessage(error.error.msg);
-      }
-    });
-  }
-
-  agregar() {
-    if (this.myForm.valid) {
-      console.log('Formulario válido');
-  
-      const { edition, theme } = this.myForm.value;
-      this.gamejamService.createGameJam(`http://${environment.apiUrl}:3000/api/game-jam/create-game-jam`, {
-        edition: edition,
-        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN, descriptionEN: t.descriptionEN }))
-      }).subscribe({
         next: (data) => {
-          if (data.success) {
-            const gameJamId = data.gameJamId;
-            this.dataSource.push({ _id: gameJamId, edition: edition, theme: theme });
+            console.log('GameJam eliminada correctamente:', data);
+            this.dataSource = this.dataSource.filter(item => item !== elemento);
             this.showSuccessMessage(data.msg);
-          } else {
-            this.showErrorMessage(data.error);
-          }
         },
         error: (error) => {
-          this.showErrorMessage(error.error.error);
-        },
-      });
-    } else {
-      this.showErrorMessage('Please fill in all fields of the form');
+            console.error('Error al eliminar la GameJam:', error);
+            this.showErrorMessage(error.error.msg);
+        }
+    });
+  }
+    agregar() {
+      if (this.myForm.valid) {
+        console.log('Formulario válido');
+        
+        const { edition, theme} = this.myForm.value;;
+        this.gamejamService.createGameJam(`http://${environment.apiUrl}:3000/api/game-jam/create-game-jam`, {
+          edition: edition,
+          theme: {
+            _id: theme._id,
+            titleEN: theme.titleEN,
+          }
+        }).subscribe({
+          next: (data) => {
+            if (data.success) {
+              const gameJamId = data.gameJamId;
+              this.dataSource.push({ _id: gameJamId, edition: edition, theme: theme});
+              this.showSuccessMessage(data.msg);
+            } else {
+              this.showErrorMessage(data.error);
+            }
+          },
+          error: (error) => {
+            this.showErrorMessage(error.error.error);
+          },
+        });
+      } else {
+        this.showErrorMessage('Please fill in all fields of the form');
+      }
     }
-  }
 
-  successMessage: string = '';
-  errorMessage: string = '';
-
-  showSuccessMessage(message: string) {
-    this.successMessage = message;
-  }
-
-  showErrorMessage(message: string) {
-    this.errorMessage = message;
-  }
-
+    successMessage: string = '';
+    errorMessage: string = '';
+    
+    showSuccessMessage(message: string) {
+      this.successMessage = message;
+    }
+    
+    showErrorMessage(message: string) {
+      this.errorMessage = message;
+    }
+    
   get totalPaginas(): number {
     return Math.ceil(this.dataSource.length / this.pageSize);
   }
@@ -226,7 +211,7 @@ export class GamejamCrudComponent implements OnInit {
 
   obtenerDatosPagina() {
     let filteredData = this.dataSource;
-
+  
     if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
       const filterText = this.filterValue.trim().toLowerCase();
       filteredData = filteredData.filter(item => {
@@ -234,20 +219,18 @@ export class GamejamCrudComponent implements OnInit {
           case '_id':
             return item._id && item._id.toLowerCase().startsWith(filterText);
           case 'edition':
-            return item.edition.toLowerCase().startsWith(filterText);
           case 'theme.titleEN':
-            return item.theme.some(t => t.titleEN.toLowerCase().startsWith(filterText));
           case 'theme._id':
-            return item.theme.some(t => t._id.toLowerCase().startsWith(filterText));
+            return (item[this.selectedHeader as keyof GameJam] as string).toLowerCase().startsWith(filterText);
           default:
             return false;
         }
       });
     }
-
+  
     const startIndex = (this.currentPage - 1) * this.pageSize;
     return filteredData.slice(startIndex, startIndex + this.pageSize);
-  }
+  }  
 
   get paginasMostradas(): (number | '...')[] {
     const totalPaginas = this.totalPaginas;
@@ -261,18 +244,42 @@ export class GamejamCrudComponent implements OnInit {
 
     for (let i = inicio; i <= fin; i++) {
       paginasMostradas.push(i);
-    }
-
+    }  
+  
     if (currentPage - inicio > rango) {
       paginasMostradas.unshift('...');
     }
-
+    
     if (fin < totalPaginas - 1) {
       paginasMostradas.push('...');
     }
-
+    /*
+    if (inicio == 1){
+      switch(fin - inicio){
+        case 2:
+          paginasMostradas.push(4);
+          paginasMostradas.push(5);
+          break;
+        case 3:
+          paginasMostradas.push(5);
+          break;
+        default: break;
+      }
+    }
+    if (fin == totalPaginas){
+      switch(fin - inicio){
+        case 2:
+          paginasMostradas.unshift(totalPaginas-4, totalPaginas-3);
+          break;
+        case 3:
+          paginasMostradas.unshift(totalPaginas-4);
+          break;
+        default: break;
+      }
+    }
+    */
     return paginasMostradas;
-  }
+}
 
   ventanaAgregar: boolean = false;
 }
