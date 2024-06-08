@@ -10,7 +10,7 @@ const Theme = require('../models/themeModel')
 const { sendScore } = require('../services/mailer');
 
 const createSubmission = async (req, res) => {
-    const { description, pitch, game, teamId, categoriesId, stageId, themesId, title } = req.body;
+    const { description, pitch, game, teamId, categoryId, stageId, themeId, title } = req.body;
     try {
         const currentDate = new Date();
 
@@ -40,26 +40,21 @@ const createSubmission = async (req, res) => {
             }
         }
 
-        for(const category of categoriesId){
-            console.log(category)
-            if (!mongoose.Types.ObjectId.isValid(category)) {
-                return res.status(400).json({ success: false, error: 'The provided category ID is not valid.' });
-            } else {
-                const existingCategory = await Category.findById(category);
-                if (!existingCategory) {
-                    return res.status(404).json({ success: false, error: "That category doesn't exist" });
-                }
+        if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+            return res.status(400).json({ success: false, error: 'The provided category ID is not valid.' });
+        } else {
+            const existingCategory = await Category.findById(categoryId);
+            if (!existingCategory) {
+                return res.status(404).json({ success: false, error: "That category doesn't exist" });
             }
         }
 
-        for(const theme of themesId){
-            if (!mongoose.Types.ObjectId.isValid(theme)) {
-                return res.status(400).json({ success: false, error: 'The provided theme ID is not valid.' });
-            } else {
-                const existingCategory = await Theme.findById(theme);
-                if (!existingCategory) {
-                    return res.status(404).json({ success: false, error: "That theme doesn't exist" });
-                }
+        if (!mongoose.Types.ObjectId.isValid(themeId)) {
+            return res.status(400).json({ success: false, error: 'The provided theme ID is not valid.' });
+        } else {
+            const existingCategory = await Theme.findById(themeId);
+            if (!existingCategory) {
+                return res.status(404).json({ success: false, error: "That theme doesn't exist" });
             }
         }
 
@@ -70,9 +65,9 @@ const createSubmission = async (req, res) => {
             pitch: pitch,
             game: game,
             teamId: teamId,
-            categoryId: categoriesId,
+            categoryId: categoryId,
             stageId: stageId,
-            themeId: themesId,
+            themeId: themeId,
             creatorUser: {
                 userId: creatorUser._id,
                 name: creatorUser.name,

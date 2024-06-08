@@ -141,7 +141,7 @@ const deleteCategory = async (req, res) => {
     }
 };
 
-// arreglar
+
 const getGamesbyCategory = async (req, res) => {
     const catgoryID = req.params.id;
     try {
