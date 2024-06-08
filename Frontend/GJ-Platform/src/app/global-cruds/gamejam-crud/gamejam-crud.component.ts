@@ -136,10 +136,10 @@ export class GamejamCrudComponent implements OnInit {
       console.log('Formulario válido');
       const gamejamId = this.userToEdit['_id'];
       const { edition, theme } = this.myForm.value;
-
+  
       this.gamejamService.updateGameJam(`http://${environment.apiUrl}:3000/api/game-jam/update-game-jam/${gamejamId}`, {
         edition: edition,
-        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN }))
+        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN, descriptionEN: t.descriptionEN }))
       }).subscribe({
         next: (data) => {
           if (data.success) {
@@ -178,11 +178,11 @@ export class GamejamCrudComponent implements OnInit {
   agregar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
-
+  
       const { edition, theme } = this.myForm.value;
       this.gamejamService.createGameJam(`http://${environment.apiUrl}:3000/api/game-jam/create-game-jam`, {
         edition: edition,
-        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN }))
+        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN, descriptionEN: t.descriptionEN }))
       }).subscribe({
         next: (data) => {
           if (data.success) {
