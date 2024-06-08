@@ -189,7 +189,6 @@ export class UserCrudComponent implements OnInit{
     agregar() {
       if (this.myForm.valid) {
         console.log('Formulario válido');
-        
         const { email, name, region, site, discordUsername} = this.myForm.value;
         const rolesString = this.myForm.get('rol')?.value; 
         const roles = rolesString.split(','); 
