@@ -139,7 +139,7 @@ export class GamejamCrudComponent implements OnInit {
   
       this.gamejamService.updateGameJam(`http://${environment.apiUrl}:3000/api/game-jam/update-game-jam/${gamejamId}`, {
         edition: edition,
-        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN, descriptionEN: t.descriptionEN }))
+        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN }))
       }).subscribe({
         next: (data) => {
           if (data.success) {
@@ -182,7 +182,7 @@ export class GamejamCrudComponent implements OnInit {
       const { edition, theme } = this.myForm.value;
       this.gamejamService.createGameJam(`http://${environment.apiUrl}:3000/api/game-jam/create-game-jam`, {
         edition: edition,
-        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN, descriptionEN: t.descriptionEN }))
+        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN}))
       }).subscribe({
         next: (data) => {
           if (data.success) {

@@ -134,7 +134,7 @@
                                 <div *ngFor="let themeCtrl of themeFormArray.controls; let i = index" [formGroupName]="i" class="theme-selection">
                                     <select class="form-control formList" formControlName="titleEN" required>
                                         <option value="" disabled selected hidden>Theme</option>
-                                        <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN + ' - ' + theme.descriptionEN }}</option>
+                                        <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN}}</option>
                                     </select>
                                     <button type="button" class="btn btn-danger" (click)="removeTheme(i)">Remove</button>
                                 </div>
@@ -177,7 +177,7 @@
                                 <div *ngFor="let themeCtrl of themeFormArray.controls; let i = index" [formGroupName]="i" class="theme-selection">
                                     <select class="form-control formList" formControlName="titleEN" required>
                                         <option value="" disabled selected hidden>Theme</option>
-                                        <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN + ' - ' + theme.descriptionEN }}</option>
+                                        <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN }}</option>
                                     </select>
                                     <button type="button" class="btn btn-danger" (click)="removeTheme(i)">Remove</button>
                                 </div>
