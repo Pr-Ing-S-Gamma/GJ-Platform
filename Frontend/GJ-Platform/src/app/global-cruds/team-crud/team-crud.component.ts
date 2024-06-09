@@ -144,7 +144,6 @@ export class TeamCrudComponent implements OnInit {
     const selectedUser = this.myForm.get('selectedUser');
     if (selectedUser && selectedUser.value) {
         const userValue: User = selectedUser.value;
-        console.log(userValue);
         const jammersArray = this.myForm.get('jammers') as FormArray;
         if (!jammersArray.value.some((jammer: User) => jammer._id === userValue._id)) {
             jammersArray.push(this.fb.control(userValue));
