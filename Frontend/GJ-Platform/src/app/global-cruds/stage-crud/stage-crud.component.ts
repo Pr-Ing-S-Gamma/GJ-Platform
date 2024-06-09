@@ -55,7 +55,7 @@ export class StageCrudComponent implements OnInit{
     const url = `http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`;
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
-        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, theme: gamejam.theme}));
+        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, themes: gamejam.themes}));
       },
       error => {
         console.error(`Error al obtener GameJams:`, error);
