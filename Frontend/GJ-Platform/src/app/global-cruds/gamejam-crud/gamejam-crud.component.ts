@@ -47,23 +47,27 @@ export class GamejamCrudComponent implements OnInit {
       selectedTheme: ['']
     });
 
-    this.gamejamService.getGameJams(`http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`).subscribe(
-      (gamejams: GameJam[]) => {
-        this.dataSource = gamejams;
-      },
-      error => {
-        console.error('Error al obtener las GameJams:', error);
-      }
-    );
-
-    this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`).subscribe(
-      (themes: Theme[]) => {
-        this.themes = themes;
-      },
-      error => {
-        console.error('Error al obtener temas:', error);
-      }
-    );
+    try {
+      this.gamejamService.getGameJams(`http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`).subscribe(
+        (gamejams: GameJam[]) => {
+          this.dataSource = gamejams;
+        },
+        error => {
+          console.error('Error al obtener las GameJams:', error);
+        }
+      );
+  
+      this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`).subscribe(
+        (themes: Theme[]) => {
+          this.themes = themes;
+        },
+        error => {
+          console.error('Error al obtener temas:', error);
+        }
+      );
+    } catch (error) {
+      
+    }
   }
 
   
