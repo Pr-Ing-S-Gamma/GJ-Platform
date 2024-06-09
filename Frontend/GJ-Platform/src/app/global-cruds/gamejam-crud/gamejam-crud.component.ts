@@ -42,28 +42,26 @@ export class GamejamCrudComponent implements OnInit {
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
-      theme: this.fb.array([], Validators.required),
+      theme: this.fb.array([], Validators.required), // Cambiado a un FormArray
     });
-
     const url = `http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`;
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
-        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, themes: gamejam.themes }));
+        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, themes: gamejam.themes}));
       },
       error => {
         console.error('Error al obtener las GameJams:', error);
       }
     );
-
     this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`)
-      .subscribe(
-        themes => {
-          this.themes = themes.map(theme => ({ _id: theme._id, titleEN: theme.titleEN }));
-        },
-        error => {
-          console.error('Error al obtener temas:', error);
-        }
-      );
+    .subscribe(
+      themes => {
+        this.themes = themes.map(theme =>({_id : theme._id, titleEN: theme.titleEN}))
+      },
+      error => {
+        console.error('Error al obtener temas:', error);
+      }
+    );
   }
 
   selectedColumns: (keyof GameJam)[] = []; 
@@ -128,14 +126,9 @@ export class GamejamCrudComponent implements OnInit {
   seleccionarElemento(elemento: any) {
     this.userToEdit = elemento;
     this.indexUser = this.dataSource.indexOf(elemento);
-
-    const themeControls = elemento.themes.map((theme: any) => this.fb.group({
-      _id: theme._id,
-      titleEN: theme.titleEN,
-    }));
-    this.myForm.setControl('theme', this.fb.array(themeControls));
     this.myForm.patchValue({
       edition: elemento.edition,
+      theme: elemento.theme.map((t: any) => this.themes.find(theme => theme._id === t._id))
     });
   }
 
@@ -186,16 +179,16 @@ export class GamejamCrudComponent implements OnInit {
   agregar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
-
-      const { edition, theme } = this.myForm.value;
+  
+      const { edition, themes } = this.myForm.value;
       this.gamejamService.createGameJam(`http://${environment.apiUrl}:3000/api/game-jam/create-game-jam`, {
         edition: edition,
-        themes: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN }))
+        themes: themes.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN}))
       }).subscribe({
         next: (data) => {
           if (data.success) {
             const gameJamId = data.gameJamId;
-            this.dataSource.push({ _id: gameJamId, edition: edition, themes: theme });
+            this.dataSource.push({ _id: gameJamId, edition: edition, themes: themes });
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -240,11 +233,13 @@ export class GamejamCrudComponent implements OnInit {
       filteredData = filteredData.filter(item => {
         switch (this.selectedHeader) {
           case '_id':
-            return item._id && item._id.toLowerCase().includes(filterText);
+            return item._id && item._id.toLowerCase().startsWith(filterText);
           case 'edition':
-            return item.edition && item.edition.toLowerCase().includes(filterText);
+            return item.edition.toLowerCase().startsWith(filterText);
           case 'theme.titleEN':
-            return item.themes.some((theme: any) => theme.titleEN && theme.titleEN.toLowerCase().includes(filterText));
+            return item.themes.some(t => t.titleEN.toLowerCase().startsWith(filterText));
+          case 'theme._id':
+            return item.themes.some(t => t._id.toLowerCase().startsWith(filterText));
           default:
             return false;
         }
@@ -252,9 +247,7 @@ export class GamejamCrudComponent implements OnInit {
     }
 
     const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-
-    return filteredData.slice(startIndex, endIndex);
+    return filteredData.slice(startIndex, startIndex + this.pageSize);
   }
 
   get paginasMostradas(): (number | '...')[] {
