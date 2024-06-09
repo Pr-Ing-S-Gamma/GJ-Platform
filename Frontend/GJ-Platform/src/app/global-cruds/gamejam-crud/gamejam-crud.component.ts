@@ -28,7 +28,7 @@ export class GamejamCrudComponent implements OnInit {
   selectedColumns: (keyof GameJam)[] = []; 
   columnOptions = [
     { label: 'Edition', value: 'edition' as keyof GameJam, checked: false },
-    { label: 'Themes', value: 'theme.titleEN' as keyof GameJam, checked: false },
+    { label: 'Themes', value: 'themes.titleEN' as keyof GameJam, checked: false },
   ];
 
   userToEdit: any;
@@ -101,7 +101,7 @@ export class GamejamCrudComponent implements OnInit {
     const selectedData = this.obtenerDatosPagina().map(row => {
       const rowData: any[] = [];
       this.selectedColumns.forEach(column => {
-        if (column.startsWith('theme.')) {
+        if (column.startsWith('themes.')) {
           const themeProperty = column.split('.')[1]; // Remove the type assertion for now
           const themeValue = row.themes.map((theme: any) => theme[themeProperty]).join(', '); // Adjust the type to 'any' temporarily
           rowData.push(themeValue);
@@ -116,8 +116,8 @@ export class GamejamCrudComponent implements OnInit {
     const headers = this.selectedColumns.map((column: string) => {
       if (column === '_id') return 'ID';
       if (column === 'edition') return 'Edition';
-      if (column === 'theme._id') return 'Theme ID';
-      if (column === 'theme.titleEN') return 'Theme Title';
+      if (column === 'themes._id') return 'Theme ID';
+      if (column === 'themes.titleEN') return 'Theme Title';
       return column.replace(/\b\w/g, char => char.toUpperCase()).replace(/[A-Z]/g, ' $&').trim();
     });
   

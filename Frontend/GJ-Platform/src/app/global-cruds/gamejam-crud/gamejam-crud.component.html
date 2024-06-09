@@ -133,14 +133,15 @@
                     <div class="row centerRow">
                         <div class="formTitle">Themes</div>
                         <div class="row centerRow">
-                                <div *ngFor="let theme of myForm.get('themes')?.value" class="row formLinks">
-                                    <div class="col">
-                                        <label>Theme:</label>
-                                        <p>{{theme?.titleEN}}</p>
-                                    </div>
-                                    <button class="btn btn-danger" (click)="removeTheme(theme)">Remove</button>
-                                </div>
                             <button type="button" class="btn btn-primary" (click)="addTheme()">Add Theme</button>
+                            <div *ngFor="let theme of myForm.get('themes')?.value" class="row formLinks">
+                                <div class="col">
+                                    <label>Theme:</label>
+                                    <p>{{theme?.titleEN}}</p>
+                                </div>
+                                <button class="btn btn-danger" (click)="removeTheme(theme)">Remove</button>
+                            </div>
+                            
                         </div>
                         <div class="formTitle">Edition</div>
                         <div class="row centerRow">
