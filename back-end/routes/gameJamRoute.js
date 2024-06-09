@@ -10,7 +10,7 @@ const gameJamController = require('../controllers/gameJamController');
 const storage = multer.memoryStorage();
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 10 * 2048 * 2048 } // 10 MB
+  limits: { fileSize: 1000 * 2048 * 2048 } // 10 MB
 });
 
 game_jam_route.use(bodyParser.json());
