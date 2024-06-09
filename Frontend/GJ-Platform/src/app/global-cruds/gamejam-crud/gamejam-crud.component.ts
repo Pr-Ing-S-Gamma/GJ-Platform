@@ -268,15 +268,20 @@ obtenerDatosPagina() {
   if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
     const filterText = this.filterValue.trim().toLowerCase();
     filteredData = filteredData.filter(item => {
-      switch (this.selectedHeader) {
-        case '_id':
-          return item._id && item._id.toLowerCase().startsWith(filterText);
-        case 'edition':
-        case 'theme.titleEN':
-        case 'theme._id':
-          return (item[this.selectedHeader as keyof GameJam] as string).toLowerCase().startsWith(filterText);
-        default:
-          return false;
+      try {
+        switch (this.selectedHeader) {
+          case '_id':
+            return item._id && item._id.toLowerCase().startsWith(filterText);
+          case 'edition':
+          case 'theme.titleEN':
+          case 'theme._id':
+            return (item[this.selectedHeader as keyof GameJam] as string).toLowerCase().startsWith(filterText);
+          default:
+            return false;
+        }
+      } catch (error) {
+        console.error('Error while filtering:', error);
+        return false; // Return false to exclude the item from filteredData
       }
     });
   }
@@ -284,6 +289,7 @@ obtenerDatosPagina() {
   const startIndex = (this.currentPage - 1) * this.pageSize;
   return filteredData.slice(startIndex, startIndex + this.pageSize);
 }
+
 
   get paginasMostradas(): (number | '...')[] {
     const totalPaginas = this.totalPaginas;
