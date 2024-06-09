@@ -262,25 +262,28 @@ export class GamejamCrudComponent implements OnInit {
     }
     return Array.isArray(value) ? value.join(', ') : value;
 }
-  obtenerDatosPagina() {
-    let filteredData = this.dataSource;
+obtenerDatosPagina() {
+  let filteredData = this.dataSource;
 
-    if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
-      const filterText = this.filterValue.trim().toLowerCase();
-      filteredData = filteredData.filter(item => {
-        switch (this.selectedHeader) {
-          case '_id':
-          case 'edition':
-            return this.getPropertyValue(item, this.selectedHeader).toLowerCase().startsWith(filterText);
-          default:
-            return false;
-        }
-      });
-    }
-
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    return filteredData.slice(startIndex, startIndex + this.pageSize);
+  if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
+    const filterText = this.filterValue.trim().toLowerCase();
+    filteredData = filteredData.filter(item => {
+      switch (this.selectedHeader) {
+        case '_id':
+          return item._id && item._id.toLowerCase().startsWith(filterText);
+        case 'edition':
+        case 'theme.titleEN':
+        case 'theme._id':
+          return (item[this.selectedHeader as keyof GameJam] as string).toLowerCase().startsWith(filterText);
+        default:
+          return false;
+      }
+    });
   }
+
+  const startIndex = (this.currentPage - 1) * this.pageSize;
+  return filteredData.slice(startIndex, startIndex + this.pageSize);
+}
 
   get paginasMostradas(): (number | '...')[] {
     const totalPaginas = this.totalPaginas;
