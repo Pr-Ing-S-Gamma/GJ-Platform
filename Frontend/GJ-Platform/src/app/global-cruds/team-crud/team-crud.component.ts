@@ -61,7 +61,7 @@ export class TeamCrudComponent implements OnInit {
 
     this.gamejamService.getGameJams(`http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`).subscribe(
       (gamejams: any[]) => {
-        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, theme: gamejam.theme}));
+        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, themes: gamejam.themes}));
       },
       error => {
         console.error('Error al obtener GameJams:', error);
