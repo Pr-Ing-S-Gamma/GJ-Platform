@@ -174,7 +174,7 @@
                         <div class="row centerRow">
                             <select class="form-control" formControlName="selectedTheme">
                                 <option value="" disabled selected hidden>Select Theme</option>
-                                <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme?.titleEN }}</option>
+                                <option *ngFor="let theme of gthemes" [ngValue]="theme">{{ theme?.titleEN }}</option>
                             </select>
                             <button type="button" class="btn btn-primary" (click)="addTheme()">Add Theme</button>
                         </div>

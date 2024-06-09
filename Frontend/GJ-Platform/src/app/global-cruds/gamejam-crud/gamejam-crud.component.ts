@@ -24,7 +24,7 @@ import { environment } from '../../../environments/environment.prod';
 export class GamejamCrudComponent implements OnInit {
   myForm!: FormGroup;
   dataSource: GameJam[] = [];
-  themes: Theme[] = [];
+  gthemes: Theme[] = [];
   selectedColumns: (keyof GameJam)[] = []; 
   columnOptions = [
     { label: 'Edition', value: 'edition' as keyof GameJam, checked: false },
@@ -43,7 +43,7 @@ export class GamejamCrudComponent implements OnInit {
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
-      themes: this.fb.array([]),
+      themes: this.fb.array([], Validators.required),
       selectedTheme: ['']
     });
 
@@ -58,7 +58,7 @@ export class GamejamCrudComponent implements OnInit {
 
     this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`).subscribe(
       (themes: Theme[]) => {
-        this.themes = themes;
+        this.gthemes = themes;
       },
       error => {
         console.error('Error al obtener temas:', error);
