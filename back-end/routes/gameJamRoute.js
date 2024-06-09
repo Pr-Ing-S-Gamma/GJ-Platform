@@ -16,8 +16,8 @@ const upload = multer({
 game_jam_route.use(bodyParser.json());
 game_jam_route.use(bodyParser.urlencoded({ extended: true }));
 
-game_jam_route.post('/create-game-jam', upload.none(), gameJamController.createGameJam);
-game_jam_route.put('/update-game-jam/:id', upload.none(), gameJamController.updateGameJam);
+game_jam_route.post('/create-game-jam', upload.array('themes', 5), gameJamController.createGameJam);
+game_jam_route.put('/update-game-jam/:id', upload.array('themes', 5), gameJamController.updateGameJam);
 game_jam_route.get('/get-current-game-jam', gameJamController.getCurrentGameJam);
 game_jam_route.get('/get-eval-game-jam', gameJamController.getGameJamToEvaluate);
 game_jam_route.get('/get-game-jam/:id', gameJamController.getGameJam);
