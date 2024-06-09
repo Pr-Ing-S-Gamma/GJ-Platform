@@ -24,7 +24,7 @@ import { environment } from '../../../environments/environment.prod';
 export class GamejamCrudComponent implements OnInit {
   myForm!: FormGroup;
   dataSource: GameJam[] = [];
-  themes: any[] = [];
+  themes: Theme[] = [];
   columnOptions = [
     { label: 'Edition', value: 'edition' as keyof GameJam, checked: false },
     { label: 'Themes', value: 'theme.titleEN' as keyof GameJam, checked: false },
@@ -36,28 +36,28 @@ export class GamejamCrudComponent implements OnInit {
   filterValue: string = '';
   
   constructor(private fb: FormBuilder, private gamejamService: GamejamService, private themeService: ThemeService) {}
-  get themeFormArray(): FormArray {
-    return this.myForm.get('theme') as FormArray;
+  get themesArray(): FormArray {
+    return this.myForm.get('themes') as FormArray;
   }
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
-      theme: this.fb.array([], Validators.required),
-      selectedTheme:[]
+      themes: this.fb.array([], Validators.required),
+      selectedTheme: ['']
     });
-    const url = `http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`;
-    this.gamejamService.getGameJams(url).subscribe(
-      (gamejams: any[]) => {
-        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, themes: gamejam.themes}));
+
+    this.gamejamService.getGameJams(`http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`).subscribe(
+      (gamejams: GameJam[]) => {
+        this.dataSource = gamejams;
       },
       error => {
         console.error('Error al obtener las GameJams:', error);
       }
     );
-    this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`)
-    .subscribe(
-      themes => {
-        this.themes = themes.map(theme =>({_id : theme._id, titleEN: theme.titleEN}))
+
+    this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`).subscribe(
+      (themes: Theme[]) => {
+        this.themes = themes;
       },
       error => {
         console.error('Error al obtener temas:', error);
@@ -76,16 +76,19 @@ export class GamejamCrudComponent implements OnInit {
   }
   
   addTheme() {
-    const themeFormArray = this.myForm.get('theme') as FormArray;
     const selectedTheme = this.myForm.get('selectedTheme')?.value;
-    
-    if (selectedTheme && !themeFormArray.controls.some(ctrl => ctrl.value._id === selectedTheme._id)) {
-      themeFormArray.push(this.fb.group({
-        _id: [selectedTheme._id],
-        titleEN: [selectedTheme.titleEN]
-      }));
+    if (selectedTheme) {
+      const themesArray = this.themesArray;
+      if (!themesArray.value.some((theme: Theme) => theme._id === selectedTheme._id)) {
+        themesArray.push(this.fb.group({
+          _id: [selectedTheme._id],
+          titleEN: [selectedTheme.titleEN]
+        }));
+      } else {
+        console.log("El tema ya está en la lista.");
+      }
     } else {
-      console.log("Theme already added or not selected");
+      console.log("No se ha seleccionado ningún tema.");
     }
   }
   
