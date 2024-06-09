@@ -47,7 +47,7 @@ export class GamejamCrudComponent implements OnInit {
     const url = `http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`;
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
-        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, theme: gamejam.theme }));
+        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, theme: gamejam.theme}));
       },
       error => {
         console.error('Error al obtener las GameJams:', error);
@@ -56,7 +56,7 @@ export class GamejamCrudComponent implements OnInit {
     this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`)
     .subscribe(
       themes => {
-        this.themes = themes;
+        this.themes = themes.map(theme =>({_id : theme._id, titleEN: theme.titleEN}))
       },
       error => {
         console.error('Error al obtener temas:', error);
