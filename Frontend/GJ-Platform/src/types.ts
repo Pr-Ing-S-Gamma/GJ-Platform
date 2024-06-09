@@ -90,7 +90,7 @@ export interface Country {
 export interface GameJam {
   _id?: string;
   edition: string;
-  theme: {
+  themes: {
     _id: string;
     titleEN: string;
   }[];

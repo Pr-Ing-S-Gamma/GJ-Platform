@@ -47,7 +47,7 @@ export class GamejamCrudComponent implements OnInit {
     const url = `http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`;
     this.gamejamService.getGameJams(url).subscribe(
       (gamejams: any[]) => {
-        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, theme: gamejam.theme}));
+        this.dataSource = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, themes: gamejam.themes}));
       },
       error => {
         console.error('Error al obtener las GameJams:', error);
@@ -93,7 +93,7 @@ export class GamejamCrudComponent implements OnInit {
       this.selectedColumns.forEach(column => {
         if (column.startsWith('theme.')) {
           const themeProperty = column.split('.')[1]; // Remove the type assertion for now
-          const themeValue = row.theme.map((theme: any) => theme[themeProperty]).join(', '); // Adjust the type to 'any' temporarily
+          const themeValue = row.themes.map((theme: any) => theme[themeProperty]).join(', '); // Adjust the type to 'any' temporarily
           rowData.push(themeValue);
         } else {
           rowData.push(row[column as keyof GameJam] !== undefined ? row[column as keyof GameJam] : '');
@@ -135,15 +135,15 @@ export class GamejamCrudComponent implements OnInit {
     if (this.myForm.valid) {
       console.log('Formulario válido');
       const gamejamId = this.userToEdit['_id'];
-      const { edition, theme } = this.myForm.value;
+      const { edition, themes } = this.myForm.value;
   
       this.gamejamService.updateGameJam(`http://${environment.apiUrl}:3000/api/game-jam/update-game-jam/${gamejamId}`, {
         edition: edition,
-        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN }))
+        themes: themes.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN }))
       }).subscribe({
         next: (data) => {
           if (data.success) {
-            this.dataSource[this.indexUser] = { _id: gamejamId, edition: edition, theme: theme };
+            this.dataSource[this.indexUser] = { _id: gamejamId, edition: edition, themes: themes };
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -179,15 +179,15 @@ export class GamejamCrudComponent implements OnInit {
     if (this.myForm.valid) {
       console.log('Formulario válido');
   
-      const { edition, theme } = this.myForm.value;
+      const { edition, themes } = this.myForm.value;
       this.gamejamService.createGameJam(`http://${environment.apiUrl}:3000/api/game-jam/create-game-jam`, {
         edition: edition,
-        theme: theme.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN}))
+        themes: themes.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN}))
       }).subscribe({
         next: (data) => {
           if (data.success) {
             const gameJamId = data.gameJamId;
-            this.dataSource.push({ _id: gameJamId, edition: edition, theme: theme });
+            this.dataSource.push({ _id: gameJamId, edition: edition, themes: themes });
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -236,9 +236,9 @@ export class GamejamCrudComponent implements OnInit {
           case 'edition':
             return item.edition.toLowerCase().startsWith(filterText);
           case 'theme.titleEN':
-            return item.theme.some(t => t.titleEN.toLowerCase().startsWith(filterText));
+            return item.themes.some(t => t.titleEN.toLowerCase().startsWith(filterText));
           case 'theme._id':
-            return item.theme.some(t => t._id.toLowerCase().startsWith(filterText));
+            return item.themes.some(t => t._id.toLowerCase().startsWith(filterText));
           default:
             return false;
         }
