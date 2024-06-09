@@ -2,22 +2,19 @@ const express = require('express');
 const game_jam_route = express();
 
 const bodyParser = require('body-parser');
+game_jam_route.use(bodyParser.json());
+game_jam_route.use(bodyParser.urlencoded({ extended: true })); 
 const multer = require('multer');
+
+const storage = multer.memoryStorage();
+
+const upload = multer({ storage: storage });
 
 const gameJamController = require('../controllers/gameJamController');
 
-// Configuración de Multer para limitar el tamaño del archivo a 10 MB
-const storage = multer.memoryStorage();
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 1000 * 2048 * 2048 } // 10 MB
-});
 
-game_jam_route.use(bodyParser.json());
-game_jam_route.use(bodyParser.urlencoded({ extended: true }));
-
-game_jam_route.post('/create-game-jam', upload.array('themes', 5), gameJamController.createGameJam);
-game_jam_route.put('/update-game-jam/:id', upload.array('themes', 5), gameJamController.updateGameJam);
+game_jam_route.post('/create-game-jam', upload.none(), gameJamController.createGameJam);
+game_jam_route.put('/update-game-jam/:id', upload.none(), gameJamController.updateGameJam);
 game_jam_route.get('/get-current-game-jam', gameJamController.getCurrentGameJam);
 game_jam_route.get('/get-eval-game-jam', gameJamController.getGameJamToEvaluate);
 game_jam_route.get('/get-game-jam/:id', gameJamController.getGameJam);
