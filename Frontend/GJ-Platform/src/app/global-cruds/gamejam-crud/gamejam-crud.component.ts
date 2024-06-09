@@ -43,7 +43,7 @@ export class GamejamCrudComponent implements OnInit {
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
-      themes: this.fb.array([]),
+      themes: this.fb.array(['']),
       selectedTheme: ['']
     });
 
