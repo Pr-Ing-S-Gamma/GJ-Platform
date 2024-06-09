@@ -42,7 +42,7 @@ export class GamejamCrudComponent implements OnInit {
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
-      themes: this.fb.array([], Validators.required),
+      theme: this.fb.array([], Validators.required),
       selectedTheme:[]
     });
     const url = `http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`;
@@ -79,7 +79,7 @@ export class GamejamCrudComponent implements OnInit {
     const selectedTheme = this.myForm.get('selectedTheme');
     if(selectedTheme && selectedTheme.value){
       const themeValue: Theme = selectedTheme.value;
-      const themeArray = this.myForm.get("themes") as FormArray;
+      const themeArray = this.myForm.get("theme") as FormArray;
       if(!themeArray?.value.some((theme: Theme)=>theme._id ===themeValue._id)){
         themeArray.push(this.fb.control(themeValue));
       }else{
