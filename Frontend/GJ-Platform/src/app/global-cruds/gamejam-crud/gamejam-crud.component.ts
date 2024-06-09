@@ -260,9 +260,9 @@ export class GamejamCrudComponent implements OnInit {
             return item._id && item._id.toLowerCase().startsWith(filterText);
           case 'edition':
             return item.edition.toLowerCase().startsWith(filterText);
-          case 'theme.titleEN':
+          case 'themes.titleEN':
             return item.themes.some(t => t.titleEN.toLowerCase().startsWith(filterText));
-          case 'theme._id':
+          case 'themes._id':
             return item.themes.some(t => t._id.toLowerCase().startsWith(filterText));
           default:
             return false;
