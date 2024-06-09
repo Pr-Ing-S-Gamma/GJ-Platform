@@ -76,15 +76,19 @@ export class GamejamCrudComponent implements OnInit {
   }
   
   addTheme() {
-    const selectedTheme = this.myForm.get('selectedTheme');
-      const themeValue: Theme = selectedTheme?.value;
-      const themeArray = this.myForm.get("theme") as FormArray;
-      if(!themeArray.value.some((theme: Theme)=>theme._id ===themeValue._id)){
-        themeArray.push(this.fb.control(themeValue));
-      }else{
-        console.log("Theme already on GJ");
-      }
+    const themeFormArray = this.myForm.get('theme') as FormArray;
+    const selectedTheme = this.myForm.get('selectedTheme')?.value;
+    
+    if (selectedTheme && !themeFormArray.controls.some(ctrl => ctrl.value._id === selectedTheme._id)) {
+      themeFormArray.push(this.fb.group({
+        _id: [selectedTheme._id],
+        titleEN: [selectedTheme.titleEN]
+      }));
+    } else {
+      console.log("Theme already added or not selected");
+    }
   }
+  
   
   removeTheme(index: number) {
     (this.myForm.get('theme') as FormArray).removeAt(index);
@@ -184,16 +188,16 @@ export class GamejamCrudComponent implements OnInit {
   agregar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
-  
-      const { edition, themes } = this.myForm.value;
+      
+      const { edition, theme } = this.myForm.value;
       this.gamejamService.createGameJam(`http://${environment.apiUrl}:3000/api/game-jam/create-game-jam`, {
         edition: edition,
-        themes: themes.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN}))
+        themes: theme
       }).subscribe({
         next: (data) => {
           if (data.success) {
             const gameJamId = data.gameJamId;
-            this.dataSource.push({ _id: gameJamId, edition: edition, themes: themes });
+            this.dataSource.push({ _id: gameJamId, edition: edition, themes: theme });
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -207,6 +211,7 @@ export class GamejamCrudComponent implements OnInit {
       this.showErrorMessage('Please fill in all fields of the form');
     }
   }
+  
 
   successMessage: string = '';
   errorMessage: string = '';
