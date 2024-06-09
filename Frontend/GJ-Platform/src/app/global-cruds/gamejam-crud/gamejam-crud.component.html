@@ -130,15 +130,13 @@
                     <div class="row centerRow">
                         <div class="formTitle">Themes</div>
                         <div class="row centerRow">
-                            <ng-container formArrayName="theme">
-                                <div *ngFor="let themeCtrl of themesArray.controls; let i = index" [formGroupName]="i" class="theme-selection">
-                                    <select class="form-control formList" formControlName="titleEN" required>
-                                        <option value="" disabled selected hidden>Theme</option>
-                                        <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN}}</option>
-                                    </select>
-                                    <button type="button" class="btn btn-danger" (click)="removeTheme(i)">Remove</button>
+                                <div *ngFor="let theme of myForm.get('themes')?.value" class="row formLinks">
+                                    <div class="col">
+                                        <label>Theme:</label>
+                                        <p>{{theme.titleEN}}</p>
+                                    </div>
+                                    <button class="btn btn-danger" (click)="removeTheme(theme)">Remove</button>
                                 </div>
-                            </ng-container>
                             <button type="button" class="btn btn-primary" (click)="addTheme()">Add Theme</button>
                         </div>
                         <div class="formTitle">Edition</div>
@@ -180,12 +178,17 @@
                             <button type="button" class="btn btn-primary" (click)="addTheme()">Add Theme</button>
                         </div>
                         <div class="row centerRow">
+
                             <ng-container formArrayName="theme">
-                                <div *ngFor="let themeCtrl of themesArray.controls; let i = index" [formGroupName]="i" class="theme-selection">
-                                    <span>{{ themeCtrl.value.titleEN }}</span>
-                                    <button type="button" class="btn btn-danger" (click)="removeTheme(i)">Remove</button>
+                                <div *ngFor="let theme of myForm.get('themes')?.value" class="row formLinks">
+                                    <div class="col">
+                                        <label>Theme:</label>
+                                        <p>{{theme.titleEN}}</p>
+                                    </div>
+                                    <button class="btn btn-danger" (click)="removeTheme(theme)">Remove</button>
                                 </div>
                             </ng-container>
+
                         </div>
                         <div class="formTitle">Edition</div>
                         <div class="row centerRow">

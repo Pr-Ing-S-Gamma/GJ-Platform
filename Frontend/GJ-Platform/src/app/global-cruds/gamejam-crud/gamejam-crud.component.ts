@@ -25,6 +25,7 @@ export class GamejamCrudComponent implements OnInit {
   myForm!: FormGroup;
   dataSource: GameJam[] = [];
   themes: Theme[] = [];
+  selectedColumns: (keyof GameJam)[] = []; 
   columnOptions = [
     { label: 'Edition', value: 'edition' as keyof GameJam, checked: false },
     { label: 'Themes', value: 'theme.titleEN' as keyof GameJam, checked: false },
@@ -42,7 +43,7 @@ export class GamejamCrudComponent implements OnInit {
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
-      themes: this.fb.array([], Validators.required),
+      themes: this.fb.array([]),
       selectedTheme: ['']
     });
 
@@ -65,7 +66,7 @@ export class GamejamCrudComponent implements OnInit {
     );
   }
 
-  selectedColumns: (keyof GameJam)[] = []; 
+  
 
   toggleColumn(column: keyof GameJam, event: any) {
     if (event.target.checked) {
@@ -76,25 +77,21 @@ export class GamejamCrudComponent implements OnInit {
   }
   
   addTheme() {
-    const selectedTheme = this.myForm.get('selectedTheme')?.value;
-    if (selectedTheme) {
-      const themesArray = this.themesArray;
-      if (!themesArray.value.some((theme: Theme) => theme._id === selectedTheme._id)) {
-        themesArray.push(this.fb.group({
-          _id: [selectedTheme._id],
-          titleEN: [selectedTheme.titleEN]
-        }));
-      } else {
-        console.log("El tema ya está en la lista.");
+    const selectedTheme = this.myForm.get('selectedTheme');
+    if(selectedTheme && selectedTheme.value){
+      const themeValue : Theme = selectedTheme.value;
+      if(!this.themesArray.value.some((theme: Theme) =>theme._id=== themeValue._id)){
+        this.themesArray.push(this.fb.control(themeValue))
       }
-    } else {
-      console.log("No se ha seleccionado ningún tema.");
     }
   }
   
   
-  removeTheme(index: number) {
-    (this.myForm.get('theme') as FormArray).removeAt(index);
+  removeTheme(theme: Theme) {
+    const index = this.themesArray.controls.findIndex(control => control.value._id === theme._id);
+    if(index !== -1){
+      this.themesArray.removeAt(index);
+    }
   }
   
   exportToPDF() {
@@ -140,8 +137,16 @@ export class GamejamCrudComponent implements OnInit {
     this.indexUser = this.dataSource.indexOf(elemento);
     this.myForm.patchValue({
       edition: elemento.edition,
-      theme: elemento.theme.map((t: any) => this.themes.find(theme => theme._id === t._id))
     });
+    this.themesArray.clear();
+    elemento.themes.forEach((theme: Theme) =>{
+      (this.themesArray).push(this.fb.group({
+        _id: theme._id,
+        titleEN : theme.titleEN,
+      }));
+    }
+  
+  ) 
   }
 
   editar() {
@@ -156,7 +161,10 @@ export class GamejamCrudComponent implements OnInit {
       }).subscribe({
         next: (data) => {
           if (data.success) {
-            this.dataSource[this.indexUser] = { _id: gamejamId, edition: edition, themes: themes };
+            this.dataSource[this.indexUser] = { _id: gamejamId, edition: edition, themes: themes.map((theme :{_id : string; titleEN: string;})=>({
+              _id : theme._id,
+              titleEN : theme.titleEN
+            })  ) };
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -192,15 +200,18 @@ export class GamejamCrudComponent implements OnInit {
     if (this.myForm.valid) {
       console.log('Formulario válido');
       
-      const { edition, theme } = this.myForm.value;
+      const { edition, themes } = this.myForm.value;
       this.gamejamService.createGameJam(`http://${environment.apiUrl}:3000/api/game-jam/create-game-jam`, {
         edition: edition,
-        themes: theme
+        themes: themes.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN }))
       }).subscribe({
         next: (data) => {
           if (data.success) {
             const gameJamId = data.gameJamId;
-            this.dataSource.push({ _id: gameJamId, edition: edition, themes: theme });
+            this.dataSource.push({ _id: gameJamId, edition: edition, themes: themes.map((theme :{_id : string; titleEN: string;})=>({
+              _id : theme._id,
+              titleEN : theme.titleEN
+            })  ) });
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
