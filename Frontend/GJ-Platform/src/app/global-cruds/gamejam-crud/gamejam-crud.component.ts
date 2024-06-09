@@ -43,7 +43,7 @@ export class GamejamCrudComponent implements OnInit {
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
-      themes: this.fb.array([], Validators.required),
+      themes: this.fb.array([]),
       selectedTheme: ['']
     });
 
@@ -248,7 +248,20 @@ export class GamejamCrudComponent implements OnInit {
   cambiarPagina(page: number) {
     this.currentPage = page;
   }
-
+  getPropertyValue(obj: any, key: string) {
+    if (!obj || !key) return '';
+    const keys = key.split('.');
+    let value = obj;
+    for (const k of keys) {
+        if (Array.isArray(value)) {
+            value = value.map((item: any) => item[k]);
+        } else {
+            value = value[k];
+        }
+        if (value === undefined || value === null) return '';
+    }
+    return Array.isArray(value) ? value.join(', ') : value;
+}
   obtenerDatosPagina() {
     let filteredData = this.dataSource;
 
@@ -257,13 +270,8 @@ export class GamejamCrudComponent implements OnInit {
       filteredData = filteredData.filter(item => {
         switch (this.selectedHeader) {
           case '_id':
-            return item._id && item._id.toLowerCase().startsWith(filterText);
           case 'edition':
-            return item.edition.toLowerCase().startsWith(filterText);
-          case 'themes.titleEN':
-            return item.themes.some(t => t.titleEN.toLowerCase().startsWith(filterText));
-          case 'themes._id':
-            return item.themes.some(t => t._id.toLowerCase().startsWith(filterText));
+            return this.getPropertyValue(item, this.selectedHeader).toLowerCase().startsWith(filterText);
           default:
             return false;
         }

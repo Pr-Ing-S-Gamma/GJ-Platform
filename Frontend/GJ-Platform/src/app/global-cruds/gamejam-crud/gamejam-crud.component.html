@@ -2,7 +2,7 @@
     <div class="filters">
         <select [(ngModel)]="selectedHeader">
             <option value="edition">Edition</option>
-            <option value="theme.titleEN">Theme Name (EN)</option>
+            <option value="themes.titleEN">Theme Name (EN)</option>
         </select>
 
         <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
@@ -49,7 +49,9 @@
                 <td>{{ row.edition }}</td>
                 <td>
                     <ul>
-                        <li *ngFor="let theme of row.themes">{{ theme?.titleEN }}</li>
+                        <li *ngFor="let theme of row.themes">
+                            <a jammer>{{ theme?.titleEN }}</a>
+                        </li>
                     </ul>
                 </td>
                 <td>
