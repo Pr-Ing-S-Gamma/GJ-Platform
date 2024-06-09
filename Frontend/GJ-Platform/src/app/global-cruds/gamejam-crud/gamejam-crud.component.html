@@ -134,7 +134,7 @@
                                 <div *ngFor="let theme of myForm.get('themes')?.value" class="row formLinks">
                                     <div class="col">
                                         <label>Theme:</label>
-                                        <p>{{theme.titleEN}}</p>
+                                        <p>{{theme?.titleEN}}</p>
                                     </div>
                                     <button class="btn btn-danger" (click)="removeTheme(theme)">Remove</button>
                                 </div>
@@ -184,7 +184,7 @@
                                 <div *ngFor="let theme of myForm.get('themes')?.value" class="row formLinks">
                                     <div class="col">
                                         <label>Theme:</label>
-                                        <p>{{theme.titleEN}}</p>
+                                        <p>{{theme?.titleEN}}</p>
                                     </div>
                                     <button class="btn btn-danger" (click)="removeTheme(theme)">Remove</button>
                                 </div>
