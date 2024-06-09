@@ -93,7 +93,7 @@ export interface GameJam {
   theme: {
     _id: string;
     titleEN: string;
-  };
+  }[];
 }
 
 export interface Stage {

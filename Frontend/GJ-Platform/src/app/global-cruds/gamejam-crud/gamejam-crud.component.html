@@ -1,100 +1,103 @@
 <div class="card-body cardBackground">
-        <div class="filters">
-            <select [(ngModel)]="selectedHeader">
-                <option value="edition">Edition</option>
-                <option value="theme.titleEN">Theme Name (EN)</option>
-            </select>
-        
-            <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Export info to PDF
-            </button>
-            <div>
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Select Columns to export</h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                          <div *ngFor="let column of columnOptions">
-                            <input type="checkbox" [value]="column.value" [(ngModel)]="column.checked" (change)="toggleColumn(column.value, $event)" />
-                            {{ column.label }}
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-primary" (click)="exportToPDF()">Export to PDF</button>
-                        </div>
+    <div class="filters">
+        <select [(ngModel)]="selectedHeader">
+            <option value="edition">Edition</option>
+            <option value="theme.titleEN">Theme Name (EN)</option>
+        </select>
+
+        <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Export info to PDF
+        </button>
+        <div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Select Columns to export</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div *ngFor="let column of columnOptions">
+                        <input type="checkbox" [value]="column.value" [(ngModel)]="column.checked" (change)="toggleColumn(column.value, $event)" />
+                        {{ column.label }}
                       </div>
                     </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" (click)="exportToPDF()">Export to PDF</button>
+                    </div>
                   </div>
-            </div>
-            
+                </div>
+              </div>
         </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Edition</th>
-                    <th scope="col">Theme Name</th>
-                    <th scope="col">Update</th>
-                    <th scope="col">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of obtenerDatosPagina()">
-                    <td>{{ row.edition }}</td>
-                    <td>{{ row.theme.titleEN }}</td>
-                    <td>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
-                    </td>
-                    <td>
-                        <button class="btn btn-danger" (click)="eliminar(row)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="navBarStyle">
-            <ul class="pagination">
-                <!-- Botón para ir a la primera página -->
-                <li class="page-item" [class.disabled]="currentPage === 1">
-                    <a class="page-link" (click)="cambiarPagina(1)" aria-label="First">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
-                </li>
-                <!-- Botón para ir a la página anterior -->
-                <li class="page-item" [class.disabled]="currentPage === 1">
-                    <a class="page-link" (click)="cambiarPagina(currentPage - 1)" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <!-- Limitar el número de páginas mostradas -->
-                <ng-container *ngFor="let page of paginasMostradas">
-                    <li class="page-item" *ngIf="page !== '...'">
-                        <a class="page-link" (click)="cambiarPagina(page)" [class.active]="currentPage === page">{{ page
-                            }}</a>
-                    </li>
-                </ng-container>
-                <!-- Botón para ir a la página siguiente -->
-                <li class="page-item" [class.disabled]="currentPage === totalPaginas">
-                    <a class="page-link" (click)="cambiarPagina(currentPage + 1)" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <!-- Botón para ir a la última página -->
-                <li class="page-item" [class.disabled]="currentPage === totalPaginas">
-                    <a class="page-link" (click)="cambiarPagina(totalPaginas)" aria-label="Last">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-            <button class="btn btn-primary" data-toggle="modal" data-target="#createModal">Add</button>
-        </div>
+        
     </div>
-    
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Edition</th>
+                <th scope="col">Theme Name</th>
+                <th scope="col">Update</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of obtenerDatosPagina()">
+                <td>{{ row.edition }}</td>
+                <td>
+                    <ul>
+                        <li *ngFor="let theme of row.theme">{{ theme.titleEN }}</li>
+                    </ul>
+                </td>
+                <td>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
+                </td>
+                <td>
+                    <button class="btn btn-danger" (click)="eliminar(row)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="navBarStyle">
+        <ul class="pagination">
+            <!-- Botón para ir a la primera página -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="cambiarPagina(1)" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <!-- Botón para ir a la página anterior -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="cambiarPagina(currentPage - 1)" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <!-- Limitar el número de páginas mostradas -->
+            <ng-container *ngFor="let page of paginasMostradas">
+                <li class="page-item" *ngIf="page !== '...'">
+                    <a class="page-link" (click)="cambiarPagina(page)" [class.active]="currentPage === page">{{ page
+                        }}</a>
+                </li>
+            </ng-container>
+            <!-- Botón para ir a la página siguiente -->
+            <li class="page-item" [class.disabled]="currentPage === totalPaginas">
+                <a class="page-link" (click)="cambiarPagina(currentPage + 1)" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <!-- Botón para ir a la última página -->
+            <li class="page-item" [class.disabled]="currentPage === totalPaginas">
+                <a class="page-link" (click)="cambiarPagina(totalPaginas)" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        </ul>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#createModal">Add</button>
+    </div>
+</div>
 
 <!-- Fuera del modal principal -->
 <div *ngIf="successMessage || errorMessage" class="toast-overlay">
@@ -111,10 +114,9 @@
       </div>
     </div>
   </div>
-  
+
 <!-- Edit Window -->
-<div #editModal class="modal fade" id="editModal" tabindex="-1" rol="dialog" aria-labelledby="editModalLabel"
-    aria-hidden="true">
+<div #editModal class="modal fade" id="editModal" tabindex="-1" rol="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog" rol="document">
         <form (submit)="editar()" [formGroup]="myForm">
             <div class="modal-content">
@@ -126,20 +128,23 @@
                 </div>
                 <div class="modal-body">
                     <div class="row centerRow">
-
-                        <div class="formTitle">Theme</div>
+                        <div class="formTitle">Themes</div>
                         <div class="row centerRow">
-                            <select class="form-control formList" id="themes" required formControlName="theme">
-                              <option value="" disabled selected hidden>Theme</option>
-                              <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN + ' - ' + theme.descriptionEN }}</option>
-                            </select>
-                          </div>
+                            <ng-container formArrayName="theme">
+                                <div *ngFor="let themeCtrl of themeFormArray.controls; let i = index" [formGroupName]="i" class="theme-selection">
+                                    <select class="form-control formList" formControlName="titleEN" required>
+                                        <option value="" disabled selected hidden>Theme</option>
+                                        <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN + ' - ' + theme.descriptionEN }}</option>
+                                    </select>
+                                    <button type="button" class="btn btn-danger" (click)="removeTheme(i)">Remove</button>
+                                </div>
+                            </ng-container>
+                            <button type="button" class="btn btn-primary" (click)="addTheme()">Add Theme</button>
+                        </div>
                         <div class="formTitle">Edition</div>
-
                         <div class="row centerRow">
                             <div class="form-group formInput">
-                                <input #editEditionInput class="form-control" id="editEditionInput" required
-                                    placeholder="Edition" formControlName="edition">
+                                <input #editEditionInput class="form-control" id="editEditionInput" required placeholder="Edition" formControlName="edition">
                             </div>
                         </div>
                     </div>
@@ -154,8 +159,7 @@
 </div>
 
 <!-- Create Window -->
-<div #createModal class="modal fade" id="createModal" tabindex="-1" rol="dialog" aria-labelledby="createModalLabel"
-    aria-hidden="true">
+<div #createModal class="modal fade" id="createModal" tabindex="-1" rol="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
     <div class="modal-dialog" rol="document">
         <form (submit)="agregar()" [formGroup]="myForm">
             <div class="modal-content">
@@ -167,19 +171,23 @@
                 </div>
                 <div class="modal-body">
                     <div class="row centerRow">
-                        <div class="formTitle">Theme</div>
+                        <div class="formTitle">Themes</div>
                         <div class="row centerRow">
-                            <select class="form-control formList" id="themes" required formControlName="theme">
-                              <option value="" disabled selected hidden>Theme</option>
-                              <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN + ' - ' + theme.descriptionEN }}</option>
-                            </select>
-                          </div>
+                            <ng-container formArrayName="theme">
+                                <div *ngFor="let themeCtrl of themeFormArray.controls; let i = index" [formGroupName]="i" class="theme-selection">
+                                    <select class="form-control formList" formControlName="titleEN" required>
+                                        <option value="" disabled selected hidden>Theme</option>
+                                        <option *ngFor="let theme of themes" [ngValue]="theme">{{ theme.titleEN + ' - ' + theme.descriptionEN }}</option>
+                                    </select>
+                                    <button type="button" class="btn btn-danger" (click)="removeTheme(i)">Remove</button>
+                                </div>
+                            </ng-container>
+                            <button type="button" class="btn btn-primary" (click)="addTheme()">Add Theme</button>
+                        </div>
                         <div class="formTitle">Edition</div>
-
                         <div class="row centerRow">
                             <div class="form-group formInput">
-                                <input #editEditionInput class="form-control" id="editEditionInput" required
-                                    placeholder="Edition" formControlName="edition">
+                                <input #createEditionInput class="form-control" id="createEditionInput" required placeholder="Edition" formControlName="edition">
                             </div>
                         </div> 
                     </div>
