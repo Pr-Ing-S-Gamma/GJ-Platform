@@ -103,7 +103,7 @@ export class GamejamCrudComponent implements OnInit {
       this.selectedColumns.forEach(column => {
         if (column.startsWith('themes.')) {
           const themeProperty = column.split('.')[1]; // Remove the type assertion for now
-          const themeValue = row.themes.map((theme: any) => theme[themeProperty]).join(', '); // Adjust the type to 'any' temporarily
+          const themeValue = row.themes?.map((theme: any) => theme[themeProperty]).join(', '); // Adjust the type to 'any' temporarily
           rowData.push(themeValue);
         } else {
           rowData.push(row[column as keyof GameJam] !== undefined ? row[column as keyof GameJam] : '');

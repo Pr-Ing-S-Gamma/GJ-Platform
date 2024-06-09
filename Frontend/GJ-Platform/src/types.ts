@@ -91,8 +91,8 @@ export interface GameJam {
   _id?: string;
   edition: string;
   themes: {
-    _id: string;
-    titleEN: string;
+    _id?: string;
+    titleEN?: string;
   }[];
 }
 
