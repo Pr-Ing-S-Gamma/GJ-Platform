@@ -77,18 +77,13 @@ export class GamejamCrudComponent implements OnInit {
   
   addTheme() {
     const selectedTheme = this.myForm.get('selectedTheme');
-    if(selectedTheme && selectedTheme.value){
-      const themeValue: Theme = selectedTheme.value;
+      const themeValue: Theme = selectedTheme?.value;
       const themeArray = this.myForm.get("theme") as FormArray;
-      if(!themeArray?.value.some((theme: Theme)=>theme._id ===themeValue._id)){
+      if(!themeArray.value.some((theme: Theme)=>theme._id ===themeValue._id)){
         themeArray.push(this.fb.control(themeValue));
       }else{
         console.log("Theme already on GJ");
       }
-    }else{
-    console.log("null form");
-    }
-
   }
   
   removeTheme(index: number) {
