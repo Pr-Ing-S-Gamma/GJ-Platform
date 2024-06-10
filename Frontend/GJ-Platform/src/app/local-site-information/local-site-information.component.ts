@@ -234,109 +234,52 @@ export class LocalSiteInformationComponent implements OnInit{
     }
   }
 
-  moveToSubmissions(){
-    if (!this.inSubmissions && this.actualWindow != 0){
-      this.inSubmissions = !this.inSubmissions;
-      switch (this.actualWindow){
-        case 1:
-          this.inTeams = !this.inTeams;
-          break;
-        case 2:
-          this.inJammers = !this.inJammers;
-          break;
-        case 3:
-          this.inStaff = !this.inStaff;
-          break;
-        case 4:
-          this.inManagement = !this.inManagement;
-          break;
-      }
-      this.actualWindow = 0;
-    }
+  moveToSubmissions() {
+    this.hideAll()
+    this.inSubmissions = !this.inSubmissions;
+    this.moveToWindow(0);
   }
 
-  moveToTeams(){
-    if (!this.inTeams && this.actualWindow != 1){
-      this.inTeams = !this.inTeams;
-      switch (this.actualWindow){
-        case 0:
-          this.inSubmissions = !this.inSubmissions;
-          break;
-        case 2:
-          this.inJammers = !this.inJammers;
-          break;
-        case 3:
-          this.inStaff = !this.inStaff;
-          break;
-        case 4:
-          this.inManagement = !this.inManagement;
-          break;
-      }
-      this.actualWindow = 1;
+  moveToWindow(windowIndex: number) {
+    if (this.actualWindow !== windowIndex) {
+      this.closeChat();
+      this.inSubmissions = windowIndex === 0;
+      this.inTeams = windowIndex === 1;
+      this.inJammers = windowIndex === 2;
+      this.inStaff = windowIndex === 3;
+      this.inManagement = windowIndex === 4;
+      this.actualWindow = windowIndex;
     }
   }
-
-  moveToJammers(){
-    if (!this.inJammers && this.actualWindow != 2){
-      this.inJammers = !this.inJammers;
-      switch (this.actualWindow){
-        case 0:
-          this.inSubmissions = !this.inSubmissions;
-          break;
-        case 1:
-          this.inTeams = !this.inTeams;
-          break;
-        case 3:
-          this.inStaff = !this.inStaff;
-          break;
-        case 4:
-          this.inManagement = !this.inManagement;
-          break;
-      }
-      this.actualWindow = 2;
-    }
+  hideAll(){
+    this.inJammers = !this.inJammers;
+    this.inManagement = !this.inManagement;
+    this.inStaff = !this.inStaff;
+    this.inSubmissions = !this.inSubmissions;
+    this.inTeams = !this.inTeams;
+  }
+  moveToTeams() {
+    this.hideAll()
+    this.inTeams = !this.inTeams;
+    this.moveToWindow(1);
   }
 
-  moveToStaff(){
-    if (!this.inStaff && this.actualWindow != 3){
-      this.inStaff = !this.inStaff;
-      switch (this.actualWindow){
-        case 0:
-          this.inSubmissions = !this.inSubmissions;
-          break;
-        case 1:
-          this.inTeams = !this.inTeams;
-          break;
-        case 2:
-          this.inJammers = !this.inJammers;
-          break;
-        case 4:
-          this.inManagement = !this.inManagement;
-          break;
-      }
-      this.actualWindow = 3;
-    }
+  moveToJammers() {
+    this.hideAll()
+    this.inJammers = !this.inJammers;
+    this.moveToWindow(2);
   }
 
-  moveToManagement(){
-    if (!this.inManagement && this.actualWindow != 4){
-      this.inManagement = !this.inManagement;
-      switch (this.actualWindow){
-        case 0:
-          this.inSubmissions = !this.inSubmissions;
-          break;
-        case 1:
-          this.inTeams = !this.inTeams;
-          break;
-        case 2:
-          this.inJammers = !this.inJammers;
-          break;
-        case 3:
-          this.inStaff = !this.inStaff;
-          break;
-      }
-      this.actualWindow = 4;
-    }
+  moveToStaff() {
+    this.hideAll()
+    this.inStaff = !this.inStaff;
+    this.moveToWindow(3);
+  }
+
+  moveToManagement() {
+    this.hideAll()
+    this.inManagement = !this.inManagement;
+    this.moveToWindow(4);
   }
   
   successMessage: string = '';
