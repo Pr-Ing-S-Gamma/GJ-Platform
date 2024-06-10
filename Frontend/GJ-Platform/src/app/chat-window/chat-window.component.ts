@@ -78,6 +78,7 @@ export class ChatWindowComponent implements OnInit{
                 console.error('Error al enviar el mensaje:', error);
             }
         );
+        this.ngOnInit();
         this.myForm.reset();
         this.ngOnInit();
     }
