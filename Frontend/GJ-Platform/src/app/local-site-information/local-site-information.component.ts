@@ -154,13 +154,10 @@ export class LocalSiteInformationComponent implements OnInit{
         }
       );
   }
-  openChat() {
-    this.showChat = true;
+  toggleChat(){
+    this.showChat = !this.showChat;
   }
-
-  closeChat() {
-    this.showChat = false;
-  }
+  
 
   agregar() {
     if (this.myForm.valid) {
@@ -234,110 +231,48 @@ export class LocalSiteInformationComponent implements OnInit{
     }
   }
 
-  moveToSubmissions(){
-    if (!this.inSubmissions && this.actualWindow != 0){
-      this.inSubmissions = !this.inSubmissions;
-      switch (this.actualWindow){
-        case 1:
-          this.inTeams = !this.inTeams;
-          break;
-        case 2:
-          this.inJammers = !this.inJammers;
-          break;
-        case 3:
-          this.inStaff = !this.inStaff;
-          break;
-        case 4:
-          this.inManagement = !this.inManagement;
-          break;
-      }
-      this.actualWindow = 0;
+  moveToSubmissions() {
+    this.moveToWindow(0);
+  }
+
+  moveToTeams() {
+    this.moveToWindow(1);
+  }
+
+  moveToJammers() {
+    this.moveToWindow(2);
+  }
+
+  moveToStaff() {
+    this.moveToWindow(3);
+  }
+
+  moveToManagement() {
+    this.moveToWindow(4);
+  }
+  openChat(teamId: string | undefined) {
+    this.currentTeamId = teamId;
+    this.showChat = true;
+  }
+
+  closeChat() {
+    this.currentTeamId = "";
+    this.showChat = false;
+  }
+  currentTeamId: string | undefined = "";
+  
+  moveToWindow(windowIndex: number) {
+    if (this.actualWindow !== windowIndex) {
+      this.closeChat();
+      this.inSubmissions = windowIndex === 0;
+      this.inTeams = windowIndex === 1;
+      this.inJammers = windowIndex === 2;
+      this.inStaff = windowIndex === 3;
+      this.inManagement = windowIndex === 4;
+      this.actualWindow = windowIndex;
     }
   }
 
-  moveToTeams(){
-    if (!this.inTeams && this.actualWindow != 1){
-      this.inTeams = !this.inTeams;
-      switch (this.actualWindow){
-        case 0:
-          this.inSubmissions = !this.inSubmissions;
-          break;
-        case 2:
-          this.inJammers = !this.inJammers;
-          break;
-        case 3:
-          this.inStaff = !this.inStaff;
-          break;
-        case 4:
-          this.inManagement = !this.inManagement;
-          break;
-      }
-      this.actualWindow = 1;
-    }
-  }
-
-  moveToJammers(){
-    if (!this.inJammers && this.actualWindow != 2){
-      this.inJammers = !this.inJammers;
-      switch (this.actualWindow){
-        case 0:
-          this.inSubmissions = !this.inSubmissions;
-          break;
-        case 1:
-          this.inTeams = !this.inTeams;
-          break;
-        case 3:
-          this.inStaff = !this.inStaff;
-          break;
-        case 4:
-          this.inManagement = !this.inManagement;
-          break;
-      }
-      this.actualWindow = 2;
-    }
-  }
-
-  moveToStaff(){
-    if (!this.inStaff && this.actualWindow != 3){
-      this.inStaff = !this.inStaff;
-      switch (this.actualWindow){
-        case 0:
-          this.inSubmissions = !this.inSubmissions;
-          break;
-        case 1:
-          this.inTeams = !this.inTeams;
-          break;
-        case 2:
-          this.inJammers = !this.inJammers;
-          break;
-        case 4:
-          this.inManagement = !this.inManagement;
-          break;
-      }
-      this.actualWindow = 3;
-    }
-  }
-
-  moveToManagement(){
-    if (!this.inManagement && this.actualWindow != 4){
-      this.inManagement = !this.inManagement;
-      switch (this.actualWindow){
-        case 0:
-          this.inSubmissions = !this.inSubmissions;
-          break;
-        case 1:
-          this.inTeams = !this.inTeams;
-          break;
-        case 2:
-          this.inJammers = !this.inJammers;
-          break;
-        case 3:
-          this.inStaff = !this.inStaff;
-          break;
-      }
-      this.actualWindow = 4;
-    }
-  }
   
   successMessage: string = '';
   errorMessage: string = '';
