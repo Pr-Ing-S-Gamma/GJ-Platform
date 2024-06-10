@@ -91,6 +91,7 @@
             </button>
         </div>
     </div>
+        </div>
     
     <div *ngFor="let team of teams">
         <div class="modal fade" [id]="'teamChat-' + team._id" tabindex="-1" role="dialog" aria-labelledby="teamChat" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
@@ -100,6 +101,7 @@
                 </div>
             </div>
         </div>
+    </div>
         <div *ngIf="inJammers">
             <div class="row title">
                 Jammers of {{ site.name }}:
