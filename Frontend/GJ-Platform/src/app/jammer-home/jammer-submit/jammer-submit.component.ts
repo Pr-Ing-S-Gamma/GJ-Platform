@@ -25,7 +25,7 @@ import { environment } from '../../../environments/environment.prod';
 })
 export class JammerSubmitComponent implements OnInit{
   myForm!: FormGroup;
-  gjThemes: Theme[] = [];
+  gjThemes: any[] = [];
   gjCategories: Category[] = [];
   selectedTheme: Theme | null = null;
   selectedCategory: Category | null = null;
@@ -58,10 +58,10 @@ ngOnInit(): void {
       console.error('Error al obtener categorías:', error);
     }
   );
-  this.themeService.getThemes(`http://${environment.apiUrl}:3000/api/theme/get-themes`)
+  this.gamejamService.getCurrentGameJam(`http://${environment.apiUrl}:3000/api/game-jam/get-current-gamejam`)
   .subscribe(
-    themes => {
-      this.gjThemes = themes;
+    gamejam => {
+      this.gjThemes = gamejam.themes;
     },
     error => {
       console.error('Error al obtener temas:', error);

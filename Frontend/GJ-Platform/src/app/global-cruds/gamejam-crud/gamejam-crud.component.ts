@@ -37,9 +37,7 @@ export class GamejamCrudComponent implements OnInit {
   filterValue: string = '';
   
   constructor(private fb: FormBuilder, private gamejamService: GamejamService, private themeService: ThemeService) {}
-  get themesArray(): FormArray {
-    return this.myForm.get('themes') as FormArray;
-  }
+
   ngOnInit(): void {
     this.myForm = this.fb.group({
       edition: ['', Validators.required],
@@ -80,17 +78,19 @@ export class GamejamCrudComponent implements OnInit {
     const selectedTheme = this.myForm.get('selectedTheme');
     if(selectedTheme && selectedTheme.value){
       const themeValue : Theme = selectedTheme.value;
-      if(!this.themesArray.value.some((theme: Theme) =>theme._id=== themeValue._id)){
-        this.themesArray.push(this.fb.control(themeValue))
+      const themesArray = this.myForm.get('themes') as FormArray;
+      if(!themesArray.value.some((theme: Theme) =>theme._id=== themeValue._id)){
+        themesArray.push(this.fb.control(themeValue))
       }
     }
   }
   
   
   removeTheme(theme: Theme) {
-    const index = this.themesArray.controls.findIndex(control => control.value._id === theme._id);
+    const themesArray = this.myForm.get('themes') as FormArray;
+    const index = themesArray.controls.findIndex(control => control.value._id === theme._id);
     if(index !== -1){
-      this.themesArray.removeAt(index);
+      themesArray.removeAt(index);
     }
   }
   
@@ -138,9 +138,10 @@ export class GamejamCrudComponent implements OnInit {
     this.myForm.patchValue({
       edition: elemento.edition,
     });
-    this.themesArray.clear();
+    const themesArray = this.myForm.get('themes') as FormArray;
+    themesArray.clear();
     elemento.themes.forEach((theme: Theme) =>{
-      (this.themesArray).push(this.fb.group({
+      (themesArray).push(this.fb.group({
         _id: theme._id,
         titleEN : theme.titleEN,
       }));
@@ -281,7 +282,7 @@ obtenerDatosPagina() {
         }
       } catch (error) {
         console.error('Error while filtering:', error);
-        return false; // Return false to exclude the item from filteredData
+        return false; 
       }
     });
   }
