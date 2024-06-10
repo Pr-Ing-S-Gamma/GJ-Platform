@@ -235,7 +235,6 @@ export class LocalSiteInformationComponent implements OnInit{
   }
 
   moveToSubmissions() {
-    this.hideAll()
     this.inSubmissions = !this.inSubmissions;
     this.moveToWindow(0);
   }
@@ -251,34 +250,20 @@ export class LocalSiteInformationComponent implements OnInit{
       this.actualWindow = windowIndex;
     }
   }
-  hideAll(){
-    this.inJammers = !this.inJammers;
-    this.inManagement = !this.inManagement;
-    this.inStaff = !this.inStaff;
-    this.inSubmissions = !this.inSubmissions;
-    this.inTeams = !this.inTeams;
-  }
   moveToTeams() {
-    this.hideAll()
-    this.inTeams = !this.inTeams;
     this.moveToWindow(1);
   }
 
   moveToJammers() {
-    this.hideAll()
-    this.inJammers = !this.inJammers;
     this.moveToWindow(2);
   }
 
   moveToStaff() {
-    this.hideAll()
-    this.inStaff = !this.inStaff;
+
     this.moveToWindow(3);
   }
 
   moveToManagement() {
-    this.hideAll()
-    this.inManagement = !this.inManagement;
     this.moveToWindow(4);
   }
   
