@@ -243,15 +243,19 @@ export class LocalSiteInformationComponent implements OnInit{
       switch (this.actualWindow){
         case 1:
           this.inTeams = !this.inTeams;
+          this.closeChat();
           break;
         case 2:
           this.inJammers = !this.inJammers;
+          this.closeChat();
           break;
         case 3:
           this.inStaff = !this.inStaff;
+          this.closeChat();
           break;
         case 4:
           this.inManagement = !this.inManagement;
+          this.closeChat();
           break;
       }
       this.actualWindow = 0;
@@ -264,15 +268,19 @@ export class LocalSiteInformationComponent implements OnInit{
       switch (this.actualWindow){
         case 0:
           this.inSubmissions = !this.inSubmissions;
+          this.closeChat();
           break;
         case 2:
           this.inJammers = !this.inJammers;
+          this.closeChat();
           break;
         case 3:
           this.inStaff = !this.inStaff;
+          this.closeChat();
           break;
         case 4:
           this.inManagement = !this.inManagement;
+          this.closeChat();
           break;
       }
       this.actualWindow = 1;
@@ -285,15 +293,19 @@ export class LocalSiteInformationComponent implements OnInit{
       switch (this.actualWindow){
         case 0:
           this.inSubmissions = !this.inSubmissions;
+          this.closeChat();
           break;
         case 1:
           this.inTeams = !this.inTeams;
+          this.closeChat();
           break;
         case 3:
           this.inStaff = !this.inStaff;
+          this.closeChat();
           break;
         case 4:
           this.inManagement = !this.inManagement;
+          this.closeChat();
           break;
       }
       this.actualWindow = 2;
@@ -306,15 +318,19 @@ export class LocalSiteInformationComponent implements OnInit{
       switch (this.actualWindow){
         case 0:
           this.inSubmissions = !this.inSubmissions;
+          this.closeChat();
           break;
         case 1:
           this.inTeams = !this.inTeams;
+          this.closeChat();
           break;
         case 2:
           this.inJammers = !this.inJammers;
+          this.closeChat();
           break;
         case 4:
           this.inManagement = !this.inManagement;
+          this.closeChat();
           break;
       }
       this.actualWindow = 3;
@@ -327,15 +343,19 @@ export class LocalSiteInformationComponent implements OnInit{
       switch (this.actualWindow){
         case 0:
           this.inSubmissions = !this.inSubmissions;
+          this.closeChat();
           break;
         case 1:
           this.inTeams = !this.inTeams;
+          this.closeChat();
           break;
         case 2:
           this.inJammers = !this.inJammers;
+          this.closeChat();
           break;
         case 3:
           this.inStaff = !this.inStaff;
+          this.closeChat();
           break;
       }
       this.actualWindow = 4;
