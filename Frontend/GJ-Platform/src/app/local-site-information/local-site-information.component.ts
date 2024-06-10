@@ -59,12 +59,12 @@ export class LocalSiteInformationComponent implements OnInit{
   jammers: any[] = [];
   staff: any[] = [];
   inSubmissions: boolean = true; //0
-  inTeams: boolean = false;      //1
-  inJammers: boolean = false;    //2
-  inStaff: boolean = false;      //3
-  inManagement: boolean = false; //4
+  inTeams: boolean = true;      //1
+  inJammers: boolean = true;    //2
+  inStaff: boolean = true;      //3
+  inManagement: boolean = true; //4
   actualWindow: number = 0;
-  showChat: boolean = false;
+  showChat: boolean = true;
   
   ngOnInit(): void {
     this.myForm = this.fb.group({
