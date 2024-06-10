@@ -154,6 +154,9 @@ export class LocalSiteInformationComponent implements OnInit{
         }
       );
   }
+  toggleChat(){
+    this.showChat = !this.showChat;
+  }
 
   agregar() {
     if (this.myForm.valid) {

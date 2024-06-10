@@ -86,7 +86,7 @@
                 </div>
             </div>
             <!-- Botón para abrir el chat -->
-            <button type="button" class="btn btn-secondary mt-2" data-toggle="modal" [attr.data-target]="'#teamChat-' + team._id" (click)="showChat = !showChat">
+            <button type="button" class="btn btn-secondary mt-2" data-toggle="modal" [attr.data-target]="'#teamChat-' + team._id" (click)="toggleChat()">
                 Open Chat
             </button>
         </div>
