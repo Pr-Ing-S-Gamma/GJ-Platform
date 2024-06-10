@@ -273,7 +273,9 @@ export class JuezMainComponent implements OnInit {
     this.SubmissionService.giveRating(`http://${environment.apiUrl}:3000/api/submission/give-rating`, rating).subscribe({
       next: (data) => {
         if (data.success) {
+          alert("Evaluation Completed");
           this.ngOnInit();
+          window.location.reload();
         } else {
         }
       },
