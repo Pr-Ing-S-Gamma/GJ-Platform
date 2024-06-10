@@ -58,7 +58,7 @@ ngOnInit(): void {
       console.error('Error al obtener categorías:', error);
     }
   );
-  this.gamejamService.getCurrentGameJam(`http://${environment.apiUrl}:3000/api/game-jam/get-current-gamejam`)
+  this.gamejamService.getCurrentGameJam(`http://${environment.apiUrl}:3000/api/game-jam/get-current-game-jam`)
   .subscribe(
     gamejam => {
       this.gjThemes = gamejam.themes;
