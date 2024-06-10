@@ -154,9 +154,16 @@ export class LocalSiteInformationComponent implements OnInit{
         }
       );
   }
-  toggleChat(){
-    this.showChat = !this.showChat;
+  openChat(teamId: string | undefined) {
+    this.currentTeamId = teamId;
+    this.showChat = true;
   }
+
+  closeChat() {
+    this.currentTeamId = "";
+    this.showChat = false;
+  }
+  currentTeamId: string | undefined = "";
 
   agregar() {
     if (this.myForm.valid) {
