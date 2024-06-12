@@ -37,12 +37,11 @@ export class JammerSubmitComponent implements OnInit{
   teamSubmission: boolean | undefined;
   currentSubmission: Submission | undefined;
   submissionId: string | undefined; 
-  loading: boolean = false;
+  loading : boolean = false;
 
   constructor(private dialog: MatDialog,private fb: FormBuilder, private router: Router, private userService: UserService, private teamService: TeamService, private siteService: SiteService, private gamejamService: GamejamService, private categoryService: CategoryService, private themeService: ThemeService, private submissionService: SubmissionService, private stageService: StageService){
   }
 ngOnInit(): void {
-
   this.myForm = this.fb.group({
     itchio: ['', Validators.required],
     pitch: ['', Validators.required],
@@ -103,10 +102,13 @@ ngOnInit(): void {
                   this.myForm.get('itchio')?.setValue(submission.game);
                   this.myForm.get('description')?.setValue(submission.description);
                 },
-                
+                error => {
+                }
               );
             },
-            
+            error => {
+              console.error('Error al obtener temas:', error);
+            }
           );
           this.gamejamService.getTimeRemainingData(`http://${environment.apiUrl}:3000/api/game-jam/get-time-left`)
             .subscribe(
