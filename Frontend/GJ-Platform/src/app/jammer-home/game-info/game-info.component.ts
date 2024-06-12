@@ -46,6 +46,7 @@ export class GameInfoComponent implements OnInit {
   categories: string[] = [];
   gameLink: string = '';
   pitchLink: string = '';
+loading: boolean = false;
 
   constructor(
     private fb: FormBuilder, 
@@ -59,6 +60,7 @@ export class GameInfoComponent implements OnInit {
   ) { }
   
   ngOnInit(): void {
+    this.loading = true;
     this.route.params.subscribe(params => {
       this.UserService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
@@ -128,5 +130,6 @@ export class GameInfoComponent implements OnInit {
         }
       );
     });
+    this.loading = false;
   }  
 }

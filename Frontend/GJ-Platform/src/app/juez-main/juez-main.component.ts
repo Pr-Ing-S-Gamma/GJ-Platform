@@ -62,13 +62,14 @@ export class JuezMainComponent implements OnInit {
   audioDesignFeedback: string = "";
   buildFeedback: string = "";
   personalFeedback: string = "";
-
+  loading: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
 
   constructor(private router: Router, private userService: UserService, private SubmissionService: SubmissionService, private TeamService: TeamService, private GameJamService: GamejamService, private CategoryService: CategoryService, private ThemeService: ThemeService){}
 
   ngOnInit(): void {
+    this.loading = true;
     this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
     .subscribe(
       user => {
@@ -155,6 +156,7 @@ export class JuezMainComponent implements OnInit {
         console.error('Error al obtener usuario actual:', error);
       }
     );
+    this.loading = false;
   }
 
   logOut(){
@@ -170,6 +172,7 @@ export class JuezMainComponent implements OnInit {
   }
 
   getNewEvaluation() {
+    this.loading = false;
     this.SubmissionService.getCurrentTeamSubmission(`http://${environment.apiUrl}:3000/api/submission/get-new-evaluation`).subscribe(
       (juego: Submission) => {
         const existingGame = this.games.find(game => game.id === juego._id);
@@ -199,6 +202,7 @@ export class JuezMainComponent implements OnInit {
         this.showErrorMessage(error);
       }
     );
+    this.loading = true;
   }
   showSuccessMessage(message: string) {
     this.successMessage = message;
@@ -250,6 +254,7 @@ export class JuezMainComponent implements OnInit {
 
 
   submitEvaluation(): void {
+    this.loading = true;
     const rating = {
       submissionId: this.gameParameter,
       continuityPotential: this.continuityPotential,
@@ -273,6 +278,7 @@ export class JuezMainComponent implements OnInit {
     this.SubmissionService.giveRating(`http://${environment.apiUrl}:3000/api/submission/give-rating`, rating).subscribe({
       next: (data) => {
         if (data.success) {
+          this.loading = false;
           alert("Evaluation Completed");
           this.ngOnInit();
           window.location.reload();
@@ -282,6 +288,7 @@ export class JuezMainComponent implements OnInit {
       error: (error) => {
       },
     });
+    
   }
   
   private loadData() {

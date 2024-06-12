@@ -24,6 +24,9 @@
             <div class="button-text">
                 Get New Evaluation
             </div>
+            <div class="spinner-border" role="status" *ngIf="loading">
+                <span class="sr-only">Loading...</span>
+              </div>
         </button>
     </div>
     <div *ngIf="timeRemaining !== '0d 0h 0m 0s'" class="row games-evaluations-container">

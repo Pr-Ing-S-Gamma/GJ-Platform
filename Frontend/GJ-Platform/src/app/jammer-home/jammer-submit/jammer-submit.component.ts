@@ -37,7 +37,7 @@ export class JammerSubmitComponent implements OnInit{
   teamSubmission: boolean | undefined;
   currentSubmission: Submission | undefined;
   submissionId: string | undefined; 
-  loading : boolean = false;
+  loading : boolean = true;
 
   constructor(private dialog: MatDialog,private fb: FormBuilder, private router: Router, private userService: UserService, private teamService: TeamService, private siteService: SiteService, private gamejamService: GamejamService, private categoryService: CategoryService, private themeService: ThemeService, private submissionService: SubmissionService, private stageService: StageService){
   }
@@ -146,7 +146,7 @@ ngOnInit(): void {
         },
         () => {}
       );
-      this.loading = true;
+      this.loading = false;
   }
   logOut(){
     this.userService.logOutUser(`http://${environment.apiUrl}:3000/api/user/log-out-user`)

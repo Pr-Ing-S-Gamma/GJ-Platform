@@ -21,9 +21,11 @@ export class ChatWindowComponent implements OnInit{
   @Input() team: string | undefined;
   @Input() localOrg : string | undefined;
   chat: Chat | undefined;
+loading: boolean = false;
   constructor(private fb: FormBuilder, private chatService :ChatService){
   }
   ngOnInit(): void {
+    this.loading = true;
     this.myForm = this.fb.group({
       message: ['', Validators.required]
     });
@@ -63,6 +65,7 @@ export class ChatWindowComponent implements OnInit{
     } else {
       console.error('team or localOrg is undefined');
     }
+    this.loading = false;
   }
   sendMSG() {
     if (this.myForm.valid) {
