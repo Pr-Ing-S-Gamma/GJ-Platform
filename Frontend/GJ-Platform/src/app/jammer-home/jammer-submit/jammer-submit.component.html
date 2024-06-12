@@ -2,6 +2,9 @@
     <div>
         <form [formGroup]="myForm">
             <div class="rectanguloEquipo">
+                <div class="spinner-border" role="status" *ngIf="loading">
+                    <span class="sr-only">Loading...</span>
+                  </div>
                 <div>
                     <div>
                         <label class="label" for="game"> Game: </label>
@@ -112,3 +115,6 @@
         </form>
     </div>
   </section>  
+
+
+  

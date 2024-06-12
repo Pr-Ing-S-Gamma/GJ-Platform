@@ -30,11 +30,7 @@ export class ChatJammerComponent implements OnInit{
     this.chatService.getJammerChat(this.team).subscribe(
       (chat: Chat) => {
         this.chat = chat;
-        console.log('Chat obtenido:', chat);
       },
-      (error: any) => {
-        alert("No hay chats disponibles");
-      }
     );
   }
 }
