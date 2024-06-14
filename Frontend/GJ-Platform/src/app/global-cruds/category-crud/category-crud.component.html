@@ -1,81 +1,91 @@
-<div class="card-body" style="background: white;
-border-radius: 35px; border: 1px black solid;
-border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
+<div class="card-body cardBackground">
 <div class="table-container">
     <div class="filters">
         <select [(ngModel)]="selectedHeader">
-            <option value="titleSP">Title (SP)</option>
-            <option value="titleEN">Title (EN)</option>
-            <option value="titlePT">Title (PT)</option>
-            <option value="descriptionSP">Description (SP)</option>
-            <option value="descriptionEN">Description (EN)</option>
-            <option value="descriptionPT">Description (PT)</option>
-            <option value="manualSP">Manual (SP)</option>
-            <option value="manualEN">Manual (EN)</option>
-            <option value="manualPT">Manual (PT)</option>
+          <option value="titleSP">Title (ESP)</option>
+          <option value="titleEN">Title (EN)</option>
+          <option value="titlePT">Title (PT-BR)</option>
+          <option value="descriptionSP">Description (ESP)</option>
+          <option value="descriptionEN">Description (EN)</option>
+          <option value="descriptionPT">Description (PT-BR)</option>
+          <option value="manualSP">Manual (ESP)</option>
+          <option value="manualEN">Manual (EN)</option>
+          <option value="manualPT">Manual (PT-BR)</option>
         </select>
-
+      
         <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
-
-        <select multiple [(ngModel)]="selectedColumns">
-            <option value="_id">ID</option>
-            <option value="titleSP">Title (SP)</option>
-            <option value="titleEN">Title (EN)</option>
-            <option value="titlePT">Title (PT)</option>
-            <option value="descriptionSP">Description (SP)</option>
-            <option value="descriptionEN">Description (EN)</option>
-            <option value="descriptionPT">Description (PT)</option>
-            <option value="manualSP">Manual (SP)</option>
-            <option value="manualEN">Manual (EN)</option>
-            <option value="manualPT">Manual (PT)</option>
-        </select>
-
-        <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
-    </div>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+          Export info to PDF
+        </button>
+        <div>
+          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Select Columns to export</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div *ngFor="let column of columnOptions">
+                    <input type="checkbox" [value]="column.value" [(ngModel)]="column.checked" (change)="toggleColumn(column.value, $event)" />
+                    {{ column.label }}
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" (click)="exportToPDF()">Export to PDF</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
 
     <div class="table-responsive">
         <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Title (SP)</th>
-                    <th scope="col">Description (SP)</th>
-                    <th scope="col">Manual (SP)</th>
-                    <th scope="col">Title (EN)</th>
-                    <th scope="col">Description (EN)</th>
-                    <th scope="col">Manual (EN)</th>
-                    <th scope="col">Title (PT)</th>
-                    <th scope="col">Description (PT)</th>
-                    <th scope="col">Manual (PT)</th>
-                    <th scope="col">Update</th>
-                    <th scope="col">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of obtenerDatosPagina()">
-                    <td>{{ row._id }}</td>
-                    <td>{{ row.titleSP }}</td>
-                    <td>{{ row.descriptionSP }}</td>
-                    <td>{{ row.manualSP }}</td>
-                    <td>{{ row.titleEN }}</td>
-                    <td>{{ row.descriptionEN }}</td>
-                    <td>{{ row.manualEN }}</td>
-                    <td>{{ row.titlePT }}</td>
-                    <td>{{ row.descriptionPT }}</td>
-                    <td>{{ row.manualPT }}</td>
-                    <td>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
-                    </td>
-                    <td>
-                        <button class="btn btn-danger" (click)="eliminar(row)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
+          <thead>
+            <tr>
+              <th scope="col">Title (ESP)</th>
+              <th scope="col">Description (ESP)</th>
+              <th scope="col">Manual (ESP)</th>
+              <th scope="col">Title (EN)</th>
+              <th scope="col">Description (EN)</th>
+              <th scope="col">Manual (EN)</th>
+              <th scope="col">Title (PT-BR)</th>
+              <th scope="col">Description (PT-BR)</th>
+              <th scope="col">Manual (PT-BR)</th>
+              <th scope="col">Update</th>
+              <th scope="col">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of obtenerDatosPagina()">
+              <td>{{ row.titleSP }}</td>
+              <td>{{ row.descriptionSP }}</td>
+              <td class="pdf"><a (click)="getPdf(row._id!, 'SP')" >Load PDF</a></td>
+              <td>{{ row.titleEN }}</td>
+              <td>{{ row.descriptionEN }}</td>
+              <td class="pdf"><a (click)="getPdf(row._id!, 'EN')">Load PDF</a></td>
+              <td>{{ row.titlePT }}</td>
+              <td>{{ row.descriptionPT }}</td>
+              <td class="pdf"><a (click)="getPdf(row._id!, 'PT')" >Load PDF</a></td>
+              <td>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
+              </td>
+              <td>
+                <button class="btn btn-danger" (click)="eliminar(row)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
         </table>
-    </div>
+      </div>
+      
 </div>
 
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="navBarStyle">
         <ul class="pagination">
             <!-- Botón para ir a la primera página -->
             <li class="page-item" [class.disabled]="currentPage === 1">
@@ -113,7 +123,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
 </div>
 
 <!-- Edit Window -->
-<div #editModal class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+<div #editModal class="modal fade" id="editModal" role="dialog" aria-labelledby="editModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <form (submit)="editar()" [formGroup]="myForm">
@@ -140,7 +150,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <div class="row">
                         <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
                             <label for="manual{{language}}">Manual ({{language}})</label>
-                            <input type="text" class="form-control" id="manual{{language}}" placeholder="Enter manual" formControlName="manual{{language}}">
+                            <input type="file" class="form-control" accept=".pdf" id="manual{{language}}" (change)="onFileChange($event, language)" placeholder="Upload .pdf">
                         </div>
                     </div>
                 </div>
@@ -148,30 +158,33 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <!-- Aquí van los mensajes de éxito y error -->
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ successMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ errorMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>  
             </div>
         </form>
     </div>
 </div>
+
+<!-- Fuera del modal principal -->
+<div *ngIf="successMessage || errorMessage" class="toast-overlay">
+    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3">
+      <!-- Mensaje de éxito -->
+      <div *ngIf="successMessage" class="toast custom-alert alert alert-success alert-dismissible fade show" role="alert">
+        <div class="toast-message">{{ successMessage }}</div>
+        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="successMessage=''">OK</button>
+      </div>
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="toast custom-alert alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="toast-message">{{ errorMessage }}</div>
+        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="errorMessage=''">OK</button>
+      </div>
+    </div>
+  </div>
 
 
 <!-- Create Window -->
 <div #createModal class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form (submit)="agregar()" [formGroup]="myForm">
+        <form (ngSubmit)="agregar()" [formGroup]="myForm" enctype="multipart/form-data">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="createModalLabel">Add Category</h5>
@@ -195,7 +208,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <div class="row">
                         <div class="col-md-12" *ngFor="let language of ['SP', 'EN', 'PT']">
                             <label for="manual{{language}}">Manual ({{language}})</label>
-                            <input type="text" class="form-control" id="manual{{language}}" placeholder="Enter manual" formControlName="manual{{language}}">
+                            <input type="file" class="form-control" accept=".pdf" id="manual{{language}}" (change)="onFileChange($event, language)" placeholder="Upload .pdf">
                         </div>
                     </div>
                 </div>
@@ -203,20 +216,8 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
-                <!-- Aquí van los mensajes de éxito y error -->
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ successMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ errorMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>  
             </div>
         </form>
     </div>
 </div>  
+ 

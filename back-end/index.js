@@ -6,6 +6,8 @@ const cookieParser = require("cookie-parser");
 const dotenv = require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
+const cron = require('node-cron');
+
 
 // Crear una instancia de la aplicación Express
 const app = express();
@@ -13,13 +15,14 @@ const port = 3000; // Establecer el puerto en el que el servidor escuchará las 
 
 // Conexión a MongoDB
 mongoose.connect("mongodb://localhost:27017/GameJamDB");
+
 /*
 // Configuración de CORS - Permite solicitudes desde un origen específico
 const corsOptions = {
     origin: function(origin, callback) {
         if (!origin) return callback(null, true);
 
-        const allowedOrigins = ['http://localhost:3000', 'http://localhost:4200','http://149.130.176.112'];
+        const allowedOrigins = ['http://localhost:3000/', 'http://localhost:4200','http://149.130.176.112'];
         if (allowedOrigins.indexOf(origin) !== -1) {
             // El origen está en la lista de orígenes permitidos
             callback(null, true);
@@ -34,6 +37,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions)); // Usar el middleware CORS
+
 */
 
 // Middleware para analizar solicitudes JSON y cookies
@@ -45,6 +49,10 @@ app.use(cookieParser());
 // Rutas de usuarios
 const user_route = require('./routes/userRoute');
 app.use('/api/user', user_route);
+
+// Rutas de chat
+const chat_route = require('./routes/chatRoute')
+app.use('/api/chat', chat_route);
 
 // Rutas de regiones
 const region_route = require('./routes/regionRoute');
@@ -89,8 +97,8 @@ const root = path.join(__dirname, '../Frontend/GJ-Platform/dist/gj-platform/brow
 app.use(express.static(root));
 
 // Manejar todas las rutas
-app.get('*', function(req, res) {
-    fs.stat(path.join(root, req.path), function(err) {
+app.get('*', function (req, res) {
+    fs.stat(path.join(root, req.path), function (err) {
         if (err) {
             res.sendFile('index.html', { root });
         } else {
@@ -101,5 +109,84 @@ app.get('*', function(req, res) {
 
 // Iniciar el servidor y escuchar en el puerto especificado
 app.listen(port, () => {
-    console.log(`Servidor escuchando en http://${process.env.PORT}:${port}`);
+    console.log(`Servidor escuchando en http://localhost:${port}`);
+});
+
+const Stage = require('./models/stageModel');
+const GameJam = require('./models/gameJamEventModel');
+const Submission = require('./models/submissionModel');
+const Team = require('./models/teamModel');
+const { sendScore } = require('./services/mailer');
+
+async function sendEvaluations() {
+    var currentStage;
+    const currentDatee = new Date();
+   //const currentDatee = new Date(Date.UTC(2024, 4, 31, 0, 0, 1, 0));
+   const currentDate = currentDatee.toISOString().slice(0, 10);
+   
+    const allGameJams = await GameJam.find({});
+
+    for (const gameJam of allGameJams) {
+        for (const stage of gameJam.stages) {
+            //console.log(currentDate)
+            //console.log(stage.endDateEvaluation.toISOString().slice(0, 10));
+            if (currentDate === stage.endDateEvaluation.toISOString().slice(0, 10)) {
+                currentStage = stage;
+                break;
+            }
+        }
+    }
+    if (currentStage) {
+        //console.log("hoyyyy")
+        const submissions = await Submission.find({ "stageId": currentStage._id });
+        for (const sub of submissions) {
+            const criteriaAverages = {};
+            const criteriaCount = {};
+            for (const evaluator of sub.evaluators) {
+                Object.keys(evaluator._doc).forEach(key => {
+                    if (typeof evaluator[key] === 'number') {
+                        criteriaAverages[key] = (criteriaAverages[key] || 0) + (evaluator[key] || 0);
+                        criteriaCount[key] = (criteriaCount[key] || 0) + 1;
+
+                    }
+                });
+
+            }
+
+            for (const key in criteriaAverages) {
+                criteriaAverages[key] = criteriaAverages[key] / criteriaCount[key];
+            }
+
+
+            const score = Object.values(criteriaAverages).reduce((acc, average) => acc + average, 0) / Object.values(criteriaAverages).length;
+            sub.evaluationScore = score;
+            await sub.save();
+            const promises = [];
+
+            const team = await Team.findById(sub.teamId);
+            for (const jammer of team.jammers) {
+                const subject = 'Score Stage on GameJam Platform';
+
+                const emailPromise = sendScore(
+                    jammer.email,
+                    subject,
+                    score
+                );
+                promises.push(emailPromise);
+            }
+
+            await Promise.all(promises);
+        }
+    }
+
+
+
+
+
+};
+
+cron.schedule('0 0 * * *', () => {
+    sendEvaluations();
+}, {
+    timezone: "America/Costa_Rica"
 });

@@ -8,18 +8,29 @@ import { Router } from '@angular/router';
 import { JammerCreateTeamComponent } from './jammer-create-team/jammer-create-team.component';
 import { JammerTeamComponent } from './jammer-team/jammer-team.component';
 import { JammerSubmitComponent } from './jammer-submit/jammer-submit.component';
+import { GameInformationComponent } from "../game-information/game-information.component";
+import { JammerCategoriesComponent } from './jammer-categories/jammer-categories.component';
+import { JammerThemesComponent } from './jammer-themes/jammer-themes.component';
+import { environment } from '../../environments/environment.prod';
+import { GameInfoComponent } from './game-info/game-info.component';
+import { ChatJammerComponent } from "./chat-jammer/chat-jammer.component";
 
 @Component({
-  selector: 'app-jammer-home',
-  standalone: true,
-  imports: [
-    JammerCreateTeamComponent,
-    CommonModule,
-    JammerTeamComponent,
-    JammerSubmitComponent
-  ],
-  templateUrl: './jammer-home.component.html',
-  styleUrl: './jammer-home.component.css'
+    selector: 'app-jammer-home',
+    standalone: true,
+    templateUrl: './jammer-home.component.html',
+    styleUrls: ['./jammer-home.component.css'],
+    imports: [
+        JammerCategoriesComponent,
+        JammerThemesComponent,
+        JammerCreateTeamComponent,
+        CommonModule,
+        JammerTeamComponent,
+        JammerSubmitComponent,
+        GameInformationComponent,
+        GameInfoComponent,
+        ChatJammerComponent
+    ]
 })
 export class JammerHomeComponent implements OnInit {
   targetTime: Date | undefined;
@@ -32,23 +43,29 @@ export class JammerHomeComponent implements OnInit {
   showUpdateTeam :boolean = false;
   showSubmit : boolean = false;
   showSubmitButton: boolean = true;
+  showGames : boolean = false;
+  games: any[] = [];
+  showCategories : boolean =false;
+  showThemes : boolean =false;
 
-  constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService, private gamejamService: GamejamService){
-  }
+  constructor(private router: Router, private teamService: TeamService, private userService: UserService, private siteService: SiteService, private gamejamService: GamejamService) {}
 
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
-          if (user.rol === 'LocalOrganizer') {
+          /*
+          if (user.roles.includes('LocalOrganizer')) {
             this.router.navigate(['/Games']);
-          }
-          if (user.rol === 'GlobalOrganizer') {
+          } else if (user.roles.includes('GlobalOrganizer')) {
             this.router.navigate(['/DataManagement']);
           }
+            */
           this.username = user.name + "(" + user.discordUsername + ")";
           this.teamName = user.team?.name;
-          this.gamejamService.getTimeRemainingData('http://localhost:3000/api/game-jam/get-time-left')
+          console.log(user)
+          
+          this.gamejamService.getTimeRemainingData(`http://${environment.apiUrl}:3000/api/game-jam/get-time-left`)
             .subscribe(
               timeLeft => {
                 const timeParts = timeLeft.split(':').map((part: string) => parseInt(part, 10));
@@ -59,10 +76,7 @@ export class JammerHomeComponent implements OnInit {
                 }
   
                 const [days, hours, minutes, seconds] = timeParts;
-  
-                const totalMilliseconds =
-                  (days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60 + seconds) * 1000;
-  
+                const totalMilliseconds = (days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60 + seconds) * 1000;
                 this.targetTime = new Date(Date.now() + totalMilliseconds);
   
                 if (this.targetTime instanceof Date) {
@@ -75,48 +89,64 @@ export class JammerHomeComponent implements OnInit {
               },
               () => {}
             );
+          if (user.site && user.site._id) {
+            
+            this.siteService.getSubmissions(`http://${environment.apiUrl}:3000/api/submission/get-submissions-site/${user.site._id}`)
+              .subscribe(
+                submissions => {
+                  this.games = submissions;
+                  console.log(this.games);
+                },
+                error => {
+                  console.error('Error al obtener las entregas:', error);
+                }
+              );
+          } else {
+            console.error('Site or Site ID is not defined.');
+          }
         },
-        () => {}
+        error => {
+          console.error('Error al obtener el usuario:', error);
+        }
       );
   }
-  
-  hideAll(){
-    this.showCreateTeam = false;
-    this.showUpdateTeam = false;
-    this.showSubmit = false;
-    this.showSubmitButton = true;
-  }
 
-  toggleUpdateTeam() {
-    if (this.showUpdateTeam) {
-      this.hideAll();
-    } else {
-      this.hideAll();
-      this.showUpdateTeam = true;
-      this.showSubmitButton = !this.showSubmitButton;
-    }
+  hideAll(){
+    this.showGames = false;
+    this.showSubmit = false;
+    this.showUpdateTeam = false;
+    this.showCreateTeam = false;
+    this.showCategories = false;
+    this.showThemes = false;
+  }
+  toggleSubmit() {
+    this.hideAll();
+    this.showSubmit = !this.showSubmit;
   }
 
   toggleCreateTeam() {
-    if (this.showCreateTeam) {
-      this.hideAll();
-    } else {
-      this.hideAll();
-      this.showCreateTeam = true;
-      this.showSubmitButton = !this.showSubmitButton;
-    }
+    this.hideAll();
+    this.showCreateTeam = !this.showCreateTeam;
   }
 
-  toggleSubmit() {
-    if (this.showSubmit) {
-      this.hideAll();
-    } else {
-      this.hideAll();
-      this.showSubmit = true;
-      this.showSubmitButton = !this.showSubmitButton;
-    }
+  toggleUpdateTeam() {
+    this.hideAll();
+    this.showUpdateTeam = !this.showUpdateTeam;
   }
-  
+
+  toggleGames() {
+    this.hideAll();
+    this.showGames = !this.showGames;
+  }
+  toggleCategories(){
+    this.hideAll();
+    this.showCategories = !this.showCategories;
+  }
+  toggleThemes(){
+    this.hideAll();
+    this.showThemes = !this.showThemes;
+  }
+
   updateTimer() {
     const now = new Date();
   
@@ -151,20 +181,10 @@ export class JammerHomeComponent implements OnInit {
     } else {
       this.timeRemaining = 'Target time not set';
     }
-  }  
-  
-  
-  redirectToTeamPage(): void {
-    this.router.navigate(['/Jammer/Team']);
   }
-
-  redirectToSubmitPage(): void {
-    this.router.navigate(['/Jammer/Team']);
-  }
-
 
   logOut(): void {
-    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+    this.userService.logOutUser(`http://${environment.apiUrl}:3000/api/user/log-out-user`)
       .subscribe(
         () => {
           this.router.navigate(['/login']);

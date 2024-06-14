@@ -29,5 +29,8 @@ export const routes: Routes = [
     {path: 'Juez', component: JuezMainComponent},
     {path: 'Jammer/team/createTeam', component: JammerCreateTeamComponent},
     {path: 'Jammer/team/submit', component: JammerSubmitComponent},
-    {path: 'home', component: HomeComponent}
+    {path: 'home', component: HomeComponent},
+
+
+    
 ];

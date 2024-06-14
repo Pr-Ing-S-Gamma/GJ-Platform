@@ -2,6 +2,9 @@
     <div>
         <form [formGroup]="myForm">
             <div class="rectanguloEquipo">
+                <div class="spinner-border" role="status" *ngIf="loading">
+                    <span class="sr-only">Loading...</span>
+                  </div>
                 <div>
                     <div>
                         <label class="label" for="game"> Game: </label>
@@ -9,7 +12,7 @@
                     </div>
                     <div>
                         <label class="label" for="description"> Description </label>
-                        <input class="textSpace" type="text" placeholder="this is a game..." formControlName="description" required>
+                        <textarea class="textSpace" placeholder="this is a game..." formControlName="description" required></textarea>
                     </div>
                     <div>
                         <label class="label" for="itchio"> Itchi.io link </label>
@@ -66,7 +69,8 @@
                     </div>
                     <div>
                         <label class="label" for="description"> Description </label>
-                        <input class="textSpace" type="text" placeholder="this is a game..." formControlName="description" required>
+                        <textarea class="textSpace" placeholder="this is a game..." formControlName="description" required></textarea>
+
                     </div>
                     <div>
                         <label class="label" for="itchio"> Itchi.io link </label>
@@ -111,3 +115,6 @@
         </form>
     </div>
   </section>  
+
+
+  

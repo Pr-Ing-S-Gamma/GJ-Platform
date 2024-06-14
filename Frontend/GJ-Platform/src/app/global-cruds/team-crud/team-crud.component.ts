@@ -11,6 +11,7 @@ import { GamejamService } from '../../services/gamejam.service';
 declare var $: any;
 import { jsPDF }  from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-team-crud',
@@ -34,7 +35,14 @@ export class TeamCrudComponent implements OnInit {
   indexTeam = 0;
   selectedHeader: string | undefined;
   filterValue: string = '';
-  selectedColumns: (keyof Team)[] = []; 
+  selectedColumns: (keyof Team)[] = [];
+  columnOptions = [
+    { label: 'Name', value: 'studioName' as keyof Team, checked: false },
+    { label: 'Description', value: 'description' as keyof Team, checked: false },
+    { label: 'Region Name', value: 'region.name' as keyof Team, checked: false },
+    { label: 'Site Name', value: 'site.name' as keyof Team, checked: false },
+    { label: 'Edition', value: 'gameJam.edition' as keyof Team, checked: false }
+  ]; 
   constructor(private fb: FormBuilder, private teamService: TeamService, private userService: UserService, private regionService: RegionService, private siteService: SiteService, private gamejamService: GamejamService){
   }
 
@@ -51,15 +59,15 @@ export class TeamCrudComponent implements OnInit {
       jammers: this.fb.array<User>([])
     });
 
-    this.gamejamService.getGameJams('http://149.130.176.112:3000/api/game-jam/get-game-jams').subscribe(
+    this.gamejamService.getGameJams(`http://${environment.apiUrl}:3000/api/game-jam/get-game-jams`).subscribe(
       (gamejams: any[]) => {
-        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, theme: gamejam.theme}));
+        this.gameJams = gamejams.map(gamejam => ({ _id: gamejam._id, edition: gamejam.edition, region: gamejam.region, site: gamejam.site, themes: gamejam.themes}));
       },
       error => {
         console.error('Error al obtener GameJams:', error);
       }
     );
-    this.regionService.getRegions('http://149.130.176.112:3000/api/region/get-regions')
+    this.regionService.getRegions(`http://${environment.apiUrl}:3000/api/region/get-regions`)
     .subscribe(
       regions => {
         this.regions = regions;
@@ -68,7 +76,7 @@ export class TeamCrudComponent implements OnInit {
         console.error('Error al obtener regiones:', error);
       }
     );
-    this.teamService.getTeams('http://149.130.176.112:3000/api/team/get-teams')
+    this.teamService.getTeams(`http://${environment.apiUrl}:3000/api/team/get-teams`)
     .subscribe(
       teams => {
         this.dataSource = teams;
@@ -82,7 +90,7 @@ export class TeamCrudComponent implements OnInit {
     const selectedValue = this.myForm.get('region')?.value;
     (this.myForm.get('jammers') as FormArray).clear();
     if (selectedValue && selectedValue._id) {
-      this.siteService.getSitesPerRegion(`http://149.130.176.112:3000/api/site/get-sites-per-region/${selectedValue._id}`)
+      this.siteService.getSitesPerRegion(`http://${environment.apiUrl}:3000/api/site/get-sites-per-region/${selectedValue._id}`)
         .subscribe(
           sites => {
             this.sites = sites;
@@ -91,7 +99,7 @@ export class TeamCrudComponent implements OnInit {
               this.myForm.get('site')?.setValue(this.sites[0]);
               if (sites[0] && sites[0]._id) {
                 console.log(sites[0]._id);
-                this.userService.getUsers(`http://149.130.176.112:3000/api/user/get-jammers-per-site/${sites[0]._id}`)
+                this.userService.getUsers(`http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${sites[0]._id}`)
                 .subscribe(
                   users => {
                     this.users = users;
@@ -118,7 +126,7 @@ export class TeamCrudComponent implements OnInit {
     const selectedValue = this.myForm.get('site')?.value;
     (this.myForm.get('jammers') as FormArray).clear();
     if (selectedValue && selectedValue._id) {
-      this.userService.getUsers(`http://149.130.176.112:3000/api/user/get-jammers-per-site/${selectedValue._id}`)
+      this.userService.getUsers(`http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${selectedValue._id}`)
       .subscribe(
         users => {
           console.log(users);
@@ -136,7 +144,6 @@ export class TeamCrudComponent implements OnInit {
     const selectedUser = this.myForm.get('selectedUser');
     if (selectedUser && selectedUser.value) {
         const userValue: User = selectedUser.value;
-        console.log(userValue);
         const jammersArray = this.myForm.get('jammers') as FormArray;
         if (!jammersArray.value.some((jammer: User) => jammer._id === userValue._id)) {
             jammersArray.push(this.fb.control(userValue));
@@ -162,7 +169,7 @@ removeJammer(jammer: User) {
     this.indexTeam = this.dataSource.indexOf(elemento);
     const selectedGameJam = this.gameJams.find(gameJam => gameJam._id === elemento.gameJam._id);
     const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
-    this.siteService.getSitesPerRegion(`http://149.130.176.112:3000/api/site/get-sites-per-region/${elemento.region._id}`)
+    this.siteService.getSitesPerRegion(`http://${environment.apiUrl}:3000/api/site/get-sites-per-region/${elemento.region._id}`)
     .subscribe(
       sites => {
         this.sites = sites;
@@ -177,7 +184,7 @@ removeJammer(jammer: User) {
     );
     
     const selectedSite = this.sites.find(site => site._id === elemento.site._id);
-    this.userService.getUsers(`http://149.130.176.112:3000/api/user/get-jammers-per-site/${elemento.site._id}`)
+    this.userService.getUsers(`http://${environment.apiUrl}:3000/api/user/get-jammers-per-site/${elemento.site._id}`)
     .subscribe(
       users => {
         this.users = users;
@@ -210,7 +217,7 @@ removeJammer(jammer: User) {
     if (this.myForm.valid) {
     const teamId = this.teamToEdit['_id'];
     const { studioName, description, gameJam, linkTrees, jammers, site, region } = this.myForm.value;
-    this.teamService.updateTeam(`http://149.130.176.112:3000/api/team/update-team/${teamId}`, {
+    this.teamService.updateTeam(`http://${environment.apiUrl}:3000/api/team/update-team/${teamId}`, {
       studioName: studioName,
       description: description,
       gameJam: {
@@ -254,7 +261,7 @@ removeJammer(jammer: User) {
   eliminar(elemento: any) {
     const id = elemento._id;
 
-    const url = `http://149.130.176.112:3000/api/team/delete-team/${id}`;
+    const url = `http://${environment.apiUrl}:3000/api/team/delete-team/${id}`;
 
     this.teamService.deleteTeam(url).subscribe({
         next: (data) => {
@@ -272,7 +279,7 @@ removeJammer(jammer: User) {
   agregar() {
           if (this.myForm.valid) {
           const { studioName, description, gameJam, linkTrees, jammers, site, region } = this.myForm.value;
-          this.teamService.createTeam(`http://149.130.176.112:3000/api/team/create-team`, {
+          this.teamService.createTeam(`http://${environment.apiUrl}:3000/api/team/create-team`, {
             studioName: studioName,
             description: description,
             gameJam: {
@@ -343,16 +350,10 @@ removeLinkTree(link: string) {
     
     showSuccessMessage(message: string) {
       this.successMessage = message;
-      setTimeout(() => {
-        this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-      }, 5000); // Limpia el mensaje después de 5 segundos
     }
     
     showErrorMessage(message: string) {
       this.errorMessage = message;
-      setTimeout(() => {
-        this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-      }, 5000); // Limpia el mensaje después de 5 segundos
     }
   
   get totalPaginas(): number {
@@ -406,11 +407,17 @@ removeLinkTree(link: string) {
       }
       return Array.isArray(value) ? value.join(', ') : value;
   }
-
+  toggleColumn(column: keyof Team, event: any) {
+    if (event.target.checked) {
+      this.selectedColumns.push(column);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+    }
+  }
   exportToPDF() {
     const doc = new jsPDF();
   
-    const url = 'http://localhost:3000/api/team/get-teams';
+    const url = `http://${environment.apiUrl}:3000/api/team/get-teams`;
     this.teamService.getTeams(url).subscribe(
         (teams: Team[]) => {
             const data = teams.map(team => ({
@@ -494,6 +501,15 @@ removeLinkTree(link: string) {
         paginasMostradas.push(i);
       }
   
+      if (currentPage - inicio > rango) {
+        paginasMostradas.unshift('...');
+      }
+      
+      if (fin < totalPaginas - 1) {
+        paginasMostradas.push('...');
+      }
+      /*
+  
       if (inicio == 1){
         switch(fin - inicio){
           case 2:
@@ -517,6 +533,7 @@ removeLinkTree(link: string) {
           default: break;
         }
       }
+      */
       return paginasMostradas;
   }
   

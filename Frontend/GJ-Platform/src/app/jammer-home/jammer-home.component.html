@@ -1,98 +1,142 @@
-<div class="container-fluid h-100" style="width: 100vw; min-height: 100vh; position: relative; overflow-y: auto; margin: 0; padding: 0; background: linear-gradient(108deg, #3763FF 0%, #D052A5 25%, #FF3131 50%, #D052A5 75%, #3763FF 100%)">
+<div class="d2">
+  <div *ngIf="teamName" class="teamName1">
+    Time Remaining To Submit:
+  </div>
+  
+  <div *ngIf="teamName" class="contador">
+    {{timeRemaining}}
+  </div>
 
-  <div style="top: 0;display: flex;align-items: center;justify-content: space-around; position: relative;">
-
-    <div style="width: 65%; position: relative;">
-
-      <div
-        style="height: 65px; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%); position: relative; display: flex; align-items: center;">
-        <div
-          style="position: absolute; left: 2%; display: flex;top: 10px; text-align: left; color: white; font-size: 30px; font-family: JejuHallasan; font-weight: 400; word-wrap: break-word;">
-          GJ+ - Jammer {{username}}
-        </div>
-        <div class="logout-btn">
-          <div class="col btn btn-primary text-right"
-            style="top: 15%; margin-left: 92%; max-width: fit-content; font-size: 18px; font-family: JejuHallasan; position: absolute;"
-            (click)="logOut()">
-            Log out
+  <nav class="navbar">
+    <div class="tabButton">
+      
+      <div *ngIf="teamName">
+        <div *ngIf="showSubmitButton">
+          <div 
+            class="btn btn-default crudButton" 
+            (click)="toggleSubmit()" 
+            (mouseenter)="isHovered = true" 
+            (mouseleave)="isHovered = false" 
+            [ngClass]="{'active': showSubmit}"
+          >
+            <span [style.textDecoration]="isHovered ? 'black' : 'black'">My Submission</span>
           </div>
         </div>
       </div>
-
-    </div>
-
-    <div style="width: 65%; height: 2000px; top: 65px; position: absolute; background: white;z-index: 1">
-      <div
-        style="height: 996px; display: flex;align-items: center;justify-content: space-around; position: relative;">   
-
-        <div style="width: 80%; height: 0px; display: flex; top: 13.8%; position: absolute; border: 1px black solid">
-          <div style="position: relative; display: flex; flex-direction: column; align-items: center;width: 80%;">
-
-            <div *ngIf="showUpdateTeam" style="position: relative; width: 100%; left: 13%; z-index: 2;">
-              <app-jammer-team></app-jammer-team>
-            </div>
-            
-          
-            <div style="position: relative; display: flex; flex-direction: column; align-items: center; left:16%">
-          
-              <div *ngIf="teamName" style="text-align: center; color: black;
-                font-size: 40px; font-family: Kanit; font-weight: 400; word-wrap: break-word;">
-                Time Remaining To Submit:
-              </div>
-              <div *ngIf="teamName" style="text-align: center; color: #FF0000;
-                font-size: 38px; font-family: Kanit; font-weight: 400; word-wrap: break-word; text-align: center;">
-                {{timeRemaining}}
-              </div>
-          
-            </div>
-          
-            <div *ngIf="showCreateTeam" style="width: 100%; left: 100%;z-index: 1;">
-              <app-jammer-create-team></app-jammer-create-team>
-            </div>
-          
-          </div>
-          
+      <div>
+        <div 
+          *ngIf="!teamName" 
+          class="btn btn-default notTeamName" 
+          (click)="toggleCreateTeam()" 
+          (mouseenter)="isHovered = true" 
+          (mouseleave)="isHovered = false" 
+          [ngClass]="{'active': showCreateTeam}"
+        >
+          <span [style.textDecoration]="isHovered ? 'darkgray' : 'none'">Create Team</span>
         </div>
-        
-        
-
-        <div style="width: 25%; height: 42px; top: 9.6%; position: absolute;
-          background: #515151; border-top-left-radius: 20px; border-top-right-radius: 20px; text-align: center; z-index: 2">
-
-          <div *ngIf="!teamName" [style.color]="isHovered ? 'darkgray' : 'white'"
-            style="font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;"
-            (click)="toggleCreateTeam()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
-            <span>Create Team</span>
-          </div>
-
-          <div *ngIf="teamName" style="color: white;
-            font-size: 20px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer;"
-            (click)="toggleUpdateTeam()" (mouseenter)="isHoveredSub = true"
-            (mouseleave)="isHoveredSub = false">
-            <span [style.textDecoration]="isHoveredSub ? 'darkgray' : 'none'">{{teamName}}</span>
-          </div>
-
+        <div 
+          *ngIf="teamName" 
+          class="btn btn-default crudButton" 
+          (click)="toggleUpdateTeam()" 
+          (mouseenter)="isHoveredSub = true" 
+          (mouseleave)="isHoveredSub = false" 
+          [ngClass]="{'active': showUpdateTeam}"
+        >
+          <span [style.textDecoration]="isHoveredSub ? 'darkgray' : 'none'">Team {{teamName}}</span>
         </div>
-        
-
-        <div *ngIf="teamName">
-          <div *ngIf="showSubmitButton">
-            <button style="left: 38%; width: 25%; height: 5%; top: 45%; position: absolute;
-              background: #3EB9FF; border-radius: 20px; text-align: center; z-index: 5">
-              <div style="left: 30%; color: black; top: 18%; position: absolute;text-align: center;
-                font-size: 25px; font-family: Inter; font-weight: 400; word-wrap: break-word; cursor: pointer; z-index: 6"
-                (click)="toggleSubmit()" (mouseenter)="isHovered = true" (mouseleave)="isHovered = false">
-                <span [style.textDecoration]="isHovered ? 'underline' : 'none'">Submit!</span>
-              </div>
-            </button>
-          </div>
+      </div>
+      <div>
+        <div class="btn btn-default chatButton" data-toggle="modal" [attr.data-target]="'#chat'">
+          Chat
         </div>
-        <div>
-          <div *ngIf="showSubmit" style="width: 70%; top: 300px; left: 45%; position: absolute; transform: translateX(-50%);">
-            <app-jammer-submit></app-jammer-submit>
-        </div>        
+        <div class="modal fade" [id]="'chat'" tabindex="-1" role="dialog" aria-labelledby="teamChat" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
+            <div class="modal-dialog" role="document" style="max-width: 85%;">
+                <app-chat-jammer [team]="teamName"></app-chat-jammer>
+            </div>
+        </div>
+        <div 
+          *ngIf="teamName" 
+          class="btn btn-default crudButton" 
+          (click)="toggleGames()" 
+          (mouseenter)="isHoveredSub = true" 
+          (mouseleave)="isHoveredSub = false" 
+          [ngClass]="{'active': showGames}"
+        >
+          <span [style.textDecoration]="isHoveredSub ? 'darkgray' : 'none'">Site Submissions</span>
+        </div>
+      </div>
+      <div *ngIf="teamName">
+        <div 
+          (click)="toggleCategories()" 
+          class="btn btn-default crudButton" 
+          (mouseenter)="isHovered = true" 
+          (mouseleave)="isHovered = false" 
+          [ngClass]="{'active': showCategories}"
+        >
+          <span [style.textDecoration]="isHoveredSub ? 'darkgray' : 'none'">Site Categories Info</span>
+        </div>
+        <div 
+          (click)="toggleThemes()" 
+          class="btn btn-default crudButton" 
+          (mouseenter)="isHovered = true" 
+          (mouseleave)="isHovered = false" 
+          [ngClass]="{'active': showThemes}"
+        >
+          <span [style.textDecoration]="isHoveredSub ? 'darkgray' : 'none'">Site Themes Info</span>
         </div>
       </div>
     </div>
+  </nav>
+  
+  <!-- Lista de juegos -->
+  <div *ngIf="showGames">
+    <div class="row title">
+      <h1>Site Submissions</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6" *ngFor="let game of games">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ game.name }}</h5>
+            <p class="card-text">Team: {{ game.team }}</p>
+            <button type="button" class="btn btn-primary" data-toggle="modal" [attr.data-target]="'#gameInfoModal-' + game.id">More Info</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngFor="let game of games">
+      <div class="modal fade" [id]="'gameInfoModal-' + game.id" tabindex="-1" role="dialog" aria-labelledby="gameInfoModal" aria-hidden="true" data-backdrop="static" style="max-width: 100%;">
+        <div class="modal-dialog" role="document" style="max-width: 85%;">
+          <app-game-info [game]="game.id"></app-game-info>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showCategories">
+    <h1>Site Categories</h1>
+    <app-jammer-categories></app-jammer-categories>
+  </div>
+
+  <div *ngIf="showThemes">
+    <h1>Site Themes</h1>
+    <app-jammer-themes></app-jammer-themes>
+  </div>
+
+  <!-- Componentes de actualización y creación del equipo -->
+  <div>
+    <div *ngIf="showUpdateTeam">
+      <h1>Team Management</h1>
+      <app-jammer-team></app-jammer-team>
+    </div>
+    <div *ngIf="showCreateTeam">
+      <app-jammer-create-team></app-jammer-create-team>
+    </div>
+  </div>  
+  <div *ngIf="showSubmit">
+    <h1>My Submission</h1>
+    <app-jammer-submit></app-jammer-submit>
   </div>
 </div>

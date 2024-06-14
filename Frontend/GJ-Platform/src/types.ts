@@ -44,7 +44,7 @@ export interface User {
     _id: string;
     name: string;
   };
-  rol: string;
+  roles: string[];
   coins: number;
 }
 
@@ -76,9 +76,9 @@ export interface Category {
   descriptionSP: string;
   descriptionEN: string;
   descriptionPT: string;
-  manualSP: string;
-  manualEN: string;
-  manualPT: string;
+  manualSP: File | null;
+  manualEN: File | null;
+  manualPT: File | null;
 }
 
 
@@ -90,12 +90,10 @@ export interface Country {
 export interface GameJam {
   _id?: string;
   edition: string;
-  theme: {
-    _id: string;
-    titleEN: string;
-    descriptionEN: string;
-    manualEN: string;
-  };
+  themes: {
+    _id?: string;
+    titleEN?: string;
+  }[];
 }
 
 export interface Stage {
@@ -138,9 +136,9 @@ export interface Team {
 
 export interface Theme {
   _id?: string;
-  manualPT: string;
-  manualSP: string;
-  manualEN: string;
+  manualSP: File | null;
+  manualEN: File | null;
+  manualPT: File | null;
   descriptionSP: string;
   descriptionPT: string;
   descriptionEN: string;
@@ -154,6 +152,20 @@ export interface Member {
     name: string;
     email: string;
     discordUsername: string;
+}
+
+export interface Chat {
+  _id: string;
+  participants: {
+    participantType: 'User' | 'Team';
+    participantId?: string;
+  }[];
+  messagesList: {
+    sender: string;
+    senderType: 'User' | 'Team';
+    message: string;
+    sentDate: Date;
+  }[];
 }
 
 export interface Submission {

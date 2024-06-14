@@ -9,6 +9,7 @@ import { RegionService } from '../../services/region.service';
 declare var $: any;
 import { jsPDF }  from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-user-crud',
@@ -26,13 +27,22 @@ export class UserCrudComponent implements OnInit{
   dataSource: User[] = [];
   regions: Region[] = [];
   sites: Site[] = [];
-  rols = ['GlobalOrganizer', 'LocalOrganizer', 'Judge', 'Jammer']
-  
+  roles = ['GlobalOrganizer', 'LocalOrganizer', 'Judge', 'Jammer', ['LocalOrganizer', 'Judge']];
+
   userToEdit : any;
   indexUser = 0;
   selectedHeader: string | undefined;
   filterValue: string = '';
   selectedColumns: (keyof User)[] = []; 
+  columnOptions = [
+    { label: 'Name', value: 'name' as keyof User, checked: false },
+    { label: 'Email', value: 'email' as keyof User, checked: false },
+    { label: 'Discord', value: 'discordUsername' as keyof User, checked: false },
+    { label: 'Region', value: 'region.name' as keyof User, checked: false },
+    { label: 'Site', value: 'site.name' as keyof User, checked: false },
+    { label: 'Team Name', value: 'team.name' as keyof User, checked: false },
+    { label: 'Role', value: 'roles' as keyof User, checked: false }
+  ];
   constructor(private fb: FormBuilder, private userService: UserService, private siteService: SiteService, private regionService: RegionService){}
   ngOnInit(): void {
     this.myForm = this.fb.group({
@@ -43,16 +53,16 @@ export class UserCrudComponent implements OnInit{
       site: ['', Validators.required],
       discordUsername: ['', Validators.required]
     });
-    const url = 'http://149.130.176.112:3000/api/user/get-users';
+    const url = `http://${environment.apiUrl}:3000/api/user/get-users`;
     this.userService.getUsers(url).subscribe(
       (users: any[]) => {
-        this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, rol: user.rol, coins: user.coins, discordUsername: user.discordUsername }));
+        this.dataSource = users.map(user => ({ _id: user._id, name: user.name, email: user.email, region: user.region, site: user.site, roles: user.roles, coins: user.coins, discordUsername: user.discordUsername }));
       },
       error => {
         console.error('Error al obtener usuarios:', error);
       }
     );
-    this.regionService.getRegions('http://149.130.176.112:3000/api/region/get-regions')
+    this.regionService.getRegions(`http://${environment.apiUrl}:3000/api/region/get-regions`)
     .subscribe(
       regions => {
         this.regions = regions;
@@ -66,7 +76,7 @@ export class UserCrudComponent implements OnInit{
   onRegionSelection() {
     const selectedValue = this.myForm.get('region')?.value;
     if (selectedValue && selectedValue._id) {
-      this.siteService.getSitesPerRegion(`http://149.130.176.112:3000/api/site/get-sites-per-region/${selectedValue._id}`)
+      this.siteService.getSitesPerRegion(`http://${environment.apiUrl}:3000/api/site/get-sites-per-region/${selectedValue._id}`)
         .subscribe(
           sites => {
             this.sites = sites;
@@ -88,36 +98,35 @@ export class UserCrudComponent implements OnInit{
     this.indexUser = this.dataSource.indexOf(elemento);
     const selectedRegion = this.regions.find(region => region._id === elemento.region._id);
     const selectedSite = this.sites.find(site => site._id === elemento.site._id);
-    this.siteService.getSitesPerRegion(`http://149.130.176.112:3000/api/site/get-sites-per-region/${elemento.region._id}`)
-    .subscribe(
-      sites => {
-        this.sites = sites;
-
-        if (this.sites.length > 0) {
-          this.myForm.get('site')?.setValue(this.sites[0]);
-        }
-      },
-      error => {
-        console.error('Error al obtener sitios:', error);
-      }
-    );
     this.myForm.patchValue({
       name: elemento.name,
       region: selectedRegion, 
-      site: selectedSite, 
-      rol: elemento.rol,
       email: elemento.email,
       discordUsername: elemento.discordUsername
     });
+
+    if (selectedSite) {
+      this.myForm.patchValue({
+        site: selectedSite 
+      });
+    }
+    if (elemento.roles && elemento.roles.length > 0) {
+      const rolesString = elemento.roles.join(',');
+      this.myForm.patchValue({
+        rol: rolesString
+      });
+    }
   }
+  
 
   editar() {
     if (this.myForm.valid) {
       console.log('Formulario válido');
       const userId = this.userToEdit['_id'];
-      const { email, name, region, site, rol, discordUsername} = this.myForm.value;
-  
-      this.userService.updateUser(`http://149.130.176.112:3000/api/user/update-user/${userId}`, {
+      const { email, name, region, site, rol, discordUsername } = this.myForm.value;
+      const roles = rol.split(',');
+
+      this.userService.updateUser(`http://${environment.apiUrl}:3000/api/user/update-user/${userId}`, {
         name: name,
         email: email,
         region: {
@@ -128,13 +137,22 @@ export class UserCrudComponent implements OnInit{
           _id: site._id,
           name: site.name
         },
-        rol: rol,
+        roles: roles,
         coins: 0,
         discordUsername: discordUsername,
       }).subscribe({
         next: (data) => {
           if (data.success) {
-            this.dataSource[this.indexUser]={ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0, discordUsername: discordUsername};
+            this.dataSource[this.indexUser] = {
+              _id: userId,
+              name: name,
+              email: email,
+              region: region,
+              site: site,
+              roles: roles,
+              coins: 0,
+              discordUsername: discordUsername
+            };
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -153,7 +171,7 @@ export class UserCrudComponent implements OnInit{
     eliminar(elemento: any) {
       const id = elemento._id;
   
-      const url = `http://149.130.176.112:3000/api/user/delete-user/${id}`;
+      const url = `http://${environment.apiUrl}:3000/api/user/delete-user/${id}`;
   
       this.userService.deleteUser(url).subscribe({
           next: (data) => {
@@ -171,10 +189,11 @@ export class UserCrudComponent implements OnInit{
     agregar() {
       if (this.myForm.valid) {
         console.log('Formulario válido');
+        const { email, name, region, site, discordUsername} = this.myForm.value;
+        const rolesString = this.myForm.get('rol')?.value; 
+        const roles = rolesString.split(','); 
         
-        const { email, name, region, site, rol, discordUsername} = this.myForm.value;
-  
-        this.userService.registerUser(`http://149.130.176.112:3000/api/user/register-user`, {
+        this.userService.registerUser(`http://${environment.apiUrl}:3000/api/user/register-user`, {
           name: name,
           email: email,
           region: {
@@ -185,14 +204,14 @@ export class UserCrudComponent implements OnInit{
             _id: site._id,
             name: site.name
           },
-          rol: rol,
+          roles: roles, 
           coins: 0,
           discordUsername: discordUsername,
         }).subscribe({
           next: (data) => {
             if (data.success) {
               const userId = data.userId;
-              this.dataSource.push({ _id: userId, name: name, email: email, region: region, site: site, rol: rol, coins: 0, discordUsername: discordUsername});
+              this.dataSource.push({ _id: userId, name: name, email: email, region: region, site: site, roles: roles, coins: 0, discordUsername: discordUsername});
               this.showSuccessMessage(data.msg);
             } else {
               this.showErrorMessage(data.error);
@@ -206,22 +225,15 @@ export class UserCrudComponent implements OnInit{
         this.showErrorMessage('Please fill in all fields of the form');
       }
     }
-
     successMessage: string = '';
     errorMessage: string = '';
     
     showSuccessMessage(message: string) {
       this.successMessage = message;
-      setTimeout(() => {
-        this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-      }, 5000); // Limpia el mensaje después de 5 segundos
     }
     
     showErrorMessage(message: string) {
       this.errorMessage = message;
-      setTimeout(() => {
-        this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-      }, 5000); // Limpia el mensaje después de 5 segundos
     }
     
   get totalPaginas(): number {
@@ -251,7 +263,7 @@ export class UserCrudComponent implements OnInit{
                 case 'region.name':
                 case 'site.name':
                 case 'team.name':
-                case 'rol':
+                case 'roles':
                     return this.getPropertyValue(item, this.selectedHeader).toLowerCase().startsWith(filterText);
                 default:
                     return false;
@@ -277,11 +289,17 @@ getPropertyValue(obj: any, key: string) {
   }
   return Array.isArray(value) ? value.join(', ') : value;
 }
-
+toggleColumn(column: keyof User, event: any) {
+  if (event.target.checked) {
+    this.selectedColumns.push(column);
+  } else {
+    this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+  }
+}
 exportToPDF() {
     const doc = new jsPDF();
 
-    const url = 'http://localhost:3000/api/user/get-users';
+    const url = `http://${environment.apiUrl}:3000/api/user/get-users`;
     this.userService.getUsers(url).subscribe(
         (users: User[]) => {
             const data = users.map(user => ({
@@ -301,7 +319,7 @@ exportToPDF() {
                     _id: user.team?._id || '',
                     name: user.team?.name || ''
                 },
-                rol: user.rol || ''
+                roles: user.roles || ['']
             }));
 
             const selectedData = data.map(row => {
@@ -331,7 +349,7 @@ exportToPDF() {
                 if (column === 'region.name') return 'Region';
                 if (column === 'site.name') return 'Site';
                 if (column === 'team.name') return 'Team';
-                if (column === 'rol') return 'Role';
+                if (column === 'roles') return 'Role';
                 return column.replace(/[A-Z]/g, ' $&').toUpperCase();
             });
 
@@ -362,29 +380,13 @@ exportToPDF() {
     for (let i = inicio; i <= fin; i++) {
       paginasMostradas.push(i);
     }
-
-    if (inicio == 1){
-      switch(fin - inicio){
-        case 2:
-          paginasMostradas.push(4);
-          paginasMostradas.push(5);
-          break;
-        case 3:
-          paginasMostradas.push(5);
-          break;
-        default: break;
-      }
+  
+    if (currentPage - inicio > rango) {
+      paginasMostradas.unshift('...');
     }
-    if (fin == totalPaginas){
-      switch(fin - inicio){
-        case 2:
-          paginasMostradas.unshift(totalPaginas-4, totalPaginas-3);
-          break;
-        case 3:
-          paginasMostradas.unshift(totalPaginas-4);
-          break;
-        default: break;
-      }
+    
+    if (fin < totalPaginas - 1) {
+      paginasMostradas.push('...');
     }
     return paginasMostradas;
 }

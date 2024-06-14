@@ -9,15 +9,20 @@
     try {
       const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
       let creatorUser = await User.findById(userId);
-      const { name } = req.body;
-      if (!Theme.findOne({ name: name })) {
+
+      if (!Theme.findOne({ titleEN: req.body.titleEN })) {
         return res.status(409).json({ success: false, error: 'Theme already exists' });
       }
+
+      const { manualSP, manualEN, manualPT } = req.files;
+      const manualSPBuffer = manualSP[0].buffer;
+      const manualENBuffer = manualEN[0].buffer;
+      const manualPTBuffer = manualPT[0].buffer;
   
       const theme = new Theme({
-        manualPT: req.body.manualPT,
-        manualSP: req.body.manualSP,
-        manualEN: req.body.manualEN,
+        manualPT: manualPTBuffer,
+        manualSP: manualSPBuffer,
+        manualEN: manualENBuffer,
         descriptionSP: req.body.descriptionSP,
         descriptionPT: req.body.descriptionPT,
         descriptionEN: req.body.descriptionEN,
@@ -69,58 +74,49 @@
 
   const updateTheme = async (req, res) => {
     try {
-      const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-      const themeId = req.params.id;
-  
-      if (!mongoose.Types.ObjectId.isValid(themeId)) {
-        return res.status(404).json({ success: false, error: 'Theme not found' });
-      }
+        const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
+        const themeId = req.params.id;
 
-      const theme = await Theme.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      
-      const lastUpdateUser = await User.findById(userId);
-      theme.lastUpdateUser = {
-        userId: lastUpdateUser._id,
-        name: lastUpdateUser.name,
-        email: lastUpdateUser.email
-      };
-  
-      await theme.save();
+        if (!mongoose.Types.ObjectId.isValid(themeId)) {
+            return res.status(404).json({ success: false, error: 'Theme not found' });
+        }
 
-      if (req.body.manualEN && req.body.descriptionEN && req.body.titleEN) {
-        const query = { 'theme._id': req.params.id };
-    
-        GameJam.find(query)
-            .then(foundGameJams => {
-                console.log("GameJams encontrados:", foundGameJams);
-                if (foundGameJams.length > 0) {
-                    const updateFieldsQuery = {
-                        $set: {
-                            'theme.manualEN': req.body.manualEN,
-                            'theme.descriptionEN': req.body.descriptionEN,
-                            'theme.titleEN': req.body.titleEN
-                        }
-                    };
-                    return GameJam.updateMany(query, updateFieldsQuery);
-                } else {
-                    console.log("No se encontraron GameJams para actualizar.");
-                    return Promise.resolve();
-                }
-            })
-            .then(result => {
-                console.log("Documentos actualizados exitosamente:", result);
-            })
-            .catch(error => {
-                console.error('Error actualizando documentos:', error);
-            });
-    }
-    
-  
-      return res.status(200).json({ success: true, msg: 'Successfully updated', theme: theme });
+        const theme = await Theme.findById(themeId);
+
+        if (!theme) {
+            return res.status(404).json({ success: false, error: 'Theme not found' });
+        }
+
+        const { manualSP, manualEN, manualPT } = req.files;
+        const manualSPBuffer = manualSP ? manualSP[0].buffer : theme.manualSP;
+        const manualENBuffer = manualEN ? manualEN[0].buffer : theme.manualEN;
+        const manualPTBuffer = manualPT ? manualPT[0].buffer : theme.manualPT;
+
+        const updatedThemeData = {
+            manualSP: manualSPBuffer,
+            manualEN: manualENBuffer,
+            manualPT: manualPTBuffer,
+            descriptionSP: req.body.descriptionSP,
+            descriptionEN: req.body.descriptionEN,
+            descriptionPT: req.body.descriptionPT,
+            titleSP: req.body.titleSP,
+            titleEN: req.body.titleEN,
+            titlePT: req.body.titlePT,
+            lastUpdateUser: {
+                userId: userId,
+                name: 'Updated User Name', // Puedes obtener el nombre del usuario de la base de datos si lo necesitas
+                email: 'updated@example.com' // Puedes obtener el correo electrónico del usuario de la base de datos si lo necesitas
+            }
+        };
+
+        const updatedTheme = await Theme.findByIdAndUpdate(themeId, updatedThemeData, { new: true });
+
+        return res.status(200).json({ success: true, msg: 'Successfully updated', theme: updatedTheme });
     } catch (error) {
-      return res.status(400).json({ success: false, msg:error.message });
+        return res.status(400).json({ success: false, msg: error.message });
     }
-  };  
+};
+
 
   const deleteTheme = async (req, res) => {
     try {
@@ -129,9 +125,9 @@
       const deletedTheme = await Theme.findOneAndDelete({ _id: id });
 
       if (deletedTheme) {
-          res.status(200).send({ success: true, msg: 'Fase eliminada correctamente', data: deletedTheme });
+          res.status(200).send({ success: true, msg: 'Theme deleted', data: deletedTheme });
       } else {
-          res.status(404).json({ success: false, error: 'No se encontró la fase con el ID proporcionado' });
+          res.status(404).json({ success: false, error: 'Theme not found' });
       }
   } catch (error) {
       res.status(400).send({ success: false, msg: error.message });
@@ -155,11 +151,60 @@
       }
   }
 
+  const getPDF = async (req, res) =>{
+    try {
+        const themeId = req.params.id;
+        const language = req.params.language;
+        const theme = await Theme.findById(themeId);
+
+        if (!theme) {
+            return res.status(404).send('Tema no encontrada');
+        }
+
+        let pdfData;
+        let fileName;
+
+        // Seleccionar el PDF según el idioma proporcionado
+        switch (language) {
+          case 'SP':
+              pdfData = theme.manualSP;
+              fileName = 'manualSP.pdf';
+              break;
+          case 'EN':
+              pdfData = theme.manualEN;
+              fileName = 'manualEN.pdf';
+              break;
+          case 'PT':
+              pdfData = theme.manualPT;
+              fileName = 'manualPT.pdf';
+              break;
+          default:
+              return res.status(400).send('Idioma no soportado');
+      }
+
+      if (!pdfData) {
+          return res.status(404).send('Manual no encontrado para el idioma especificado');
+      }
+        // Opción 1: Enviar los datos binarios directamente al cliente
+        res.contentType('application/pdf').send(pdfData);
+
+        // Opción 2: Crear un enlace de descarga (comentado)
+        // fs.writeFileSync(fileName, pdfData); // Guarda el PDF localmente
+        // res.download(fileName); // Descarga el PDF al cliente
+
+    } catch (error) {
+        console.error('Error al obtener el PDF:', error);
+        res.status(500).send('Error interno del servidor');
+    }
+    
+};
+
   module.exports = {
     createTheme,
     deleteTheme,
     updateTheme,
     getTheme,
     getThemes,
-    getGamesPerTheme
+    getGamesPerTheme,
+    getPDF
   };

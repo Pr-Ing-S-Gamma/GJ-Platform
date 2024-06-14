@@ -7,37 +7,43 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const csv = require('csv-parser');
 const fs = require('fs');
+const { deepEqual } = require('assert');
 
 const registerUser = async (req, res) => {
-    const { name, email, region, site, team, rol, coins, discordUsername } = req.body;
+    const { name, email, region, site, team, roles, coins, discordUsername } = req.body;
+
     try {
+        // Validar email
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             return res.status(403).json({ success: false, error: 'Invalid email address.' });
         }
-        const existingEmail = await User.findOne({ email });
 
+        // Verificar si el email ya está registrado
+        const existingEmail = await User.findOne({ email });
         if (existingEmail) {
             return res.status(409).json({ success: false, error: "The email is already in use." });
         }
 
+        // Verificar si el nombre de usuario de Discord ya está registrado
         const existingDiscordUsername = await User.findOne({ discordUsername });
-
         if (existingDiscordUsername) {
             return res.status(409).json({ success: false, error: "The Discord Username is already in use." });
         }
 
+        // Crear nuevo usuario
         const user = new User({
             name: name,
             email: email,
-            region: { _id: region._id, name: region.name },
-            site: { _id: site._id, name: site.name },
-            team: team ? { _id: team._id, name: team.name } : null,
-            rol: rol,
+            region: region ? { _id: region._id, name: region.name } : undefined,
+            site: site ? { _id: site._id, name: site.name } : undefined,
+            team: team ? { _id: team._id, name: team.name } : undefined,
+            roles: roles,
             coins: coins,
             discordUsername: discordUsername,
             creationDate: new Date()
         });
 
+        // Guardar usuario en la base de datos
         await user.save();
         res.status(200).json({ success: true, msg: 'Registered successfully', userId: user._id });
     } catch (error) {
@@ -45,9 +51,10 @@ const registerUser = async (req, res) => {
     }
 };
 
+
 const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { name, email, region, site, team, rol, coins, discordUsername } = req.body;
+    const { name, email, region, site, team, roles, coins, discordUsername } = req.body;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ success: false, error: 'Invalid user ID.' });
@@ -73,27 +80,47 @@ const updateUser = async (req, res) => {
         if (region) existingUser.region = { _id: region._id, name: region.name };
         if (site) existingUser.site = { _id: site._id, name: site.name };
         if (team) existingUser.team = { _id: team._id, name: team.name };
-        if (rol) existingUser.rol = rol;
+        if (roles) existingUser.roles = roles;
         if (coins) existingUser.coins = coins;
         if (discordUsername) existingUser.discordUsername = discordUsername;
-        if(rol === 'Jammer') {
+        if(existingUser.roles.includes('Jammer')){
             const query = { 'jammers._id': id };
 
-            const updateFieldsQuery = { 
-                $set: { 
+            const updateFieldsQuery = {
+                $set: {
                     'jammers.$.name': name,
                     'jammers.$.email': email
                 }
             };
 
             Team.updateMany(query, updateFieldsQuery)
-            .then(result => {
-                console.log("Jammer fields updated successfully:", result);
-            })
-            .catch(error => {
-                console.error('Error updating Jammer fields:', error);
-            });
+                .then(result => {
+                    console.log("Jammer fields updated successfully:", result);
+                })
+                .catch(error => {
+                    console.error('Error updating Jammer fields:', error);
+                });
         }
+
+
+        /*if (rol === 'Jammer') {
+            const query = { 'jammers._id': id };
+
+            const updateFieldsQuery = {
+                $set: {
+                    'jammers.$.name': name,
+                    'jammers.$.email': email
+                }
+            };
+
+            Team.updateMany(query, updateFieldsQuery)
+                .then(result => {
+                    console.log("Jammer fields updated successfully:", result);
+                })
+                .catch(error => {
+                    console.error('Error updating Jammer fields:', error);
+                });
+        }*/
         existingUser.lastUpdateDate = new Date();
 
         await existingUser.save();
@@ -107,26 +134,26 @@ const updateUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const email = req.body.email;
     const existingUser = await User.findOne({ email });
-    let rol;
+    let roles;
     let userId;
     if (!existingUser) {
         const registerLink = `http://${process.env.PORT}:3000/register`;
         const subject = 'Login in GameJam Platform';
         const message = `Hi, click on this link to create an account:`;
         const link = registerLink;
-        await sendEmail(email, subject, message, link);        
+        await sendEmail(email, subject, message, link);
         res.status(200).json({ success: true, msg: 'Se envió el registro al usuario.', email, registerLink });
     }
-    
-    rol = existingUser.rol;
+
+    roles = existingUser.roles;
     userId = existingUser._id;
 
-    const token = jwt.sign({ userId, rol }, 'MY_JWT_SECRET', { expiresIn: 600000 });
+    const token = jwt.sign({ userId, roles }, 'MY_JWT_SECRET', { expiresIn: 600000 });
     const magicLink = `http://${process.env.PORT}:3000/api/user/magic-link/${token}`;
     const subject = 'Login in GameJam Platform';
     const message = `Hi, click on this link to continue to the app:`;
     const link = magicLink;
-    await sendEmail(email, subject, message, link);    
+    await sendEmail(email, subject, message, link);
     res.status(200).json({ success: true, msg: 'Se envió el magic link al usuario.', email, magicLink });
 };
 
@@ -135,27 +162,20 @@ const magicLink = async (req, res) => {
         const token = req.params.token;
         const decodedToken = jwt.verify(token, 'MY_JWT_SECRET');
         const userId = decodedToken.userId;
-        const rol = decodedToken.rol;
+        const roles = decodedToken.roles;
 
-        const newToken = jwt.sign({ userId, rol }, 'MY_JWT_SECRET');
+        const newToken = jwt.sign({ userId, roles }, 'MY_JWT_SECRET');
 
         res.cookie('token', newToken, {
             httpOnly: false
         });
-        let redirectUrl;
-        if (rol === 'GlobalOrganizer') {
-            redirectUrl = `http://${process.env.PORT}:3000/DataManagement`;
-        }
-        if(rol === 'LocalOrganizer') {
-            redirectUrl = `http://${process.env.PORT}:3000/Games`;
-        }
-        if(rol === 'Jammer') {
-            redirectUrl = `http://${process.env.PORT}:3000/Jammer`;
-        }
-        if(rol === 'Judge') {
-            redirectUrl = `http://${process.env.PORT}:3000/Juez`;
-        }
-        if(rol !=='LocalOrganizer' && rol !== 'GlobalOrganizer' && rol !== 'Jammer' && rol !== 'Judge') {
+        let redirectUrl
+        redirectUrl = `http://${process.env.PORT}:3000/home`;
+
+        const rolesToCheck = ["LocalOrganizer", "GlobalOrganizer","Judge","Jammer"];
+        const hasAnyRole = rolesToCheck.some(role => roles.includes(role));
+
+        if(!hasAnyRole){
             return res.clearCookie('token').redirect(`http://${process.env.PORT}:3000/login`);
         }
         return res.redirect(redirectUrl);
@@ -176,7 +196,7 @@ const logOutUser = async (req, res) => {
 const getCurrentUser = async (req, res) => {
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
-        const user = await User.findById(userId); 
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ success: false, error: 'User Not Found' });
         }
@@ -187,19 +207,19 @@ const getCurrentUser = async (req, res) => {
     }
 };
 
-const getLocalOrganizersPerSite = async (req, res)=>{
+const getLocalOrganizersPerSite = async (req, res) => {
+    const { siteId } = req.params;
     try {
-        const siteID = req.params.site;
-        var organizers = await LocalOrganizer.find({site : siteID});
-        return res.status(200).send({success: true, msg: "Organizadores econtrados para site ", data: organizers});
+        var organizers = await User.find({ "site._id": siteId, roles: 'LocalOrganizer' });
+        return res.status(200).send({ success: true, msg: "Organizadores econtrados para site ", data: organizers });
     } catch (error) {
-        return res.status(400).send({success: false, msg: error.message});
+        return res.status(400).send({ success: false, msg: error.message });
     }
 };
 
 const updateSite = async (req, res) => {
-    const { id } = req.params; 
-    const { siteId } = req.body; 
+    const { id } = req.params;
+    const { siteId } = req.body;
     try {
         const user = await User.findByIdAndUpdate(id, { site: siteId }, { new: true });
 
@@ -216,28 +236,28 @@ const updateSite = async (req, res) => {
 const getStaffPerSite = async (req, res) => {
     const { region, site } = req.params;
     try {
-        const staff = await User.find({"region.name":region, "site.name": site})
+        const staff = await User.find({ "region.name": region, "site.name": site , roles: { $not: { $elemMatch: { $eq: "Jammer" } } }})
         res.status(200).send({ success: true, msg: 'Staff have been found in the system.', data: staff });
-    } catch(error) {
+    } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
 
-const getUsers = async(req,res)=>{
-    try{
+const getUsers = async (req, res) => {
+    try {
         const allUsers = await User.find({});
-        res.status(200).send({ success:true, msg:'Se han encontrado usuarios en el sistema', data: allUsers });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+        res.status(200).send({ success: true, msg: 'Se han encontrado usuarios en el sistema', data: allUsers });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
 const getJammersPerSite = async (req, res) => {
     const { siteId } = req.params;
     try {
-        const jammers = await User.find({ "site._id": siteId, rol: 'Jammer'})
+        const jammers = await User.find({ "site._id": siteId, roles: 'Jammer' })
         res.status(200).send({ success: true, msg: 'Users with the role "Jammer" have been found in the system.', data: jammers });
-    } catch(error) {
+    } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
@@ -245,25 +265,25 @@ const getJammersPerSite = async (req, res) => {
 const getJammersNotInTeamPerSite = async (req, res) => {
     const siteId = req.params.siteId;
     try {
-        const jammersNotInTeam = await User.find({ "site._id": siteId, team: null, rol: 'Jammer' });
+        const jammersNotInTeam = await User.find({ "site._id": siteId, team: null, roles: 'Jammer' });
         res.status(200).send({ success: true, msg: 'Users with the role "Jammer" who are not in any team have been found in the system.', data: jammersNotInTeam });
-    } catch(error) {
+    } catch (error) {
         res.status(400).send({ success: false, msg: error.message });
     }
 };
 
-const deleteUser = async(req,res)=>{
-    try{
+const deleteUser = async (req, res) => {
+    try {
         const id = req.params.id;
         const deletedUser = await User.findOneAndDelete({ _id: id });
         const query = { 'jammers._id': id };
 
-        const updateFieldsQuery = { 
-            $pull: { 
+        const updateFieldsQuery = {
+            $pull: {
                 'jammers': { '_id': id }
             }
         };
-        
+
         Team.updateMany(query, updateFieldsQuery)
             .then(result => {
                 console.log("Jammer removed successfully:", result);
@@ -271,28 +291,33 @@ const deleteUser = async(req,res)=>{
             .catch(error => {
                 console.error('Error removing Jammer:', error);
             });
-        
-        res.status(200).send({ success:true, msg:'Usuario eliminado correctamente', data: deletedUser });
-    } catch(error) {
-        res.status(400).send({ success:false, msg:error.message });
+
+        res.status(200).send({ success: true, msg: 'Usuario eliminado correctamente', data: deletedUser });
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
     }
 };
 
 const registerUsersFromCSV = async (req, res) => {
     try {
-        if (!req.file || req.file.mimetype !== 'text/csv') {
+        if (!req.file || !req.file.originalname.endsWith('.csv')) {
             return res.status(400).json({ success: false, error: 'Please upload a CSV file.' });
         }
 
         const evaluatorId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(evaluatorId);
-        const users = [];
+        if (!creatorUser) {
+            return res.status(401).json({ success: false, error: 'Invalid user' });
+        }
 
+        const users = [];
         const fileData = req.file.buffer.toString('utf8');
-        const lines = fileData.split('\n');
+        const lines = fileData.split('\n').filter(line => line.trim() !== ''); // Filtra líneas vacías
+
         lines.forEach(line => {
-            const [name, email, rol, discordUsername, studioName] = line.split(',');
-            users.push({ name, email, rol, discordUsername, studioName });
+            const [name, email, role, discordUsername, studioName] = line.split(',');
+            const roles = role ? [role] : ['Jammer'];
+            users.push({ name, email, roles, discordUsername, studioName });
         });
 
         const registrationResults = [];
@@ -310,18 +335,18 @@ const registerUsersFromCSV = async (req, res) => {
             errorLog.push('No active game jam found');
             return res.status(200).json({ success: false, errorLog });
         }
-        
+
         const site = await Site.findById(creatorUser.site._id);
         if (site.open === 1) {
             errorLog.push('Site is currently closed');
             return res.status(200).json({ success: false, errorLog });
         }
-        
+
         for (const userData of users) {
-            const { name, email, rol, discordUsername, studioName } = userData;
+            const { name, email, roles, discordUsername, studioName } = userData;
             const region = creatorUser.region;
             const site = creatorUser.site;
-            
+
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 errorLog.push(`Invalid email address for user: ${name} (${email}, ${discordUsername})`);
                 continue;
@@ -338,7 +363,7 @@ const registerUsersFromCSV = async (req, res) => {
                 errorLog.push(`The Discord Username is already in use for user: ${name} (${email}, ${discordUsername})`);
                 continue;
             }
-            
+
             let team = await Team.findOne({ studioName });
             if (!team) {
                 team = new Team({
@@ -346,8 +371,8 @@ const registerUsersFromCSV = async (req, res) => {
                     description: 'Description...',
                     region: { _id: region._id, name: region.name },
                     site: { _id: site._id, name: site.name },
-                    linkTree: [], 
-                    gameJam: { _id: currentGameJam._id, edition: currentGameJam.edition }, 
+                    linkTree: [],
+                    gameJam: { _id: currentGameJam._id, edition: currentGameJam.edition },
                     creatorUser: {
                         userId: creatorUser._id,
                         name: creatorUser.name,
@@ -361,18 +386,18 @@ const registerUsersFromCSV = async (req, res) => {
                 errorLog.push(`The team is in a different site for user: ${name} (${email}, ${discordUsername})`);
                 continue;
             }
-            
+
             const jammer = await User.create({
                 name,
                 email,
                 region: { _id: region._id, name: region.name },
                 site: { _id: site._id, name: site.name },
-                rol,
+                roles,
                 coins: 0,
                 discordUsername,
                 creationDate: new Date()
             });
-            
+
             if (team.region._id.toString() === region._id.toString()) {
                 team.jammers.push({ _id: jammer._id, name, email, discordUsername });
                 await team.save();
@@ -380,11 +405,55 @@ const registerUsersFromCSV = async (req, res) => {
 
             registrationResults.push(`Registered successfully for user: ${name} (${email}, ${discordUsername})`);
         }
+
         res.status(200).json({ success: true, msg: 'User registration completed.', registrationResults, errorLog });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
+
+const addRol = async (req, res) => {
+    const userId = req.params.id;
+    const {rol} = req.body;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Usuario no existe' });
+        }
+        if (user.roles.includes(rol)) {
+            return res.status(400).json({ message: 'El usuario ya tiene este rol' });
+        }
+        user.roles.push(rol)
+        await user.save();
+        return res.status(200).json({ success: true, message: "Rol agregado" })
+    }
+    catch(error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+const deleteRol = async (req, res) => {
+    const userId = req.params.id;
+    const {rol} = req.body;
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Usuario no existe' });
+        }
+        if (!user.roles.includes(rol)) {
+            return res.status(400).json({ message: 'El usuario no tiene este rol' });
+        }
+        user.roles = user.roles.filter(r => r !== rol);
+            await user.save();
+            return res.status(200).json({ success: true, message: "Rol eliminado" })
+    }
+    catch(error){
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+
 
 
 module.exports = {
@@ -401,5 +470,7 @@ module.exports = {
     getJammersPerSite,
     getJammersNotInTeamPerSite,
     getStaffPerSite,
-    registerUsersFromCSV
+    registerUsersFromCSV,
+    addRol,
+    deleteRol
 };

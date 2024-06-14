@@ -1,84 +1,84 @@
-<section class="vh-100" style="position: relative; background: linear-gradient(108deg, #FEDE6E 0%, #FA7800 33%, #FF3131 50%, #D052A5 75%, #3763FF 100%); display: flex; justify-content: center; align-items: center;">
-    <div class="container">
-        <div class="row" style="justify-content: center; align-items: center;">
-          <div class="col" style="justify-content: center; align-items: center; max-width:500px;">
-            <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
-              {{ errorMessage }}
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-            </div>  
-            <div class="Card" style="background: rgba(255, 255, 255, 0.86); border-radius: 45px">
-                <div *ngIf="showModal" style="display: block; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
-                  <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
-                    <h2>Registration Successful!</h2>
-                    <p>Your registration was successful. Please log in with your email.</p>
-                    <button type="button" (click)="redirectToLogin()" class="btn btn-default" style="background-color: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">OK</button>
-                  </div>
-                </div>
-                <div class="Card-body">
-                    <form (submit)="submitForm()" [formGroup]="myForm">
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div style="margin-top: 20px; text-align: center; color: black; font-size: 35px; font-family: K2D; font-weight: 400; word-wrap: break-word">Register</div>
-                            <div style="margin-left: 50px; text-align: left; color: black; font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">Email</div>
-
-                            <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                              <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                <input #emailInput type="email" class="form-control" id="emailInput" required placeholder="Email" formControlName="email">
-                              </div>
-                            </div>
-                            
-                            <div style="margin-left:50px; text-align: left; color: black; font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">Full Name</div>
-
-                            <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                              <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                <input #nameInput class="form-control" id="nameInput" required placeholder="Full Name" formControlName="name">
-                              </div>
-                            </div>
-
-                            <div style="margin-left:50px; text-align: left; color: black; font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">Discord Username</div>
-
-                            <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                              <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
-                                <input #discordUsernameInput class="form-control" id="discordUsernameInput" required placeholder="Discord Username" formControlName="discordUsername">
-                              </div>
-                            </div>
-
-                            <div style="text-align: center; color: black; font-size: 35px; font-family: K2D; font-weight: 400; word-wrap: break-word">Choose your Site</div>
-                            <div style="margin-left:50px; text-align: left; color: black; font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">Region</div>
-
-                            <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                              <select class="form-control" id="regions" 
-                              style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="region" (change)="onRegionSelection()">
-                                <option value="" disabled selected hidden>Your region</option>
-                                <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
-                              </select>
-                            </div>
-
-                            <div style="margin-left:50px; text-align: left; color: black; font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">Site</div>
-
-                            <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                              <select class="form-control" id="sites"  
-                              style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="site">
-                                <option value="" disabled selected hidden>Your site</option>
-                                <option *ngFor="let site of sites" [ngValue]="site">{{ site.name }}</option>
-                              </select>
-                            </div>
-
-                            <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                              <div style="margin-top: 20px; margin-bottom: 35px; text-align: center; background: #3EB9FF; border-radius: 15px; max-width: 250px;">
-                                <button type="submit" class="btn btn-default">
-                                  <div style="text-align: center; color: white; font-size: 35px; font-family: Inter; font-weight: 400; word-wrap: break-word">
-                                    Register
-                                  </div>
-                                </button>
-                              </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+<section class="vh-100 backgroundGradient">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <div *ngIf="errorMessage" id="errorMsg" class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ errorMessage }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="Card">
+          <div *ngIf="showModal" class="modal-bg">
+            <div class="modal-content">
+              <h2>Registration Successful!</h2>
+              <p>Your registration was successful. Please log in with your email.</p>
+              <button id="OKboomer" type="button" (click)="redirectToLogin()" class="btn btn-default">OK</button>
             </div>
           </div>
+          <div class="Card-body">
+            <form (submit)="submitForm()" [formGroup]="myForm">
+              <div class="row">
+                <div class="title">Register</div>
+                <div class="inputTitle">Email</div>
+
+                <div class="row">
+                  <div class="form-group inputSpace">
+                    <input #emailInput type="email" class="form-control" id="emailInput" required placeholder="Email"
+                      formControlName="email">
+                  </div>
+                </div>
+
+                <div class="inputTitle">Full Name</div>
+
+                <div class="row">
+                  <div class="form-group inputSpace">
+                    <input #nameInput class="form-control" id="nameInput" required placeholder="Full Name"
+                      formControlName="name">
+                  </div>
+                </div>
+
+                <div class="inputTitle">Discord Username</div>
+
+                <div class="row">
+                  <div class="form-group inputSpace">
+                    <input #discordUsernameInput class="form-control" id="discordUsernameInput" required
+                      placeholder="Discord Username" formControlName="discordUsername">
+                  </div>
+                </div>
+
+                <div class="title">Choose your Site</div>
+                <div class="inputTitle">Region</div>
+
+                <div class="row">
+                  <select class="form-control selectorStyle" id="regions" required formControlName="region"
+                    (change)="onRegionSelection()">
+                    <option value="" disabled selected hidden>Your region</option>
+                    <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
+                  </select>
+                </div>
+
+                <div class="inputTitle">Site</div>
+
+                <div class="row">
+                  <select class="form-control selectorStyle" id="sites" required formControlName="site">
+                    <option value="" disabled selected hidden>Your site</option>
+                    <option *ngFor="let site of sites" [ngValue]="site">{{ site.name }}</option>
+                  </select>
+                </div>
+
+                <div class="row">
+                  <div class="registerBTN">
+                    <button type="submit" class="btn btn-default registerFont">
+                      Register
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </section>

@@ -7,6 +7,7 @@ import { Region } from '../../../types';
 declare var $: any;
 import { jsPDF }  from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-region-crud',
@@ -22,7 +23,9 @@ import autoTable from 'jspdf-autotable';
 export class RegionCRUDComponent implements OnInit{
   myForm!: FormGroup;
   dataSource: Region[] = [];
-  
+  columnOptions = [
+    { label: 'name', value: 'name' as keyof Region, checked: false },
+  ];
   regionToEdit: any;
   indexRegion = 0;
   selectedHeader: string | undefined;
@@ -34,7 +37,7 @@ export class RegionCRUDComponent implements OnInit{
     this.myForm = this.fb.group({
       region: ['', Validators.required]
     });
-    const url = 'http://149.130.176.112:3000/api/region/get-regions';
+    const url = `http://${environment.apiUrl}:3000/api/region/get-regions`;
     this.regionService.getRegions(url).subscribe(
       (regions: any[]) => {
         this.dataSource = regions.map(region => ({ _id: region._id, name: region.name }));
@@ -56,7 +59,7 @@ export class RegionCRUDComponent implements OnInit{
     if (this.myForm.valid) {
       const regionId = this.regionToEdit['_id'];
   
-      const url = `http://149.130.176.112:3000/api/region/update-region/${regionId}`;
+      const url = `http://${environment.apiUrl}:3000/api/region/update-region/${regionId}`;
   
       this.regionService.updateRegion(url, {
         name: this.myForm.value['region']
@@ -82,7 +85,7 @@ export class RegionCRUDComponent implements OnInit{
   eliminar(elemento: any) {
     const id = elemento._id;
 
-    const url = `http://149.130.176.112:3000/api/region/delete-region/${id}`;
+    const url = `http://${environment.apiUrl}:3000/api/region/delete-region/${id}`;
 
     this.regionService.deleteRegion(url).subscribe({
         next: (data) => {
@@ -96,49 +99,43 @@ export class RegionCRUDComponent implements OnInit{
         }
     });
   }
-
+  toggleColumn(column: keyof Region, event: any) {
+    if (event.target.checked) {
+      this.selectedColumns.push(column);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+    }
+  }
   exportToPDF() {
     const doc = new jsPDF();
-  
-    const url = 'http://localhost:3000/api/region/get-regions';
-    this.regionService.getRegions(url).subscribe(
-      (regions: Region[]) => {
-        const data = regions.map(region => ({
-          _id: region._id || '',
-          name: region.name || '',
-        }));
-  
-        const selectedData = data.map(row => {
-          const rowData: any[] = [];
-          this.selectedColumns.forEach(column => {
-            rowData.push(row[column] || '');
-          });
-          return rowData;
-        });
-  
-        const headers = this.selectedColumns.map((column: string) => {
-          if (column === '_id') return 'ID';
-          if (column === 'name') return 'Name';
-          return column.replace(/[A-Z]/g, ' $&').toUpperCase();
-        });
-  
-        autoTable(doc, {
-          head: [headers],
-          body: selectedData
-        });
-  
-        doc.save('categories.pdf');
-      },
-      error => {
-        console.error('Error al obtener categorías:', error);
-      }
-    );
+
+    const selectedData = this.dataSource.map(row => {
+      const rowData: any[] = [];
+      this.selectedColumns.forEach(column => {
+        rowData.push(row[column] || '');
+      });
+      return rowData;
+    });
+
+    const headers = this.selectedColumns.map((column: string) => {
+      if (column === '_id') return 'ID';
+      if (column === 'name') return 'Name';
+      return column.replace(/[A-Z]/g, ' $&').toUpperCase();
+    });
+
+    autoTable(doc, {
+      head: [headers],
+      body: selectedData
+    });
+
+    doc.save('regions.pdf');
   }
+
   
   agregar() {
     if (this.myForm.valid) {
       var regionName = this.myForm.value["region"];
-      this.regionService.createRegion(`http://149.130.176.112:3000/api/region/create-region`, {
+      this.regionService.createRegion(`http://${environment.apiUrl}:3000/api/region/create-region`, {
         name: regionName,
       }).subscribe({
         next: (data) => {
@@ -170,16 +167,10 @@ export class RegionCRUDComponent implements OnInit{
 
   showSuccessMessage(message: string) {
     this.successMessage = message;
-    setTimeout(() => {
-      this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-    }, 5000); // Limpia el mensaje después de 5 segundos
   }
 
   showErrorMessage(message: string) {
     this.errorMessage = message;
-    setTimeout(() => {
-      this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-    }, 5000); // Limpia el mensaje después de 5 segundos
   }
 
   get totalPaginas(): number {

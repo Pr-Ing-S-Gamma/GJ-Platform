@@ -8,6 +8,7 @@ import { SiteService } from '../../services/site.service';
 declare var $: any;
 import { jsPDF }  from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { environment } from '../../../environments/environment.prod';
 
 @Component({
   selector: 'app-site-crud',
@@ -25,6 +26,12 @@ export class SiteCrudComponent implements OnInit {
   dataSource: Site[] = [];
   regions: Region[] = [];
   countries: Country[] = [];
+  columnOptions = [
+    { label: 'Name', value: 'name' as keyof Site, checked: false },
+    { label: 'Modality', value: 'modality' as keyof Site, checked: false },
+    { label: 'Region Name', value: 'region.name' as keyof Site, checked: false },
+    { label: 'Country Name', value: 'country.name' as keyof Site, checked: false },
+  ];
 
   siteToEdit: any;
   indexSite = 0;
@@ -39,7 +46,7 @@ export class SiteCrudComponent implements OnInit {
       country: ['', Validators.required],
       region: ['', Validators.required]
     });
-    this.regionService.getRegions('http://149.130.176.112:3000/api/region/get-regions')
+    this.regionService.getRegions(`http://${environment.apiUrl}:3000/api/region/get-regions`)
     .subscribe(
       regions => {
         this.regions = regions;
@@ -48,7 +55,7 @@ export class SiteCrudComponent implements OnInit {
         console.error('Error al obtener regiones:', error);
       }
     );
-    this.siteService.getCountries('http://149.130.176.112:3000/api/site/get-countries')
+    this.siteService.getCountries(`http://${environment.apiUrl}:3000/api/site/get-countries`)
     .subscribe(
       countries => {
         this.countries = countries;
@@ -57,7 +64,7 @@ export class SiteCrudComponent implements OnInit {
         console.error('Error al obtener países:', error);
       }
     );
-    this.siteService.getSites('http://149.130.176.112:3000/api/site/get-sites')
+    this.siteService.getSites(`http://${environment.apiUrl}:3000/api/site/get-sites`)
     .subscribe(
       sites => {
         this.dataSource = sites;
@@ -88,7 +95,7 @@ export class SiteCrudComponent implements OnInit {
       
       const siteId = this.siteToEdit['_id'];
       
-      const url = `http://149.130.176.112:3000/api/site/update-site/${siteId}`;
+      const url = `http://${environment.apiUrl}:3000/api/site/update-site/${siteId}`;
       
       console.log(this.myForm.value["country"].name);
       this.siteService.updateSite(url, {
@@ -121,7 +128,7 @@ export class SiteCrudComponent implements OnInit {
   eliminar(elemento: any) {
     const id = elemento._id;
 
-    const url = `http://149.130.176.112:3000/api/site/delete-site/${id}`;
+    const url = `http://${environment.apiUrl}:3000/api/site/delete-site/${id}`;
 
     this.siteService.deleteSite(url).subscribe({
         next: (data) => {
@@ -138,7 +145,7 @@ export class SiteCrudComponent implements OnInit {
 
   agregar() {
     if (this.myForm.valid) {
-      this.siteService.createSite(`http://149.130.176.112:3000/api/site/create-site`, {
+      this.siteService.createSite(`http://${environment.apiUrl}:3000/api/site/create-site`, {
         name: this.myForm.value["name"],
         modality: this.myForm.value["modality"], 
         region: this.myForm.value["region"],
@@ -172,16 +179,10 @@ errorMessage: string = '';
 
 showSuccessMessage(message: string) {
   this.successMessage = message;
-  setTimeout(() => {
-    this.successMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-  }, 5000); // Limpia el mensaje después de 5 segundos
 }
 
 showErrorMessage(message: string) {
   this.errorMessage = message;
-  setTimeout(() => {
-    this.errorMessage = ''; // Limpia el mensaje después de cierto tiempo (opcional)
-  }, 5000); // Limpia el mensaje después de 5 segundos
 }
   
   get totalPaginas(): number {
@@ -230,11 +231,17 @@ showErrorMessage(message: string) {
     }
     return value;
   }
-
+  toggleColumn(column: keyof Site, event: any) {
+    if (event.target.checked) {
+      this.selectedColumns.push(column);
+    } else {
+      this.selectedColumns = this.selectedColumns.filter(c => c !== column);
+    }
+  }
   exportToPDF() {
     const doc = new jsPDF();
   
-    const url = 'http://localhost:3000/api/site/get-sites';
+    const url = `http://${environment.apiUrl}:3000/api/site/get-sites`;
     this.siteService.getSites(url).subscribe(
       (sites: Site[]) => {
         const data = sites.map(site => ({
@@ -304,6 +311,15 @@ showErrorMessage(message: string) {
       paginasMostradas.push(i);
     }
 
+    if (currentPage - inicio > rango) {
+      paginasMostradas.unshift('...');
+    }
+    
+    if (fin < totalPaginas - 1) {
+      paginasMostradas.push('...');
+    }
+
+    /*
     if (inicio == 1){
       switch(fin - inicio){
         case 2:
@@ -327,6 +343,7 @@ showErrorMessage(message: string) {
         default: break;
       }
     }
+    */
     return paginasMostradas;
 }
 

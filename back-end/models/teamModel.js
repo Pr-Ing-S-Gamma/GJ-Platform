@@ -36,8 +36,7 @@ const teamSchema = mongoose.Schema({
         }
     },
     linkTree: [{
-        type:String,
-        required:true
+        type:String
     }],
     gameJam:  {
         _id: { 
@@ -73,6 +72,10 @@ const teamSchema = mongoose.Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Submission',
         required: false
+    }],
+    chatsIds: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Chat'
     }],
     creatorUser:  {
         userId: {

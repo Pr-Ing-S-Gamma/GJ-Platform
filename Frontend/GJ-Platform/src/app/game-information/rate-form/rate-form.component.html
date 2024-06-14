@@ -1,11 +1,10 @@
 
 <form [formGroup]="myForm">
     <div class="miniWindow">
-      <div style="display:flex; justify-content: center; flex-direction: column;">
         <div class="row">
             <label class="label"> Pitch Score </label>
             <div class="button-container">
-                <div *ngFor="let rate of rating" class="button-wrapper" style="display: inline-block;">
+                <div *ngFor="let rate of rating" class="button-wrapper">
                   <button 
                     class="theme-button"
                     [class.selected]="rate === pitchScore"
@@ -21,7 +20,7 @@
         <div class="row">
             <label class="label"> Game Design Score </label>
             <div class="button-container">
-                <div *ngFor="let rate of rating" class="button-wrapper" style="display: inline-block;">
+                <div *ngFor="let rate of rating" class="button-wrapper">
                   <button 
                     class="theme-button"
                     [class.selected]="rate === gameDesignScore"
@@ -37,7 +36,7 @@
         <div class="row">
             <label class="label"> Art Score </label>
             <div class="button-container">
-                <div *ngFor="let rate of rating" class="button-wrapper" style="display: inline-block;">
+                <div *ngFor="let rate of rating" class="button-wrapper">
                   <button 
                     class="theme-button"
                     [class.selected]="rate === artScore"
@@ -53,7 +52,7 @@
         <div class="row">
             <label class="label"> Build Score </label>
             <div class="button-container">
-                <div *ngFor="let rate of rating" class="button-wrapper" style="display: inline-block;">
+                <div *ngFor="let rate of rating" class="button-wrapper">
                   <button 
                     class="theme-button"
                     [class.selected]="rate === buildScore"
@@ -69,7 +68,7 @@
         <div class="row">
             <label class="label"> Audio Score </label>
             <div class="button-container">
-                <div *ngFor="let rate of rating" class="button-wrapper" style="display: inline-block;">
+                <div *ngFor="let rate of rating" class="button-wrapper">
                   <button 
                     class="theme-button"
                     [class.selected]="rate === audioScore"
@@ -86,23 +85,21 @@
             <label class="label"> General Feedback </label>
             <input class="textSpace" id="general" type="text" placeholder="Give Feedback" [disabled]="!evaluando" formControlName="generalFeedback">
         </div>
-        <div class = "col btn btn-primary" style="display: flex; align-self: center; max-width: fit-content; justify-self: flex-end;" type="submit" (click)="submitEvaluation()">
+        <div class = "col btn btn-primary evaluateButton" type="submit" (click)="submitEvaluation()">
             Evaluate
         </div>
 
-        <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+        <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show messageSpacer" role="alert">
             {{ successMessage }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
               <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
+        <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show messageSpacer" role="alert">
             {{ errorMessage }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-
-      </div>
     </div>
 </form>

@@ -6,6 +6,9 @@
     position: relative;
     background: white;
     border-radius: 30px;
+    display:flex;
+    justify-content: center;
+    flex-direction: column;
     /*border: 2px black solid;*/
 }
 
@@ -49,4 +52,20 @@
     overflow-wrap: break-word; /* Para permitir el salto de línea dentro de las palabras */
     word-wrap: break-word; /* Para navegadores más antiguos */
     word-break: break-all;
+}
+
+.button-wrapper{
+    display: inline-block;
+}
+
+.evaluateButton{
+    display: flex;
+    align-self: center;
+    max-width: fit-content;
+    justify-self: flex-end;
+}
+
+.messageSpacer{
+    margin-left: 10px;
+    margin-right: 10px;
 }

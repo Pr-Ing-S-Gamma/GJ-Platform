@@ -24,7 +24,7 @@ const gameJamSchema = mongoose.Schema({
             type: Date
         },
     }],
-    theme:  {
+    themes:  [{
         _id: { 
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Theme',
@@ -33,16 +33,8 @@ const gameJamSchema = mongoose.Schema({
         titleEN: { 
             type: String, 
             required: true 
-        },
-        descriptionEN: { 
-            type: String, 
-            required: true 
-        },
-        manualEN: { 
-            type: String, 
-            required: true 
-        } 
-    },
+        }
+    }],
     creatorUser:  {
         userId: {
             type: Schema.Types.ObjectId, 

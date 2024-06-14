@@ -27,15 +27,15 @@ const categorySchema = mongoose.Schema({
         required: false
     },
     manualSP: {
-        type: String,
+        type: Buffer,
         required: false
     },
     manualEN: {
-        type: String,
+        type: Buffer,
         required: false
     },
     manualPT: {
-        type: String,
+        type: Buffer,
         required: false
     },
     creatorUser: {

@@ -24,6 +24,7 @@ const createStage = async (req, res) => {
         const startDateEvaluationObj = new Date(startDateEvaluation);
         const endDateEvaluationObj = new Date(endDateEvaluation);
 
+
         if (startDateObj >= endDateObj) {
             return res.status(400).json({ error: "Start date must be before end date." });
         }
@@ -189,6 +190,7 @@ const getCurrentStage = async (req, res) => {
         for (const gameJam of allGameJams) {
             for (const stage of gameJam.stages) {
                 if (currentDate >= stage.startDate && currentDate <= stage.endDate) {
+                    
                     res.status(200).send({ success: true, msg: 'Current Stage found', data: stage });
                     return;
                 }

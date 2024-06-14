@@ -1,40 +1,52 @@
-    <div class="card-body" style="background: white; border-radius: 35px; border: 1px black solid; border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
+    <div class="card-body cardBackground">
         <div class="table-responsive">
             <div class="filters">
                 <select [(ngModel)]="selectedHeader">
-                    <option value="_id">ID</option> 
                     <option value="studioName">Studio Name</option>
                     <option value="description">Description</option>
                     <option value="region.name">Region Name</option>
                     <option value="site.name">Site Name</option>
-                    <option value="gameJam._id">Game Jam ID</option>
                     <option value="gameJam.edition">Game Jam Edition</option>
                 </select>
             
                 <input type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
             
-                <select multiple [(ngModel)]="selectedColumns">
-                    <option value="_id">ID</option>
-                    <option value="studioName">Studio Name</option>
-                    <option value="description">Description</option>
-                    <option value="region.name">Region Name</option>
-                    <option value="site.name">Site Name</option>
-                    <option value="gameJam.edition">Game Jam Edition</option>
-                </select>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    Export info to PDF
+                  </button>
+                  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Select Columns to export</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <div *ngFor="let column of columnOptions">
+                            <input type="checkbox" [value]="column.value" [(ngModel)]="column.checked" (change)="toggleColumn(column.value, $event)" />
+                            {{ column.label }}
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary" (click)="exportToPDF()">Export to PDF</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
             
-                <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+                
             </div>            
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">ID</th>
                         <th scope="col">Studio Name</th>
                         <th scope="col">Description</th>
-                        <th scope="col">GameJam ID</th>
                         <th scope="col">GameJam Edition</th>
                         <th scope="col">Region</th>
                         <th scope="col">Site</th>
-                        <th scope="col">Links</th>
                         <th scope="col">Jammers</th>
                         <th scope="col">Update</th>
                         <th scope="col">Delete</th>
@@ -42,20 +54,11 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let row of obtenerDatosPagina()">
-                        <td>{{ row._id }}</td>
                         <td>{{ row.studioName }}</td>
                         <td>{{ row.description }}</td>
-                        <td>{{ row.gameJam._id }}</td>
                         <td>{{ row.gameJam.edition }}</td>
                         <td>{{ row.region.name }}</td>
                         <td>{{ row.site.name }}</td>
-                        <td>
-                            <ul>
-                                <li *ngFor="let link of row.linkTree">
-                                    <a [href]="link">{{ link }}</a>
-                                </li>
-                            </ul>
-                        </td>
                         <td>
                             <ul>
                                 <li *ngFor="let jammer of row.jammers">
@@ -74,7 +77,7 @@
                 </tbody>
             </table>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="navBarStyle">
             <ul class="pagination">
                 <!-- Botón para ir a la primera página -->
                 <li class="page-item" [class.disabled]="currentPage === 1">
@@ -122,76 +125,63 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         Studio Name
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input #createStudioInput class="form-control" id="createStudioInput" required
                                 placeholder="Studio" formControlName="studioName">
                         </div>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         Description
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input #createdescriptionInput class="form-control" id="createdescriptionInput" required
                                 placeholder="description" formControlName="description">
                         </div>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                        Gamejam</div>
 
-                   <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="editGJInput"  
-                       style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="gameJam">
+                   <div class="row centerRow">
+                       <select class="form-control formList" id="editGJInput" required formControlName="gameJam">
                        <option value="" disabled selected hidden>Team Gamejam</option>
                        <option *ngFor="let gameJam of gameJams" [ngValue]="gameJam">{{ gameJam.edition }}</option>
                        </select>
                    </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                        Region</div>
-                   <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="regions" 
-                       style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="region" (change)="onRegionSelection()">
+                   <div class="row centerRow">
+                       <select class="form-control formList" id="regions" required formControlName="region" (change)="onRegionSelection()">
                          <option value="" disabled selected hidden>Region</option>
                          <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
                        </select>
                      </div>
-                     <div style="margin-left: 50px; text-align: left; color: black;
-                     font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                     <div class="formTitle">
                         Site</div>
-                     <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="sites"  
-                       style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="site" (change)="onSiteSelection()">
+                     <div class="row centerRow">
+                       <select class="form-control formList" id="sites" required formControlName="site" (change)="onSiteSelection()">
                          <option value="" disabled selected hidden>Site</option>
                          <option *ngFor="let site of sites" [ngValue]="site">{{ site.name }}</option>
                        </select>
                      </div>
-                     <div style="margin-left: 50px; text-align: left; color: black;
-                     font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                     <div class="formTitle">
                         Jammers
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <select formControlName="selectedUser" class="form-control" id="users"
-                        style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;">
+                    <div class="row centerRow">
+                        <select formControlName="selectedUser" class="form-control formList" id="users">
                             <option value="" disabled selected hidden>Users</option>
                             <option *ngFor="let user of users" [ngValue]="user">{{ user.name + ' - ' + user.email }}</option>
                         </select>
                     </div>
-                    <button type="button" (click)="addJammer()" class="btn btn-primary"  style="
-                    width: 200px;
-                    align-self: center;">Add Jammer</button>
-                    <div *ngFor="let jammer of myForm.get('jammers')?.value" class="row"  style="
-                    margin-top: 20px; align-self: center;">
+                    <button type="button" (click)="addJammer()" class="btn btn-primary formButton">Add Jammer</button>
+                    <div *ngFor="let jammer of myForm.get('jammers')?.value" class="row formLinks">
                         <div class="col">
                         <label>Jammer:</label>
                         <p>{{ jammer.name }}</p>
@@ -203,51 +193,31 @@
                         <div class="col">
                         <button class="btn btn-danger" (click)="removeJammer(jammer)">Remove</button>
                         </div>
-                    </div>
-  
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                        LinkTree
-                    </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <input formControlName="linkTree" type="text" class="form-control" id="linkTree"
-                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;"
-                            placeholder="Enter link">
-                        <button type="button" (click)="addLinkTree()" class="btn btn-primary" style="width: 200px; align-self: center;">Add Link</button>
-                    </div>                        
-                    <div *ngFor="let linkTree of myForm.get('linkTrees')?.value" class="row"  style="
-                    margin-top: 20px; align-self: center;">
-                        <div class="col">
-                          <label>Link:</label>
-                          <p>{{ linkTree }}</p>
-                        </div>
-                        <div class="col">
-                          <button class="btn btn-danger" (click)="removeLinkTree(linkTree)">Remove</button>
-                        </div>
-                      </div>                      
+                    </div>                                     
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
-                    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert"
-                        style="margin-left: 10px; margin-right: 10px;">
-                        {{ successMessage }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"
-                            (click)="successMessage=''">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
-                        {{ errorMessage }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>  
                 </div>
             </form>
         </div>
     </div>
 
+<!-- Fuera del modal principal -->
+<div *ngIf="successMessage || errorMessage" class="toast-overlay">
+    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3">
+      <!-- Mensaje de éxito -->
+      <div *ngIf="successMessage" class="toast custom-alert alert alert-success alert-dismissible fade show" role="alert">
+        <div class="toast-message">{{ successMessage }}</div>
+        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="successMessage=''">OK</button>
+      </div>
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="toast custom-alert alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="toast-message">{{ errorMessage }}</div>
+        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="errorMessage=''">OK</button>
+      </div>
+    </div>
+  </div>
 
     <!-- Create Window -->
     <div #createModal class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
@@ -262,76 +232,63 @@
                         </button>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         Studio Name
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input #createStudioInput class="form-control" id="createStudioInput" required
                                 placeholder="Studio" formControlName="studioName">
                         </div>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         Description
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group" style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input #createdescriptionInput class="form-control" id="createdescriptionInput" required
                                 placeholder="description" formControlName="description">
                         </div>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                        Gamejam</div>
 
-                   <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="editGJInput"  
-                       style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="gameJam">
+                   <div class="row centerRow">
+                       <select class="form-control formList" id="editGJInput" required formControlName="gameJam">
                        <option value="" disabled selected hidden>Team Gamejam</option>
                        <option *ngFor="let gameJam of gameJams" [ngValue]="gameJam">{{ gameJam.edition }}</option>
                        </select>
                    </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                        Region</div>
-                   <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="regions" 
-                       style="margin-top: 20px; margin-bottom: 20px; border-radius: 44px; max-width: 400px;" required formControlName="region" (change)="onRegionSelection()">
+                   <div class="row centerRow">
+                       <select class="form-control formList" id="regions" required formControlName="region" (change)="onRegionSelection()">
                          <option value="" disabled selected hidden>Region</option>
                          <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
                        </select>
                      </div>
-                     <div style="margin-left: 50px; text-align: left; color: black;
-                     font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                     <div class="formTitle">
                         Site</div>
-                     <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                       <select class="form-control" id="sites"  
-                       style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="site" (change)="onSiteSelection()">
+                     <div class="row centerRow">
+                       <select class="form-control formList" id="sites" required formControlName="site" (change)="onSiteSelection()">
                          <option value="" disabled selected hidden>Site</option>
                          <option *ngFor="let site of sites" [ngValue]="site">{{ site.name }}</option>
                        </select>
                      </div>
-                     <div style="margin-left: 50px; text-align: left; color: black;
-                     font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                     <div class="formTitle">
                         Jammers
                     </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <select formControlName="selectedUser" class="form-control" id="users"
-                        style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;">
+                    <div class="row centerRow">
+                        <select formControlName="selectedUser" class="form-control formList" id="users">
                             <option value="" disabled selected hidden>Users</option>
                             <option *ngFor="let user of users" [ngValue]="user">{{ user.name + ' - ' + user.email }}</option>
                         </select>
                     </div>
-                    <button type="button" (click)="addJammer()" class="btn btn-primary"  style="
-                    width: 200px;
-                    align-self: center;">Add Jammer</button>
-                    <div *ngFor="let jammer of myForm.get('jammers')?.value" class="row"  style="
-                    margin-top: 20px; align-self: center;">
+                    <button type="button" (click)="addJammer()" class="btn btn-primary formButton">Add Jammer</button>
+                    <div *ngFor="let jammer of myForm.get('jammers')?.value" class="row formLinks">
                         <div class="col">
                         <label>Jammer:</label>
                         <p>{{ jammer.name }}</p>
@@ -347,45 +304,12 @@
                         <div class="col">
                         <button class="btn btn-danger" (click)="removeJammer(jammer)">Remove</button>
                         </div>
-                    </div>
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
-                        LinkTree
-                    </div>
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <input formControlName="linkTree" type="text" class="form-control" id="linkTree"
-                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;"
-                            placeholder="Enter link">
-                        <button type="button" (click)="addLinkTree()" class="btn btn-primary" style="width: 200px; align-self: center;">Add Link</button>
-                    </div>                        
-                    <div *ngFor="let linkTree of myForm.get('linkTrees')?.value" class="row"  style="
-                    margin-top: 20px; align-self: center;">
-                        <div class="col">
-                          <label>Link:</label>
-                          <p>{{ linkTree }}</p>
-                        </div>
-                        <div class="col">
-                          <button class="btn btn-danger" (click)="removeLinkTree(linkTree)">Remove</button>
-                        </div>
-                      </div>                      
+                    </div>                
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
-                    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert"
-                        style="margin-left: 10px; margin-right: 10px;">
-                        {{ successMessage }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"
-                            (click)="successMessage=''">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
-                        {{ errorMessage }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>  
+                    
                 </div>
             </form>
         </div>

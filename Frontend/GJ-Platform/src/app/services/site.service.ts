@@ -42,6 +42,11 @@ export class SiteService {
       map(response => response.data)
     );
   }
+  getSubmissionsByName(url: string): Observable<any[]> { 
+    return this.http.get<any>(url, { withCredentials: true }).pipe( 
+      map(response => response.data)
+    );
+  }
 
   getSitesPerRegion(url: string): Observable<Site[]> { 
     return this.http.get<any>(url).pipe( 

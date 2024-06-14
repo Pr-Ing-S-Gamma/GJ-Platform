@@ -7,6 +7,7 @@ import { UserService } from '../services/user.service';
 import { SiteService } from '../services/site.service';
 import { Region, Site } from '../../types';
 import { RegionService } from '../services/region.service';
+import { environment } from '../../environments/environment.prod';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -34,20 +35,7 @@ export class RegisterComponent implements OnInit {
       site: ['', Validators.required],
       discordUsername: ['', Validators.required]
     });
-    this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
-    .subscribe(
-      user => {
-        if (user.rol === 'LocalOrganizer') {
-          this.router.navigate(['/Games']);
-        }
-        if (user.rol === 'GlobalOrganizer') {
-          this.router.navigate(['/DataManagement']);
-        }
-      },
-      () => {
-      }
-    );
-    this.regionService.getRegions('http://localhost:3000/api/region/get-regions')
+    this.regionService.getRegions(`http://${environment.apiUrl}:3000/api/region/get-regions`)
     .subscribe(
       regions => {
         this.regions = regions;
@@ -60,7 +48,7 @@ export class RegisterComponent implements OnInit {
   onRegionSelection() {
     const selectedValue = this.myForm.get('region')?.value;
     if (selectedValue && selectedValue._id) {
-      this.siteService.getSitesPerRegion(`http://localhost:3000/api/site/get-sites-per-region-open/${selectedValue._id}`)
+      this.siteService.getSitesPerRegion(`http://${environment.apiUrl}:3000/api/site/get-sites-per-region-open/${selectedValue._id}`)
         .subscribe(
           sites => {
             this.sites = sites;
@@ -83,7 +71,7 @@ export class RegisterComponent implements OnInit {
       
       const { email, name, region, site, discordUsername} = this.myForm.value;
   
-      this.userService.registerUser(`http://localhost:3000/api/user/register-user`, {
+      this.userService.registerUser(`http://${environment.apiUrl}:3000/api/user/register-user`, {
         name: name,
         email: email,
         region: {
@@ -94,7 +82,7 @@ export class RegisterComponent implements OnInit {
           _id: site._id,
           name: site.name
         },
-        rol: 'Jammer',
+        roles: ['Jammer'],
         coins: 0,
         discordUsername: discordUsername
       }).subscribe({

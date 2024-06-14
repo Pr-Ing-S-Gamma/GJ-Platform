@@ -1,16 +1,12 @@
-<div class="card-body" style="background: white;
-border-radius: 35px; border: 1px black solid;
-border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
+<div class="card-body cardBackground">
     <div class="table-responsive">
         <div class="filters">
             <select [(ngModel)]="selectedHeader">
-                <option value="_id">ID</option>
                 <option value="name">Name</option>
                 <option value="startDate">Start Date</option>
                 <option value="endDate">End Date</option>
                 <option value="startDateEvaluation">Start Date Evaluation</option>
                 <option value="endDateEvaluation">End Date Evaluation</option>
-                <option value="gameJam._id">Game Jam ID</option>
                 <option value="gameJam.edition">Game Jam Edition</option>
             </select>
             
@@ -20,30 +16,40 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             
             <input *ngIf="!isDateFilterSelected()" type="text" [(ngModel)]="filterValue" placeholder="Filter Value">
             
-        
-            <select multiple [(ngModel)]="selectedColumns">
-                <option value="_id">ID</option>
-                <option value="name">Name</option>
-                <option value="startDate">Start Date</option>
-                <option value="endDate">End Date</option>
-                <option value="startDateEvaluation">Start Date Evaluation</option>
-                <option value="endDateEvaluation">End Date Evaluation</option>
-                <option value="gameJam._id">Game Jam ID</option>
-                <option value="gameJam.edition">Game Jam Edition</option>
-            </select>
-        
-            <button class="btn btn-primary" (click)="exportToPDF()">Export as PDF</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Export info to PDF
+              </button>
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Select Columns to export</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div *ngFor="let column of columnOptions">
+                        <input type="checkbox" [value]="column.value" [(ngModel)]="column.checked" (change)="toggleColumn(column.value, $event)" />
+                        {{ column.label }}
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" (click)="exportToPDF()">Export to PDF</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
         </div>        
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
                     <th scope="col">Name</th>
                     <th scope="col">StartDate</th>
                     <th scope="col">EndDate</th>
                     <th scope="col">StartDateEvaluation</th>
                     <th scope="col">EndDateEvaluation</th>
-                    <th scope="col">GameJamId</th>
                     <th scope="col">GameJamEdition</th>
                     <th scope="col">Update</th>
                     <th scope="col">Delete</th>
@@ -51,13 +57,11 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </thead>
             <tbody>
                 <tr *ngFor="let row of obtenerDatosPagina()">
-                    <td>{{ row._id }}</td>
                     <td>{{ row.name }}</td>
                     <td>{{ row.startDate | date:'dd/MM/yyyy':'UTC' }}</td>
                     <td>{{ row.endDate | date:'dd/MM/yyyy':'UTC' }}</td>
                     <td>{{ row.startDateEvaluation | date:'dd/MM/yyyy':'UTC' }}</td>
                     <td>{{ row.endDateEvaluation | date:'dd/MM/yyyy':'UTC' }}</td>                                 
-                    <td>{{ row.gameJam._id }}</td>
                     <td>{{ row.gameJam.edition }}</td>
                     <td>
                         <button class="btn btn-primary" data-toggle="modal" data-target="#editModal" (click)="seleccionarElemento(row)">Update</button>
@@ -69,7 +73,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
             </tbody>
         </table>
     </div>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="navBarStyle">
         <ul class="pagination">
             <!-- Botón para ir a la primera página -->
             <li class="page-item" [class.disabled]="currentPage === 1">
@@ -120,72 +124,60 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                    <div class="row centerRow">
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        <div class="formTitle">
                             Gamejam</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <select class="form-control" id="editGJInput"  
-                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="gameJam">
+                        <div class="row centerRow">
+                            <select class="form-control formList" id="editGJInput" required formControlName="gameJam">
                             <option value="" disabled selected hidden>Stage Gamejam</option>
                             <option *ngFor="let gameJam of gameJams" [ngValue]="gameJam">{{ gameJam.edition }}</option>
                             </select>
                         </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        <div class="formTitle">
                             Name</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <input #editNameInput class="form-control" id="editNameInput" required
                                     placeholder="Name" formControlName="name">
                             </div>
                         </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        <div class="formTitle">
                             Start Date</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <input type="date" class="form-control" id="editstartDateInput" required placeholder="startDate" formControlName="startDate">
                             </div>
                         </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        <div class="formTitle">
                             End Date</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <input type="date" class="form-control" id="editendDateInput" required placeholder="endDate" formControlName="endDate">
                             </div>
                         </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                        font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        <div class="formTitle">
                         Start Date Evaluation</div>
 
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group"
-                            style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input type="date" class="form-control" id="editstartDateEvaluationInput" required placeholder="startDateEvaluation" formControlName="startDateEvaluation">
                         </div>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                    font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                     End Date Evaluation</div>
 
-                <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                    <div class="form-group"
-                        style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                <div class="row centerRow">
+                    <div class="form-group formInput">
                         <input type="date" class="form-control" id="editendDateEvaluationInput" required placeholder="endDateEvaluation" formControlName="endDateEvaluation">
                     </div>
                 </div>
@@ -195,24 +187,26 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
-                    {{ successMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
-                    {{ errorMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>  
+                </div> 
             </div>
         </form>
     </div>
 </div>
-
+<!-- Fuera del modal principal -->
+<div *ngIf="successMessage || errorMessage" class="toast-overlay">
+    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3">
+      <!-- Mensaje de éxito -->
+      <div *ngIf="successMessage" class="toast custom-alert alert alert-success alert-dismissible fade show" role="alert">
+        <div class="toast-message">{{ successMessage }}</div>
+        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="successMessage=''">OK</button>
+      </div>
+      <!-- Mensaje de error -->
+      <div *ngIf="errorMessage" class="toast custom-alert alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="toast-message">{{ errorMessage }}</div>
+        <button type="button" class="ok-button btn btn-primary btn-sm" data-dismiss="toast" aria-label="Close" (click)="errorMessage=''">OK</button>
+      </div>
+    </div>
+  </div>
 <!-- Create Window -->
 <div #createModal class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel"
     aria-hidden="true">
@@ -226,72 +220,60 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
+                    <div class="row centerRow">
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                         font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        <div class="formTitle">
                             Gamejam</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <select class="form-control" id="editGJInput"  
-                            style="margin-top: 20px; margin-bottom: 10px; border-radius: 44px; max-width: 400px;" required formControlName="gameJam">
+                        <div class="row centerRow">
+                            <select class="form-control formList" id="editGJInput" required formControlName="gameJam">
                             <option value="" disabled selected hidden>Stage Gamejam</option>
                             <option *ngFor="let gameJam of gameJams" [ngValue]="gameJam">{{ gameJam.edition }}</option>
                             </select>
                         </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        <div class="formTitle">
                             Name</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <input #editNameInput class="form-control" id="editNameInput" required
                                     placeholder="Name" formControlName="name">
                             </div>
                         </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        <div class="formTitle">
                             Start Date</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <input type="date" class="form-control" id="editstartDateInput" required placeholder="startDate" formControlName="startDate">
                             </div>
                         </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                            font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        <div class="formTitle">
                             End Date</div>
 
-                        <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                            <div class="form-group"
-                                style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                        <div class="row centerRow">
+                            <div class="form-group formInput">
                                 <input type="date" class="form-control" id="editendDateInput" required placeholder="endDate" formControlName="endDate">
                             </div>
                         </div>
 
-                        <div style="margin-left: 50px; text-align: left; color: black;
-                        font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                        <div class="formTitle">
                         Start Date Evaluation</div>
 
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group"
-                            style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input type="date" class="form-control" id="editstartDateEvaluationInput" required placeholder="startDateEvaluation" formControlName="startDateEvaluation">
                         </div>
                     </div>
 
-                    <div style="margin-left: 50px; text-align: left; color: black;
-                        font-size: 24px; font-family: K2D; font-weight: 400; word-wrap: break-word">
+                    <div class="formTitle">
                         End Date Evaluation</div>
 
-                    <div class="row" style="display: flex; justify-content: center; align-items: center;">
-                        <div class="form-group"
-                            style="margin-top: 20px; margin-bottom: 20px; max-width: 425px;">
+                    <div class="row centerRow">
+                        <div class="form-group formInput">
                             <input type="date" class="form-control" id="editendDateEvaluationInput" required placeholder="endDateEvaluation" formControlName="endDateEvaluation">
                         </div>
                     </div>
@@ -301,19 +283,7 @@ border-top: none; border-top-left-radius: 0; border-top-right-radius: 0;">
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-                <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
-                    {{ successMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="successMessage=''">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-left: 10px; margin-right: 10px;">
-                    {{ errorMessage }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="errorMessage=''">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>  
+                </div> 
             </div>
         </form>
     </div>

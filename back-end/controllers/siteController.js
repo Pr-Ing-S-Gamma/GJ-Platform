@@ -14,6 +14,9 @@ const createSite = async (req, res) => {
     try {
         const userId = req.cookies.token ? jwt.verify(req.cookies.token, 'MY_JWT_SECRET').userId : null;
         const creatorUser = await User.findById(userId);
+        if(!creatorUser.roles.includes("GlobalOrganizer") && !creatorUser.roles.includes("LocalOrganizer")){
+            return res.status(400).json({ success: false, error: 'No Permission' });
+        }
         if (!mongoose.Types.ObjectId.isValid(region._id)) {
             return res.status(400).json({ success: false, error: 'The provided region ID is not valid.' });
         } else {

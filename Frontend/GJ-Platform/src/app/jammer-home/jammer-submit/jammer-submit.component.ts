@@ -13,6 +13,7 @@ import { SubmissionService } from '../../services/submission.service';
 import { StageService } from '../../services/stage.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
+import { environment } from '../../../environments/environment.prod';
 
 
 @Component({
@@ -24,7 +25,7 @@ import { CustomAlertComponent } from '../custom-alert/custom-alert.component';
 })
 export class JammerSubmitComponent implements OnInit{
   myForm!: FormGroup;
-  gjThemes: Theme[] = [];
+  gjThemes: any[] = [];
   gjCategories: Category[] = [];
   selectedTheme: Theme | null = null;
   selectedCategory: Category | null = null;
@@ -36,6 +37,7 @@ export class JammerSubmitComponent implements OnInit{
   teamSubmission: boolean | undefined;
   currentSubmission: Submission | undefined;
   submissionId: string | undefined; 
+  loading : boolean = true;
 
   constructor(private dialog: MatDialog,private fb: FormBuilder, private router: Router, private userService: UserService, private teamService: TeamService, private siteService: SiteService, private gamejamService: GamejamService, private categoryService: CategoryService, private themeService: ThemeService, private submissionService: SubmissionService, private stageService: StageService){
   }
@@ -48,7 +50,7 @@ ngOnInit(): void {
     category: ['', Validators.required],
     description: ['', Validators.required]
   });
-  const url = 'http://localhost:3000/api/category/get-categories';
+  const url = `http://${environment.apiUrl}:3000/api/category/get-categories`;
   this.categoryService.getCategories(url).subscribe(
     (categories: Category[]) => {
       this.gjCategories = categories; // No necesitas hacer un mapeo aquí
@@ -57,37 +59,37 @@ ngOnInit(): void {
       console.error('Error al obtener categorías:', error);
     }
   );
-  this.themeService.getThemes('http://localhost:3000/api/theme/get-themes')
+  this.gamejamService.getCurrentGameJam(`http://${environment.apiUrl}:3000/api/game-jam/get-current-game-jam`)
   .subscribe(
-    themes => {
-      this.gjThemes = themes;
+    gamejam => {
+      this.gjThemes = gamejam.themes;
     },
     error => {
       console.error('Error al obtener temas:', error);
     }
   );
-  this.userService.getCurrentUser('http://localhost:3000/api/user/get-user')
+  this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
       .subscribe(
         user => {
-          if (user.rol === 'LocalOrganizer') {
+          if (user.roles.includes('LocalOrganizer')) {
             this.router.navigate(['/Games']);
           }
-          if (user.rol === 'GlobalOrganizer') {
+          if (user.roles.includes('GlobalOrganizer')) {
             this.router.navigate(['/DataManagement']);
           }
           this.username = user.name + "(" + user.discordUsername + ")";
           this.teamName = user.team?.name;
           this.teamId = user.team?._id;
           if (!user.team?.name) {
-            this.router.navigate(['/Jammer']).then(() => {
+            this.router.navigate(['/home']).then(() => {
               window.location.reload();
             });
             return;
           }
-          this.stageService.getCurrentStage('http://localhost:3000/api/stage/get-current-stage')
+          this.stageService.getCurrentStage(`http://${environment.apiUrl}:3000/api/stage/get-current-stage`)
           .subscribe(
             stage => {
-              this.submissionService.getCurrentTeamSubmission('http://localhost:3000/api/submission/get-current-submission/'+this.teamId+'/'+stage._id)
+              this.submissionService.getCurrentTeamSubmission(`http://${environment.apiUrl}:3000/api/submission/get-current-submission/`+this.teamId+'/'+stage._id)
               .subscribe(
                 submission => {
                   this.currentSubmission = submission;
@@ -108,7 +110,7 @@ ngOnInit(): void {
               console.error('Error al obtener temas:', error);
             }
           );
-          this.gamejamService.getTimeRemainingData('http://localhost:3000/api/game-jam/get-time-left')
+          this.gamejamService.getTimeRemainingData(`http://${environment.apiUrl}:3000/api/game-jam/get-time-left`)
             .subscribe(
               timeLeft => {
                 const timeParts = timeLeft.split(':').map((part: string) => parseInt(part, 10));
@@ -130,7 +132,7 @@ ngOnInit(): void {
                     this.updateTimer();
                   }, 1000);
                   if (this.timeRemaining === '0d 0h 0m 0s') {
-                    this.router.navigate(['/Jammer']).then(() => {
+                    this.router.navigate(['/home']).then(() => {
                       window.location.reload();
                     });
                     return;
@@ -144,9 +146,10 @@ ngOnInit(): void {
         },
         () => {}
       );
+      this.loading = false;
   }
   logOut(){
-    this.userService.logOutUser('http://localhost:3000/api/user/log-out-user')
+    this.userService.logOutUser(`http://${environment.apiUrl}:3000/api/user/log-out-user`)
       .subscribe(
         () => {
           this.router.navigate(['/login']);
@@ -212,7 +215,7 @@ ngOnInit(): void {
         return;
       }
 
-      this.userService.getCurrentUser('http://localhost:3000/api/user/get-user').subscribe(
+      this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`).subscribe(
         user => {
           const teamId = user.team?._id;
   
@@ -223,10 +226,10 @@ ngOnInit(): void {
           if (this.timeRemaining === '0d 0h 0m 0s') {
             return;
           }
-          this.stageService.getCurrentStage('http://localhost:3000/api/stage/get-current-stage')
+          this.stageService.getCurrentStage(`http://${environment.apiUrl}:3000/api/stage/get-current-stage`)
           .subscribe(
             stage => {
-              this.submissionService.createSubmission('http://localhost:3000/api/submission/create-submission', {
+              this.submissionService.createSubmission(`http://${environment.apiUrl}:3000/api/submission/create-submission`, {
                 title: game,
                 description: description,
                 pitch: pitch,
@@ -239,7 +242,7 @@ ngOnInit(): void {
               }).subscribe({
                 next: (data) => {
                   this.showAlert("Agregado con éxito", () => {
-                    this.router.navigate(['/Jammer']).then(() => {
+                    this.router.navigate(['/home']).then(() => {
                       window.location.reload();
                     });
                   });
@@ -279,7 +282,7 @@ ngOnInit(): void {
         return;
       }
 
-      this.userService.getCurrentUser('http://localhost:3000/api/user/get-user').subscribe(
+      this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`).subscribe(
         user => {
           const teamId = user.team?._id;
   
@@ -290,10 +293,10 @@ ngOnInit(): void {
           if (this.timeRemaining === '0d 0h 0m 0s') {
             return;
           }
-          this.stageService.getCurrentStage('http://localhost:3000/api/stage/get-current-stage')
+          this.stageService.getCurrentStage(`http://${environment.apiUrl}:3000/api/stage/get-current-stage`)
           .subscribe(
             stage => {
-              this.submissionService.updateSubmission('http://localhost:3000/api/submission/update-submission/'+this.submissionId, {
+              this.submissionService.updateSubmission(`http://${environment.apiUrl}:3000/api/submission/update-submission/`+this.submissionId, {
                 title: game,
                 description: description,
                 pitch: pitch,
@@ -305,7 +308,7 @@ ngOnInit(): void {
                 score: 0
               }).subscribe({
                 next: (data) => {
-                  this.router.navigate(['/Jammer']).then(() => {
+                  this.router.navigate(['/home']).then(() => {
                     window.location.reload();
                   });
                 },

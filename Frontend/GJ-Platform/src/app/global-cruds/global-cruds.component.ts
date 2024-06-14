@@ -11,6 +11,7 @@ import { UserCrudComponent } from './user-crud/user-crud.component';
 import { ThemeCrudComponent } from './theme-crud/theme-crud.component';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
+import { environment } from '../../environments/environment.prod';
 
 @Component({
   selector: 'app-global-cruds',
@@ -42,13 +43,13 @@ export class GlobalCRUDsComponent implements OnInit{
   showJam  : boolean = false;
   constructor(private router: Router, private userService: UserService) { }
   ngOnInit(): void {
-    this.userService.getCurrentUser('http://149.130.176.112:3000/api/user/get-user')
+    this.userService.getCurrentUser(`http://${environment.apiUrl}:3000/api/user/get-user`)
     .subscribe(
       user => {
-        if (user.rol === 'LocalOrganizer') {
+        if (user.roles.includes('LocalOrganizer')) {
           this.router.navigate(['/Games']);
         }
-        if (user.rol === 'Jammer') {
+        if (user.roles.includes('Jammer')) {
           this.router.navigate(['/Jammer']);
         }
       },
@@ -72,46 +73,46 @@ export class GlobalCRUDsComponent implements OnInit{
   }
 toggleRegions() {
   this.hideAll();
-  this.showRegions = true;
+  this.showRegions = !this.showRegions;
 }
 
 toggleSites() {
   this.hideAll();
-  this.showSites = true;
+  this.showSites = !this.showSites;
 }
 
 toggleCategories() {
   this.hideAll();
-  this.showCategories = true;
+  this.showCategories = !this.showCategories;
 }
 
 toggleThemes() {
   this.hideAll();
-  this.showThemes = true;
+  this.showThemes = !this.showThemes;
 }
 
 toggleTeams() {
   this.hideAll();
-  this.showTeams = true;
+  this.showTeams = !this.showTeams;
 }
 
 toggleStage() {
   this.hideAll();
-  this.showStage = true;
+  this.showStage = !this.showStage;
 }
 
 toggleUser() {
   this.hideAll();
-  this.showUser = true;
+  this.showUser = !this.showUser;
 }
 
 toggleJam() {
   this.hideAll();
-  this.showJam = true;
+  this.showJam = !this.showJam;
 }
 
 logOut(): void {
-  this.userService.logOutUser('http://149.130.176.112:3000/api/user/log-out-user')
+  this.userService.logOutUser(`http://${environment.apiUrl}:3000/api/user/log-out-user`)
     .subscribe(
       () => {
         this.router.navigate(['/login']);

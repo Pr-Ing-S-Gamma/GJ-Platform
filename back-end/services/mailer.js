@@ -45,7 +45,7 @@ const sendEmail = async (email, subject, message, link) => {
     }
 }
 
-const sendScore = async (email, subject, pitchScore, pitchFeedback, gameDesignScore, gameDesignFeedback, artScore, artFeedback, buildScore, buildFeedback, audioScore, audioFeedback, generalFeedback) => {
+const sendScoree = async (email, subject, continuityPotential, audienceCompetitorAwarenessValue, marketPositioningValue, gameDesignCoreLoopValue, gameDesignHookValue, gameDesignBalanceValue, artVisualsCoherenceQualityValue, audioDesignCoherenceQualityValue, buildQualityValue, UIUXQualityValue, narrativeWorldBuildingValue, pitchFeedback, gameDesignFeedback, artVisualsFeedback, audioDesignFeedback, buildFeedback, personalFeedback) => {
     try {
 
         let transporter = nodemailer.createTransport({
@@ -62,17 +62,23 @@ const sendScore = async (email, subject, pitchScore, pitchFeedback, gameDesignSc
         const htmlTemplate = await fs.promises.readFile('services/score_template.html', 'utf-8');
 
         const htmlContent = replaceTokens(htmlTemplate, {
-            pitchScore,
+            continuityPotential,
+            audienceCompetitorAwarenessValue,
+            marketPositioningValue,
+            gameDesignCoreLoopValue,
+            gameDesignHookValue,
+            gameDesignBalanceValue,
+            artVisualsCoherenceQualityValue,
+            audioDesignCoherenceQualityValue,
+            buildQualityValue,
+            UIUXQualityValue,
+            narrativeWorldBuildingValue,
             pitchFeedback,
-            gameDesignScore,
             gameDesignFeedback,
-            artScore,
-            artFeedback,
-            buildScore,
+            artVisualsFeedback,
+            audioDesignFeedback,
             buildFeedback,
-            audioScore,
-            audioFeedback,
-            generalFeedback
+            personalFeedback
         });
 
         const mailOptions = {
@@ -83,11 +89,44 @@ const sendScore = async (email, subject, pitchScore, pitchFeedback, gameDesignSc
         };
 
         await transporter.sendMail(mailOptions);
-        console.log("¡Correo electrónico enviado correctamente!");
+        console.log("Email sent successfully!");
     } catch (error) {
-        console.log("Error al enviar el correo electrónico:", error);
+        console.log("Error sending email:", error);
     }
 }
 
+const sendScore = async (email, subject, score) => {
+    try {
+
+        let transporter = nodemailer.createTransport({
+            host: "smtp.office365.com",
+            port: 587,
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAILPASSWORD
+            },
+            secureConnection: false,
+            tls: { ciphers: 'SSLv3' }
+        });
+
+        const htmlTemplate = await fs.promises.readFile('services/score_template.html', 'utf-8');
+
+        const htmlContent = replaceTokens(htmlTemplate, {
+            score
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: subject,
+            html: htmlContent
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log("Email sent successfully!");
+    } catch (error) {
+        console.log("Error sending email:", error);
+    }
+}
 
 module.exports = { sendEmail, sendScore };
