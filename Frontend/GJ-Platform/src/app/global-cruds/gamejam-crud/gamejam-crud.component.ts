@@ -79,8 +79,8 @@ export class GamejamCrudComponent implements OnInit {
     if(selectedTheme && selectedTheme.value){
       const themeValue : Theme = selectedTheme.value;
       const themesArray = this.myForm.get('themes') as FormArray;
-      if(!themesArray.value.some((theme: Theme) =>theme._id=== themeValue._id)){
-        themesArray.push(this.fb.control(themeValue))
+      if(!themesArray.value.some((theme: Theme) => theme._id === themeValue._id)){
+        themesArray.push(this.fb.control(themeValue));
       }
     }
   }
@@ -140,32 +140,29 @@ export class GamejamCrudComponent implements OnInit {
     });
     const themesArray = this.myForm.get('themes') as FormArray;
     themesArray.clear();
-    elemento.themes.forEach((theme: Theme) =>{
-      (themesArray).push(this.fb.group({
+    elemento.themes.forEach((theme: Theme) => {
+      themesArray.push(this.fb.group({
         _id: theme._id,
-        titleEN : theme.titleEN,
+        titleEN: theme.titleEN,
       }));
-    }
-  
-  ) 
+    });
   }
 
   editar() {
     if (this.myForm.valid) {
-      console.log('Formulario válido');
       const gamejamId = this.userToEdit['_id'];
       const { edition, themes } = this.myForm.value;
   
       this.gamejamService.updateGameJam(`http://${environment.apiUrl}:3000/api/game-jam/update-game-jam/${gamejamId}`, {
-        edition: edition,
+        edition,
         themes: themes.map((t: Theme) => ({ _id: t._id, titleEN: t.titleEN }))
       }).subscribe({
         next: (data) => {
           if (data.success) {
-            this.dataSource[this.indexUser] = { _id: gamejamId, edition: edition, themes: themes.map((theme :{_id : string; titleEN: string;})=>({
-              _id : theme._id,
-              titleEN : theme.titleEN
-            })  ) };
+            this.dataSource[this.indexUser] = { _id: gamejamId, edition, themes: themes.map((theme: { _id: string; titleEN: string; }) => ({
+              _id: theme._id,
+              titleEN: theme.titleEN
+            })) };
             this.showSuccessMessage(data.msg);
           } else {
             this.showErrorMessage(data.error);
@@ -259,33 +256,10 @@ export class GamejamCrudComponent implements OnInit {
     }
     return Array.isArray(value) ? value.join(', ') : value;
   }
-obtenerDatosPagina() {
-  let filteredData = this.dataSource;
-
-  if (this.selectedHeader !== undefined && this.filterValue.trim() !== '') {
-    const filterText = this.filterValue.trim().toLowerCase();
-    filteredData = filteredData.filter(item => {
-      try {
-        switch (this.selectedHeader) {
-          case '_id':
-            return item._id && item._id.toLowerCase().startsWith(filterText);
-          case 'edition':
-          case 'theme.titleEN':
-          case 'theme._id':
-            return (item[this.selectedHeader as keyof GameJam] as string).toLowerCase().startsWith(filterText);
-          default:
-            return false;
-        }
-      } catch (error) {
-        console.error('Error while filtering:', error);
-        return false; 
-      }
-    });
+  obtenerDatosPagina() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.dataSource.slice(startIndex, startIndex + this.pageSize);
   }
-
-  const startIndex = (this.currentPage - 1) * this.pageSize;
-  return filteredData.slice(startIndex, startIndex + this.pageSize);
-}
 
 
   get paginasMostradas(): (number | '...')[] {
