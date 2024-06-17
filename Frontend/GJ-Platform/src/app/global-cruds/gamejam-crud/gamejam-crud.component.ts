@@ -254,15 +254,11 @@ export class GamejamCrudComponent implements OnInit {
     const keys = key.split('.');
     let value = obj;
     for (const k of keys) {
-        if (Array.isArray(value)) {
-            value = value.map((item: any) => item[k]);
-        } else {
-            value = value[k];
-        }
-        if (value === undefined || value === null) return '';
+      value = value?.[k];
+      if (value === undefined || value === null) return '';
     }
     return Array.isArray(value) ? value.join(', ') : value;
-}
+  }
 obtenerDatosPagina() {
   let filteredData = this.dataSource;
 
